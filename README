@@ -1,0 +1,51 @@
+Xt7-Player is an open source gui to mplayer.
+
+While there are plenty out there, it's hard to find one which gives access 
+to all mplayer options.
+This is what Xt7-Player aims to be, an (in)complete graphical interface 
+to mplayer, focused on usability.
+
+It also provides extra features like youtube and shoutcast integration, dvbt, 
+media tagging, library and playlist managment and a lot more.
+Visit: http://xt7-player.sourceforge.net/xt7forum/viewtopic.php?f=4&t=2 
+for a screenshots tour.
+
+It is written and requires (the latest) Gambas3:
+http://gambas.sourceforge.net/en/main.html
+
+
+Mandatory requirements:
+-----------------------------
+  * Gambas 3 (usually the very latest version)
+  * Qt4
+  * mplayer
+
+
+
+Optional requirements:
+-----------------------------
+  * taglib to tag audio files and speed-up library syncronization:
+  http://developer.kde.org/~wheeler/taglib.html
+
+  * xbindkeys: to use global hotkeys
+  http://hocwp.free.fr/xbindkeys/
+
+  * scan and femon from LinuxTV dvb-apps to use dvbt features
+  http://www.linuxtv.org/wiki/index.php/LinuxTV_dvb-apps
+
+  * youtube-dl to watch and download youtube videos
+  http://rg3.github.com/youtube-dl/
+
+
+
+Compiling it:
+-----------------------------
+After you installed gambas 3, just checkout and compile xt7 that way:
+
+# git clone https://github.com/kokoko3k/xt7-player.git
+# cd xt7-player/
+# /path/to/gambas/binaries/gbc3 -e -a -g -t -p -m
+# /path/to/gambas/binaries/gba3
+# ./xt7-player.gambas
+
+

@@ -1,0 +1,337 @@
+---------------
+
+
+
+
+
+
+
+
+
+
+
+Public Function do_IdlePlay(filename As String) As Boolean
+  Dim status_msg As String = ""
+  Dim options As String = ""
+
+  If Not ProcessRunningOvr() Then
+    status_msg &= "\""
+    status_msg &= "identify:" & Chr(8) & "BEGIN" & "\n"
+    status_msg &= "identify:" & Chr(8) & "path" & Chr(8) & "\\${path}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "=length" & Chr(8) & "\\${=length}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "file-format" & Chr(8) & "\\${file-format}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "audio-codec" & Chr(8) & "\\${audio-codec}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "video-codec" & Chr(8) & "\\${video-codec}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "=audio-bitrate" & Chr(8) & "\\${=audio-bitrate}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "=video-bitrate" & Chr(8) & "\\${=video-bitrate}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "=audio-samplerate" & Chr(8) & "\\${=audio-samplerate}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "=audio-channels" & Chr(8) & "\\${=audio-codec}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "fps" & Chr(8) & "\\${fps}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "width" & Chr(8) & "\\${width}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "height" & Chr(8) & "\\${height}" & "\n"
+    status_msg &= "identify:" & Chr(8) & "END" & "\n"
+    status_msg &= "\""
+
+
+    options &= " --input-file=" & SetUpInputPipe()
+    options &= " --msg-color=" & "no"
+    options &= " --ao=" & "null"
+    options &= " --vo=" & "null"   
+    options &= " --idle=" & "yes"
+    options &= " --cache=" & "no"
+    options &= " --term-status-msg=" & status_msg
+    commandline = executable(600) & options
+    Debug commandline
+    playerprocess = Shell commandline For Read Write As "idleprocess"
+  Endif
+
+  identification = ""
+  identified = False
+
+  mpv_command(["loadfile", SConv(FileName)])
+
+  setP("fullpath", filename)
+  set_property_mpv("pause", "no")
+
+  While Not identified
+    Wait
+  Wend
+  'get_mediainfo(False)
+  mpv_command(["stop"])
+End
+
+
+Private identification As String
+Private identified As Boolean = False
+Public Function idleprocess_error(status_msg As String)
+  'wait for BEGIN
+
+  If identification Like "*" & "identify:" & Chr(8) & "BEGIN" & "\n" & "*" Then
+    If identification Like "*" & "identify:" & Chr(8) & "END" & "\n" & "*" Then
+      mpv_command(["stop"])
+      parse_identification()
+      Return
+    Endif
+  Endif
+  identification &= status_msg 
+End
+
+Private Sub parse_identification()
+  Dim l, name, data As String
+  For Each l In Split(identification, "\n")
+    name = ""
+    data = ""
+    Try name = Split(l, Chr(8), "", False, False)[1]
+    Try data = Split(l, Chr(8), "", False, False)[2]
+    If (name <> "") And (data <> "") Then setP(name, data)
+  Next 'l
+  identified = True
+End
+
+
+
+
+
+
+
+
+
+---------------
+
+
+
+Public Sub get_mediainfo(Optional idleplay As Boolean = False)
+  Dim media_taglib As New TagLib
+  Dim fileUtf8 As String
+  Dim i As Integer
+  Dim metadatacount As Integer
+  Dim metadataname As String
+  If getP("fullpath") = "" Then Return
+
+' ' ''ENUM Artist, title etc via mpv Metadata
+' '     metadatacount = GetPropertympv("metadata/list/count")
+' '     If metadatacount > 0 Then
+' '       For i = 0 To metadatacount - 1
+' '         metadataname = GetPropertympv("metadata/list/" & i & "/key")
+' '         Debug metadataname, GetPropertympv("metadata/by-key/" & metadataname)
+' '       Next
+' '     Endif
+' '   ''
+' 
+'         
+
+'   
+  'fixmempv: questa procedura sotto, cosa fa esattamente? mi sembra solo il trim (?)
+    Try fileUtf8 = DConv(getP("fullpath")) 'from system charset to utf8
+    If Error Then fileutf8 = getP("fullpath")
+    fileutf8 = getP("fullpath")
+    fileutf8 = Trim(fileutf8)
+    
+    
+    FillMultitracks() 'will set prop[audioonly] too.
+    
+    
+    
+  setP("size", (Stat(getP("fullpath"), True).Size Div 1024))
+  get_property_mpv("seekable", False)
+  get_property_mpv("demuxer", False)
+  get_property_mpv("video-codec", False)
+  get_property_mpv("audio-codec", False)
+  'for audio only files, try to get common audio tags
+  'try first to get them using fast taglib
+  'fixmempv --> but fallback to mplayer in idle mode <--fixmempv
+  If (getP("AudioOnly") And (Not Global.IsNetworkURI(getP("FullPath"))) And media_taglib.IsSupported(fileutf8)) Then
+    If media_taglib.Init(getP("FullPath")) Then
+      setP("artist", media_taglib.Artist)
+      setP("author", media_taglib.Artist)
+      setP("title", media_taglib.Title)
+      setP("album", media_taglib.Album)
+      setP("genre", media_taglib.Genre)
+      setP("year", media_taglib.MyYear)
+      setP("comment", media_taglib.Comment)
+      setP("comments", media_taglib.Comment)
+      setP("trackno", media_taglib.Track)
+      setP("length", media_taglib.Length)
+      ' If Media_Length = 0 Then 'fixmempv può essere zero davvero?
+      '   tmp = Split(Media_GetLength(), ".")
+      '   tmp = Split(tmp[0], ",")
+      '   Media_Length = tmp[0]
+      ' Endif
+     setP("Audio-Bitrate", media_taglib.Bitrate)
+      If getP("Audio-Bitrate") = 0 Then 
+        get_property_mpv("audio-bitrate")
+        Stop 'fixmempv controlla se funziona
+      Endif
+      setP("audio-Channels", media_taglib.Channels)
+      setP("=audio-samplerate", media_taglib.Samplerate)
+      Debug "got info from taglib on " & getP("FullPath") & " --"
+      Debug
+       media_taglib.tlFree()
+        Else  'there was a problem with TagLib Class initialization, fallback to mplayer
+              'or was a network uri or a cddb 
+      If (getP("length") = 0) Or (getP("length") = "") Then get_property_mpv("=length")
+      
+      If global.IsCddb(getP("FullPath")) Then
+        'fixmempv cddbtrack
+        Debug "FILLING CDDB TRACKS IS STUB BECAUSE MPV DOES NOT SUPPORT CDDB."
+        ' Try cddbtrack = Split(Media_FullPath, "/ ", "", True, False)[1]
+        ' Try Media_Artist = FindTagValue("ID_CDDB_INFO_ARTIST")
+        ' Try Media_Author = FindTagValue("ID_CDDB_INFO_ARTIST")
+        ' Try Media_Genre = FindTagValue("ID_CDDB_INFO_GENRE")
+        ' Try Media_Album = FindTagValue("ID_CDDB_INFO_ALBUM")
+        ' Try tracks = FindTagValue("ID_CDDB_INFO_TRACKS")
+        ' If Not Error Then 
+        '   For i = 1 To tracks
+        '     Try cddbtracks.Add(FindTagValue("ID_CDDB_INFO_TRACK_" & i & "_NAME"))
+        '     If Error Then cddbtracks.add(("Unknown entry (connection problem?)"))
+        '   Next 'i 
+        ' Endif
+        ' Try Media_TrackNo = cddbtrack
+        ' Try Media_Title = cddbtracks[cddbtrack - 1]
+        ' Try Media_Name = Media_title
+             Else
+        Try setP("Artist", get_property_mpv("metadata/by-key/ARTIST"))
+        Try setP("Author", get_property_mpv("metadata/by-key/AUTHOR"))
+        Try setP("Genre", get_property_mpv("metadata/by-key/GENRE"))
+        Try setP("Album", get_property_mpv("metadata/by-key/ALBUM"))
+        Try setP("Year", get_property_mpv("metadata/by-key/DATE"))
+        ' Try Media_CreationDate = DConv(FindAudioTag("creation date")) 'fixmempv
+        Try setP("TrackNo", get_property_mpv("metadata/by-key/track"))
+        Try setP("Title", get_property_mpv("metadata/by-key/TITLE"))
+        If getP("Title") = "" Then Try setP("name", get_property_mpv("metadata/by-key/TITLE"))
+        ' Try Media_Comment = DConv(FindAudioTag("comment")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
+        ' Try Media_Comments = DConv(FindAudioTag("comments")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
+      Endif
+      
+      
+    Endif
+        Else 'for not audio only files, use mplayer in idle mode.      
+      If ((getP("Length") = 0) Or (getP("Length") = "")) Then get_property_mpv("=length")
+      get_property_mpv("video-bitrate")
+      get_property_mpv("width")
+      get_property_mpv("height")
+      get_property_mpv("fps")
+      get_property_mpv("audio-bitrate")
+      get_property_mpv("audio-channels")
+      get_property_mpv("=audio-samplerate")  
+  Endif
+
+
+
+Public Sub ABLoopButton_mouseup()
+  Dim StartTime As Float = Timer()
+  Dim timeout As Integer = 100
+  
+  'mplayer not running or cancel loop -> init and return
+  If Not mplayer.ProcessRunningOvr() Or (ABLoopB <> ABLoopInitValue) Or Mouse.Right Then 
+    InitABLoop()
+    Return
+  Endif
+
+  If ABLoopA = ABLoopInitValue Then 'A loop not set -> get loop point A
+    Repeat
+      Try ABLoopA = mplayer.CurrentTimeFloat()
+      If ABLoopA = ABLoopInitValue Then 
+        Wait 0.1
+        timeout -= 1
+      Endif
+    Until (ABLoopA <> ABLoopInitValue) Or timeout = 0
+    If timeout <> 0 Then
+      ABLoopA -= Round((Timer() - starttime), 1)
+      ABLoopButton.picture = Picture["media-loop-a.png"]
+      ABLoopButton.tooltip = CStr(AbLoopA) & "<->"
+    Endif
+    Return
+      
+      Else 'B loop not set -> get loop point B and start the loop
+    
+    Repeat
+      Try ABLoopB = mplayer.CurrentTimeFloat()
+      If ABLoopB = ABLoopInitValue Then 
+        Wait 0.1
+        timeout -= 1
+      Endif
+    Until (ABLoopB <> ABLoopInitValue) Or timeout = 0
+    If timeout <> 0 Then
+      ABLoopB -= Round((Timer() - starttime), 1)
+      If ABLoopA >= ABLoopB Then
+        Debug
+        Debug "Loop Point A >= Loop Point B, and cannot loop backwards, please retry."
+        ABLoopB = ABLoopInitValue
+        Return
+      Endif
+      ABLoopButton.picture = Picture["media-loop-ab.png"]
+      ABLoopButton.tooltip = CStr(AbLoopA) & "<->" & CStr(AbLoopB)
+      ABLoopTimer.delay = CInt((ABloopB - ABLoopA) * 100 / 4) 'be light on this
+      ABLoopTimer.start
+      ABLoopTimer.trigger
+    Endif    
+  Endif
+End
+
+
+
+
+
+
+
+
+
+
+
+
+Private abloop_a_is_set As Boolean = False
+Private abloop_b_is_set As Boolean = False
+
+Private Sub InitABLoop()
+  If mplayer.ProcessRunningOvr() Then
+    mplayer.abloop_set_a("no")
+    mplayer.abloop_set_b("no")
+  Endif
+  abloop_a_is_set = False
+  abloop_b_is_set = False
+  ABLoopButton.picture = Picture["media-loop-off.png"]
+  ABLoopButton.value = False
+  ABLoopButton.tooltip = ("No loop set")
+End
+
+
+Public Sub ABLoopButton_mouseup()
+  Dim a, b As String
+  'mplayer not running or cancel loop -> init and return
+  If Not mplayer.ProcessRunningOvr() Or (abloop_b_is_set) Or Mouse.Right Then 
+    InitABLoop()
+    Return
+  Endif
+
+  If Not abloop_a_is_set Then  'A loop not set -> get loop point A
+    a = mplayer.CurrentTimeFloat() 'just for displaying purposes; not 100% exact
+    mplayer.abloop_set_a() 'no argument means current time.
+    abloop_a_is_set = True
+    mplayer.abloop_set_b("no")
+    abloop_b_is_set = False
+    ABLoopButton.picture = Picture["media-loop-a.png"]
+    ABLoopButton.tooltip = CStr(a) & "<->"
+    Return
+  Endif 
+
+  'else
+  If Not abloop_b_is_set Then  'B loop not set -> get loop point B
+    b = mplayer.CurrentTimeFloat() 'just for displaying purposes; not 100% exact
+    If a >= b Then
+      Debug "Loop Point A >= Loop Point B, and cannot loop backwards, please retry."
+      abloop_b_is_set = False
+      Return
+    Endif
+    mplayer.abloop_set_b()  'no argument means current time.
+    abloop_b_is_set = True
+    ABLoopButton.picture = Picture["media-loop-ab.png"]
+    ABLoopButton.tooltip = CStr(a) & "<->" & CStr(b)
+    Return
+  Endif
+  
+  'else
+  'a and b was set, reset abloop
+  InitABLoop()
+End
+

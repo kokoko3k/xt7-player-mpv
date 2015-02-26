@@ -1,0 +1,659 @@
+- Glitches in video area if X11 driver is used and the form is resized
+- move colorkey to video output options
+- dimensione dei sottotitoli consistente tra le diverse risoluzioni
+- se alcune informazioni sul file sono disponibili in fase di play, ma non in playlist/gridview, aggiungile, costa nulla.
+-autoswitch playlist/video se video presente in autoplay?
+-temi di icone
+-permettere l'aggiunta ricorsiva alla playlist?
+-drag della seekbar indica a quale secondo ci si posizionerà
+- ctrl-click non deseleziona l'item della library/playlist.
+- filtro hrtf
+- Pulsante "undo" vicino a apply che fa: menu->profile->reload current profile
+- video bitrate: se id_length <> 0 => video bitrate = filesize/id_length-audio_bitrate -
+(dipende dalla gestione dei multiaudio, ancora assente)
+
+-hotkey locali per allargare o restringere la larghezza del video.
+- premendo retest molte volte nei sub, il programma non esce.
+- henrick: PVR 
+- Aggiornare in tempo reale il check sulla traccia audio/sub abilitata
+  (in sostanza serve fare il catch della hotkey premuta)
+
+- Gestire malformattamenti delle playlist importate
+-Inserire funzione di ottimizzazione delle cover, se ce ne sono 2
+uguali, crea dei link e rimuovine una.
+
+- ancora problemi con l'audio panel e i font (check con ubuntu)
+- aggiungere contenuto tag <description> ai podcast
+- impostare come cover dei file audio l'eventuale cover del podcast
+- Il pulsante dvd navigation mode deve restare pressed finchè "depresso" dalla selezione di un titolo dall' albero
+- pensare se è il caso di creare un pannello per la selezione via mouse dei tasti dvd
+- PlayList ad albero?
+- permettere di specificare opzioni aggiuntive sui file (tipo il parametro playlist)
+- Sistema di plugin:
+    Play da: plugin
+    Popola da: plugin
+
+- doppio click libreria riseleziona updatesearchresult, perchè?
+- Se il file è (molto!) piccolo ed è testo (usare il comando 'file', magari), aggiungi "playlist" come parametro
+- tasto dx -> imposta cover
+- invertire l'ordine dei risultati youtube?
+- opzione "-volume" per il volume iniziale (possibile prenderla direttamente dalla barra del volume?)
+
+-crash alla seconda ripetizione dei sub con queste opzioni:
+__GL_SYNC_TO_VBLANK=1  /usr/local/bin/pagecache-management.sh -k 1024 mplayer -identify -slave  -wid 60820713 -noconfig all  -mouse-movements -mf fps=1:type=bmp -loop 0  -ass  -ass-force-style FontName="Segoe UI",FontSize=22,Bold=1,Italic=Alignment=2,outline=1,OutlineColour=H00000000,MarginV=0,PrimaryColour=H0000FFFF,shadow=2,BackColour=H80000000 -subcp enca:it:iso-8859-1 -sub-fuzziness 0  -font "Bitstream Vera Sans" -sub-bg-alpha 210 -subfont-blur 3 -osd-duration 1000 -subfont-osd-scale 2 -subfont-text-scale 2 -subpos 0 -osdlevel 3 -vf-add scale -vf-pre scale -vo x11  -ao null      -alang "" -slang "" -sub '/tmp/gambas.0/7993/SubSrt.srt.tmp' "mf:///home/root/.config/gambas3/Xt7-Player/SubBackImage*.bmp"
+
+
+
+* opensubtitles integration?
+* mettere lA CATEGORIA AUDIOVIDEO
+* trovare un modo per levare i messaggi di errore di mplayertag dai log
+* ordinare i canali quando si incolonnano nella griglia
+
+
+Se attivi un driver video, poi non si può più disabilitare se è
+disabled il checkbox...
+
+* Fare un .desktop per l'append
+* fare 2 script per il git: install e uninstall
+
+* permettere di scegliere quali dei codec vdpau 'autoaggiungere' ?
+
+ * i link youtube si vedono come il mondo con le cuffie quando si seleziona di mostrare le cover
+ 
+
+*controllare che esista la thumb non ci assicura che mplayer l'abbia
+  creata, potrebbe essere semplicemente nera :(
+  quindi ahimè, occorre vedere veramente quanto dura, prima di creare la thumb
+
+
+
+* tenere traccia dell'attuale ordinamento delle righe (serve?)
+
+il parametro sws è inutile a meno che non si usi una scalatura software, quindi
+al più bisogna aggiungere -vf-add scale=1280:-2 (dove 1280 e la larghezza dello schermo)
+
+
+* Covers inside the album folder are not supported (yet?), but embedded jpg covers are.
+
+
+* una url http://*.ogg si vede con l'icona del file audio
+capita quando non si visualizzano le cover.
+inoltre forse è meglio usare le stesse icone tra visualizzazione cover
+e non, cambiare solo che si vedano le cover.
+
+
+* possibilità di non visualizzare il menu? nel caso usare un bottone nella toolbar che lo faccia apparire
+...è un casino perchè il menu principale di gambas non ha proprietà (?)
+
+* quando riordini, la selezione non si muove assieme agli ordinati
+
+* tenere traccia della versione, se è nuova, factory defaults va rigenerato
+
+Try tmppic = picture.Load(tmpfile) a volte non da errore anche se la pic è corrotta,
+bisogna trovare un altro modo per identificare le jpg...
+
+
+
+* usando dvb_set_channel il volume viene resettato a quello iniziale ogni volta che si cambia canale
+
+* forse il nome del canale su può prendere dall'output: DVB_SET_CHANNEL: new channel name=ZDF, card: 0, channel 0
+               http://www.google.it/url?sa=t&rct=j&q=&esrc=s&source=web&cd=29&ved=0CHYQFjAIOBQ&url=http%3A%2F%2Flists-archives.com%2Fvideo4linux%2F11755-asus-p7131-dual-no-analog-no-dvb-t.html&ei=Dvm9T7muGo7U4QSYiKBI&usg=AFQjCNFF4J1CbS1TCVGX0W3AYcnQpTuFng&sig2=LfHJkAavENm2U-TpPmWQ7g
+
+* epgform: permettere di impostare un sintonizzatore diverso dal primo
+
+* non usare xterm per scaricare da youtube? implementare una specie di terminale in gambas...
+
+* migliorare la gestione degli argomenti con qualcosa del genere:
+se numero argomenti (il primo è xt7) è > 1 allora
+  per ogni argomento:
+  se l'argomento è -append allora appendi l'argomento successivo
+  se l'argomento è minimal allora parti l'interfaccia minima
+    altrimenti (il numero di argomenti è uno)
+  lancia xt7 normalmente.uy
+
+
+--------------------------------------------------------------------------
+
+***********************************************
+Risolti:
+***********************************************
+FIX:    Unknown symbol 'DvdminCacheCheckbox' in class 'GeneralOptions'.
+FIX:    Copy fascory settings to default profile if no previous configuration found
+CHANGE: 'Little bigger' icons in taskbar
+FIX:    Changed titlebar message when user didn't set a maximum cache value
+FIX:    Sometimes xt7 failed to switch profiles at runtime
+FIX:    Check if confdir exists before trying to make any parent folder
+FIX:    Catch row highlight errors
+FIX:    Don't display the cover twice on start
+CHANGE: Unminimize and raise main window when the player is invoked from outside
+FIX:    Immediataly update message logs after when using new settings
+CHANGE: Reload current profile now reloads all the forms
+FIX:    Quit a bit faster
+FIX:    Runtime error when enabling/disabling tooltips.
+FIX:    Audio/video chains were saved everytime on exit
+CHANGE: Some translations update may require you to reconfigure subtitle languages
+CHANGE: Filters not supported by local mplayer now are disabled objects
+........And the user will be warned if it insists in using them
+CHANGE: Drivers not supported by local mplayer now are disabled objects
+FIX:    Better handling of cached options
+FIX:    Inserting expand filter into video chains works again
+FIX:    Added polish (pl) to the list of enca supported language list 
+FIX:    Added an option to just use fallback codepage if enca language is unlisted
+NEW:    Remembers last played files
+NEW:    Optionally "start where you left" feature
+FIX:    Only switch to browse tab at startup if the file exists
+FIX:    Don't reset new settings after playing a media for the first time
+
+
+
+
+NEW:    New link shown when a translation for the current language doesn't exist, thanks to eloaders for this.
+FIX:    Don't leave alang or slang without values  
+FIX:    Save alang and slang options in cachedoptions
+CHANGE: Make dbus support optional and disabled by default
+........(Will hopefully fix a segfault in gambas/Ubuntu 64-bit ?)
+CHANGE: Do not force any audio driver in Factory_defaults profile
+........Enable softvol in Factory_defaults profile
+........Warn users about it
+........(fix volume change issues with default pulseaudio+mplayer under Ubuntu)
+
+
+
+
+NEW:    ***** Gambas 2.99.5 strictly required *****
+FIX:    color.merge -> color.gradient (due to gambas update)
+FIX:    key.esc -> key.escape (due to gambas update)
+FIX:    fixed parsing of scan output during DVBT tuning
+FIX:    Stupid bug preventing the application from registering to dbus
+FIX:    New dbus methods (doStop,doNext,doPrevious and so on) at org.gambas.xt7.player -> xt7/org.gambas.xt7.player.dbusproperties/
+FIX:    Open the last used cached profile at startup, when a filename is given from the command line.
+FIX:    Don't wait for mplayer to cache the media vefore showing the gui when a filename is given from the command line.
+FIX:    Do not even try to overwrite the "Factory_default" profile, ask user what to do.
+FIX:    Italian translation updates
+FIX:    Close input socket as soon as possible on closing
+FIX:    Adjusted max cache size to 1048576
+NEW:    Added a textbox under vdpau driver configuration to write additional options
+NEW:    Bring player window to foreground when the player is already open and invoked a second time
+NEW:    Show an animation while buffering
+NEW:    Can Import standard channels.conf file into dvbt list (open simple dvb tuner to do that)
+NEW:    vaapi driver support
+NEW:    cache-min options for files and dvd too (was network and dvb only)
+CHANGE: Use a cache for gui options to speedup playing the very first media
+CHANGE: Different search box for library and playlist
+
+
+
+CHANGE: Exit from fullscreen at the end of the media or stop
+FIX:    Prevent an mplayer window to popup when updating library/playlist items (regression)
+FIX:    ExportFile names are now random
+FIX:    Updated Italian translation
+NEW:    Panscan (Zoom) button (roll mouse wheel over it)
+FIX:    Fixed some youtube issues when using 'next' button
+NEW:    Youtube search: "More results" arrow at the end of any search result
+FIX:    Sometimes codec list didn't show up
+FIX:    Possible runtime error when using vmeters
+FIX:    Don't throw an error if trying to disable kwin effects without kwin
+FIX:    Updated some symbols to be compatible with new gambas release
+CHANGE: Made a version check; gambas 2.99.2 is strictly required.
+NEW:    several dbus properties exported at: org.gambas.xt7.player -> xt7/org.gambas.xt7.player.dbusproperties/
+CHANGE: FileSize is expressed in Kbytes now (library rebuild needed to not break sorting by size)
+FIX:    Clear zoom level now restores 1:1 zoom and not 10:1
+FIX:    Changed youtube backend to rely on youtube-dl python script (now required)
+CHANGE: Youtube stream download now works only when using wget or aria2c download manager
+
+
+
+CHANGE: Default to 0 in cache-seek-min 
+FIX:    Restore Genres tree in shoutcast tab at every startup
+FIX:    Some settings were not correctly restored from general options form
+NEW:    When invoked from command line, show the file on the browse tab
+FIX:    Clear audio filters when using audio passthrough
+FIX:    'Custom' options are now appended to the end of commandline so that will override others
+FIX:    Sometimes zoom level was wrong at startup
+FIX:    Try hardly to disable ass when requested/needed
+NEW:    Convenient window with realtime controls (clock icon on the tab bar)
+FIX:    Better handling of mp3 length (xiph headers - taglib required)
+NEW:    Support for yadif deinterlacer
+NEW:    Support for -field-dominance option
+FIX:    Updated vdpau driver options (deint method 4,colorspace,hqscaling,noforce-mixer)
+FIX:    audio panel not shown on very first run
+FIX:    wrong font sizes in audio panel
+FIX:    Float values were not correctly loaded from saved profiles (eg:extrastereo values)
+FIX:    Runtime error on DeFormatTime()
+NEW:    deinterlace hotkey
+FIX:    Bottom controls disappears in some case when exiting from fullscreen
+CHANGE: Do not exit from Fullscreen Mode on stop.
+FIX:    Crash on cover double click
+NEW:    taglib (taglib c bindings) dependancy
+NEW:    dropped audiotag dependancy
+NEW:    use taglib instead of audiotag to tag audio files
+NEW:    Use taglib to speedup retrival of audio files tags
+FIX:    sometimes missing audio_codec in table
+FIX:    work on youtube https://* too
+CHANGE: xdg-open no more required
+FIX:    load currect cache values when starting with a filename by command line
+CHANGE: Load various settings only when/if needed
+
+--
+
+
+FIX: DVB channels sort works again
+FIX: DVB Tuner works again
+FIX: Global hotkeys works again
+FIX: endless loop in stop routine
+NEW: Cache bar and total cache printed on window title
+FIX: wrong font size in shoutcast tab
+NEW: allow autonext in browse mode too
+NEW: show autonext button in browse and youtube tabs too
+NEW: allows fast profile switch by popup menu over tabs
+CHANGE: disabled stucktimer
+NEW: Allow prev/next/autonext fetures to work with browse tab too
+FIX: Get rid of "_NuLl_nUlL" subfile
+FIX: Sometimes youtube subtitles were not detected
+FIX: Stucktimer has to ben cleared on errors too #<- but stucktimer will be disabled
+FIX: Ignore 'nop_streaming_error' if cache size is higher than the stream size
+FIX: Better handling of youtube formats: 360,480,720,1080p works correctly now
+FIX: tries hardly (5 seconds limit) to pause mplayer even when it doesn't answer <--removed
+
+--
+
+2.9.917
+
+- FIX: exception on library sync
+- FIX: Don't force an ass style if no options to force it are selected
+- FIX: open xt7, go to profiles tab, click load -> crash.
+- FIX: Hotkeys could not be loaded/saved
+- FIX: better audio panel appaerance when an high default font used
+
+
+
+- NEW: in memory timeshifting for dvb streams with high cache values
+- NEW: Write prefill cache status too
+- NEW: Standard output and standard error on different tabs under log window.
+- NEW: Search highlighting in logwindow
+- NEW: Completed the port to qt4/Gambas3
+- NEW: End of qt3 support? gambas 3 needed (actually 2.99+)
+- NEW: Vertical tabs option
+- FIX: removed solid resizing from the vertical splitter (too slow in qt4)
+- FIX: lower startup time
+- FIX: Faster and less glitchy filter drag'drop managment
+- NEW: added an option under General-options->tweaks to disable kwin effects in fullscreen mode.
+- NEW: Popup window can be moved and made translucent (mouse wheel on the 'pin' button)
+
+-----------------------------------------------
+- FIX: removed unused "denoise" option from dering and autolevels video filters
+- FIX: Catch flash videos even with newer flash version: requires 'find' utility.
+
+- NEW: Support for DVB-T streams: requires 'scan' and 'femon' utilities.
+- NEW: Option for subtitles "mkv workaround" see mplayer bug id 1870
+       selecting it will disable any ass rendering but allows embedded mkv
+       subtitles to be shifted backwards in time.
+- NEW: Youtube subtitles support
+- FIX: Video equalizer window size now adapts to font size correctly
+- NEW: added 16:10 and 1:1 modes to the video aspect menu
+- FIX: Negative equalizer gains are back
+- NEW: Audio equalizer works in realtime 
+       (no need to apply anymore, just throw the equalizer filter in the audio chain)
+       (Recent mplayer version needed, at least 32505)
+- NEW: Audio filters changes are applied without restarting mplayer  by clicking "apply"
+       in the audio filters window or in the chains window if no video filter changed.
+       (Recent mplayer version needed, at least 32505)
+       The function may not work all the times, so just hitting "apply" twice will force
+       the old behaviour.
+- NEW: Added "-mixer-channel" option in Generel Options (works for alsa and oss)
+- NEW: Removed mixer channel from oss audio driver settings
+- FIX: remove all video filters for xvmc too (was vaapi and vdpau only)
+- NEW: Right click a tab to switch to a new one or to select what tabs to show
+
+
+----------------
+
+- FIX: Audio filter parsing fix
+- FIX: support for new shoutcast protocol
+- FIX: glitch on toolbar icon
+- CHANGE: Added .ogv to the common video extension list
+- CHANGE: shrink toolbar height only if screen height < 601 px.
+- FIX: Better handling of fullscreen panels
+- NEW: Support for 8 (7.1) channels
+- FIX: Better handling of nop_streaming_error on youtube seeks 
+- FIX: possible runtime error on rss feeds retrieval
+- FIX: possible runtime error on youtube thumbnails retrieval
+- FIX: problems when default shell is not bash
+- NEW: print cache fill status next to the window title
+- NEW: added "-framedrop option" (useful to display 24p streams on 24hz modelines)
+- NEW: handle more youtube urls 
+- FIX: better look on dark themes
+
+
+- FIX: youtube works again 
+- FIX: removed ogg demuxer from mplayer_idle as it leads to missing informations in the firs file added
+        'use audiotag instead (slower...)
+- FIX: Http get operations doesn't block the ui anymore
+- FIX: Better handling of temp files
+- FIX: Display correct youtube stream title in playlist mode
+- FIX: Higher network timeouts
+- NEW: Download podcasts and youtube streams in background 
+  with kioclient,kfmclient,wget,aria2 or a user defined command.
+
+
+- NEW: Initial youtube support (youtube tab), choose between 360p,720p,1080p in network preferences
+- NEW: Added -cache-min option in network preference (very useful for youtube streams)
+- NEW: Added -cache-seek-min option in network preference( very useful for youtube streams)
+- CHANGE: added gb.web dependancy
+- NEW: Added -prefer-ipv4 option in network preference
+- NEW: stream address in log window
+- CHANGE: max cache value raised to 100MB
+- FIX: explicitely ignore any config file (-noconfig all)
+- FIX: update shoutcast gave a runtime error
+- FIX: disable all video filters for vaapi
+
+
+
+- FIX: drag'n drop bug due to a packaging mistake
+- FIX: Sometimes trayicon video thumbnail didn't show up
+
+
+- FIX: (sort of) force ogg demuxer for ogg streams in order to read ogg audio tags.
+
+
+- FIX: Runtime Error when dropping some m3u files into library/playlist tabs
+- FIX: runtime audio level callback was broken
+- NEW: Detect a stalled mplayer and try to restart it
+- FIX: Local hotkeys recognition fixes
+- FIX: runtime error at startup if shoutcast tab was hidden
+- FIX: In come cases, wrong media was chosen after hitting "use"
+- FIX: Sometime mouse stays hidden on video area when exit from fullscreen
+- NEW: Basical Filesystem browser under "browse" tab
+- NEW: File requester in generic "add uri" window
+- NEW: Snap to window borders when on Panscan (zooming-in) operations
+- NEW: Allow realtime Aspect ratio change
+- NEW: started to implement themable icon themes (nothing visible for now)
+- NEW: Move playlist items up/down using buttons and/or mouse wheel
+- FIX: Save of unsorted playlist/library items.
+- FIX: missing unsharp mask filter under chains window
+- FIX: Just deleted items don't appears instead of new dropped ones anymore (library and playlist)
+- NEW: Allow user to specify additional known extensions
+- CHANGE: Faster startup and shutdown
+  (gridviews_data functions tweaks)
+- FIX: Reset ProgressBar on new Cover fetch
+- CHANGE: SpeedUp column autosize method
+- NEW: Experimental cover display in listviews
+  (enable/disable under style tab in general options window)
+- NEW: mouseover effect in listview item
+  (enable/disable under style tab in general options window)
+- FIX: Better font rendering in the black audio panel
+- FIX: Library wont scroll to right anymore when dropping items
+- CHANGE: Less cpu time due to gui overhead
+- FIX: Display correct stream length on dvdnav streams
+- NEW: Added an option to save current window settings to all profiles
+- FIX: Apply new style settings when switchng profile at runtime
+- FIX: corrected set locale to C
+- NEW: option to turn on Visual feedback (highlight the current control for a while)
+- FIX: sometimes main window didn't get key focus at startup
+- NEW: mplayer "-mc float" option in tweaks tab.
+- FIX: Improved Hotkey routine, Ctrl/Alt/Shift works as modifiers
+- FIX: shoutcast and podcast panel: Obey font and color settings
+
+(over 0.9.162)
+- CHANGE: use C locale settings for mplayer process 
+- CHANGE: updated italian translation.
+- FIX: startup runtime error in SubAndOsd (thanks to alberto from MIB-Team)
+- FIX: Better xt7-mplayer sync routine (no more 0 length size files in playlist/library)
+- CHANGE: wrap text in log window
+- NEW: autosync option
+- FIX: make xt7-player workd even if mplayer was compiled withoud libdvdread support
+- FIX: Random play is back (thanks nickinicki)
+- FIX: set -nocache parameter for dvdnav streams (news on mplayerhq.hu)
+- FIX: LogWindow: don't repeat the same (mplayer) log message more than 20 times
+- FIX: Don't cut radio song name
+- FIX: open containing folder crash if no item selected
+- FIX: Hotkeys window now has a save button
+- NEW: Allows to add podcasts to library and/or playlist
+- NEW: AutoDetect Cdrom and dvdrom devices.
+- NEW: AudioCd support (no cddb:// due to slow freedb server)
+- CHANGE: More log window messages
+- CHANGE: Uses different cache sizes for network,dvd audiocd,and local file
+- NEW: Search and, if found, launch qt3 configuration tool.
+- FIX: Runtime error whan adding an uri in library+playlist and a search field which returned 0 results 
+  in playlist was selected.
+- FIX: The first element in playlist and library was always lost whan closing and reopening xt7
+- FIX: Radio label out of phase
+- FIX: Podcast Url(s) wasn't saved on disk if "save all settings to profile on program exit" was checked 
+        (thanks symbianflo)
+
+
+(over 0.9.97)
+- FIX: lavdopts options parsing
+- NEW: thread number options
+- FIX: some english typos (thanks Jacky Bamière)
+- FIX: some language dependant code removed (thanks Jacky Bamière)
+- FIX: xdg-open wasn't found even if it exists
+- FIX: If vdpau video driver is selected (which doesn't means used), video filter
+        chain is cleared (mplayer+vdpau+video filters doesn't play at all)
+- FIX: workarounded an mplayer 'bug' with some hotkeys when ladspa filters are used
+        (see bug: http://bugzilla.mplayerhq.hu/show_bug.cgi?id=1334)
+- FIX: Update a podcast rss fixed
+- NEW: Shoutcast radio support
+- NEW: Display total selection length in playlist and library
+- FIX: Dvd navigation via mouse
+- FIX: *faster* startup time
+- FIX: Little bug in generaloptions listview selection
+- FIX: Interface colors with dark themes
+- FIX: Bug in profile manager routines, save settings to new profiles was impossible.
+- FIX: Subtitles and osd window rearranged to fit 1024x600 netbook resolutions
+- NEW: simplified Chinese translation added (thanks shimingzhou)
+- NEW: Preliminary support to dvd menus (not 100% stable, but usable)
+******:New configurable hotkeys
+- NEW: added dvd navigation hotkey configuration
+- NEW: In dvd navigation mode, left mouse select items and doesn't pause anymore.
+- FIX: dots in profile name not allowed anymore
+- FIX: Don't make factory defaults profile at start if profile already exists
+- NEW: Choose to save or not form geometry on exit.
+- FIX: workarounded form geometry save/load to work the same way with kwin3+kwin4+compiz
+        (expect a glitch with compiz if you use close animation)
+- FIX: Less glitches when switching Fullscreen
+- FIX: Free drag.data (avoiding reparenting the object which accepted drop)
+- NEW: Gradfun video filter (very recent mplayer version needed!)
+- NEW: Added "reset to default" buttons near filter configurations
+
+
+- FIX: An endless loop in library syncronization routine
+- NEW: allow the user to choice a specific demuxer
+- NEW: Preliminary support for podcasts
+- FIX: Fullscreen resize bug
+- CHANGE: Switched to simplier file dialogs
+- FIX: Enabled Oss driver by default because of mplayer+alsa problems under ubuntu jaunty jackalope
+- FIX: Workarounded a problem with metacity+Gambas < 2.2.15.0 (jaunty jackalope) and volume panel popup.
+       Ubuntu (gnome) users should get latest gambas versions.
+- FIX: Updated code to new Amazon Services api to download covers (broken since 15 Aug 2009)
+- NEW: Log window search function
+- NEW: Integrated support for vdpau driver and codecs
+- FIX: Allows to restore the Factory default profile
+- CHANGE: Moved profile manager into left side tabs.
+- NEW: Allow to select which (left) tabs to show
+- FIX: Faster startup
+- FIX: Better default subtitle font and color values
+- NEW: Allows some interface customization
+- NEW: Catch temporary flash videos in /tmp folder and allows to download and watch them
+  (works on youtube,megavideo,yahoo video and more)
+- NEW: Trayicon
+- FIX: More robust Library sync process when dealing with corrupted media.
+- NEW: List to exclude some paths from being scanned during Library sync.
+- NEW: Read and update StreamTitle changes from Network streams (Webradios)
+- NEW: Shutdown options
+- FIX: ToolBar bkg color fix.
+- FIX: Sometimes video area didn't get correct Aspect Ratio.
+- FIX: Drag'n Drop didn't work on gnome-desktop
+- FIX: Restore video playback when exiting tag edit mode.
+- FIX: Fullscreen and windowed zoom are equals now.
+- NEW: Ability to set cover on a filename basis other than Artis/album.
+- FIX: Increased Maximum cache size to 99999KB
+- NEW: Network Streams icon
+- FIX: Segmentation fault when dropping a file into the audiobox while a media is playing
+
+
+
+
+
+- FIX: Bug which prevented to set and display a cover on flac files.
+- FIX: Fullscreen switch sometimes didn't correctly arrange the controls.
+
+- FIX: Center windows to be "multi-head"(twinview,xinerama) friendly
+- FIX: Some beryl/compiz workarounds.
+
+- FIX: Critical fix in pt_BR translation (esd audio driver)
+- FIX: better .desktop file (thanks wackenroader)
+- FIX: missed runtime error handling on dvd play routine
+- CHANGE: few fixes to gui
+- NEW: Multiple tag editing capabilities
+- FIX: Workarounded an mplayer bug in sub_load slave cmd (spaces in filenames)
+- NEW: Resizable upper panel (playlist etc) in fullscreen mode
+- NEW: Im/Export .xpl .m3u,and .pls playlists, export with absolute paths only.
+- NEW: Dragging and droppping supported playlist files in library or playlist will append them
+- FIX: Dropdown and popup menus reorganization
+- FIX: Follow sym links
+- FIX: SpeedUp the library sync process.
+- FIX: correct icon for wmv files
+- FIX: Workarounded mplayer bug with dots/commas when using ladspa filters
+- NEW: Cover fetcher via amazon services or file on disk
+- NEW: Show cover and info when playing an audio file
+- FIX: Runtime error "access denied" on library sync
+
+
+
+- NEW: Added http_proxy option
+- NEW: Added subtitle fuzziness option
+- FIX: Added a menu item to disable subtitles display
+- FIX: First dropped or synched item usually generates a timeout.
+- FIX: Only 1/10 Cache fill messages are parsed
+- NEW: Allow custom names in library/playlist when adding new items
+- NEW: Ask user to remove non existent files from library.
+- FIX: Change media while paused safe now.
+- NEW: Configurable Toolbar button position + "configure->Lock toolbar" menu
+- CHANGE: buttons Apply,OK -> Save,Use,Close
+- NEW: Audio and subtitle tracks identification and selection via "file->Streams" menu
+- NEW: Dvd navigation and playback from drive,folder and iso
+- NEW: Tabstrip with dvd tree view (titles,chapters and angles)
+- NEW: Dropping a .iso file or a VIDEO_TS folder into video area, will auto-play it as DVD.
+- NEW: DVD Titles and chapters selection with Main Title Autoguess
+- FIX: wrong columns autosize
+- NEW: Audio and subtitle language preferences in General options
+- NEW: Subtitles: Shadow Color,Shadow alpha and outline alpha parameters
+- NEW: Removed cachedoptions, hard to manage, mostly useless.
+- FIX: Changed zzFake visibility state to work with new gambas versions (2.10+)
+- FIX: "WAIT" for the pipe to be written (getvolume,do pause and so on) in send function, mplayerclass
+- FIX: some tags happens to "spread" on other media on library sync.
+
+
+
+- FIX: runtime error on library sync
+- FIX: use of Ladspa filters breaks speed changes too, worked-around...
+- CHANGE: commandline options .-append becames -append (without the dot)
+- CHANGE: Lowercased name: Xt7-Player -> xt7-player 
+- FIX: layout glitch on library synchronization
+- CHANGED: Kde3.5 dependancy removed (->some gui changes in subtitle window), 
+  qt3 still needed. (Dev-Note: args has been shifted +1)
+- FIX: Use of some ladspa filters breaks volume reads and writes (wth?), worked-around...
+- FIX: postcommand not executed if xt7 is closed while mplayer is playing something 
+- FIX: Media recognition during library synchronization pulled in some non mediafiles
+- FIX: regression in local hotkeys definition (non printable keys not recognized)
+- FIX: Don't go on in playlist if user hits stop.
+- NEW: playlist/library  play button
+- NEW: Playlist/library history -> previous button selects the previously played media,if any, or else, go up.
+- NEW: Added another Custom Audio and Custom Video Filter (you may need to configure them again)
+- FIX: wrong channels number in library sync (rare case)
+
+
+
+- NEW: Work made to make project translable, italian translation added.
+- FIX: sometimes column sorting sorts a different field.
+- NEW: configurable Eq2 filter in video chain
+- NEW: configurable Hue filter in video chain
+- NEW: Realtime Video Equalizer
+- NEW: Added homepage link.
+- NEW: Translations needed popup
+
+
+
+- FIX: sometimes program got stuck on exit.
+- FIX: (Cachedoptions): audio&video driver preference didn't correctly restored at startup
+- New: Allow user to choose which video driver to use to display subtitle preview.
+- FIX: Codecs priority not loaded at startup.
+- NEW: Adaptor selection in xv driver configuration (try it instead of "port" 
+  to enable overlay on intel cards to avoid tearing issues),
+  need mplayer-svn >=1.0_rc2_p27120-r1 
+- FIX: Scale osd text as well
+- *NEW: Freely configurable custom audio and video filters in filter chains.
+- CHANGED: Cosmetic changes (qt domino style and toolbuttons)
+- *FIX: Better videoarea focus managment.
+- *CHANGED: Use FIFO(s) to talk to mplayer (workaround for archlinux+kde(mod?))
+- *FIX: don't kill xbindkeys which don't belong to you.
+- drag della barretta del volume, ne indica la percentuale e magari tiene conto anche dell'
+  overboost dato da da -softvol-max
+- Changed default subtitle and osd aspect.
+- *Aggiunta finestra di log
+- Speedincr +0.1 --> Speed_incr +0.01
+- aggiunto sync now nelle general options, e disabilitato i controlli relativi durante il sync
+- *Fixed a crash on library update commit on kubuntu/kde4.1
+- corretto glitch volume
+- non salvati più alcuni oggetti come seekbar, volumebar e statusbar
+- creare i file temporanei dei sottotitoli nella home dell' utente, non in tmp
+- cancellare i file temporanei dei sottotitoli all' uscita.
+- *NEW: New media we'll be played through the existing Xt7-Player instance.
+  (you can still have multiple Xt7-Player opened at the same time by running it
+    without arguments)
+- *NEW: .-append 'media' parameter (yes, with the dot) to append a media to the playlist.
+- NEW: listen on local sock for remote commands:
+    * append 'uri' (single quotes) -> appends an uri to playlist
+
+
+
+
+
+- tag: comments not being added to library
+- killare in qualche modo eventuali xbindkeys all' avvio
+- cambiare la forma del mouse in cancellazione dal disco
+- bug: il video va fuori dallo schermo in finestra, quando la si ridimensiona...
+- New: new global hotkeys managment, xbindkeys added as dependancy.
+- bug: PRIVATE PreMpOptions AS String = " -vf-add scale " --> PRIVATE PreMpOptions AS String = " -vf-pre scale "
+- bug mplayertag: aggiunto -channels 6 per rilevare correttamente il numero di canali
+- Opzione per disabilitare il supporto SSA/ASS
+- Aggiunte opzioni per modificare i font osd
+- miglior supporto hotkeys (alt e shift per i tasti printabili)
+- bug: apply in pausa riavvia dall' inizio.
+- bug: save to current profile non salvava la proprietà parent se invocato dal form. (impossibilità di salvare priorità driver)
+- a volte le info sul file non vengono prese... (aumentato il timeout a 4secondi e modificato filesize > 0 con filesize <> 0)
+- alla fine del play, se non siamo in autoadvance, esci dalla modalità fullscreen.
+- Aggiungere: "save settings on exit" alle general options, misc
+- aggiungere pagina di help per i codec.
+- configurazione degli audiocodec e dei videocodec
+      (mplayer -ac hwac3,hwdts Sets MPlayer to try to use first ac3 passthrough, then dts passthrough (meaning it passes these streams unchanged to the soundcard) )
+- aggiungere al menu contesutale della libreria e/o playlist: "remove from disk"
+-(jirityr) 4) All options could have a hint with option name (e.q. Rebuild Index if necessary -> Hint: -idx)
+-Creato un configure toolbox per lanciare i vari moduli di configurazione
+-aggiungere al menu:
+  Configure: video: General video options
+  Configure: audio: General audio options
+- Esce dalla modalità fullscreen se non siamo in playlist 
+
+
+-BUG di gambas, il mouseup sul menù o fuori del form non è catchato, questo crea problemi a dynagui.
+  (oggetti che spariscono nel nulla)...
+  Bisogna in qualche modo mettere dei constraints
+  *Aggiunti mousemove forzati quando il mouse si avvicina ai bordi.
+  -aggiungere fake input.conf
+  -audiotag non interpreta caratteri strani (risolto tramite dconv e sconv)
+        (-BUG, drag and drop di max gazzè, errore runtime)        
+-add audio output options and video output options to driver tabs...  
+ 
+
+-BUG: L'asterisco in XConfigureAudio(Video)Driver sui filtri presenti nei chain attivi non viene sempre aggiunto.
+
+in pluginmode non si chiude bene, le sessioni di mplayer rimangono appese.
+basta, anche senza aprire più tab, guardare più video uno dietro l'altro.
+
+
+
+
+
+
