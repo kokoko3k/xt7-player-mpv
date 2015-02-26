@@ -1,0 +1,681 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Public xbindkeys As Process
+Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
+
+Public Sub xbindkeys_read()
+  Dim comando As String
+  Line Input #xbindkeys, comando
+    Debug "Remote Command = " & comando
+    Debug
+
+    Select Case Lower(comando)
+      Case "start play"
+        FMain.ButtonStop_Click()
+        FMain.ButtonPlay_Click()
+      Case "play/pause"
+        'IF NOT FMain.mplayer.ProcessRunningOvr() THEN FMain.ButtonPlay_Click()
+        FMain.ButtonPlay_Click()
+      Case "stop"
+        FMain.ButtonStop_Click()
+      Case "next track"
+        FMain.SelectNext(False, FMain.GetActivePlayQueue())
+      Case "previous track"
+        FMain.ButtonPrev_Click()
+      Case "seek +10sec"
+        FMain.mplayer.do_seek_by("+10")
+      Case "seek -10sec"
+        FMain.mplayer.do_seek_by("-10")
+      Case "volume +"
+        FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+      Case "volume -"
+        FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+      Case "mute/unmute"
+        FMain.mplayer.Send("cycle mute")
+    End Select
+End
+
+
+Private Sub FillGridHeaders()
+  Dim r, c As Integer
+  'fixmempv
+  'Local Hotkeys#####################################
+  HotKeysGrid.Columns.count = 5
+  HotKeysGrid.rows.count = 92
+  HotKeysGrid.Columns[0].text = "HotKey 1"
+  HotKeysGrid.Columns[1].text = "HotKey 2"
+  HotKeysGrid.Columns[2].text = "HotKey 3"
+  HotKeysGrid.Columns[3].text = "HotKey 4"
+  HotKeysGrid.Columns[4].text = "HotKey 5"
+  
+  HotKeysGrid.Rows[0].text = "switch fullscreen"
+  HotKeysGrid.Rows[1].text = "pause"
+  HotKeysGrid.Rows[2].text = " "
+  HotKeysGrid.Rows[3].text = "volume +0.5"
+  HotKeysGrid.Rows[4].text = "volume -0.5"
+  HotKeysGrid.Rows[5].text = "add balance +0.1"
+  HotKeysGrid.Rows[6].text = "add balance -0.1"
+  HotKeysGrid.Rows[7].text = "cycle mute"
+  HotKeysGrid.Rows[8].text = " "
+  HotKeysGrid.Rows[9].text = "seek +10"
+  HotKeysGrid.Rows[10].text = "seek -10"
+  HotKeysGrid.Rows[11].text = "seek +60"
+  HotKeysGrid.Rows[12].text = "seek -60"
+  HotKeysGrid.Rows[13].text = "seek +600"
+  HotKeysGrid.Rows[14].text = "seek -600"
+  HotKeysGrid.Rows[15].text = " "
+  HotKeysGrid.Rows[16].text = "add chapter +1"
+  HotKeysGrid.Rows[17].text = "add chapter -1"
+  HotKeysGrid.Rows[18].text = " "
+  HotKeysGrid.Rows[19].text = "frame_back_step"
+  HotKeysGrid.Rows[20].text = "frame_step"
+  HotKeysGrid.Rows[21].text = " "
+  HotKeysGrid.Rows[22].text = "set speed 1"
+  HotKeysGrid.Rows[23].text = "multiply speed 1.1"
+  HotKeysGrid.Rows[24].text = "multiply speed 0.9"
+  HotKeysGrid.Rows[25].text = "add speed +0.01"
+  HotKeysGrid.Rows[26].text = "add speed -0.01"
+  HotKeysGrid.Rows[27].text = " "
+  HotKeysGrid.Rows[28].text = "zoom +0.05"
+  HotKeysGrid.Rows[29].text = "zoom -0.05"
+  HotKeysGrid.Rows[30].text = " "
+  HotKeysGrid.Rows[31].text = "set video-aspect 4:3"
+  HotKeysGrid.Rows[32].text = "set video-aspect 16:9"
+  HotKeysGrid.Rows[33].text = "set video-aspect 16:10"
+  HotKeysGrid.Rows[34].text = "set video-aspect 2.35:1"
+  HotKeysGrid.Rows[35].text = "set video-aspect 1:1"
+  HotKeysGrid.Rows[36].text = "add video-aspect +0.05"
+  HotKeysGrid.Rows[37].text = "add video-aspect -0.05"
+  HotKeysGrid.Rows[38].text = " "
+  HotKeysGrid.Rows[39].text = "set video-rotate 0"
+  HotKeysGrid.Rows[40].text = "add video-rotate +90"
+  HotKeysGrid.Rows[41].text = "add video-rotate -90"
+  HotKeysGrid.Rows[42].text = " "
+  HotKeysGrid.Rows[43].text = "contrast +1"
+  HotKeysGrid.Rows[44].text = "contrast -1"
+  HotKeysGrid.Rows[45].text = "gamma +1"
+  HotKeysGrid.Rows[46].text = "gamma -1"
+  HotKeysGrid.Rows[47].text = "brightness +1"
+  HotKeysGrid.Rows[48].text = "brightness -1"
+  HotKeysGrid.Rows[49].text = "hue +1"
+  HotKeysGrid.Rows[50].text = "hue -1"
+  HotKeysGrid.Rows[51].text = "saturation +1"
+  HotKeysGrid.Rows[52].text = "saturation -1"
+  HotKeysGrid.Rows[53].text = " "
+  HotKeysGrid.Rows[54].text = "cycle audio"
+  HotKeysGrid.Rows[55].text = "add audio-delay +0.1"
+  HotKeysGrid.Rows[56].text = "add audio-delay -0.1"
+  HotKeysGrid.Rows[57].text = " "
+  HotKeysGrid.Rows[58].text = "cycle sub"
+  HotKeysGrid.Rows[59].text = "cycle subvisibility"
+  HotKeysGrid.Rows[60].text = "add sub-delay +0.1"
+  HotKeysGrid.Rows[61].text = "add sub-delay -0.1"
+  HotKeysGrid.Rows[62].text = "add sub-scale +0.1"
+  HotKeysGrid.Rows[63].text = "add sub-scale -0.1"
+  HotKeysGrid.Rows[64].text = "add sub-pos +5"
+  HotKeysGrid.Rows[65].text = "add sub-pos -5"
+  HotKeysGrid.Rows[66].text = "sub-reload"
+  HotKeysGrid.Rows[67].text = " "
+  HotKeysGrid.Rows[68].text = "cycle deinterlace"
+  HotKeysGrid.Rows[69].text = "cycle framedrop"
+  HotKeysGrid.Rows[70].text = " "
+  HotKeysGrid.Rows[71].text = "cycle tv-norm"
+  HotKeysGrid.Rows[72].text = "add tv-channel +1"
+  HotKeysGrid.Rows[73].text = "add tv-channel -1"
+  HotKeysGrid.Rows[74].text = "add tv-brightness +5"
+  HotKeysGrid.Rows[75].text = "add tv-brightness  -5"
+  HotKeysGrid.Rows[76].text = "add tv-contrast +5"
+  HotKeysGrid.Rows[77].text = "add tv-contrast -5"
+  HotKeysGrid.Rows[78].text = "add tv-hue +5"
+  HotKeysGrid.Rows[79].text = "add tv-hue -5"
+  HotKeysGrid.Rows[80].text = "add tv-saturation +5"
+  HotKeysGrid.Rows[81].text = "add tv-saturation -5"
+  HotKeysGrid.Rows[82].text = " "
+  HotKeysGrid.Rows[83].text = "cycle vid"
+  HotKeysGrid.Rows[84].text = "delete current file"
+  HotKeysGrid.Rows[85].text = "osd"
+  HotKeysGrid.Rows[86].text = "screenshot"
+  HotKeysGrid.Rows[87].text = "quit"
+
+
+
+  For r = 88 To HotKeysGrid.Rows.count - 1
+    HotKeysGrid.Rows[r].text = " "
+  Next 'r
+  
+  For r = 0 To HotKeysGrid.Rows.count - 1
+    If r Mod 2 = 0 Then
+      For c = 0 To HotKeysGrid.Columns.count - 1
+        HotKeysGrid[r, c].background = Global.Alternatecolor
+      Next 'c
+    Endif
+  Next 'r
+  
+ 
+  
+  'Global Hotkeys #######################################################
+  
+  GlobalHotKeysGrid.Columns.count = 5
+  GlobalHotKeysGrid.rows.count = 20
+  GlobalHotKeysGrid.Columns[0].text = "HotKey 1"
+  GlobalHotKeysGrid.Columns[1].text = "HotKey 2"
+  GlobalHotKeysGrid.Columns[2].text = "HotKey 3"
+  GlobalHotKeysGrid.Columns[3].text = "HotKey 4"
+  GlobalHotKeysGrid.Columns[4].text = "HotKey 5"
+  
+  GlobalHotKeysGrid.Rows[0].text = "start play"
+  GlobalHotKeysGrid.Rows[1].text = "play/pause"
+  GlobalHotKeysGrid.Rows[2].text = "stop"
+  GlobalHotKeysGrid.Rows[3].text = "next track"
+  GlobalHotKeysGrid.Rows[4].text = "previous track"
+  GlobalHotKeysGrid.Rows[5].text = "seek +10sec"
+  GlobalHotKeysGrid.Rows[6].text = "seek -10sec"
+  GlobalHotKeysGrid.Rows[7].text = "volume +"
+  GlobalHotKeysGrid.Rows[8].text = "volume -"
+  GlobalHotKeysGrid.Rows[9].text = "mute/unmute"
+
+  For r = 10 To GlobalHotKeysGrid.Rows.count - 1
+    GlobalHotKeysGrid.Rows[r].text = "For future use"
+  Next 'r
+
+  For r = 0 To GlobalHotKeysGrid.Rows.count - 1
+    If r Mod 2 = 0 Then
+      For c = 0 To GlobalHotKeysGrid.Columns.count - 1
+        GlobalHotKeysGrid[r, c].background = Global.Alternatecolor
+      Next 'c
+    Endif
+  Next 'r
+  
+  
+End
+
+Private Sub DefaultFill()
+  Dim r, c As Integer
+  'clear grid
+    For r = 0 To HotKeysGrid.Rows.count - 1
+      For c = 0 To HotKeysGrid.Columns.count - 1
+        HotKeysGrid[r, c].Text = ""
+      Next
+    Next
+  HotKeysGrid[0, 0].text = "Mouse=0 Wheel=NONE Key=f"
+  HotKeysGrid[0, 1].text = "Mouse=4 Wheel=NONE Key="
+  HotKeysGrid[1, 0].text = "Mouse=0 Wheel=NONE Key=p"
+  HotKeysGrid[1, 1].text = "Mouse=1 Wheel=NONE Key="
+  HotKeysGrid[1, 2].text = "Mouse=0 Wheel=NONE Key=space"
+  HotKeysGrid[3, 0].text = "Mouse=0 Wheel=NONE Key=+"
+  HotKeysGrid[3, 1].text = "Mouse=0 Wheel=UP Key="
+  HotKeysGrid[4, 0].text = "Mouse=0 Wheel=NONE Key=-"
+  HotKeysGrid[4, 1].text = "Mouse=0 Wheel=DOWN Key="
+  HotKeysGrid[7, 0].text = "Mouse=0 Wheel=NONE Key=m"
+  HotKeysGrid[9, 0].text = "Mouse=0 Wheel=NONE Key=right"
+  HotKeysGrid[9, 1].text = "Mouse=1 Wheel=UP Key="
+  HotKeysGrid[10, 0].text = "Mouse=0 Wheel=NONE Key=left"
+  HotKeysGrid[10, 1].text = "Mouse=1 Wheel=DOWN Key="
+  HotKeysGrid[11, 0].text = "Mouse=0 Wheel=NONE Key=up"
+  HotKeysGrid[11, 1].text = "Mouse=3 Wheel=UP Key="
+  HotKeysGrid[12, 0].text = "Mouse=0 Wheel=NONE Key=down"
+  HotKeysGrid[12, 1].text = "Mouse=3 Wheel=DOWN Key="
+  HotKeysGrid[23, 0].text = "Mouse=0 Wheel=NONE Key=]"
+  HotKeysGrid[24, 0].text = "Mouse=0 Wheel=NONE Key=["
+  HotKeysGrid[28, 0].text = "Mouse=0 Wheel=NONE Key=e"
+  HotKeysGrid[28, 1].text = "Mouse=2 Wheel=UP Key="
+  HotKeysGrid[29, 0].text = "Mouse=0 Wheel=NONE Key=w"
+  HotKeysGrid[29, 1].text = "Mouse=2 Wheel=DOWN Key="
+  HotKeysGrid[31, 0].text = "Mouse=0 Wheel=NONE Key=f1"
+  HotKeysGrid[32, 0].text = "Mouse=0 Wheel=NONE Key=f2"
+  HotKeysGrid[33, 0].text = "Mouse=0 Wheel=NONE Key=f3"
+  HotKeysGrid[34, 0].text = "Mouse=0 Wheel=NONE Key=f4"
+  HotKeysGrid[35, 0].text = "Mouse=0 Wheel=NONE Key=f5"
+  HotKeysGrid[36, 0].text = "Mouse=0 Wheel=NONE Key=f6"
+  HotKeysGrid[37, 0].text = "Mouse=0 Wheel=NONE Key=f7"
+  HotKeysGrid[39, 0].text = "Mouse=0 Wheel=NONE Mod=Ctrl Key=r"
+  HotKeysGrid[40, 0].text = "Mouse=0 Wheel=NONE Key=r"
+  HotKeysGrid[41, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=r"
+  HotKeysGrid[43, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=c"
+  HotKeysGrid[44, 0].text = "Mouse=0 Wheel=NONE Key=c"
+  HotKeysGrid[45, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=g"
+  HotKeysGrid[46, 0].text = "Mouse=0 Wheel=NONE Key=g"
+  HotKeysGrid[47, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=b"
+  HotKeysGrid[48, 0].text = "Mouse=0 Wheel=NONE Key=b"
+  HotKeysGrid[49, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=h"
+  HotKeysGrid[50, 0].text = "Mouse=0 Wheel=NONE Key=h"
+  HotKeysGrid[51, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=s"
+  HotKeysGrid[52, 0].text = "Mouse=0 Wheel=NONE Key=s"
+  HotKeysGrid[54, 0].text = "Mouse=0 Wheel=NONE Key=a"
+  HotKeysGrid[55, 0].text = "Mouse=0 Wheel=NONE Key=."
+  HotKeysGrid[56, 0].text = "Mouse=0 Wheel=NONE Key=,"
+  HotKeysGrid[60, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=:"
+  HotKeysGrid[61, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=;"
+  HotKeysGrid[62, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=t"
+  HotKeysGrid[63, 0].text = "Mouse=0 Wheel=NONE Key=t"
+  HotKeysGrid[64, 0].text = "Mouse=0 Wheel=NONE Mod=CtrlShift Key=t"
+  HotKeysGrid[65, 0].text = "Mouse=0 Wheel=NONE Mod=Ctrl Key=t"
+  HotKeysGrid[68, 0].text = "Mouse=0 Wheel=NONE Key=d"
+  HotKeysGrid[84, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=del"
+  HotKeysGrid[85, 0].text = "Mouse=0 Wheel=NONE Key=o"
+  HotKeysGrid[85, 1].text = "Mouse=2 Wheel=NONE Key="
+  HotKeysGrid[87, 0].text = "Mouse=0 Wheel=NONE Key=esc"
+      
+End
+
+
+
+Private Function Grab() As String
+  HotKeyGrab.show
+  'ME.hide
+  Repeat
+    Wait 0.1
+  Until HotKeyGrab.visible = False
+  Return HotKeyGrab.AllGrabbedData()
+End
+
+Private Function GlobalGrab() As String
+  Dim xbindkeys_output As String
+  Dim outputS As String[]
+  Dim hotkey As String
+  Shell "touch /tmp/xbindkeysrc" Wait
+  Shell Global.XbindkeysBIN & " -k -f /tmp/xbindkeysrc" To xbindkeys_output
+  outputS = Split(xbindkeys_output, "\n", "", True)
+  hotkey = Trim(outputS[outputS.count - 1])
+  Return hotkey
+End
+
+
+
+
+Public Sub init()
+  FillGridHeaders()
+End
+
+Public Sub FirstLoadIfNeeded()
+    If Not AlreadyLoaded Then 
+     Alreadyloaded = True
+     MenuLoadDefault_Click()
+  Endif
+End
+
+
+Public Sub Form_Open()
+  FirstLoadIfNeeded()
+  Global.Center(Fmain, Me)
+  FillGridHeaders()
+End
+
+Private Function CheckDuplicate(Hotkey As String, RowSrc As Integer, ColSrc As Integer, MyGrid As Gridview) As Boolean
+  Dim C, R As Integer
+
+  Dim FoundDupe As Boolean = False
+  Dim DupedFunction As String
+  Dim Answer As Integer
+  For c = 0 To MyGrid.Columns.Count - 1
+    For r = 0 To MyGrid.Rows.Count - 1
+      If MyGrid[r, c].text = Hotkey Then
+        FoundDupe = True
+        Break
+      Endif
+      If FoundDupe Then Break
+    Next 'r
+    If FoundDupe Then Break
+  Next 'c
+  
+  If FoundDupe And (Not ((R = RowSrc) And (C = ColSrc))) Then
+    DupedFunction = MyGrid.rows[r].Text
+    Answer = Message.Warning(("The hotkey you entered is already defined for ") & DupedFunction, ("Delete old "), ("Delete new "), ("Assign nevertheless"))
+    Select Case Answer
+      Case 1 'delete old
+        MyGrid[r, c].text = ""
+        Return True
+      Case 2 'delete new
+        Return False
+      Case 3 'Assign nevertheless
+        Return True
+      Case 0 'No answer
+        Return False
+    End Select
+      Else
+    Return True
+  Endif
+End
+
+Private Function MouseInsideGrid(Librarygrid As Gridview) As Boolean
+  With LibraryGrid
+   If (Mouse.screeny > .screeny + .Columns.Height + 1) And (Mouse.screeny < .screeny + .clientH + .Columns.Height + 1) Then
+     If (Mouse.screenX < .screenx + .ClientW) Then
+       Return True
+     Endif
+   Endif
+ End With
+ Return False
+End
+
+Public Sub HotKeysGrid_DblClick()
+  Dim PointedRow As Integer = HotKeysGrid.row
+  Dim PointedCol As Integer = HotKeysGrid.Column
+  Dim GrabbedData As String
+  Dim w1, w2 As Integer = 0
+
+  If MouseInsideGrid(HotKeysGrid) Then
+    GrabbedData = Grab()
+    'Insert Grabbed Data into a cell, discard if no Data is received (eg: shift pressed)
+    If Not (GrabbedData = "Mouse=0 Wheel=NONE Key= **") Then
+      If CheckDuplicate(GrabbedData, HotKeysGrid.row, HotKeysGrid.Column, HotKeysGrid) Then
+        HotKeysGrid[pointedrow, PointedCol].Text = GrabbedData
+      Endif
+    Endif
+    
+    'Expand the column
+    w1 = HotKeysGrid.Columns[PointedCol].width
+    ' [GB2:FNTW] w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[pointedrow, PointedCol].Text)
+    w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[pointedrow, PointedCol].Text)
+    If w1 < w2 Then
+      HotKeysGrid.Columns[PointedCol].width = w2 + 8
+    Endif
+  Endif
+  
+End
+
+Public Sub HotKeysGrid_KeyPress()
+  Dim PointedRow As Integer = HotKeysGrid.row
+  Dim PointedCol As Integer = HotKeysGrid.Column
+  If Key.code = Key.delete Then HotKeysGrid[pointedrow, PointedCol].text = ""
+End
+
+Public Sub SaveHotKeys(ProfileName As String)
+  'DIM filename AS String = ProfileName & "." & "HotKeys.txt"
+  Dim filename As String = ProfileName & ".profile/" & "HotKeys.txt"
+  Dim globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
+  Dim xbindkeysfilename As String = ProfileName & ".profile/" & "xbindkeysrc"
+  Dim HotFile As File
+  Dim globalhotfile As File
+  
+  Dim C, R As Integer
+
+  If Not Exist(file.Dir(filename), True) Then
+    Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(filename)))))
+    Try Mkdir File.Dir(File.dir(File.Dir(File.Dir(filename))))
+    Try Mkdir File.dir(File.Dir(File.Dir(filename)))
+    Try Mkdir File.Dir(File.Dir(filename))
+    Try Mkdir File.Dir(filename)
+  Endif
+  
+  'local hotkeys
+  HotFile = Open filename For Write Create
+  For c = 0 To HotKeysGrid.Columns.Count - 1
+    For r = 0 To HotKeysGrid.Rows.Count - 1
+      'PRINT c & "," & r
+      Write #HotFile, HotKeysGrid[R, C].text As String
+    Next 'r
+  Next 'c
+  Close #HotFile
+  
+  'global hotkeys
+    'xbindkeys configuration file
+    UpdateXbindKeysConfigurationFile(ProfileName & ".profile/" & "xbindkeysrc")
+    'stringgrid file
+    GlobalHotFile = Open Globalfilename For Write Create
+    For c = 0 To GlobalHotKeysGrid.Columns.Count - 1
+      For r = 0 To GlobalHotKeysGrid.Rows.Count - 1
+        'PRINT c & "," & r
+        Write #GlobalHotFile, GlobalHotKeysGrid[R, C].text As String
+      Next 'r
+    Next 'c
+    Close #GlobalHotFile
+    RestartXbindKeys(xbindkeysfilename)
+End
+
+Public Sub UpdateXbindKeysConfigurationFile(xbindkeysfilename As String)
+'will "dump" globalhotkeys grid into xbindkeys file format.
+ Dim xbindkeysFile As File
+ Dim c, r As Integer
+    xbindkeysFile = Open xbindkeysfilename For Write Create
+    For c = 0 To GlobalHotKeysGrid.Columns.Count - 1
+      For r = 0 To GlobalHotKeysGrid.Rows.Count - 1
+        If (Trim(GlobalHotKeysGrid[r, c].text) <> "") Then
+          Print #xbindkeysFile, " \"echo '" & GlobalHotKeysGrid.Rows[r].Text & "'\""
+          Print #xbindkeysFile, GlobalHotKeysGrid[R, C].text
+          Print #xbindkeysFile, "\n"
+        Endif
+      Next 'r
+    Next 'c
+    Close #xbindkeysFile
+End
+
+Public Sub LoadHotKeys(ProfileName As String)
+  Dim filename As String = ProfileName & ".profile/" & "HotKeys.txt"
+  Dim Globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
+  Dim xbindkeysfilename As String = ProfileName & ".profile/" & "xbindkeysrc"
+  Dim HotFile As File
+  Dim GlobalHotFile As File
+  
+  Dim C, R, w1, w2 As Integer
+  
+  DefaultFill()
+  For c = 0 To HotKeysGrid.Columns.Count - 1
+     HotKeysGrid.Columns[c].w = -1
+  Next
+  'Local Hotkeys
+  If Exist(filename) Then 
+    If Stat(filename, True).size > 0 Then
+        HotFile = Open filename For Read
+        For c = 0 To HotKeysGrid.Columns.Count - 1
+          For r = 0 To HotKeysGrid.Rows.Count - 1
+            HotKeysGrid[R, C].text = Read #HotFile As String
+            'Expand the column
+            w1 = HotKeysGrid.Columns[c].width
+            ' [GB2:FNTW] w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[r, c].Text)
+            w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[r, c].Text)
+            If w1 < w2 Then
+              HotKeysGrid.Columns[c].width = w2 + 8
+            Endif
+          Next 'r
+        Next 'c
+        Close #HotFile
+    Endif
+  Endif
+  
+  'Global Hotkeys grid:
+   If Exist(filename) Then 
+    If Stat(filename, True).size > 0 Then
+      GlobalHotFile = Open Globalfilename For Read
+      For c = 0 To GlobalHotKeysGrid.Columns.Count - 1
+        For r = 0 To GlobalHotKeysGrid.Rows.Count - 1
+          GlobalHotKeysGrid[R, C].text = Read #GlobalHotFile As String
+          'Expand the column
+          w1 = GlobalHotKeysGrid.Columns[c].width
+          ' [GB2:FNTW] w2 = GlobalHotKeysGrid.Font.TextWidth(GlobalHotKeysGrid[r, c].Text)
+          w2 = GlobalHotKeysGrid.Font.TextWidth(GlobalHotKeysGrid[r, c].Text)
+          If w1 < w2 Then
+            GlobalHotKeysGrid.Columns[c].width = w2 + 8
+          Endif
+        Next 'r
+      Next 'c
+      Close #GlobalHotFile
+    Endif
+   Endif
+    RestartXbindKeys(xbindkeysfilename)
+End
+
+Public Sub RestartXbindKeys(xbindkeysfilename As String)
+  If FMain.closing Then Return
+  Debug "Hotkeys: RestartXbindKeys()"
+  Debug
+    Try xbindkeys.Kill
+    If Stat(xbindkeysfilename).Size > 0 Then
+      xbindkeys = Shell Global.XbindkeysBIN & " -n -f " & xbindkeysfilename For Read As "xbindkeys"
+    Endif
+End
+
+
+' PUBLIC SUB ApplyBTN_Click()
+'   TRY SaveHotKeys("/tmp/hotkeys.txt")
+'   TRY LoadHotKeys("/tmp/hotkeys.txt")
+' END
+
+Public Sub ApplyBTN_Click()
+  Dim tmpfile As String = Temp("HotKeys.txt")
+  Try SaveHotKeys(tmpfile)
+  Try LoadHotKeys(tmpfile)
+End
+
+Public Sub OkBTN_Click()
+  Me.HIDE
+End
+
+Public Function ActionRelatedTo(Hotkey As String) As String
+'will find the cell containing 'Hotkey' in Hotkeys grid
+'will return the related action
+  Dim c, r As Integer
+
+  ' If FMain.timerdvd.enabled Then
+  '   If Lower(Split(Hotkey, " ")[0]) = "mouse=1" Then Return "discnav select"
+  ' Endif
+  If hotkey = "" Then Return "Nope"
+    For c = 0 To HotKeysGrid.Columns.Count - 1
+      For r = 0 To HotKeysGrid.Rows.Count - 1
+        If (HotKeysGrid[r, c].text = Hotkey) Then Return HotKeysGrid.Rows[r].text
+      Next 'r
+    Next 'c
+  Return "Nope" 'no hotkey found
+End
+
+
+
+
+Public Sub MenuSaveDefault_Click()
+  Try HotKeys.SaveHotKeys(global.confpath & "/" & Global.CurrentProfile)
+End
+
+
+Public Sub MenuSaveToAll_Click()
+Dim profilename, profilenamesplitted As String
+  If MyQuestion.Ask(("This will save this window settings\n to all profiles found but the 'Factory_defaults' one"), ("Proceed"), ("Don't")) = 2 Then
+    Return
+      Else
+     For Each profilename In Dir(global.confpath & "/", "*.profile")
+        If Stat(global.confpath & "/" & profilename, True).type = gb.Directory Then
+          profilenamesplitted = Split(profilename, ".")[0]
+          If profilenamesplitted <> "Factory_Defaults" Then
+            Try HotKeys.SaveHotKeys(global.confpath & "/" & profilenamesplitted)
+          Endif
+        Endif
+     Next 'profilename
+  Endif
+End
+
+Public Sub MenuLoadDefault_Click()
+  Try HotKeys.LoadHotKeys(global.confpath & "/" & Global.CurrentProfile)
+  Alreadyloaded = True
+End
+
+Public Sub Button1_Click()
+  DefaultFill()
+End
+
+Public Sub Button2_Click()
+  Dim r, c As Integer
+  For r = 0 To HotKeysGrid.Rows.Count - 1
+    For c = 0 To HotKeysGrid.columns.Count - 1
+        HotKeysGrid[r, c].text = ""
+    Next 'c
+  Next 'r
+End
+
+Public Sub Button3_Click()
+  Dim r, c As Integer
+  For r = 0 To HotKeysGrid.Rows.Count - 1
+    For c = 0 To HotKeysGrid.columns.Count - 1
+      If Trim(HotKeysGrid[r, c].text) <> "" Then
+        Print "HotKeysGrid[" & r & " , " & c & "].text = " & "\"" & HotKeysGrid[r, c].text & "\""
+      Endif
+    Next 'c
+  Next 'r
+End
+
+
+Public Sub GlobalHotKeysGrid_DblClick()
+  Dim PointedRow As Integer = GlobalHotKeysGrid.row
+  Dim PointedCol As Integer = GlobalHotKeysGrid.Column
+  Dim GrabbedData As String
+  Dim w1, w2 As Integer = 0
+  Dim profilename As String
+  
+  If MouseInsideGrid(GlobalHotKeysGrid) Then
+    GlobalHotKeysGrid.mouse = Mouse.wait
+    Try xbindkeys.Kill
+    GrabbedData = GlobalGrab()
+    GlobalHotKeysGrid.mouse = Mouse.Default
+    If Not (GrabbedData Like "*bind*") Then
+      If CheckDuplicate(GrabbedData, GlobalHotKeysGrid.row, GlobalHotKeysGrid.Column, GlobalHotKeysGrid) Then
+        GlobalHotKeysGrid[pointedrow, PointedCol].Text = GrabbedData
+      Endif
+    Endif
+   
+    'Expand the column
+    w1 = GlobalHotKeysGrid.Columns[PointedCol].width
+    ' [GB2:FNTW] w2 = GlobalHotKeysGrid.Font.TextWidth(GlobalHotKeysGrid[pointedrow, PointedCol].Text)
+    w2 = GlobalHotKeysGrid.Font.TextWidth(GlobalHotKeysGrid[pointedrow, PointedCol].Text)
+    If w1 < w2 Then
+      GlobalHotKeysGrid.Columns[PointedCol].width = w2 + 8
+    Endif
+  Endif
+  
+  'refresh current xbindkeys process and make it use a temporary profile,
+  'so, first dump temporary global hotkeys to a temporary file
+  Profilename = global.confpath & "/" & Global.CurrentProfile
+  UpdateXbindKeysConfigurationFile(ProfileName & ".profile/" & "xbindkeysrc.tmp")
+  RestartXbindKeys(ProfileName & ".profile/" & "xbindkeysrc.tmp")
+End
+
+Public Sub GlobalHotKeysGrid_KeyPress()
+  Dim PointedRow As Integer = GlobalHotKeysGrid.row
+  Dim PointedCol As Integer = GlobalHotKeysGrid.Column
+  Dim profilename As String
+  If Key.code = Key.delete Then
+    GlobalHotKeysGrid[pointedrow, PointedCol].text = ""
+    'refresh current xbindkeys process and make it use a temporary profile,
+    'so, first dump temporary global hotkeys to a temporary file
+    Try xbindkeys.Kill
+    Profilename = global.confpath & "/" & Global.CurrentProfile
+    UpdateXbindKeysConfigurationFile(ProfileName & ".profile/" & "xbindkeysrc.tmp")
+    RestartXbindKeys(ProfileName & ".profile/" & "xbindkeysrc.tmp")
+  Endif
+
+End
+
+Public Sub Button4_Click()
+  Dim r, c As Integer
+  For r = 0 To GlobalHotKeysGrid.Rows.Count - 1
+    For c = 0 To GlobalHotKeysGrid.columns.Count - 1
+        GlobalHotKeysGrid[r, c].text = ""
+    Next 'c
+  Next 'r
+End
+
+Public Sub Form_Close()
+
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+
+End
+
+Public Sub Form_Hide()
+
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+
+End
+
+Public Sub SaveBTN_Click()
+
+   Try HotKeys.SaveHotKeys(global.confpath & "/" & Global.CurrentProfile)
+
+End
+
+
+
+Public Sub Form_Show()
+  Try Object.SetProperty(HotKeysGrid, "ShowCursor", True)
+  HotKeysGrid.Rows.H = CInt(HotKeysGrid.Font.TextHeight("Ij|") * 1.5)
+  GlobalHotKeysGrid.H = CInt(GlobalHotKeysGrid.Font.TextHeight("Ij|") * 1.5)
+End

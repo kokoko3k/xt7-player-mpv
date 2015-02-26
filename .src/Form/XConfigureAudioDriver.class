@@ -1,0 +1,343 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Private Dynagui As New DynaGuiClass
+Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
+
+Public Sub btnCancel_Click()
+  Me.Close
+End
+
+
+Public Sub FirstLoadIfNeeded()
+  If Not AlreadyLoaded Then 
+     Alreadyloaded = True
+     MenuLoadDefault_Click()
+  Endif  
+End
+
+
+Public Sub Form_Open()
+  FirstLoadIfNeeded()
+  DynaGui.AllowedContainers = ["DriversPanel"]
+  Dynagui.ConstrainWidth = CustomBTN.Width
+  Dynagui.ConstrainHeight = CustomBTN.Height
+  DynaGui.YOffset = - Me.Font.Textheight("Ij") * 1.5
+  Dynagui.AddSpace = 4
+  Dynagui.AddPadding = 12
+  'ME.center
+  Global.Center(Fmain, Me)
+  TabToDescription()
+  Me.show()
+  Wait 
+  Form_Resize()
+  
+End
+
+Private Sub TabToDescription()
+  Dim obj As Object
+  Dim tmp1, tmp2 As String
+  For Each obj In DriversPanel.children
+      tmp1 = Trim(Upper(Replace(ConfigureTabs.Current.Text, "&", "")))
+      tmp2 = Trim(Upper(Replace(obj.text, "&", "")))
+      If tmp1 = tmp2
+        DriverDescription.text = obj.tag
+        Return
+      Endif
+  Next
+End
+
+
+Public Sub ConfigureTabs_Click()
+  TabToDescription()
+End
+
+
+Public Sub AudioDriverList_Click()
+  Dim i As Integer
+  Dim tmp1, tmp2 As String
+  global.ManageNotifies_click(Last) 
+  DriverDescription.Text = Last.tag
+  If Not Dynagui.ObjDragging Then 'this is necessary to not confuse click and drag events
+    For i = 0 To ConfigureTabs.count - 1
+      tmp1 = Trim(Upper(Replace(Last.text, "&", "")))
+      tmp2 = Trim(Upper(Replace(ConfigureTabs[i].text, "&", "")))
+      If tmp1 = tmp2 Then
+        ConfigureTabs.index = i
+        Return
+      Endif
+    Next 'i
+  Endif
+End
+
+Public Sub AudioDriverList_MouseMove()
+    DynaGui.MoveObject(Last, Me)
+End
+
+Public Sub AudioDriverList_MouseUp()
+    Dynagui.SmartInsert(Last, Me)
+End
+
+Public Sub AudioDriverList_MouseDrag()
+    Dynagui.DetachFrom(Last, Me)
+End
+
+Public Sub Form_Resize()
+  VSplit1.y = (Style.FrameWidth * 2) + 8
+  VSplit1.h = DriverFrame.h - VSplit1.y - (Style.FrameWidth * 2)
+  vbox1.h = VSplit1.h
+  VSplit1.x = vbox1.x + vbox1.w + 8
+  VSplit1.w = DriverFrame.w - VSplit1.x - (Style.FrameWidth * 2)
+End
+
+Public Sub CancelBTN_Click()
+  Me.Hide
+End
+
+Public Sub AudioDriverList_MouseDown()
+  Try Last.mouse = 18
+  AudioDriverList_Click()
+End
+
+Public Function ParseOptions(TheContainer As Object, TheOptionKeyword As String) As String
+'This function will parse a gui and return a commandline.
+'The function will parse the objects that:
+    '-(and) Are children OF (one OR more) containers whose name contains TheOptionKeyword
+    '-(and) Are checkboxes
+    '-(or) if are comboboxes or spinboxes or textboxes and they come after a checkbox.
+'The output syntax will be like:
+' checkbox1.tagSpinbox1.text:checkbox2.tagSpinbox2.text:...:checkboxN.tagTextBoxN.text
+
+Dim obj, child As Object
+Dim outline As String = ""
+  For Each obj In TheContainer.controls
+    If Upper(obj.name) Like Upper(TheOptionKeyword) & "*" Then
+      For Each child In obj.Children
+        'IF child.name LIKE "*Chk" THEN 
+        If object.type(child) = "CheckBox" Then
+          If child.value Then
+              outline = outline & child.tag
+                If (child.next <> Null) Then
+                  If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
+                    If child.NEXT.text Like "*" & gb.tab & "*" Then
+                      outline = outline & Split(child.NEXT.text, gb.tab)[0]
+                        Else
+                      outline = outline & child.NEXT.text
+                    Endif
+                  Endif
+                Endif
+                outline = outline & ":"
+          Endif
+        Endif
+      Next
+    Endif
+  Next
+  If outline Like "*:" Then outline = Left(outline, Len(outline) - 1)
+  Return outline
+End
+
+
+
+
+Public Sub OkBTN_Click()
+  If global.FromChains Then
+    Chains.Show
+    global.FromChains = False
+  Endif
+  Me.hide
+  Wait 0.1
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.SetFocus()
+End
+
+Public Sub PcmFileOpen_Click()
+    If Dialog.SaveFile() Then Return
+    textbox8.text = "\"" & myDialog.Path & "\""
+End
+
+Public Function ParsedAudioDriver() As String
+  Dim driver As Object
+  Dim ParsedAoCmdLine As String = ""
+  For Each driver In DriversPanel.children
+    If Object.Type(driver) = "CheckBox" Then
+      If driver.enabled Then
+        If driver.value Then
+          ParsedAoCmdLine = AddAudioDriver(ParsedAoCmdLine, driver.text)
+        Endif
+      Endif
+    Endif
+  Next
+  If Trim(ParsedAoCmdLine) <> "" Then
+    Return ParsedAoCmdLine 
+      Else
+    Return ""
+  Endif
+End
+
+
+
+
+Public Function AddAudioDriver(AlreadyParsedDrivers As String, DriverName As String) As String
+  Dim MyDriverName As String = ""
+  Dim AoCmdLine As String = ""
+
+  Dim ParsedOptions As String = ""
+  
+  MyDriverName = Trim(Upper(Replace(DriverName, "&", "")))
+  If mydrivername = "CUSTOM" Then
+    TextBox5.text = TextBox5.text & ","
+    AoCmdline = AoCmdline & TextBox5.text
+    TextBox5.text = Left(TextBox5.text, Len(TextBox5.Text) - 1)
+      Else
+    ParsedOptions = ParseOptions(Me, MyDriverName & "ParseMe")
+    If Trim(ParsedOptions) <> "" Then     'ie The selected driver has some option configured
+      AoCmdline = Aocmdline & Lower(MyDriverName) & ":" & ParsedOptions & ","
+        Else
+      AoCmdline = Aocmdline & Lower(MyDriverName) & ParsedOptions & ","
+    Endif
+  Endif
+  Return AlreadyParsedDrivers & AoCmdLine
+End
+
+
+
+Public Sub ApplyBTN_Click()
+  FMain.Apply()
+End
+
+Public Sub GoChainsBTN_Click()
+  Chains.Show
+  Me.hide
+End
+
+Public Sub MenuLoadDefault_Click()
+  Dim MySettings As New SettingsClass
+  MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
+  Alreadyloaded = True
+  'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
+End
+
+Public Sub MenuSaveDefault_Click()
+  SaveCurrent()
+End
+Public Sub SaveBTN_Click()
+  SaveCurrent()
+End
+Public Sub SaveCurrent()
+  Dim MySettings As New SettingsClass
+  MySettings.Save(Me, global.confpath & "/" & global.CurrentProfile)
+End
+
+Public Sub MenuSaveToAll_Click()
+  Dim profilename, profilenamesplitted As String
+  Dim MySettings As New SettingsClass
+  If MyQuestion.Ask(("This will save this window settings\n to all profiles found but the 'Factory_defaults' one"), ("Proceed"), ("Don't")) = 2 Then
+    Return
+      Else
+     For Each profilename In Dir(global.confpath & "/", "*.profile")
+        If Stat(global.confpath & "/" & profilename, True).type = gb.Directory Then
+          profilenamesplitted = Split(profilename, ".")[0]
+          If profilenamesplitted <> "Factory_Defaults" Then
+            MySettings.Save(Me, global.confpath & "/" & profilenamesplitted)
+          Endif
+        Endif
+     Next 'profilename
+  Endif
+End
+
+Public Sub Form_Close()
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+
+End
+
+Public Sub Form_Hide()
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+End
+
+Public Sub HBox1_MouseDown()
+
+  
+
+End
+
+
+'-------------------------------------------------------------------------
+
+
+
+Public Sub notifyobj_Click()
+   If alreadyloaded Then global.ManageNotifies_click(Last) 
+End
+
+Public Sub notifyobj_Change()
+  If fmain.fullyloaded Then 
+   ' If alreadyloaded Then 
+ '     If timesloaded > 1 ThPublic Sub notifyobj_MouseDown()
+  Endif
+End
+
+
+Public Sub DriversPanel_Enter()
+
+  Try Last.mouse = 17
+
+End
+
+Public Sub DriversPanel_Leave()
+
+  Try Last.mouse = mouse.default
+
+End
+
+Public Sub DriversPanel_MouseDown()
+
+  Try Last.mouse = 18
+
+End
+
+
+Public Sub GetAlsaDevices() As String[]
+  Dim adevice, acard, acardid, acardname, apcm, apcminfo, apcminfos, apcmid As String
+  Dim adevices As New String[]
+  Dim apcms As New String[]
+  Dim acards As New String[]
+  Dim tabs As String = gb.tab
+
+  adevices.Add("plug:dmix" & tabs & " - [" & ("Default device, software mixing") & "]")
+  adevices.Add("default" & tabs & " - [" & ("Default alsa device") & "]")
+  adevices.Add("spdif" & tabs & " - [" & ("Default S/PDIF device") & "]")
+  adevices.Add("hdmi" & tabs & " - [" & ("Default hdmi device") & "]")
+  Try acards = Dir("/proc/asound/", "card*", gb.directory)
+  If Not Error Then
+    For Each acard In acards
+      Try acardname = Trim(File.Load("/proc/asound/" & acard & "/id"))
+      If Error Then acardname = "Unknown Card"
+      acardid = Replace(acard, "card", "")
+      Try apcms = Dir("/proc/asound/" & acard, "pcm*p").Sort(gb.Ascent)
+      If Not Error Then
+        For Each apcm In apcms
+          Try apcminfos = Trim(File.Load("/proc/asound/" & acard & "/" & apcm & "/info"))
+          If Error Then apcminfos = "name: No pcm info"
+          For Each apcminfo In Split(apcminfos, "\n", "", True)
+            If apcminfo Like "name: *" Then
+              apcminfo = Trim(Split(apcminfo, ":", "", True)[1])
+              apcmid = Replace(apcm, "pcm", "")
+              apcmid = Trim(Replace(apcmid, "p", ""))
+              Break
+            Endif
+          Next
+         ' Debug acardid, apcmid, acardname, apcminfo
+          adevices.add("plughw:" & acardid & "." & apcmid & tabs & " - " & "[" & acardname & ":" & apcminfo & "]")
+        Next
+      Endif
+
+    Next
+  Endif
+  
+ Return adevices
+  
+End
+
+
+

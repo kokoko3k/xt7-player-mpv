@@ -1,0 +1,512 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
+Private MyScaleSlider As VSlider
+Private MyOutlineSpinbox As FloatSpinBox
+Public mplayer As New MplayerClass
+
+Public Struct mpvOption
+  name As String
+  data As String
+End Struct
+
+Public Sub Init()
+  Global.Center(Fmain, Me)
+End
+
+
+
+Private Function ToString(Var As Variant) As String
+  Return Var
+End
+
+
+Private Function rgba2Habgr(RGBA As String) As String
+  'will convert an hex in rrggbbaa format to an hex in Haabbggrr format
+  'rrggbbAA"
+  Dim habgr As String
+  habgr = "H" & Mid(RGBA, 7, 2) & Mid(RGBA, 5, 2) & Mid(RGBA, 3, 2) & Mid(RGBA, 1, 2)
+  Return habgr
+End
+
+Private Function o(name As String, data As String) As MpvOption
+  Dim opt As New MpvOption
+  opt.name = name
+  opt.data = data
+  Return opt
+End
+
+
+Public Function ParseSubGui() As MpvOption[]
+'SSA related:
+  Dim FontName As String = ",FontName=" "\"" & FontString.Font.name & "\""
+  Dim subFontName As String
+  Dim Outline As String = ",outline=" & OutlineSpinBox.text
+  Dim Shadow As String = ",shadow=" & ShadowSpinBox.text
+
+  Dim Alignment As String = "Alignment=" & Left(ComboAlignment.Text, 1)
+  Dim AssForceStyle As String = ""
+  Dim opts As New MpvOption[]
+  Dim opt As New MpvOption
+  Dim subpos As String = 0
+
+
+  If ASSDisableCHK.value Then
+    opt.name = "sub-ass"
+    opt.data = "no"
+    opts.Push(opt)
+  Endif
+
+  'Set ass style; ass style will be used to override media embedded ass styles for ass subtitles
+  'Set --sub-text-* options too; that will be used for non ass subtitles.
+
+    If FontStyleCHK.value Then 
+      AssForceStyle = AssForceStyle & FontName
+      AssForceStyle = AssForceStyle & ",FontSize=" & CStr(FontString.Font.Size)
+      If FontString.Font.Bold Then AssForceStyle = AssForceStyle & ",Bold=1"
+      If FontString.Font.Italic Then AssForceStyle = AssForceStyle & ",Italic=1" 
+
+      SubFontName = FontString.Font.name
+      If FontString.Font.Bold Then SubFontName &= ":style=bold" 'fixmempv: how to do italic and strikeout?
+      opts.Push(o("sub-text-font", "\"" & SubFontName & "\""))
+      opts.Push(o("sub-text-font-size", CStr(FontString.Font.size)))
+
+    Endif
+
+    If OutlineCHK.value Then
+      AssForceStyle = AssForceStyle & Outline
+      AssForceStyle = AssForceStyle & ",OutlineColour=" & rgba2Habgr(Hex(BorderColorBox.value, 6) & Hex(BorderColorSpinBox.value, 2))
+
+      opts.Add(o("sub-text-border-size", OutLineSpinBox.value))
+      opts.Add(o("sub-text-border-color", "#" & Hex(255 - BorderColorSpinBox.text, 2) & Hex(bordercolorBox.value, 6)))
+    Endif
+
+    'maybe redoundant with -ass-color and -ass-border-color, but do it anyway:
+    If FontColorCHK.value Then 
+      AssForceStyle = AssForceStyle & ",PrimaryColour=" & rgba2Habgr(Hex(FontColorBox.value, 6) & Hex(FontColorSpinBox.value, 2))
+      opts.Add(o("sub-text-color", "#" & Hex(255 - FontColorSpinBox.text, 2) & Hex(FontColorBox.value, 6)))
+    Endif
+    
+    If SHADOWCHK.value Then
+      AssForceStyle = AssForceStyle & Shadow
+      Assforcestyle = AssForceStyle & ",BackColour=" & rgba2Habgr(Hex(ShadowColorBTN.value, 6) & Hex(ShadowColorSpinBox.value, 2))
+      
+      opts.Add(o("sub-text-shadow-offset", ShadowSpinBox.value))
+      opts.Add(o("sub-text-shadow-color", "#" & Hex(255 - ShadowColorSpinBox.text, 2) & Hex(ShadowColorBTN.value, 6)))
+    Endif
+
+    If MarginVCHK.value Then 
+      AssForceStyle = AssForceStyle & ",MarginV=" & MarginVSpinBox.text
+      opts.Add(o("subpos", MarginVSpinBox.text))
+    Endif
+
+    If Left(AssForceStyle) = "," Then Assforcestyle = Right(AssForceStyle, "-1")
+
+
+
+  'osd related
+  If FontStyleCHK2.value Then 
+    SubFontName = FontString2.text
+    If FontString2.Font.Bold Then SubFontName &= ":style=bold" 'fixmempv: how to do italic and strikeout?
+    opts.Push(o("osd-font", "\"" & SubFontName & "\""))
+    opts.Push(o("osd-font-size", CStr(FontString2.Font.size)))
+  Endif
+  
+  If Fontcolorchk2.value Then opts.Add(o("osd-color", "#" & Hex(255 - FontColorSpinBox2.text, 2) & Hex(FontColorBox2.value, 6)))
+  
+  If outlinechk2.value Then
+    opts.Add(o("osd-border-size", OutLineSpinBox2.value))
+    opts.Add(o("osd-border-color", "#" & Hex(255 - BorderColorSpinBox2.text, 2) & Hex(bordercolorBox2.value, 6)))
+  Endif
+
+  If shadowchk2.value Then
+    opts.Add(o("osd-shadow-offset", ShadowSpinBox2.value))
+    opts.Add(o("osd-shadow-color", "#" & Hex(255 - ShadowColorSpinBox2.text, 2) & Hex(ShadowColorBTN2.value, 6)))
+  Endif
+
+
+ 'push SSA options
+  If Not ASSDisableCHK.value = True Then 'if the user has not disabled ass rendering,
+    If assoverridechk.value = True Then 'if the user choose to override ass styles,
+      opts.Add(o("ass-force-style", AssForceStyle))
+    Endif
+  Endif
+  
+
+  
+  opts.Add(o("sub-auto", Split(Combofuzziness.text, " ", "", True)[0]))
+  
+  If EncaComboBox.text Like "* *" Then
+    If Split(EncaComboBox.text, " ", "", True)[0] <> "xx" Then
+      opts.Add(o("sub-codepage", "enca:" & Split(EncaComboBox.text, " ")[0] & ":" & Split(ComboSubCp.text, " ", "", True)[0]))
+        Else
+      opts.Add(o("sub-codepage", ComboSubCp.text))
+    Endif
+  Endif
+  
+  For Each opt In opts
+    Debug opt.name & "=" & opt.data
+  Next
+
+ Return opts
+End
+
+
+Public Function OLD_ParseSubGui() As MpvOption[]
+'SSA related:
+  Dim FontName As String = ",FontName=" "\"" & FontString.Font.name & "\""
+  Dim Outline As String = ",outline=" & OutlineSpinBox.text
+  Dim Shadow As String = ",shadow=" & ShadowSpinBox.text
+
+  Dim Alignment As String = "Alignment=" & Left(ComboAlignment.Text, 1)
+  Dim AssForceStyle As String = ""
+  Dim opts As New MpvOption[]
+  Dim opt As MpvOption
+  Dim subpos As String = 0
+
+  'biold Ass style
+  If ASSDisableCHK.value = False Then 
+  'Ass related
+    If FontStyleCHK.value Then
+      AssForceStyle = AssForceStyle & FontName
+      AssForceStyle = AssForceStyle & ",FontSize=" & CStr(FontString.Font.size)
+      If FontString.Font.Bold Then AssForceStyle = AssForceStyle & ",Bold=1"
+      If FontString.Font.Italic Then AssForceStyle = AssForceStyle & ",Italic=1" 
+    Endif
+
+    If alignmentchk.value Then AssForceStyle = AssForceStyle & "," & Alignment
+
+    If OutlineCHK.value Then
+      AssForceStyle = AssForceStyle & Outline
+      AssForceStyle = AssForceStyle & ",OutlineColour=" & rgba2Habgr(Hex(BorderColorBox.value, 6) & Hex(BorderColorSpinBox.value, 2))
+        Else
+      AssForceStyle = AssForceStyle '& ",outline=0"
+    Endif
+    
+    'maybe redoundant with -ass-color and -ass-border-color, but do it anyway:
+    If FontColorCHK.value Then AssForceStyle = AssForceStyle & ",PrimaryColour=" & rgba2Habgr(Hex(FontColorBox.value, 6) & Hex(FontColorSpinBox.value, 2))
+    If SHADOWCHK.value Then
+      AssForceStyle = AssForceStyle & Shadow
+      Assforcestyle = AssForceStyle & ",BackColour=" & rgba2Habgr(Hex(ShadowColorBTN.value, 6) & Hex(ShadowColorSpinBox.value, 2))
+    Endif
+
+    If Left(AssForceStyle) = "," Then Assforcestyle = Right(AssForceStyle, "-1")
+
+  Endif
+
+  'osd related
+  If FontStyleCHK2.value Then 
+    opts.Add(o("osd-font", "\"" & FontString2.text & "\""))
+    opts.Add(o("osd-font-size", FontString2.Font.size))
+  Endif
+  
+  If Fontcolorchk2.value Then opts.Add(o("osd-color", "#" & Hex(255 - FontColorSpinBox2.text, 2) & Hex(FontColorBox2.value, 6)))
+  
+  If outlinechk2.value Then
+    opts.Add(o("osd-border-size", OutLineSpinBox2.value))
+    opts.Add(o("osd-border-color", "#" & Hex(255 - BorderColorSpinBox2.text, 2) & Hex(bordercolorBox2.value, 6)))
+  Endif
+
+  If shadowchk2.value Then
+    opts.Add(o("osd-shadow-offset", ShadowSpinBox2.value))
+    opts.Add(o("osd-shadow-color", "#" & Hex(255 - ShadowColorSpinBox2.text, 2) & Hex(ShadowColorBTN2.value, 6)))
+  Endif
+
+
+
+  If ASSDisableCHK.value Then 'use "-osd-*" instead of ssa
+    If FontStyleCHK.value Then 
+      opts.Add(o("sub-text-font", "\"" & FontString.text & "\""))
+      opts.Add(o("sub-text-font-size", FontString.Font.size))
+    Endif
+    
+    If Fontcolorchk.value Then opts.Add(o("sub-text-color", "#" & Hex(255 - FontColorSpinBox.text, 2) & Hex(FontColorBox.value, 6)))
+    
+    If outlinechk.value Then
+      opts.Add(o("sub-text-border-size", OutLineSpinBox.value))
+      opts.Add(o("sub-text-border-color", "#" & Hex(255 - BorderColorSpinBox.text, 2) & Hex(bordercolorBox.value, 6)))
+    Endif
+  
+    If shadowchk.value Then
+      opts.Add(o("sub-text-shadow-offset", ShadowSpinBox.value))
+      opts.Add(o("sub-text-shadow-color", "#" & Hex(255 - ShadowColorSpinBox.text, 2) & Hex(ShadowColorBTN.value, 6)))
+    Endif
+  Endif
+
+ 'push options
+  If AssForceStyle <> "" Then opts.Add(o("ass-force-style", AssForceStyle))
+  If MarginVCHK.value Then opts.Add(o("subpos", MarginVSpinBox.text))
+  opts.Add(o("sub-auto", Split(Combofuzziness.text, " ", "", True)[0]))
+  
+  If EncaComboBox.text Like "* *" Then
+    If Split(EncaComboBox.text, " ", "", True)[0] <> "xx" Then
+      opts.Add(o("sub-codepage", "enca:" & Split(EncaComboBox.text, " ")[0] & ":" & Split(ComboSubCp.text, " ", "", True)[0]))
+        Else
+      opts.Add(o("sub-codepage", ComboSubCp.text))
+    Endif
+  Endif
+
+ Return opts
+End
+
+
+
+Public Sub TestBTN_Click()
+  Dim AnImage As New Image
+  Dim Filename As String
+  Dim MyOptions, previewoptions As String
+  
+  Dim MySrtFile As File
+ 
+  Dim opt As MpvOption
+
+  'If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
+  If SubAndOsd.visible Then 'we wanna preview only if the form is visible
+
+    TestBTN.enabled = False
+    ApplyBTN.enabled = False
+    Me.mouse = Mouse.Wait
+  
+    TestBTN.background = Color.ButtonBackground
+    AnImage.Resize(DrawingArea1.W, DrawingArea1.H)
+    AnImage.Fill(Color.White)
+    AnImage.save(global.confpath & "/SubBackImage01.png")
+  
+    AnImage.Fill(Color.Red)
+    AnImage.save(global.confpath & "/SubBackImage02.png")
+    
+    AnImage.Fill(Color.Green)
+    AnImage.save(global.confpath & "/SubBackImage03.png")
+    
+    AnImage.Fill(Color.Blue)
+    AnImage.save(global.confpath & "/SubBackImage04.png")
+    
+    AnImage.Fill(Color.yellow)
+    AnImage.save(global.confpath & "/SubBackImage05.png")
+  
+    AnImage.Fill(Color.Black)
+    AnImage.save(global.confpath & "/SubBackImage06.png")
+
+    AnImage.Fill(Color.Black)
+    AnImage.save(global.confpath & "/SubBackImage07.png")
+
+    FileName = Temp("SubSrt.srt")
+    MySrtFile = Open Filename For Write Create
+    Try Print #MySrtFile, "1"
+    Try Print #MySrtFile, "00:00:00,000 --> 99:99:99,000"
+    Try Print #MySrtFile, "The quick brown fox jumps over the lazy dog"
+    Close #MySrtFile
+    
+    mplayer.do_stop()
+    mplayer.clear_options() 
+    mplayer.set_option("wid", DrawingArea1.Handle)
+    mplayer.set_option("sub-file", Filename)
+    mplayer.set_option("vo", "x11")
+    mplayer.set_option("ao", Null)
+    mplayer.set_option("vf-pre", "scale")
+    mplayer.set_option("vf-add", "scale")
+    mplayer.set_option("osd-level", "3")
+    mplayer.set_option("mf-fps", "1")
+    mplayer.set_option("mf-type", "png")
+    mplayer.set_option("loop", "inf")
+    mplayer.set_option("osc", "no")
+    mplayer.set_option("osd-scale", pScaleFactorSpinBox.value)
+    mplayer.set_option("sub-scale", pScaleFactorSpinBox.value)
+    ' mplayer.set_option("sub-scale-by-window", "no")
+    ' mplayer.set_option("osd-scale-by-window", "no")
+
+    'mplayer.set_option("zoom", "true") 'fixmempv, come si fa?
+
+    For Each opt In ParseSubGui()
+      mplayer.set_option(opt.name, opt.data)
+    Next 'opt
+
+
+
+    mplayer.do_play("mf://" & global.confpath & "/SubBackImage*.png", MyOptions & previewoptions)
+
+    Me.mouse = Mouse.default
+    TestBTN.enabled = True
+    ApplyBTN.enabled = True
+  Endif
+End
+
+
+
+
+
+Public Sub Form_Hide()
+  mplayer.do_stop()
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+End
+
+Public Sub OkBTN_Click()
+  Me.hide
+  Wait 0.1
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.SetFocus()
+End
+
+Public Sub ApplyBTN_Click()
+  FMain.Apply()
+  TestBTN_Click()
+  global.ResetApplyBtnColor()
+End
+
+Public Sub FirstLoadIfNeeded()
+  If Not (alreadyloaded) Then 
+    Alreadyloaded = True
+    MenuLoadDefault_Click()
+  Endif
+End
+
+
+Public Sub Form_Open()
+  FirstLoadIfNeeded()
+  If ((FontColorBox.color = Color.black) And (borderColorBox.color = Color.black) And (shadowColorbtn.color = Color.black)) Then FontColorBox.color = Color.white
+  'ME.center
+  Global.Center(Fmain, Me)
+ 
+End
+
+Public Sub FontChooseBTN_Click()
+  If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
+  myDialog.Font = FontString.font
+  If Not (myDialog.SelectFont()) Then
+    FontString.font = myDialog.font
+    FontString.text = FontString.Font.name
+    TestBTN.background = Color.Yellow
+    TESTBTN_Click()
+  Endif
+End
+
+
+Public Sub FontChooseBTN2_Click()
+  If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
+  myDialog.Font = FontString2.font
+  If Not (myDialog.SelectFont()) Then
+    FontString2.font = myDialog.font
+    FontString2.text = FontString2.Font.name
+    TestBTN.background = Color.Yellow
+    TESTBTN_Click()
+  Endif
+End
+
+
+
+
+Public Sub Form_Show()
+    myDialog.Font = FontString.font
+    FontString.font = myDialog.font
+    FontString.text = FontString.Font.name
+    TestBTN_Click()
+End
+
+Public Sub MenuLoadDefault_Click()
+  Dim MySettings As New SettingsClass
+  MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
+  Alreadyloaded = True
+  'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
+End
+
+Public Sub MenuSaveDefault_Click()
+  SaveCurrent()
+End
+Public Sub SaveBTN_Click()
+  SaveCurrent()
+End
+Public Sub SaveCurrent()
+  Dim MySettings As New SettingsClass
+  MySettings.Save(Me, global.confpath & "/" & global.CurrentProfile)
+End
+
+
+Public Sub MenuSaveToAll_Click()
+  Dim profilename, profilenamesplitted As String
+  Dim MySettings As New SettingsClass
+  If MyQuestion.Ask(("This will save this window settings\n to all profiles found but the 'Factory_defaults' one"), ("Proceed"), ("Don't")) = 2 Then
+    Return
+      Else
+     For Each profilename In Dir(global.confpath & "/", "*.profile")
+        If Stat(global.confpath & "/" & profilename, True).type = gb.Directory Then
+          profilenamesplitted = Split(profilename, ".")[0]
+          If profilenamesplitted <> "Factory_Defaults" Then
+            MySettings.Save(Me, global.confpath & "/" & profilenamesplitted)
+          Endif
+        Endif
+     Next 'profilename
+  Endif
+End
+
+
+Public Sub OSDWhiteHBox_MouseDown()
+
+End
+
+Public Sub ASSDisableCHK_Click()
+  'Disable ass related options:
+  Dim EnableSSA As Boolean = Not ASSDisableCHK.value
+  ' FontChooseHBox2.Enabled = EnableSSA
+  ' FontColorHBOX.Enabled = EnableSSA
+
+
+  AlignmentHBox.Enabled = EnableSSA
+  TestBTN.background = Color.Yellow
+  If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
+End
+
+
+Public Sub Form_Close()
+  mplayer.do_stop()
+  Try Kill global.confpath & "/SubBackImage01.png"
+  Try Kill global.confpath & "/SubBackImage02.png"
+  Try Kill global.confpath & "/SubBackImage03.png"
+  Try Kill global.confpath & "/SubBackImage04.png"
+  Try Kill global.confpath & "/SubBackImage05.png"
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+End
+
+
+
+Public Sub PreviewDriverCombobox_Click()
+    TestBTN_Click()
+End
+
+Public Sub notifytest_Click()
+  If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
+  TestBTN_Click()
+End
+
+Public Sub notifytest_Change()
+  If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
+  TestBTN_Click()
+End
+Public Sub notify_Click()
+  If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
+  TestBTN.background = Color.Yellow
+End
+
+Public Sub notify_Change()
+  TestBTN.background = Color.Yellow
+  If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
+End
+
+
+
+
+Public Sub Form_Arrange()
+'   'panel2.h = CInt((vbox2.h - panelsubtitles.h - panelosd.h) / 2)
+'   panelsubtitles.h = hsplit1.h Div 2
+' 
+'   panelosd.h = 50
+' Return
+  ' panel2.h = panelextra.y - (panelosd.y + panelosd.h)
+  ' If panel2.h < 0 Then panel2.h = 0
+End
+
+Public Sub pScaleFactorSpinBox_Change()
+
+  TestBTN_Click()
+
+End

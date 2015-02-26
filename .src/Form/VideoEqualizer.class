@@ -1,0 +1,210 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
+Public NoOsd As Boolean = False
+
+'gamma,brightness,contrast...
+  Public Sub VideoOsd()
+    Dim osdmsg As String
+    If NoOsd Then Return
+    osdmsg = "B: " & Make2(slider1.value)
+    osdmsg &= "  C: " & Make2(slider2.value)
+    osdmsg &= "  G: " & Make2(slider3.value)
+    osdmsg &= "  H: " & Make2(slider4.value)
+    osdmsg &= "  S: " & Make2(slider5.value)
+    FMain.mplayer.ShowText(osdmsg, 1000)
+  End
+'
+
+Public Function Make2(n As String) As String
+  Dim t, neg As String
+  If n Like "-*" Then neg = "-"
+  t = Abs(CInt(n))
+  While Len(t) < 3
+    t = "0" & t
+  Wend
+  Return neg & t
+End
+
+
+Public Sub MenuLoadDefault_Click()
+  Dim MySettings As New SettingsClass
+  MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
+  AlreadyLoaded = True
+  'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
+End
+
+Public Sub MenuSaveDefault_Click()
+  Dim MySettings As New SettingsClass
+  MySettings.Save(Me, global.confpath & "/" & global.CurrentProfile)
+End
+
+Public Sub MenuSaveToAll_Click()
+  Dim profilename, profilenamesplitted As String
+  Dim MySettings As New SettingsClass
+  If MyQuestion.Ask(("This will save this window settings\n to all profiles found but the 'Factory_defaults' one"), ("Proceed"), ("Don't")) = 2 Then
+    Return
+      Else
+     For Each profilename In Dir(global.confpath & "/", "*.profile")
+        If Stat(global.confpath & "/" & profilename, True).type = gb.Directory Then
+          profilenamesplitted = Split(profilename, ".")[0]
+          If profilenamesplitted <> "Factory_Defaults" Then
+            MySettings.Save(Me, global.confpath & "/" & profilenamesplitted)
+          Endif
+        Endif
+     Next 'profilename
+  Endif
+End
+
+Public Sub FirstLoadIfNeeded()
+  If Not AlreadyLoaded Then 
+    Alreadyloaded = True
+    MenuLoadDefault_Click()
+  Endif
+End
+
+
+Public Sub Form_Open()
+  FirstLoadIfNeeded()
+  Global.Center(Fmain, Me)
+End
+
+Public Sub Sliders_Change()
+  Dim oldosd As String
+  If (Last Is Slider) And (Last.next Is Spinbox) Then
+    Try Last.Next.value = Last.value
+    If (FMain.FullyLoaded Or ApplyEqCheckbox.value) Then 
+
+      fmain.mplayer.set_property_mpv(Last.tag, Last.value)
+
+      ' fmain.mplayer.set_property_mpv(slider1.tag, slider1.value)
+      ' fmain.mplayer.set_property_mpv(slider2.tag, slider2.value)
+      ' fmain.mplayer.set_property_mpv(slider3.tag, slider3.value)
+      ' fmain.mplayer.set_property_mpv(slider4.tag, slider4.value)
+      ' fmain.mplayer.set_property_mpv(slider5.tag, slider5.value)
+      VideoOsd()
+
+    Endif
+  Endif
+End
+
+Public Sub SpinBoxes_Change()
+  If (Last Is Spinbox) And (Last.previous Is Slider) Then
+    Try Last.previous.value = Last.value
+  Endif
+End
+
+
+
+
+
+
+Public Sub Clears_Click()
+  If (Last Is Toolbutton) And (Last.next Is Slider) And (Last.next.next Is Spinbox) Then
+    Try Last.next.value = 0
+    Try Last.next.next.value = 0
+  Endif
+End
+
+Public Sub MenuItemHint_Click()
+  MyQuestion.ask(("If equalizer doesn't work, you can try to:\n\n- Change video output driver\n- Enable eq2 and hue filters under General Options\n- Add Eq2 filter in chains window\n- Add Hue filter in chains window"), "Ok", "")
+End
+
+Public Sub ApplyEqSettings()
+  FMain.mplayer.Send("osd 0") 'disable osd
+  Wait 0.1
+  FMain.mplayer.Send("brightness" & " " & spinbox1.value & " 1")
+  FMain.mplayer.Send("contrast" & " " & spinbox2.value & " 1")
+  FMain.mplayer.Send("gamma" & " " & spinbox3.value & " 1")
+  FMain.mplayer.Send("hue" & " " & spinbox4.value & " 1")
+  FMain.mplayer.Send("saturation" & " " & spinbox5.value & " 1")
+  Wait 0.1
+  FMain.mplayer.Send("osd 1") 'enable osd
+End
+
+Public Sub ApplyEqCheckbox_Click()
+  If Last.value Then
+    ApplyEqSettings()
+  Endif
+End
+
+
+Public Sub Button1_Click()
+  ZeroControls()
+End
+
+Public Sub ZeroControls()
+  slider6.value = 0
+  slider1.value = 0
+  slider2.value = 0
+  slider3.value = 0
+  slider4.value = 0
+  slider5.value = 0  
+End
+
+           
+Public Sub Slider6_Change()
+  'Dim waittime As Float = 0.0055555556
+  'Dim waittime As Float = 0.002
+  Object.Lock(Spinbox6)
+  spinbox6.value = Slider6.value 
+  Object.unLock(Spinbox6)
+  'If (FMain.mplayer.VideoOut_Driver <> "vaapi") And (FMain.mplayer.VideoOut_Driver <> "vdpau") Then
+    slider1.value = CInt(Spinbox6.value / 2.66)
+    'Wait waittime
+    slider2.value = Spinbox6.value
+    'Wait waittime
+    slider3.value = Spinbox6.value Div 4
+    'Wait waittime
+    slider4.value = 0
+    slider5.value = Spinbox6.value 
+  '    Else
+    ' slider1.value = 0 ' CInt(Spinbox6.value / 5)
+    ' 'Wait waittime
+    ' slider2.value = Spinbox6.value
+    ' 'Wait waittime
+    ' slider3.value = 0
+    ' 'Wait waittime
+    ' slider4.value = 0
+    ' slider5.value = 0
+  'Endif
+End
+
+Public Sub SpinBox6_Change()
+  Slider6.value = Spinbox6.value
+End
+
+Public Sub Slider7_Change()
+  spinbox7.value = Slider7.value
+End
+
+Public Sub spinbox7_Change()
+  Object.Lock(Slider7)
+  Slider7.value = spinbox7.value
+  Object.unLock(Slider7)
+End
+
+Public Sub Form_Show()
+  'EnableDisableControls()
+End
+
+Public Sub EnableDisableControls()
+  Slider7.enabled = CheckDynamicOverbright.value 
+  spinbox7.enabled = CheckDynamicOverbright.value 
+  hbox6.Enabled = Not CheckDynamicOverbright.value 
+End
+
+Public Sub CheckDynamicOverbright_Click()
+  'EnableDisableControls()
+  If Not FMain.FullyLoaded Then Return
+  Button1_Click() 'zero all values
+  If Not FMain.mplayer.ProcessRunningOvr() Then Return
+  If FMain.mplayer.getP("audioonly") Then Return
+  If CheckDynamicOverbright.value Then 
+    FMain.mplayer.StartOverbrightAnalyze()
+      Else
+    FMain.mplayer.StopOverbrightAnalyze()
+  Endif
+End

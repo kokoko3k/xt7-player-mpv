@@ -1,0 +1,87 @@
+' Gambas class file
+
+Public timeouts As String = " --connect-timeout=5 --dns-timeout=5 --read-timeout=20 --tries=10 "
+
+Public Function DownloadAsync(URL As String, Optional AsFile As Boolean = False) As String
+  'Download files without blocking the ui
+  'if AsFile is true, then the output value is the name of the file containing the data,
+  'else the output value is the data itself
+  Dim wgetprocess1 As Process
+  Dim tmpfile, commandline As String
+  Dim tries As String
+  Dim out As String
+  Dim wgetdone As Boolean = False
+
+  If URL = "" Then Return
+  tmpfile = Temp()
+  tries = 10
+  commandline = "wget " & URL & " -O " & tmpfile & timeouts & " >/dev/null 2>&1"
+  'commandline = "wget " & URL & " -O " & tmpfile & timeouts
+  Repeat
+    wgetprocess1 = Shell commandline For Output As "wgetprocess1"
+    Debug "trying " & commandline
+    Debug
+    While (ProcessRunningOvr(wgetprocess1))
+      Wait 0.05
+    Wend
+    If (Not AsFile) Then
+      Try out = File.Load(tmpfile)
+    Endif
+    tries = tries - 1
+    If Exist(tmpfile) Then
+      If (Stat(tmpfile).size > 0) Then wgetdone = True
+    Endif
+  'UNTIL ((tries = 0) OR (Stat(tmpfile).size > 0))
+   Until ((tries = 0) Or wgetdone)
+  If (Not AsFile) Then
+    Try Kill tmpfile
+    Return out
+      Else
+    Return tmpfile
+  Endif
+End
+
+'spostare wgetprocess nelle procedure?
+
+Public Function ExistsUrl(url As String) As Boolean
+  Dim wgetprocess2 As Process
+  Dim commandline, header, tmpfile As String
+  Dim tries As Integer
+  Dim wgetdone As Boolean = False
+  tmpfile = Temp()
+  'commandline = "wget --spider --server-response --quiet" & timeouts & url & " &>" & tmpfile
+  commandline = "wget --spider --server-response --quiet" & timeouts & url & " >" & tmpfile & " 2>&1"
+  tries = 10
+
+  Repeat
+    Debug commandline
+    wgetprocess2 = Shell commandline For Output As "wgetprocess2"
+    While (ProcessRunningOvr(wgetprocess2))
+      Wait 0.05
+    Wend
+    If Exist(tmpfile) Then
+      If (Stat(tmpfile).size > 0) Then wgetdone = True
+    Endif
+  Until ((tries = 0) Or wgetdone)
+  If tries = 0 Then Return False
+  
+  header = File.Load(tmpfile)
+
+    If header Like "*404 Not Found*" Then
+      Try Kill tmpfile
+      Return False
+        Else
+      Try Kill tmpfile
+      Return True
+    Endif
+  'Message.Error(("Stream not found or network error"))
+End
+
+Private Function ProcessRunningOvr(myprocess As Process) As Boolean
+'As gambas returns runtime error if process is not ready,
+'we'll catch it here
+  Dim running As Boolean = False
+  Try running = (myprocess.state = 1)
+  Return running
+End
+  

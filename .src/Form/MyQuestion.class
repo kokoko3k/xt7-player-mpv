@@ -1,0 +1,121 @@
+' Gambas class file
+
+
+Public answer As Integer = -1
+Private MessageAlreadyShown As Boolean = False
+
+Public Function OLDAsk(TheQuestionString As String, TheButton1String As String, TheButton2String As String, Optional CheckboxString As String = "", Optional CheckboxObject As Checkbox) As Integer
+  If MessageAlreadyShown Then answer = 5
+  Wait 1
+  If Not MessageAlreadyShown Then
+    MessageAlreadyShown = True
+    answer = -1
+    QuestionLabel.text = TheQuestionString
+    Button1.text = TheButton1String
+    Button2.text = TheButton2String
+    Me.x = Mouse.screenx - (Me.w Div 2)
+    Me.y = Mouse.screeny - Me.h - 90
+    Checkbox1.visible = (Checkboxstring <> "")
+    If checkboxstring <> "" Then
+      Checkbox1.text = CheckboxString
+      Checkbox1.value = Checkboxobject.value
+
+      Checkbox1.Width = Checkbox1.Font.TextWidth(Checkbox1.text) + MyIcon.Width + 32 + FMain.padding + FMain.spacing
+    Endif
+    Me.show
+    Repeat
+      Wait 0.25
+    Until answer <> -1
+    If checkboxstring <> "" Then Checkboxobject.value = Checkbox1.value
+    MyQuestion.close
+    MyQuestion.hide
+    MessageAlreadyShown = False
+    Return answer
+      Else
+    Return -1
+  Endif
+End
+
+Public Function Ask(TheQuestionString As String, TheButton1String As String, TheButton2String As String, Optional CheckboxString As String = "", Optional CheckboxObject As Checkbox) As Integer
+
+  If Not MessageAlreadyShown Then
+    MessageAlreadyShown = True
+    answer = -1
+    QuestionLabel.text = TheQuestionString
+    Button1.text = TheButton1String
+    Button2.visible = (thebutton2string <> "")
+    Button2.text = TheButton2String
+    Button1.W = Button1.Font.TextWidth(Button1.text & "------")
+    Button2.W = Button2.Font.TextWidth(Button2.text & "------")
+    Me.x = Mouse.screenx - (Me.w Div 2)
+    Me.y = Mouse.screeny - Me.h '- 90
+    If Me.x <= 0 Then Me.x = 1
+    If Me.y <= 0 Then Me.y = 1
+
+    Checkbox1.visible = (Checkboxstring <> "")
+    If checkboxstring <> "" Then
+      Checkbox1.text = CheckboxString
+      Checkbox1.value = Checkboxobject.value
+      Checkbox1.Width = Checkbox1.Font.TextWidth(Checkbox1.text) + 32
+    Endif
+    Wait
+    Me.Show()
+    Me.Refresh()
+    Wait
+    Debug vbox1.w
+    'Me.w = Max((QuestionLabel.w + MyIcon.w), (Button1.W + Button2.W + vbox2.w + vbox1.w)) + (Me.padding * 3)
+    Me.w = Max((QuestionLabel.w + MyIcon.w), (Button1.W + Button2.W)) + (Me.padding * 3)
+    Me.h = Button1.h + Max(questionlabel.Font.TextHeight("|"), MyIcon.h) + (Me.padding * 3)
+    If Checkbox1.visible Then Me.h += Checkbox1.h
+    Me.Hide()
+    Me.ShowModal()
+
+    Repeat
+      Wait '0.25
+    Until (answer <> -1) Or (Me.visible = False)
+    If checkboxstring <> "" Then Checkboxobject.value = Checkbox1.value
+    'MyQuestion.close
+    'MyQuestion.hide
+    MessageAlreadyShown = False
+    Return answer
+      Else
+    Return -1
+ Endif
+End
+
+
+Public Sub Button1_Click()
+  MyQuestion.hide
+  answer = 1
+End
+
+Public Sub Button2_Click()
+  MyQuestion.hide
+  answer = 2
+End
+
+Public Sub MyQuestion_Close()
+  Me.hide
+  answer = 3
+End
+
+Public Sub Form_Hide()
+  Me.SkipTaskbar = False
+End
+
+Public Sub Form_Show()
+    Me.SkipTaskbar = True
+End
+
+Public Sub ButtonContainer_MouseDown()
+
+  
+
+End
+
+Public Sub Button1_KeyPress()
+  If (Key.code = Key.return) Or (Key.code = Key.enter) Then Button1_Click()
+End
+Public Sub Button2_KeyPress()
+  If (Key.code = Key.return) Or (Key.code = Key.enter) Then Button2_Click()
+End

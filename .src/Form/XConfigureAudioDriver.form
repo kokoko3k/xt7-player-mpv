@@ -1,0 +1,307 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,105.7143,70)
+  Tag = "reparents"
+  Text = ("Configure Audio Driver")
+  Icon = Picture["speaker.png"]
+  Persistent = True
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { MenuProfile Menu
+    Text = ("Profile")
+    { MenuLoadDefault Menu
+      Text = ("Reload current profile")
+      Picture = Picture["icon:/16/open"]
+    }
+    { MenuSaveDefault Menu
+      Text = ("Save to current profile")
+      Picture = Picture["icon:/16/save"]
+    }
+    { MenuSaveToAll Menu
+      Text = ("Save these settings to all profiles")
+      Picture = Picture["icon:/16/save"]
+    }
+  }
+  { DriverFrame Frame
+    MoveScaled(0,0,78,58)
+    Expand = True
+    { VSplit1 VSplit
+      MoveScaled(17,1,60,56)
+      Expand = True
+      { ConfigureTabs TabStrip
+        MoveScaled(2,1,59,38)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Count = 5
+        Index = 0
+        Text = ("Alsa")
+        { AlsaParseMeHbox1 HBox
+          MoveScaled(2,2,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk2 CheckBox
+            MoveScaled(1,1,15,4)
+            #Translate = False
+            Tag = "mixer-name="
+            Text = "mixer-name"
+          }
+          { AlsaDeviceTextBox2 ComboBox
+            MoveScaled(18,1,26,4)
+            #Translate = False
+            Font = Font["Monospace"]
+            Expand = True
+            List = ["Master", "PCM", "Headphone", "Front", "Center", "Surround", "LFE"]
+            Text = "Master"
+          }
+        }
+        { AlsaParseMeHbox2 HBox
+          MoveScaled(2,8,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk1 CheckBox
+            MoveScaled(1,1,15,4)
+            #Translate = False
+            Tag = "mixer-index="
+            Text = "mixer-index"
+          }
+          { SpinBox1 SpinBox
+            MoveScaled(34,1,9,4)
+            MaxValue = 10
+          }
+        }
+        Index = 1
+        Text = ("Jack")
+        { JackParseMeHBox8 HBox
+          MoveScaled(1,1,45,6)
+          Padding = 8
+          { CheckBox18 CheckBox
+            MoveScaled(1,2,17,4)
+            #Translate = False
+            Tag = "port="
+            Text = "Port"
+          }
+          { TextBox3 TextBox
+            MoveScaled(19,1,22,4)
+            #Translate = False
+          }
+        }
+        { JackParseMeHBox1 HBox
+          MoveScaled(1,7,45,6)
+          Padding = 8
+          { CheckBox1 CheckBox
+            MoveScaled(1,2,17,4)
+            #Translate = False
+            Tag = "name="
+            Text = "Name"
+          }
+          { TextBox4 TextBox
+            MoveScaled(19,1,22,4)
+            #Translate = False
+            Text = "mpv"
+          }
+        }
+        Index = 2
+        Text = ("Pulse")
+        { PulseParseMeHbox1 VBox
+          MoveScaled(2,3,45,13)
+          Padding = 10
+          { PulseDriverChk2 CheckBox
+            MoveScaled(1,1,29,4)
+            #Translate = False
+            Text = "host:output sink"
+          }
+          { TextBox6 TextBox
+            MoveScaled(1,6,41,4)
+          }
+        }
+        { PulseParseMeHbox3 HBox
+          MoveScaled(1,17,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk3 CheckBox
+            MoveScaled(1,1,18,4)
+            #Translate = False
+            Tag = "buffer="
+            Text = "buffer"
+          }
+          { ComboBox1 ComboBox
+            MoveScaled(21,1,24,4)
+            #Translate = False
+            List = ["native", "100", "250", "500", "750", "1000", "1250", "1500", "1750", "2000"]
+            Text = "250"
+          }
+        }
+        { PulseParseMeHbox2 HBox
+          MoveScaled(1,24,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk4 CheckBox
+            MoveScaled(1,1,18,4)
+            #Translate = False
+            Tag = "latency-hacks="
+            Text = "latency-hacks"
+          }
+          { ComboBox2 ComboBox
+            MoveScaled(21,1,24,4)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "no"
+          }
+        }
+        Index = 3
+        Text = ("Pcm")
+        { PcmParseMeHBox3 HBox
+          MoveScaled(1,2,45,5)
+          Tag = "noestimate"
+          Padding = 8
+          { CheckBox3 CheckBox
+            MoveScaled(1,1,18,4)
+            Tag = "nowaveheader"
+            Text = ("NoWaveHeader")
+          }
+        }
+        { PcmParseMeHBox4 HBox
+          MoveScaled(1,8,45,6)
+          Tag = "noestimate"
+          Padding = 8
+          { CheckBox4 CheckBox
+            MoveScaled(1,1,18,4)
+            Tag = "append"
+            Text = ("append")
+          }
+        }
+        { PcmParseMeHBox2 HBox
+          MoveScaled(1,15,45,6)
+          Padding = 8
+          { CheckBox2 CheckBox
+            MoveScaled(1,0,17,4)
+            Tag = "file="
+            Text = ("File")
+          }
+          { TextBox8 TextBox
+            MoveScaled(20,0,19,4)
+            Expand = True
+          }
+          { PcmFileOpen ToolButton
+            MoveScaled(40,0,3.2857,3.2857)
+            Picture = Picture["icon:/24/open"]
+          }
+        }
+        Index = 4
+        Text = ("Custom")
+        { Label5 Label
+          MoveScaled(2,1,36,4)
+          Text = (" Custom Driver(s) options, \"-ao \" is implicit.")
+        }
+        { HBox2 HBox
+          MoveScaled(1,6,55,5)
+          Margin = True
+          Padding = 6
+          { TextBox5 TextBox
+            MoveScaled(1,1,48,4)
+            Expand = True
+          }
+        }
+        Index = 0
+      }
+      { DriverDescription TextArea
+        MoveScaled(1,39,58,16)
+        Expand = True
+        Text = ("Driver Description")
+        ReadOnly = True
+        Wrap = True
+      }
+    }
+    { VBox1 VBox
+      MoveScaled(1,2,16,55)
+      { Label2 Label
+        MoveScaled(0,1,11,4)
+        AutoResize = True
+        Text = ("Driver priority")
+      }
+      { DriversPanel ScrollView
+        MoveScaled(0,6,15,48)
+        Background = Color.Background
+        ToolTip = ("Drag Elements with a mouse button to change their priority.\nmplayer will try to use the selected video drivers from top to bottom\nuntil it founds a workng driver.")
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Padding = 3
+        { AlsaBTN CheckBox AudioDriverList
+          Name = "AlsaBTN"
+          MoveScaled(1,5,10,4)
+          Tag = "      alsa (Linux only)\n              ALSA audio output driver\n\n              device=<device>\n                     Sets  the  device name. For ac3 output via S/PDIF, use an\n                     \"iec958\" or \"spdif\" device, unless you really know how to\n                     set it correctly.\n\n              resample=yes\n                     Enable  ALSA  resampling  plugin.  (This  is  disabled by\n                     default, because  some  drivers  report  incorrect  audio\n                     delay in some cases.)\n\n              mixer-device=<device>\n                     Set  the  mixer  device  used with --no-softvol (default:\n                     default).\n\n              mixer-name=<name>\n                     Set the name of the mixer element (default: Master). This\n                     is for example PCM or Master.\n\n              mixer-index=<number>\n                     Set the index of the mixer channel (default: 0). Consider\n                     the output of \"amixer scontrols\", then the index  is  the\n                     number that follows the name of the element.\n\n              non-interleaved\n                     Allow  output  of  non-interleaved  formats (if the audio\n                     decoder uses this format). Currently disabled by default,\n                     because some popular ALSA plugins are utterly broken with\n                     non-interleaved formats.\n"
+          Text = ("Alsa")
+          Value = CheckBox.True
+        }
+        { JackBTN2 CheckBox AudioDriverList
+          Name = "JackBTN2"
+          MoveScaled(1,10,10,4)
+          Tag = "       jack   JACK (Jack Audio Connection Kit) audio output driver\n\n              port=<name>\n                     Connects to the ports with the given name (default: phys‐\n                     ical ports).\n\n              name=<client>\n                     Client name that is passed to JACK (default: mpv). Useful\n                     if you want to have certain connections established auto‐\n                     matically.\n\n              (no-)autostart\n                     Automatically start jackd  if  necessary  (default:  dis‐\n                     abled).  Note  that  this tends to be unreliable and will\n                     flood stdout with server messages.\n\n              (no-)connect\n                     Automatically  create   connections   to   output   ports\n                     (default:  enabled).  When enabled, the maximum number of\n                     output channels will be limited to the number  of  avail‐\n                     able output ports.\n\n              std-channel-layout=alsa|waveext|any\n                     Select  the standard channel layout (default: alsa). JACK\n                     itself has no notion of channel layouts  (i.e.  assigning\n                     which speaker a given channel is supposed to map to) - it\n                     just takes whatever the application outputs, and reroutes\n                     it  to whatever the user defines. This means the user and\n                     the application are in charge of dealing with the channel\n                     layout.  alsa  uses  the  old  MPlayer  layout,  which is\n                     inspired  by  ALSA's  standard  layouts.  In  this  mode,\n                     ao_jack  will  refuse  to  play  3 or 7 channels (because\n                     these do not really have a defined meaning  in  MPlayer).\n                     waveext  uses  WAVE_FORMAT_EXTENSIBLE  order, which, even\n                     though it was defined by Microsoft, is  the  standard  on\n                     many  systems.   The value any makes JACK accept whatever\n                     comes from the audio filter chain, regardless of  channel\n                     layout  and without reordering. This mode is probably not\n                     very useful, other than for debugging or when  used  with\n                     fixed setups.\n\n"
+          Text = ("Jack")
+        }
+        { PulseBTN1 CheckBox AudioDriverList
+          Name = "PulseBTN1"
+          MoveScaled(1,14,10,4)
+          Tag = "       pulse  PulseAudio audio output driver\n\n              [<host>][:<output sink>]\n                     Specify  the  host  and optionally output sink to use. An\n                     empty <host> string uses a local connection,  \"localhost\"\n                     uses network transfer (most likely not what you want).\n\n              buffer=<1-2000|native>\n                     Set the audio buffer size in milliseconds. A higher value\n                     buffers more data, and has a lower probability of  buffer\n                     underruns.  A  smaller value makes the audio stream react\n                     faster, e.g. to playback speed changes. Default: 250.\n\n              latency-hacks=<yes|no>\n                     Enable  hacks  to  workaround  PulseAudio   timing   bugs\n                     (default:  no). If enabled, mpv will do elaborate latency\n                     calculations  on  its  own.  If  disabled,  it  will  use\n                     PulseAudio automatically updated timing information. Dis‐\n                     abling this might help with e.g. networked audio or  some\n                     plugins,  while  enabling  it  might help in some unknown\n                     situations (it used to be required to get  good  behavior\n                     on old PulseAudio versions).\n\n                     If  you  have  stuttering  video when using pulse, try to\n                     enable this option.  (Or  alternatively,  try  to  update\n                     PulseAudio.)\n\n\n"
+          Text = ("Pulse")
+        }
+        { PcmBTN2 CheckBox AudioDriverList
+          Name = "PcmBTN2"
+          MoveScaled(1,18,10,4)
+          Tag = "       pcm    Raw PCM/WAVE file writer audio output\n\n              (no-)waveheader\n                     Include or do  not  include  the  WAVE  header  (default:\n                     included). When not included, raw PCM will be generated.\n\n              file=<filename>\n                     Write  the  sound  to  <filename>  instead of the default\n                     audiodump.wav. If no-waveheader is specified, the default\n                     is audiodump.pcm.\n\n              (no-)append\n                     Append to the file, instead of overwriting it. Always use\n                     this with the no-waveheader option - with waveheader it's\n                     broken,  because  it  will write a WAVE header every time\n                     the file is opened.\n"
+          Text = ("Pcm")
+        }
+        { NullBTN CheckBox AudioDriverList
+          Name = "NullBTN"
+          MoveScaled(1,23,11,4)
+          Tag = "       null\n              Produces no audio output but maintains  video  playback  speed.\n              Use -nosound for benchmarking.\n"
+          Text = ("Null")
+        }
+        { CustomBTN CheckBox AudioDriverList
+          Name = "CustomBTN"
+          MoveScaled(1,27,11,4)
+          Tag = "\tWrite Your own driver options;\n\tEg: osd,alsa:noblock:device=hw=0.3,jack\n\n"
+          Text = ("Custom")
+        }
+      }
+    }
+  }
+  { HBox1 HBox
+    MoveScaled(0,61,76,4)
+    Spacing = True
+    Padding = 4
+    { Label6 Label
+      MoveScaled(0,0,28,4)
+      Foreground = &H646464&
+      Expand = True
+      Padding = 6
+      Text = ("Drivers are choosed from top to bottom, drag'n drop them to choose priority.")
+      Alignment = Align.Left
+    }
+    { SaveBTN Button
+      MoveScaled(29,0,13.4286,3.5714)
+      ToolTip = ("Save and use new settings")
+      AutoResize = True
+      Text = ("Save")
+      Picture = Picture["icon:/16/save"]
+    }
+    { ApplyBTN Button
+      MoveScaled(44,0,14,4)
+      ToolTip = ("Use new settings without save")
+      AutoResize = True
+      Text = ("Use ")
+      Picture = Picture["icon:/16/redo"]
+    }
+    { OkBTN Button
+      MoveScaled(60,0,14,4)
+      ToolTip = ("Close the window")
+      AutoResize = True
+      Text = ("Close")
+      Picture = Picture["icon:/16/cancel"]
+    }
+  }
+}

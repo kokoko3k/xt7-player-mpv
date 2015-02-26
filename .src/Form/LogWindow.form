@@ -1,0 +1,105 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,88.5714,62.8571)
+  Text = ("Log Window")
+  Icon = Picture["icon:/16/text"]
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  Padding = 6
+  { HBox3 HBox
+    MoveScaled(1,0,67,3.5714)
+    Spacing = True
+    { Label3 Label
+      MoveScaled(1,1,10,3)
+      AutoResize = True
+      Text = ("Stream")
+    }
+    { streamtextbox TextBox
+      MoveScaled(12,0,54,4)
+      Expand = True
+      ReadOnly = True
+    }
+  }
+  { TabStrip1 TabStrip
+    MoveScaled(3,5,62,35)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    Spacing = True
+    Margin = True
+    Padding = 4
+    Count = 2
+    Index = 0
+    Text = ("Output")
+    Picture = Picture["icon:/16/info"]
+    { HBox2 HBox
+      MoveScaled(2,2,58,4)
+      Spacing = True
+      { Label1 Label
+        MoveScaled(0,1,10,3)
+        AutoResize = True
+        Text = ("Highlight")
+      }
+      { searchterm ButtonBox
+        MoveScaled(7,0,25,4)
+        Expand = True
+        Picture = Picture["icon:/16/find"]
+      }
+    }
+    { LogArea TextEdit
+      MoveScaled(1,9,51,16)
+      Font = Font["Monospace"]
+      Expand = True
+    }
+    Index = 1
+    Text = ("Errors")
+    Picture = Picture["icon:/16/important"]
+    { HBox4 HBox
+      MoveScaled(2,1,58,4)
+      Spacing = True
+      { Label5 Label
+        MoveScaled(0,1,10,3)
+        AutoResize = True
+        Text = ("Highlight")
+      }
+      { searchterm2 ButtonBox
+        MoveScaled(7,0,25,4)
+        Expand = True
+        Picture = Picture["icon:/16/find"]
+      }
+    }
+    { ErrorArea TextEdit
+      MoveScaled(1,9,51,16)
+      Font = Font["Monospace"]
+      Expand = True
+    }
+    Index = 0
+  }
+  { Label2 Label
+    MoveScaled(4,41,66,3)
+    Visible = False
+    Font = Font["Italic"]
+    Text = ("(\"'R' means that the last line is repeating a lot of times\")")
+  }
+  { HBox1 HBox
+    MoveScaled(12,48,52,4)
+    Spacing = True
+    { Panel1 Panel
+      MoveScaled(0,-2,20,5)
+      Expand = True
+    }
+    { RefreshBTN Button
+      MoveScaled(22,0,13.5714,4)
+      AutoResize = True
+      Text = ("Refresh")
+      Picture = Picture["icon:/16/redo"]
+    }
+    { OkBTN Button
+      MoveScaled(37,0,13.5714,4)
+      AutoResize = True
+      Text = ("Close")
+      Picture = Picture["icon:/16/cancel"]
+    }
+  }
+}

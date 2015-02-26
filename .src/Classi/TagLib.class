@@ -1,0 +1,306 @@
+' Gambas class file
+
+' http://developer.kde.org/~wheeler/taglib.html
+' uses taglib c bindings (not c++)
+
+' all parameter has to be in utf-8
+
+'file i/o
+  Private Extern taglib_file_new(filename As String) As Pointer In "libtag_c:0"           'open the file
+  Private Extern taglib_file_is_valid(TagLibFileP As Pointer) As Boolean In "libtag_c:0"  'check if file is ok
+  Private Extern taglib_file_save(TagLibFileP As Pointer) As Boolean In "libtag_c:0"      'save the file
+  Private Extern taglib_file_free(TagLibFileP As Pointer) In "libtag_c:0"                 'close the file  
+  Private Extern taglib_set_strings_unicode(unicode As Boolean) In "libtag_c:0"           'false=use iso-8859-1
+'Get tag functions
+  Private Extern taglib_file_tag(TagLibFileP As Pointer) As Pointer In "libtag_c:0"             'returns a pointer to tags
+  Private Extern taglib_tag_title(TagLibTagP As Pointer) As String In "libtag_c:0"
+  Private Extern taglib_tag_artist(TagLibTagP As Pointer) As String In "libtag_c:0"
+  Private Extern taglib_tag_album(TagLibTagP As Pointer) As String In "libtag_c:0"
+  Private Extern taglib_tag_comment(TagLibTagP As Pointer) As String In "libtag_c:0"
+  Private Extern taglib_tag_genre(TagLibTagP As Pointer) As String In "libtag_c:0"
+  Private Extern taglib_tag_year(TagLibTagP As Pointer) As Integer In "libtag_c:0"
+  Private Extern taglib_tag_track(TagLibTagP As Pointer) As Integer In "libtag_c:0"
+
+'Set tag functions
+  Private Extern taglib_tag_set_title(TagLibTagP As Pointer, title As String) In "libtag_c:0"
+  Private Extern taglib_tag_set_artist(TagLibTagP As Pointer, artist As String) In "libtag_c:0"
+  Private Extern taglib_tag_set_album(TagLibTagP As Pointer, album As String) In "libtag_c:0"
+  Private Extern taglib_tag_set_comment(TagLibTagP As Pointer, comment As String) In "libtag_c:0"
+  Private Extern taglib_tag_set_genre(TagLibTagP As Pointer, genre As String) In "libtag_c:0"
+  Private Extern taglib_tag_set_year(TagLibTagP As Pointer, MyYear As Integer) In "libtag_c:0"
+  Private Extern taglib_tag_set_track(TagLibTagP As Pointer, track As Integer) In "libtag_c:0"
+
+'Get audio propeties functions
+  Private Extern taglib_file_audioproperties(TagLibFileP As Pointer) As Pointer In "libtag_c:0" 'returns a pointer to audio properties
+  Private Extern taglib_audioproperties_length(TagLibAudioPropertiesP As Pointer) As Integer In "libtag_c:0"
+  Private Extern taglib_audioproperties_bitrate(TagLibAudioPropertiesP As Pointer) As Integer In "libtag_c:0"
+  Private Extern taglib_audioproperties_samplerate(TagLibAudioPropertiesP As Pointer) As Integer In "libtag_c:0"
+  Private Extern taglib_audioproperties_channels(TagLibAudioPropertiesP As Pointer) As Integer In "libtag_c:0"
+
+
+Private TagLibFileP As Pointer
+Private TagLibTagP As Pointer
+Private TagLibAudioPropertiesP As Pointer
+
+Private Init_OK As Boolean = False
+
+Public Title As String
+Public Artist As String
+Public Album As String
+Public Comment As String
+Public Genre As String
+Public MyYear As String
+Public Track As String
+Public Length As String
+Public Bitrate As String
+Public Samplerate As String
+Public Channels As String
+
+Public Function IsSupported(filename As String) As Boolean
+  Dim extensions As String = "*.mp3;*.ogg;*.oga;*.flac;*.mpc;*.speex;*.spx;*.wavpack;*.wv;*.trueaudio;*.tta;*.aiff"
+  Dim fileExt As String = "." & File.Ext(filename)
+  If fileext = "." Then Return False
+  If (InStr(Upper(extensions), Upper(fileExt & ";")) > 0) Then
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+
+
+Public Function Init(AudioFileName As String) As Boolean
+  'try to open the file and determine the filetype
+  'return false if the file cannot be opened
+  'return false if the filetype cannot be determined
+  'return false if error
+  Title = ""
+  Artist = ""
+  Album = ""
+  Comment = ""
+  Genre = ""
+  MyYear = 0
+  Track = 0
+  Length = 0
+  Bitrate = 0
+  Samplerate = 0
+  Channels = 0
+  Try TagLibFileP = taglib_file_new(AudioFileName)
+  If Error Then
+    Debug "Error while initializing, is taglib installed?"
+    Debug
+    Return False
+  Endif
+  If (TagLibFileP = Null) Then 
+    Debug "Error while initializing"
+    Debug
+    Return False
+  Endif
+  If taglib_file_is_valid(TagLibFileP) Then
+    taglib_set_strings_unicode(False) 'Use iso-8859-1
+    TagLibTagP = taglib_file_tag(TagLibFileP)
+    TagLibAudioPropertiesP = taglib_file_audioproperties(TagLibFileP)
+    Title = Conv(taglib_tag_title(TagLibTagP), "ISO-8859-1", Desktop.Charset)
+    Artist = Conv(taglib_tag_artist(TagLibTagP), "ISO-8859-1", Desktop.Charset)
+    Album = Conv(taglib_tag_album(TagLibTagP), "ISO-8859-1", Desktop.Charset)
+    Comment = Conv(taglib_tag_comment(TagLibTagP), "ISO-8859-1", Desktop.Charset)
+    Genre = Conv(taglib_tag_genre(TagLibTagP), "ISO-8859-1", Desktop.Charset)
+    MyYear = taglib_tag_year(TagLibTagP)
+    If MyYear = "0" Then MyYear = ""
+    Track = taglib_tag_track(TagLibTagP)
+    If Track = "0" Then Track = ""
+    Length = taglib_audioproperties_length(TagLibAudioPropertiesP)
+    Bitrate = taglib_audioproperties_bitrate(TagLibAudioPropertiesP) * 1000
+    Samplerate = taglib_audioproperties_samplerate(TagLibAudioPropertiesP)
+    Channels = taglib_audioproperties_channels(TagLibAudioPropertiesP)
+    Init_OK = True
+    Return True
+      Else
+    Init_OK = False
+    Return False
+  Endif
+End
+
+Public Function Save() As Boolean
+  If Not (Init_OK) Then 
+    Debug "TagLib not Initialized, use .init()"
+    Debug
+    Return False
+  Endif
+  If taglib_file_save(TagLibFileP) Then 
+    If tlFree() Then
+      Return True
+    Endif
+    Debug "Successfully saved but couldn't free the resource"
+    Debug
+    Return False
+  Endif
+  Return True
+End
+
+
+Public Function tlFree() As Boolean
+  'close the file
+  If Not (Init_OK) Then Return False
+  Try taglib_file_free(TagLibFileP)
+  If Error Then 
+    Debug "Error, couldn't Free()"
+    Debug
+    Return False
+  Endif
+  Return True
+End
+
+
+Public Sub DesktopToIso88591(ByRef tag As String)
+  tag = Conv(tag, Desktop.Charset, "ISO-8859-1")
+End
+Public Sub Iso88591ToDesktop(ByRef tag As String)
+  tag = Conv(tag, "ISO-8859-1", Desktop.Charset)
+End
+
+
+Public Function WriteTags(FullPath As String, Album As String, Artist As String, Title As String, MyYear As String, Genre As String, TrackNo As String, Comment As String) As Boolean
+  If Not (Init_OK) Then 
+    Debug "TagLib not Initialized, use .init()"
+    Debug
+    Return False
+  Endif
+  If Not (SetAlbum(album)) Then Return False
+  If Not (SetArtist(artist)) Then Return False
+  If Not (SetTitle(title)) Then Return False
+  If Not (SetYear(MyYear)) Then Return False
+  If Not (SetGenre(genre)) Then Return False
+  If Not (SetTrack(TrackNo)) Then Return False
+  If Not (SetComment(comment)) Then Return False
+  Return True
+End
+
+
+Public Function SetTitle(titlex As String) As Boolean
+  If Not (Init_OK) Then 
+    Debug "TagLib not Initialized, use .init()"
+    Debug
+    Return False
+  Endif
+  If titlex = "" Then Return True
+  DesktopToIso88591(ByRef titlex)
+  Try taglib_tag_set_title(TagLibTagP, titlex)
+  If Error Then 
+    Debug "Error"
+    Debug
+    Return False
+  Endif
+  Iso88591ToDesktop(ByRef titlex)
+  title = titlex
+  Return True
+End
+
+Public Function SetArtist(artistx As String) As Boolean
+  If Not (Init_OK) Then 
+    Debug "TagLib not Initialized, use .init()"
+    Debug
+    Return False
+  Endif
+  If artistx = "" Then Return True
+  DesktopToIso88591(ByRef artistx)
+  Try taglib_tag_set_artist(TagLibTagP, artistx)
+  If Error Then 
+    Debug "Error"
+    Debug
+    Return False
+  Endif
+  Iso88591ToDesktop(ByRef artistx)
+  artist = artistx
+  Return True
+End
+
+Public Function SetAlbum(albumx As String) As Boolean
+  If Not (Init_OK) Then 
+    Debug "TagLib not Initialized, use .init()"
+    Debug
+    Return False
+  Endif
+  If albumx = "" Then Return True
+  DesktopToIso88591(ByRef albumx)
+  Try taglib_tag_set_album(TagLibTagP, albumx)
+  If Error Then 
+    Debug "Error"
+    Debug
+    Return False
+  Endif
+  Iso88591ToDesktop(ByRef albumx)
+  album = albumx
+  Return True
+End
+
+Public Function SetComment(commentx As String) As Boolean
+  If Not (Init_OK) Then 
+    Debug "TagLib not Initialized, use .init()"
+    Debug
+    Return False
+  Endif
+  If commentx = "" Then Return True
+  DesktopToIso88591(ByRef commentx)
+  Try taglib_tag_set_comment(TagLibTagP, commentx)
+  If Error Then 
+    Debug "Error"
+    Debug
+    Return False
+  Endif
+  Iso88591ToDesktop(ByRef commentx)
+  comment = commentx
+  Return True
+End
+
+Public Function SetGenre(genrex As String) As Boolean
+  If Not (Init_OK) Then 
+    Debug "TagLib not Initialized, use .init()"
+    Debug
+    Return False
+  Endif
+  If genrex = "" Then Return True
+  DesktopToIso88591(ByRef genrex)
+  Try taglib_tag_set_genre(TagLibTagP, genrex)
+  If Error Then 
+    Debug "Error"
+    Debug
+    Return False
+  Endif
+  Iso88591ToDesktop(ByRef genrex)
+  genre = genrex
+  Return True
+End
+
+Public Function SetYear(Yearx As Integer) As Boolean
+  If Not (Init_OK) Then 
+    Debug "TagLib not Initialized, use .init()"
+    Debug
+    Return False
+  Endif
+  Try taglib_tag_set_year(TagLibTagP, Yearx)
+  If Error Then 
+    Debug "Error"
+    Debug
+    Return False
+  Endif
+  MyYear = yearx
+  Return True
+End
+
+Public Function SetTrack(trackx As Integer) As Boolean
+  If Not (Init_OK) Then 
+    Debug "TagLib not Initialized, use .init()"
+    Debug
+    Return False
+  Endif
+  Try taglib_tag_set_track(TagLibTagP, trackx)
+  If Error Then 
+    Debug "Error"
+    Debug
+    Return False
+  Endif
+  track = trackx
+  Return True
+End
+

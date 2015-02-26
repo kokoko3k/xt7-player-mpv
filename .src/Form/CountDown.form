@@ -1,0 +1,29 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,36,16)
+  Text = ("ShutDown CountDown...")
+  { AbortBTN Button
+    MoveScaled(10,10,16,5)
+    AutoResize = True
+    Text = ("Abort")
+    Picture = Picture["icon:/16/cancel"]
+  }
+  { Timer1 #Timer
+  }
+  { Label1 Label
+    MoveScaled(0,1,36,3)
+    Text = ("ShutDown in")
+    Alignment = Align.Center
+  }
+  { Label2 Label
+    MoveScaled(0,6,36,4)
+    Text = ("seconds...")
+    Alignment = Align.Center
+  }
+  { SecondsLabel Label
+    MoveScaled(0,3,36,4)
+    Text = ("10")
+    Alignment = Align.Center
+  }
+}

@@ -1,0 +1,20 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,30,11)
+  Icon = Picture["icon:/16/pen"]
+  Resizable = False
+  { MyTextBox TextBox
+    MoveScaled(1,1,28,4)
+  }
+  { CancelBtn Button
+    MoveScaled(1,6,13,4)
+    Text = ("Cancel")
+    Picture = Picture["icon:/16/cancel"]
+  }
+  { OkBtn Button
+    MoveScaled(16,6,13,4)
+    Text = ("Ok")
+    Picture = Picture["icon:/16/ok"]
+  }
+}

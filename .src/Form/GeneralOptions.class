@@ -1,0 +1,1128 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
+Public InitDone As Boolean = False
+Const Pre As String = "* "
+Public TimesLoaded As Integer = 0 'Count how many times the form has been loaded
+
+Private LastDirectory As String = ""
+
+
+
+Public UntranslatedTabNames As String[] = ["VIDEO", "AUDIO", "LIBRARY", "TWEAKS", "DVD", "NETWORK", "LANGUAGE", "MISC"]
+
+Public Sub FirstLoadIfNeeded()
+  If Not initdone Then Init()
+  If Not AlreadyLoaded Then 
+    LoadDefault()
+    Alreadyloaded = True
+    Me.Refresh
+    Wait 0.001
+  Endif
+End
+
+
+Public Sub Form_Open()
+  FirstLoadIfNeeded()
+  Global.Center(Fmain, Me)
+  SLangComboBox.visible = False
+  ALangComboBox.visible = False
+  Button2.visible = True
+  Button1.visible = True
+  Me.show()
+  Wait 
+  Form_Resize()
+  'OptionsList.MoveFirst
+  'TabStrip1.index = 0
+End
+
+Public Sub Form_Resize()
+
+  TabStrip1.Y = 8
+  VBox1.y = TabStrip1.Y
+  VBox1.Height = Generaloptionsframe.Height - 20
+  TabStrip1.height = VBox1.Height
+  TabStrip1.X = OptionsList.x + OptionsList.Width + 16
+  TabStrip1.width = Generaloptionsframe.Width - OptionsList.Width - 24
+End
+
+
+Private Sub OptionFromTab()
+  'find the current tab caption in the filter list
+  'TRY Optionslist[Replace((TabStrip1.text), "&", "")].selected = TRUE
+  Dim i As Integer
+  OptionsList.movefirst
+  For i = 0 To OptionsList.Count - 1
+    If Upper(OptionsList.item.Text) = Upper(TabStrip1.Current.text) Then
+      Break
+        Else
+      OptionsList.MoveBelow()
+    Endif
+  Next 'i
+  Try optionslist[OptionsList.Item.Key].selected = True
+
+End
+
+Public Sub TabStrip1_Click()
+  'find the current tab caption in the filter list
+   If FMain.fullyloaded Then OptionFromTab()
+End
+
+
+Public Sub Init()
+  If initdone Then Return
+  Try Optionslist.Add("Video", ("Video"), Stock["32/video"])
+  Try Optionslist.Add("Audio", ("Audio"), Stock["32/audio"])
+  Try Optionslist.Add("Library", ("Library"), Stock["32/book"])
+  Try Optionslist.Add("Tweaks", ("Tweaks"), Stock["32/wizard"])
+  Try Optionslist.Add("Audio CD", ("Audio CD"), Stock["32/cdrom"])
+  Try Optionslist.Add("DVD", ("DVD"), Stock["32/cdrom"])
+  Try Optionslist.Add("Network", ("Network"), Stock["32/network"])
+  Try Optionslist.Add("DVB-T", ("DVB-T"), Picture["GeneralDVBT.png"])
+  Try Optionslist.Add("Language", ("Language"), Stock["32/language"])
+  Try Optionslist.Add("Misc", ("Misc"), Stock["32/options"])
+  Try Optionslist.Add("User options", ("User options"), Stock["32/terminal"])
+  Try Optionslist.Add("Style", ("Style"), Stock["32/color"])
+  DrawFiltersGui()
+  InitDone = True
+End
+
+
+Private Sub DrawFiltersGui()
+  Dim Resolution As String = ("resolution")
+  Dim Switchable As Boolean = True
+  Dim NotSwitchable As Boolean = False
+  Dim AllParams As New Variant[]
+  AllParams.Clear
+
+
+    AllParams.Add(["CHOOSE", ("Hardware decoding"), "no", "auto", "vdpau", "vaapi", "vaapi-copy", "hwdec", ""])
+    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Specify the hardware video decoding API that should be used if possible.\nWhether hardware decoding is actually done depends on the video  codec.\nIf hardware decoding is not possible, mpv will fall back on software decoding.  \n mpv option: hwdec"))
+    AllParams.Clear
+
+
+  '-channels <number> (also see -af channels) 
+    AllParams.Add(["CHOOSE", ("Output Channels"), "2 - Stereo", "4 - Surround", "6 - Full 5.1", "8 - Full 7.1", "audio000channels", ""])
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Request the number of playback channels (default: 2).\n This is usually only important when playing videos with AC-3 audio (like DVDs).\n mpv option: audio-channels"))
+    AllParams.Clear
+    
+  '-softvol
+    AllParams.add(["CHOOSE", ("Software Volume control"), "no", "yes", "auto", "softvol", ("Required by Maximum Amplification")])
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Force the use of the software mixer, instead of using the sound card mixer.\n mpv option: softvol"))
+    AllParams.Clear
+      
+  '-softvol-max <10.0-10000.0>
+    AllParams.add(["RANGE", ("Maximum Amplification"), "10", "110", "10000", "softvol000max", "%"])
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Set the maximum amplification level in percent (default: 110).\n A value of 200 will allow you to adjust the volume up to a maximum of double the current level.\n mpv option: -softvol-max"))
+    AllParams.Clear
+    
+  '-speed <0.01-100>
+    AllParams.Add(["CHOOSE", ("Initial speed"), "0.5 #-12", "0.529731547179648 #-11", "0.561231024154687 #-10", "0.594603557501361 #-9", "0.629960524947437 #-8", "0.667419927085017 #-7", "0.707106781186548 #-6", "0.749153538438341 #-5", "0.7937005259841 #-4", "0.840896415253715 #3-", "0.890898718140339 #-2", "0.943874312681693 #-1", "1 #0", "1.05946309435295 #+1", "1.12246204829593 #+2", "1.18920711498136 #+3", "1.2599210498647 #+4", "1.33483985413008 #+5", "1.4142135623223 #+6", "1.4983070768139 #+7", "1.58740105189218 #+8", "1.68179283041682 #+9", "1.78179743617402#+10", "1.88774862523908 #+11", "2 #+12", "speed", ("Set initial playback tempo/pitch")])
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("#-12..#+12 are semitones.\n See also 'speed' under 'scaletempo' filter in chains window.\n mpv option: speed"))
+    AllParams.Clear
+    
+  ' '-delay < sec >
+  '   AllParams.add(["RANGEFLOAT", ("Audio Delay"), "-600", "0", "600", "delay", ("Seconds")])
+  '   Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Positive values delay the audio, and negative values delay the video.\n mpv option: audio-delay"))
+  '   AllParams.Clear
+  ' 
+  ' '-idx
+  '   AllParams.add(["SWITCH", ("Rebuild Index if necessary"), "DISABLED", "idx", ("Use it to repair broken files")])
+  '   Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("\n mpv option: -idx"))
+  '   AllParams.Clear
+  ' 
+  ' '-forceidx
+  '   AllParams.add(["SWITCH", ("Always rebuild Index"), "DISABLED", "forceidx", ("Use it to repair broken files")])
+  '   Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("\n mpv option: -forceidx"))
+  '   AllParams.Clear
+
+  '-stop-xscreensaver
+    AllParams.add(["SWITCH", "Stop screensaver", "Enabled", "stop000screensaver", ("Turns off xscreensaver at startup")])
+    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Turns off screensaver at startup and turns it on again on exit.\nUses XSS and XResetScreenSaver API.\nmpv option: -stop-xscreensaver"))
+    AllParams.Clear
+   
+  '-aspect <ratio> (also see -zoom)
+    AllParams.Add(["CHOOSE", ("video-aspect"), "4:3 - 1.33", "16:9 - 1.77", "16:10 - 1.60", "2.35:1 - 2.35", "1.25:1 - 1.25", "video-aspect", ""])
+    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Override movie aspect ratio, in case aspect information\n is incorrect or missing in the file being played.\n mpv option: video-aspect"))
+    AllParams.Clear
+
+  '   
+  ' '-fps <float value>
+  '   AllParams.add(["RANGEFLOAT", "Framerate", "0.1", "30", "300", "fps", ("Framerate override")])
+  '   Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Force video Framerate.\n Will probably cause Audio/Video desync.\n mpv option: -fps"))
+  '   AllParams.Clear
+  ' 
+   '-autosync
+     AllParams.add(["RANGE", "autosync", "0", "30", "10000", "autosync", ("Gradually adjusts the A/V sync based on audio delay measurements.")])
+     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Try  -autosync 30 to smooth out problems with sound drivers which do not implement a perfect audio delay measurement.\n [..] mpv option: autosync"))
+     AllParams.Clear
+     
+     '-mc
+     AllParams.add(["RANGEFLOAT", "mc", "0", "0.001", "1", "mc", ("maximum A-V sync correction per frame (in seconds)")])
+     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("maximum A-V sync correction per frame (in seconds)\n mplayer options: -mc"))
+     AllParams.Clear
+     
+
+
+
+  '-cookies
+    AllParams.add(["SWITCH", ("Send cookies"), "DISABLED", "cookies", ("Only valid for http:// Uries")])
+    Global.DrawGui(AllParams, ("Network"), Tabstrip1, NotSwitchable, ("Send cookies to websites when playing http:// Uries,\n Cookie file must be in Netscape format.\n mpv option: cookies"))
+    AllParams.Clear
+  
+  '-cookies-file <filename> (network only)
+    AllParams.add(["FILEREQ", "\"" & "cookies.txt" & "\"" & " " & ("location") & ": ", "DIR", "cookies000file ", " "])
+    Global.DrawGui(AllParams, ("Network"), Tabstrip1, NotSwitchable, ("Specify cookies.txt location\n mpv option: cookies-file"))
+    AllParams.Clear
+
+  ' 
+  ' '-prefer-ipv4
+  '   AllParams.add(["SWITCH", ("prefer-ipv4"), "DISABLED", "prefer000ipv4", ("try ipv4 first")])
+  '   Global.DrawGui(AllParams, ("Network"), Tabstrip1, NotSwitchable, ("Use IPv4 on network connections.  Falls back on IPv6 automatically.\n-prefer-ipv4 (network only)"))
+  '   AllParams.Clear
+
+  '-lavdopts threads
+    AllParams.Add(["RANGE", "threads (lavdopts)", "0", "0", "16", "vd000lavc000threads", ("(MPEG-1/2 and H.264 only)")])
+    Global.DrawGui(allParams, ("Tweaks"), Tabstrip1, Switchable, ("Number of threads to use for decoding.\n0 means autodetect\nmpv option: vd-lavc-threads "))
+    AllParams.Clear
+      
+  ' '-lavdopts lowres
+  '   resolution = ("resolution")
+  '   AllParams.Add(["CHOOSE", ("Lowres (lavdopts)"), "=0 - disabled", "=1 - 1/2 " & resolution, "=2 - 1/4  " & resolution, "=3 - 1/8  " & resolution, "lavdopts00998Alowres", ""])
+  '   Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Decode at lower resolutions.  Low resolution decoding\nis not supported by all codecs, and it will  often result\nin ugly artifacts.  This is not a bug, but a side effect\nof not decoding at full resolution.\n mpv option: -lavdopts"))
+  '   AllParams.Clear
+
+  '-lavdopts fast
+    AllParams.add(["SWITCH", "Fast (lavdopts)", "DISABLED", "vd000lavc000fast", ("(MPEG-2, MPEG-4, and H.264 only)")])
+    Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Enable optimizations which do not comply to the specification\nand might potentially cause problems, like simpler dequantization,\nsimpler motion compensation, assuming use of the  default\nquantization  matrix, assuming YUV 4:2:0 and skipping\na few checks to detect damaged bitstreams.\n mpv option: vd-lavc-fast"))
+    AllParams.Clear
+
+  '-lavdopts skiploopfilter
+    AllParams.Add(["CHOOSE", "Skiploopfilter (lavdopts)", "none", "default", "nonref", "bidir", "nokey", "all", "vd000lavc000skiploopfilter", ("(H.264 only)")])
+    Global.DrawGui(allParams, ("Tweaks"), Tabstrip1, Switchable, ("Skips the loop filter (AKA deblocking) during H.264 decoding.\nthis has a worse effect on quality\nBut at least for high bitrate HDTV this provides a big speedup\nwith  no visible quality loss.\n mpv option: vd-lavc-skiploopfilter"))
+    AllParams.Clear
+    
+  ' '-noslices 
+  '   AllParams.add(["SWITCH", "noslices", "DISABLED", "noslices", ("libmpeg2 and libavcodec codecs only")])
+  '   Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Disable drawing video by 16-pixel height slices/bands,\ninstead draws the whole frame in a single  run.\nMay  be faster  or slower, depending on video card and available cache.\n mpv option: -noslices"))
+  '   AllParams.Clear
+  ' 
+  ' '-zoom
+  '   AllParams.add(["SWITCH", "Zoom", "DISABLED", "zoom", ("Allow software scaling")])
+  '   Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Allow  software scaling, where hardware scaling is unavailable. \nThis will allow scaling with output drivers (like x11, fb-dev)\n that do not support hardware scaling where MPlayer disables\n scaling by default for performance reasons.\n mpv option: -zoom"))
+  '   AllParams.Clear
+        
+  ' '-sws <software scaler type>
+  '   AllParams.Add(["CHOOSE", ("Scaler type (-sws)"), ("0 - fast bilinear"), ("1 - bilinear"), ("2 - bicubic (good quality) (default)"), ("3 - experimental"), ("4 - nearest neighbor (bad quality)"), ("5 - area"), ("6 - luma bicubic/chroma bilinear"), "7 - gauss", "8 - sincR", "9 - lanczos", ("10 - natural bicubic spline"), "sws", ""])
+  '   Global.DrawGui(allParams, ("Video"), Tabstrip1, Switchable, ("Specify  the  software  scaler  algorithm to be used with --vf=scale. This also affects video output drivers which lack hardware acceleration, e.g. x11. "))
+  '   AllParams.Clear
+    
+  '-framedrop
+    AllParams.add(["CHOOSE", "FrameDrop", "vo", "no", "decoder", "decoder+vo", "framedrop", ("Skip frames to maintain A/V sync")])
+    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Skip displaying some frames to maintain A/V sync,\n or playing high framerate video on video output that hace a lower upper framerate limit\nmpv option: -framedrop"))
+    AllParams.Clear
+    
+  '-framedrop
+    AllParams.add(["CHOOSE", ("Field dominance"), "auto", "auto", "top", "bottom", "field000dominance", ("-1=auto (default)")])
+    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Set first field for interlaced content\n mpv option: -field-dominance"))
+    AllParams.Clear
+    
+  '-dvd-speed
+    AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "dvd000speed", ("X")])
+    Global.DrawGui(AllParams, ("DVD"), Tabstrip1, Switchable, ("Try to limit DVD speed. 0 means no change.\nNote that you need write access to dvd device\n mpv option: -dvd-speed"))
+    AllParams.Clear
+    
+  '-cdda speed=
+    'AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "cdda00998Aspeed=", ("X")])
+    AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "cdda000speed", ("X")])
+    Global.DrawGui(AllParams, ("Audio CD"), Tabstrip1, Switchable, ("Try to limit cdrom speed. 0 means no change.\nNote that you need write access to dvd device\n mpv option: -cdda speed=x"))
+    AllParams.Clear
+
+  '-hr-mp3-seek
+    AllParams.add(["CHOOSE", ("High resolution seek"), "no", "absolute", "yes", "hr-seek", ("Hi-res MP3 seeking")])
+    Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Select when to use precise seeks that are not limited to keyframes. \nMay be slower\nmpv option: hr-seek"))
+    AllParams.Clear
+  
+  
+End
+
+
+
+Public Sub OptionsList_Select()
+  ItemSelection()
+End
+
+
+Public Sub OptionsList_Click()
+  ItemSelection()
+End
+
+Private Sub ItemSelection()
+
+  Dim caption As String
+
+  If OptionsList.Current.Key = "Chains" Then
+    Chains.show
+  Else If OptionsList.Current.key = "Subtitles" Then
+    SubAndOsd.show
+  Else If OptionsList.Current.key = "Video drivers" Then
+    XConfigureVideoDriver.show
+  Else If OptionsList.Current.key = "Audio drivers" Then
+    XConfigureAudioDriver.show
+  Else
+  'Fire up the tab relative TO the item list by its name:
+      Caption = OptionsList.Current.text
+      TabStrip1.index = Global.TabIndexByName(Caption, Tabstrip1)
+  Endif
+
+End
+
+
+Public Struct mpvOption
+  name As String
+  data As String
+End Struct
+
+
+Private Function newopt(name As String, data As String) As MpvOption
+  Dim myopt As New MpvOption
+  myopt.name = name
+  myopt.data = data
+  Return myopt
+End
+
+
+Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
+  Dim previndex, i As Integer = 0
+  Dim Option As Object
+  Dim Thescrollview As Object
+  Dim TheBox As Object
+  Dim AllOptions As String = ""
+  Dim lparam As String
+  Dim lparams As New String[]
+  Dim lparamposstart As Integer = 0
+  Dim lparamposend As Integer = 0
+  Dim lopts As Integer = 0
+  Dim s, e As Integer
+  Dim tmpstr As String
+  Dim myopts As New MpvOption[]
+
+  Previndex = Tabstrip1.index
+  For i = 0 To TabStrip1.count - 1
+    TabStrip1.index = i
+    For Each TheScrollview In Tabstrip1.children
+      For Each TheBox In TheScrollview.children
+        If Not (Upper(TheBox.name) Like "NOPARSE*") Then
+          For Each Option In TheBox.children
+            If (Option Is Checkbox) Then
+              If Option.value = True Then 'if checkbox is checked
+                If Option.next Is Label Then 'if the checkbox is alone then read just it
+                  myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), "yes"))
+                    Else 'or else, if checkbox is not alone,parse the value of the next control
+                  If Option.next Is ComboBox Then 'combobox does not have value, but text
+                    myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), Split(Option.next.text, " ")[0]))
+                    Else If Option.next Is StringFileReqClass Then 'file/dir Name, insert double quotes around
+                      myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), "\"" & Option.next.value & "\""))
+                      AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & "\"" & Option.next.value & "\""
+                      Else
+                    Try myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), Option.next.value))
+                    Try AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & Option.next.value
+                  Endif
+                Endif
+              Endif
+            Endif
+          Next
+        Endif
+      Next
+    Next
+  Next 'i
+    Tabstrip1.index = PrevIndex
+    
+        
+  'dvb-in and tsprobe:
+  myopts.Add(newopt("dvbin-card", spinboxcard.value))
+  alloptions = alloptions & " -dvbin card=" & spinboxcard.value
+  myopts.Add(newopt("dvbin-timeout", spinboxtimeout.value))
+  alloptions = alloptions & " -dvbin timeout=" & spinboxtimeout.value
+  If tsprobechk.value Then
+     myopts.Add(newopt("demuxer-lavf-probesize", comboboxtsprobe.text))
+  Endif
+  Return myopts.Insert(parse_custom_options())
+  
+End
+
+Public Sub ApplyBTN_Click()
+  FMain.Apply
+  Wait 0.1
+  'IF ((NOT FMain.mplayer.ProcessRunningOvr()) OR (Fmain.mplayer.paused)) OR (GeneralOptions.Tabstrip1.caption = ("Style")) THEN 'apply style changes only if mplayer is not running.
+    FMain.SetStyle_early()
+    FMain.SetStyle_later()
+    Fmain.UpdateSearchResults(Fmain.mylibrary, Fmain.Librarygrid, fmain.fullyloaded, fmain.Searchfield.text)
+    Fmain.UpdateSearchResults(Fmain.myplaylist, Fmain.PlaylistGrid, fmain.fullyloaded, fmain.SearchfieldPLS.text)
+    global.AddUserExtensions(KnownExtensions.text)
+  'ENDIF
+  Last.mouse = mouse.default
+End
+
+Public Sub OkBTN_Click()
+  Me.Hide
+  Wait 0.1
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.SetFocus()
+End
+
+
+
+Public Sub LoadWatchDir(ProfileName As String)
+  Dim filename As String = ProfileName & ".profile/" & "Watch.txt"
+  Dim ItemList As New String[] 
+  Dim i As Integer
+  Try itemlist = Split(file.Load(filename), "\n", "", True)
+  If Error Then Return
+  NoParseWatchedListbox.clear
+  For i = 0 To ItemList.count - 1
+    NoParseWatchedListbox.Add(itemlist[i])
+  Next 'i
+  'IF NOT IsDupe(" ", TheComboBox) THEN TheComboBox.Add(" ")
+End
+
+Public Sub LoadExcludeDir(ProfileName As String)
+  Dim filename As String = ProfileName & ".profile/" & "Exclude.txt"
+  Dim ItemList As String[]
+  Dim i As Integer
+  Try itemlist = Split(file.Load(filename), "\n", "", True)
+  If Error Then Return
+  NoParseExcludedListbox.clear
+  For i = 0 To ItemList.count - 1
+    NoParseExcludedListbox.Add(itemlist[i])
+  Next 'i
+  'IF NOT IsDupe(" ", TheComboBox) THEN TheComboBox.Add(" ")
+End
+
+Public Sub SaveWatchDir(ProfileName As String)
+  Dim filename As String = ProfileName & ".profile/" & "Watch.txt"
+  Dim outfile As File
+  Dim i As Integer = 0
+  If Not Exist(file.Dir(filename), True) Then
+    Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(filename)))))
+    Try Mkdir File.Dir(File.dir(File.Dir(File.Dir(filename))))
+    Try Mkdir File.dir(File.Dir(File.Dir(filename)))
+    Try Mkdir File.Dir(File.Dir(filename))
+    Try Mkdir File.Dir(filename)
+  Endif
+  outfile = Open filename For Write Create
+  For i = 0 To NoParseWatchedListbox.Count - 1
+    Print #outfile, NoParseWatchedListbox[i].text
+  Next 'i
+  Close #outfile
+End
+
+Public Sub SaveExcludeDir(ProfileName As String)
+  Dim filename As String = ProfileName & ".profile/" & "Exclude.txt"
+  Dim outfile As File
+  Dim i As Integer = 0
+  If Not Exist(file.Dir(filename), True) Then
+    Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(filename)))))
+    Try Mkdir File.Dir(File.dir(File.Dir(File.Dir(filename))))
+    Try Mkdir File.dir(File.Dir(File.Dir(filename)))
+    Try Mkdir File.Dir(File.Dir(filename))
+    Try Mkdir File.Dir(filename)
+  Endif
+  outfile = Open filename For Write Create
+  For i = 0 To NoParseExcludedListbox.Count - 1
+    Print #outfile, NoParseExcludedListbox[i].text
+  Next 'i
+  Close #outfile
+End
+
+Public Sub AddBtn_Click()
+  If LastDirectory = "" Then LastDirectory = Global.StartFolder
+  myDialog.path = LastDirectory
+  If myDialog.SelectDirectory() Then Return
+  NoParseWatchedListbox.Add(DConv(myDialog.path))
+  LastDirectory = myDialog.path
+End
+
+Public Sub AddBtn3_Click()
+  If LastDirectory = "" Then LastDirectory = Global.StartFolder
+  myDialog.path = LastDirectory
+  If myDialog.SelectDirectory() Then Return
+  NoParseExcludedListbox.Add(DConv(myDialog.path))
+  LastDirectory = myDialog.path
+End
+
+Public Sub DeleteSelected(MyListbox As Listbox)
+  Dim i As Integer = MyListbox.Count
+  If i > 0 Then
+    Repeat
+      i = i - 1
+      If MyListbox[i].Selected Then MyListbox.Remove(i)
+    Until i = 0
+  Endif
+End
+
+
+Public Sub DelBtn_Click()
+  'IF Message.Question(("Are you sure you want to delete selected items?"), ("Yes, Delete"), ("Don't delete")) = 1 THEN
+  If MyQuestion.ask(("Are you sure you want to delete selected items?"), ("Yes, Delete"), ("Don't delete")) = 1 Then
+     DeleteSelected(NoParseWatchedListbox)
+  Endif
+End
+
+Public Sub DelBtn3_Click()
+  'IF Message.Question(("Are you sure you want to delete selected items?"), ("Yes, Delete"), ("Don't delete")) = 1 THEN
+  If MyQuestion.ask(("Are you sure you want to delete selected items?"), ("Yes, Delete"), ("Don't delete")) = 1 Then
+     DeleteSelected(NoParseExcludedListbox)
+  Endif
+End
+
+Public Sub NoParseWatchedListbox_KeyPress()
+  If Key.code = Key.delete Then DelBtn_Click()
+End
+
+Public Sub NoParseExcludedListbox_KeyPress()
+  If Key.code = Key.delete Then DelBtn_Click()
+End
+
+Public Sub NoParseWatchedListbox_Drop()
+  Dim droppedfiles As String[]
+  Dim DroppedFile As String
+
+  droppedfiles = Split(Drag.Paste("text/uri-list"), "\n\r", "", True)
+  For Each DroppedFile In Droppedfiles
+    If Trim(DroppedFile) <> "" Then
+      droppedfile = DConv(Global.NoFileSuffix(Global.FormatDrag(droppedfile)))
+      If Stat(DroppedFile, True).Type = gb.Directory Then NoParseWatchedListbox.Add(DroppedFile)
+    Endif
+  Next
+End
+
+Public Sub NoParseExcludedListbox_Drop()
+  Dim droppedfiles As String[]
+  Dim DroppedFile As String
+
+  droppedfiles = Split(Drag.Paste("text/uri-list"), "\n\r", "", True)
+  For Each DroppedFile In Droppedfiles
+    If Trim(DroppedFile) <> "" Then
+      droppedfile = DConv(Global.NoFileSuffix(Global.FormatDrag(droppedfile)))
+      If Stat(DroppedFile, True).Type = gb.Directory Then NoParseExcludedListbox.Add(DroppedFile)
+    Endif
+  Next
+End
+
+Public Sub MenuLoadDefault_Click()
+  LoadDefault()
+  'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
+End
+
+Public Sub LoadDefault()
+  Dim MySettings As New SettingsClass
+  MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
+  LoadWatchDir(global.confpath & "/" & global.CurrentProfile)
+  Try LoadExcludeDir(global.confpath & "/" & global.CurrentProfile)
+  Alreadyloaded = True
+  TimesLoaded += 1
+End
+
+
+
+Public Sub SaveBTN_Click()
+  FMain.SetStyle_early()
+  FMain.SetStyle_later()
+  Last.mouse = mouse.wait
+  Fmain.UpdateSearchResults(Fmain.mylibrary, FMain.Librarygrid, fmain.fullyloaded, fmain.Searchfield.text)
+  Fmain.UpdateSearchResults(Fmain.myplaylist, FMain.PlaylistGrid, fmain.fullyloaded, fmain.SearchfieldPLS.text)
+  SaveCurrentTo(global.CurrentProfile)
+  global.AddUserExtensions(KnownExtensions.text)
+  Last.mouse = mouse.default
+End
+
+
+
+
+Public Sub ToolTipsCHK_Click()
+  Try Application.showToolTip = ToolTipsCHK.value
+  Try Application.showToolTips = ToolTipsCHK.value
+
+End
+
+Public Sub MplayerExeOpen_Click()
+  Dim tmp As String[]
+  Dim expat As String = myDialog.Path
+  tmp = myDialog.filter
+  myDialog.filter = ["*.*;*", "mplayer executable"]
+  myDialog.path = "/usr"
+  If Not (MyDialog.OpenFile()) Then
+    MplayerExeText.text = "\"" & myDialog.path & "\""
+  Endif
+  myDialog.filter = tmp
+  myDialog.path = expat
+End
+
+Public Sub ScanExeOpen_Click()
+  Dim tmp As String[]
+  Dim expat As String = myDialog.Path
+  tmp = myDialog.filter
+  myDialog.filter = ["*.*;*", "scan executable"]
+  myDialog.path = "/usr"
+  If Not (myDialog.OpenFile()) Then
+    ScanExeText.text = myDialog.Path
+  Endif
+  myDialog.filter = tmp
+  myDialog.path = expat
+End
+
+Public Sub FemonExeOpen_Click()
+  Dim tmp As String[]
+  Dim expat As String = myDialog.Path
+  tmp = myDialog.filter
+  myDialog.filter = ["*.*;*", "femon executable"]
+  myDialog.path = "/usr"
+  If Not (myDialog.OpenFile()) Then
+    FemonExeText.text = myDialog.Path
+  Endif
+  myDialog.filter = tmp
+  myDialog.path = expat
+End
+
+Public Sub AddBtn2_Click()
+  If Not global.LSyncing Then
+    NOPARSEVBox2.mouse = Mouse.Wait
+    FMain.MenuLibraryUpdate_Click()
+  Endif
+
+End
+
+Public Sub Form_Close()
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+End
+
+Public Sub Form_Hide()
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+End
+
+Public Sub DvdDeviceOpen2_Click()
+  Dim tmp As String[]
+  Dim expat As String = myDialog.Path
+  tmp = myDialog.filter
+  myDialog.filter = ["*.*;*", "Dvd device"]
+  myDialog.path = "/dev/"
+  If Not (myDialog.OpenFile()) Then
+   DvdDeviceText.text = DConv(myDialog.Path)
+  Endif
+  myDialog.filter = tmp
+  myDialog.path = expat
+End
+
+Public Sub CDDADeviceOpen_Click()
+  Dim tmp As String[]
+  Dim expat As String = myDialog.Path
+  tmp = myDialog.filter
+  myDialog.filter = ["*.*;*", "Dvd device"]
+  myDialog.path = "/dev/"
+  If Not (myDialog.OpenFile()) Then
+   CDDADeviceText.text = DConv(myDialog.Path)
+  Endif
+  myDialog.filter = tmp
+  myDialog.path = expat
+End
+
+Public Sub Button1_Click()
+  Button1.visible = False
+  AlangComboBox.visible = True
+  AlangComboBox.Popup
+End
+Public Sub Button2_Click()
+  Button2.visible = False
+  SlangComboBox.visible = True
+  SlangComboBox.Popup
+End
+
+Public Sub ToolButton1_Click()
+  AudioLangList.clear
+End
+Public Sub ToolButton2_Click()
+  SubLangList.clear
+End
+
+
+Public Sub AlangComboBox_Click()
+  AudioLangList.text = Trim(AudioLangList.text)
+  If AudioLangList.text <> "" Then AudioLangList.text = AudioLangList.text & ","
+  AudioLangList.text = AudioLangList.text & Trim(Split(AlangComboBox.Text, "(", "", True)[0])
+  AlangComboBox.visible = False
+  Button1.visible = True
+End
+
+Public Sub SlangComboBox_Click()
+  SubLangList.text = Trim(SubLangList.text)
+  If SubLangList.text <> "" Then SubLangList.text = SubLangList.text & ","
+  SubLangList.text = SubLangList.text & Trim(Split(SlangComboBox.Text, "(", "", True)[0])
+  SLangComboBox.visible = False
+  Button2.visible = True
+End
+
+Public Sub CoverCHK2_Click()
+  If CoverCHK2.value = False Then FMain.ShowAudioPanel(False)
+End
+
+Public Sub AddBtn4_Click()
+  Fmain.Mylibrary.Exclude(Fmain.LibraryGrid, NoParseExcludedListbox)
+  FMain.UpdateSearchResults(FMain.MyLibrary, FMain.LibraryGrid, fmain.FullyLoaded, fmain.Searchfield.text)
+End
+
+
+'----------------------------------------------------------------------------------------------------
+
+Public Sub FontChoose_Click()
+  myDialog.Font = Last.font
+  myDialog.Font.StrikeOut = False
+  myDialog.Font.Underline = False
+  If Not (myDialog.SelectFont()) Then
+    Try Last.font = myDialog.font
+    Try Last.previous.text = myDialog.Font.name & " " & myDialog.Font.size
+    If myDialog.Font.bold Then Try Last.previous.text = Last.previous.text & ", Bold"
+    If myDialog.Font.Italic Then Try Last.previous.text = Last.previous.text & ", Italic"
+  Endif
+End
+
+Public Sub ColorChoose_Click()
+  myDialog.color = Last.background
+  If Not (myDialog.SelectColor()) Then
+    Try Last.background = myDialog.color
+  Endif
+End
+
+Public Sub ResetButton_Click()
+  Try Last.next.text = "Default"
+  If Upper(Last.name) <> "RESETBUTTON2" Then
+    Try Last.next.NEXT.font = ""
+    ' [GB2:BCOL] Try Last.next.NEXT.next.background = color.Default
+    Try Last.next.NEXT.next.Background = color.Default
+      Else
+    ' [GB2:BCOL] Try Last.next.NEXT.next.background = color.White
+    Try Last.next.NEXT.next.Background = color.White
+    Try Last.next.NEXT.font = ""
+    Try Last.next.NEXT.font.size = 12
+    Try Last.next.NEXT.font.bold = True
+  Endif
+  If Upper(Last.name) = "RESETBUTTON4" Then
+    ColorChooseBTN4.background = color.white
+  Endif
+  If Upper(Last.name) = "RESETBUTTON1" Then
+    ColorChooseBTN1.background = color.Foreground
+  Endif
+End
+
+
+Public Sub BackResetButton_Click()
+  If Upper(Last.name) = "BACKRESETBUTTON2" Then 'leftside lists
+    ' [GB2:BCOL] Try Last.next.background = &EEEEFF&
+    Try Last.next.Background = &F5F5F5&
+      Else If Upper(Last.name) = "BACKRESETBUTTON3" Then  'trayicon
+        Last.next.Background = &2A2D3C&
+          Else If Upper(Last.name) = "BACKRESETBUTTON1" Then  'trayicon
+            Last.next.Background = &FFFFFF&
+      Else
+    ' [GB2:BCOL] Try Last.next.background = color.default
+    Try Last.next.Background = color.default
+  Endif
+End
+
+
+'----------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+' PUBLIC SUB FLASHCHK2_Click()
+'   FMain.SetFlashTabVisibility(FLASHCHK2.value = TRUE)
+'   Fmain.FlashCHK.value = FLASHCHK2.value
+' END
+
+
+
+Public Sub SaveGeometryCHK_Click()
+
+  SaveGeometryCompizCHK.enabled = Last.value
+
+End
+
+Public Sub SaveGeometryCompizCHK_Click()
+
+  
+
+End
+
+Public Sub Tabstrip1_MouseWheel()
+
+  TabStrip1_Click()
+
+End
+
+Public Sub Tabstrip1_KeyPress()
+
+  TabStrip1_Click()
+
+End
+
+
+Public Sub labelcheck_MouseUp()
+  If Last.previous Is CheckBox Then
+    Last.previous.value = Not Last.previous.value
+  Endif
+End
+
+Public Function FindCdDvdDevices() As String[]
+  Dim devices, devices2 As New String[]
+  Dim device, pointsto, devicefullpath As String
+  Dim cdpattern As String = "cdr*"
+  Dim dvdpattern As String = "dvd*"
+  Dim srpattern As String = "sr*"
+  Dim devdir As String = "/dev/"
+  'find cdroms,cdrws,dvdroms,dvdrws
+  devices = Dir(devdir, cdpattern, gb.device).Insert(Dir(devdir, dvdpattern, gb.device)).Insert(Dir(devdir, srpattern, gb.device)).sort()
+  'convert them to a link (eventually with -e)
+  For Each device In devices
+    devicefullpath = devdir & device
+      Shell "readlink -e " & devicefullpath To pointsto
+    'add them only if they're not dupes
+    If (devices2.Find(Trim(pointsto)) = -1) Then devices2.Add(Trim(pointsto))
+  Next 'device
+  Return devices2
+End
+
+
+Public Sub FillCdda()
+  Dim device As String
+  Dim previous As String
+  Try previous = CDDADeviceText.text
+  CDDADeviceText.clear
+  If (CDDADeviceText.Find(previous) = -1) Then CDDADeviceText.add(previous)
+  For Each device In FindCdDvdDevices()
+    If (CDDADeviceText.Find(device) = -1) Then CDDADeviceText.add(device)
+  Next 'device
+End
+
+Public Sub FillDvd()
+  Dim device As String
+  Dim previous As String
+  Try previous = DVDDeviceText.text
+  DVDDeviceText.clear
+  If (DVDDeviceText.Find(previous) = -1) Then DVDDeviceText.add(previous)
+  For Each device In FindCdDvdDevices()
+    If (DVDDeviceText.Find(device) = -1) Then DVDDeviceText.add(device)
+  Next 'device
+End
+
+
+Public Sub FillCdAndDvdDevices()
+  FillCdda()
+  FillDvd()
+End
+
+Public Sub Form_Show()
+  FillCdAndDvdDevices()
+End
+
+Public Sub SaveCurrentTo(profile As String)
+  Dim MySettings As New SettingsClass
+  If Not InitDone Then Init()
+  MySettings.Save(Me, global.confpath & "/" & Profile)
+  SaveWatchDir(global.confpath & "/" & Profile)
+  SaveExcludeDir(global.confpath & "/" & Profile)
+End
+
+Public Sub MenuSaveDefault_Click()
+  SaveCurrentTo(global.CurrentProfile)
+End
+
+Public Sub MenuSaveToAll_Click()
+Dim profilename, profilenamesplitted As String
+  If MyQuestion.Ask(("This will save this window settings\n to all profiles found but the 'Factory_defaults' one"), ("Proceed"), ("Don't")) = 2 Then
+    Return
+      Else
+     For Each profilename In Dir(global.confpath & "/", "*.profile")
+        If Stat(global.confpath & "/" & profilename, True).type = gb.Directory Then
+          profilenamesplitted = Split(profilename, ".")[0]
+          If profilenamesplitted <> "Factory_Defaults" Then SaveCurrentTo(profilenamesplitted)
+        Endif
+     Next 'profilename
+  Endif
+End
+
+Public Sub KnownExtensions_LostFocus()
+  global.AddUserExtensions(KnownExtensions.text)
+End
+
+
+Public Sub NOPARSESCANBTN_Click()
+    DVBTuner.show
+End
+
+Public Sub ShowVmeterCHK_Click()
+  noparse42.enabled = Last.value
+  noparse40.enabled = Last.value
+  noparse43.enabled = Last.value
+End
+
+
+
+Public Sub notifyobj_Click()
+  If Not fmain.fullyloaded Then Return
+  If Upper(Last.name) Like "*USEROPTIONCHACKBOX*" Then
+    Try Last.next.enabled = Last.value
+    Try Last.next.next.next.enabled = Last.next.enabled
+  Endif
+  If alreadyloaded Then global.ManageNotifies_click(Last) 
+End
+
+Public Sub notifyobj_Change()
+  If fmain.fullyloaded Then 
+   ' If alreadyloaded Then 
+      If timesloaded > 1 Then global.ManageNotifies_Change(Last)
+   ' Endif
+  Endif
+End
+
+
+
+Public Sub CDDADeviceText_MouseDown()
+  FillCdda()
+End
+
+Public Sub DVDDeviceText_MouseDown()
+  FillDvd()
+End
+
+Public Sub BackResetButton4_Click()
+  IconWidthCombobox.text = 24
+  IconWidthCombobox_Click()
+End
+
+Public Sub IconWidthCombobox_Change()
+  IconWidthCombobox_Click()
+End
+
+
+Public Sub IconWidthCombobox_Click()
+    covermanager.ResizeShadowTemplate(generaloptions.IconWidthCombobox.text)
+    If fmain.TabSelectedLibrary() Then 
+      fmain.RefreshVisibleRows(fmain.librarygrid, fmain.mylibrary)
+      fmain.resizerows(fmain.librarygrid)
+    Else If fmain.TabSelectedPlaylist() Then 
+      fmain.RefreshVisibleRows(fmain.playlistgrid, fmain.myplaylist)
+      fmain.resizerows(fmain.playlistgrid)
+  Endif
+  If fmain.TabSelectedLibrary() Then
+    Try fmain.LibraryGrid.Current.EnsureVisible
+      Else If fmain.TabSelectedPlaylist() Then 
+        Try fmain.playlistgrid.Current.EnsureVisible()
+  Endif
+  
+  If fmain.TabSelectedAlbums() Then 
+    If fmain.fullyloaded Then fmain.MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, fmain.albumviewtexlen)
+  Endif
+  
+End
+
+Public Sub ShowCoversInListChk_Click()
+  ShowThumbsCHK.enabled = ShowCoversInListChk.Value
+  If Not (ShowCoversInListChk.Value) Then ShowThumbsCHK.value = False
+  
+  If fmain.TabSelectedLibrary() Then 
+    fmain.librarygrid.refresh
+    fmain.RefreshVisibleRows(fmain.librarygrid, fmain.mylibrary)
+    Else If fmain.TabSelectedPlaylist() Then 
+      fmain.playlistgrid.refresh
+      fmain.RefreshVisibleRows(fmain.playlistgrid, fmain.myplaylist)
+  Endif
+End
+
+
+Public Sub ShowThumbsCHK_Click()
+  If fmain.TabSelectedLibrary() Then 
+    fmain.librarygrid.refresh
+    fmain.RefreshVisibleRows(fmain.librarygrid, fmain.mylibrary)
+    Else If fmain.TabSelectedPlaylist() Then 
+      fmain.playlistgrid.refresh
+      fmain.RefreshVisibleRows(fmain.playlistgrid, fmain.myplaylist)
+  Endif
+  
+
+End
+
+Public Sub IconWidthCombobox_Activate()
+ IconWidthCombobox_Click()
+End
+
+
+
+Public Sub NoParseStyle3_Leave()
+
+   IconWidthCombobox_Click()
+
+End
+
+Public Sub NoParseStyle3_Enter()
+
+     IconWidthCombobox_Click()
+
+End
+
+Public Sub dvbtmpdirbtn_Click()
+  Dim expat As String = myDialog.Path
+  expat = myDialog.path
+  myDialog.path = dvbtmpdir.text
+  If Not (myDialog.SelectDirectory()) Then
+    dvbtmpdir.text = myDialog.Path
+  Endif
+  myDialog.path = expat
+End
+
+
+Public Sub dvbtmpdirbtn2_Click()
+  Dim expat As String = myDialog.Path
+  expat = myDialog.path
+  If Trim(dvbfinaldir.text) <> "" Then 
+    myDialog.path = dvbfinaldir.text
+      Else
+    myDialog.path = User.home
+  Endif
+  If Not (myDialog.SelectDirectory()) Then
+    dvbfinaldir.text = myDialog.Path
+  Endif
+  myDialog.path = expat
+End
+
+Public Sub BackResetButton5_Click()
+  IconWidthAlbums.text = 32
+End
+
+Public Sub IconWidthAlbums_click()
+  covermanager.ResizeShadowTemplate(generaloptions.IconWidthAlbums.text)
+  If fmain.TabSelectedAlbums() Then 
+    If fmain.fullyloaded Then fmain.MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, fmain.albumviewtexlen)
+  Endif
+End
+
+Public Sub IconWidthAlbums_Activate()
+  IconWidthAlbums_click()
+End
+
+Public Sub IconWidthAlbums_Change()
+  IconWidthAlbums_click()
+End
+
+Public Function parse_custom_options() As MpvOption[]
+  Dim MyHbox, MyCheckbox As Object
+  Dim opt As MpvOption
+  Dim opts As New MpvOption[]
+  If Not InitDone Then Init()
+  For Each MyHbox In ScrollViewUserOptions.Children
+    If MyHbox Is Hbox Then
+      If MyHbox.children[0] Is Checkbox Then
+        MyCheckbox = MyHbox.children[0]
+        If MyCheckbox.value Then 
+          opt = New MpvOption
+          opt.name = MyCheckbox.next.text
+          opt.data = MyCheckbox.next.next.next.text
+          opts.add(opt)
+        Endif
+      Endif
+    Endif
+  Next
+  Return opts
+End
+
+Private previousimagepath As String = ""
+Public Sub OpenImageFile_Click()
+  Dim tmp As String[]
+  Dim expat As String = myDialog.Path
+  tmp = myDialog.filter
+  myDialog.Filter = ["*.png;*.jpg;*.jpeg;*.bmp", "Picture files"]
+   myDialog.path = previousimagepath
+  If previousimagepath = "" Then myDialog.path = User.Home
+  If Not (MyDialog.OpenFile()) Then
+    BottomPanelImage.text = myDialog.path
+  Endif
+  myDialog.filter = tmp
+  previousimagepath = file.Dir(MyDialog.path)
+  myDialog.path = expat
+  fmain.PictureBox1.picture = Picture.Load(BottomPanelImage.text)
+  If Error Then Message.Error(("Couldn't load the picture"))
+End
+
+
+Public Sub BottomPanelImage_Activate()
+  If Trim(BottomPanelImage.text) <> "" Then 
+    Try fmain.PictureBox1.picture = Picture.Load(BottomPanelImage.text)
+    If Error Then Message.Error(("Couldn't load the picture"))
+      Else
+    fmain.PictureBox1.picture = picture["backpanel.png"]
+  Endif
+End
+
+
+
+
+Public Sub NoParse54_Arrange()
+  SeekThumbsCheckbox_Click()
+End
+
+Public Sub SeekThumbsCheckbox_Click()
+  noparse55.visible = (SeekThumbsCheckbox.value = True)
+End
+
+Public Sub NoParse53_Arrange()
+  SeekThumbsYoutubeCheckbox_Click()
+End
+
+Public Sub SeekThumbsYoutubeCheckbox_Click()
+  noparse56.visible = (SeekThumbsYoutubeCheckbox.value = True)
+End
+
+
+
+Public Sub NopParseAudioDeviceCombo_Enter()
+  Dim d, ad As String
+  If NopParseAudioDeviceCombo.count < 2 Then
+    Shell fmain.mplayer.executable(5) & " --audio-device=help " To ad
+    For Each d In Split(ad, "\n", "", True)
+      Try NopParseAudioDeviceCombo.Add(Split(d, "'", "", True)[1])
+      Try Debug Split(d, "'", "", True)[1]
+    Next
+  Endif
+  
+
+End
+
+
+
+Public Sub ScrollViewUserOptions_Arrange()
+  Dim o As Object
+  Dim c As Combobox
+  Dim opt As String
+  Dim t As String
+  For Each o In ScrollViewUserOptions.children
+    If o Is Hbox Then
+      If o.Children[0] Is CheckBox Then
+        c = o.Children[1]
+        c.enabled = o.Children[0].value
+        c.Next.next.enabled = c.enabled
+        If c.List.count < 2 Then 
+          t = c.text
+          For Each opt In fmain.mplayer.list_options()
+            c.Add(opt)
+          Next
+          c.text = t
+        Endif
+      Endif
+    Endif
+  Next
+End

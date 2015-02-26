@@ -1,0 +1,825 @@
+* Mon Oct 13 2014 Antonio Orefice <xt7player@gmail.com> 3.5.4
+
+* Mon Oct 13 2014 Antonio Orefice <xt7player@gmail.com> 3.5.4
+- FIX:		Spurious osd messages removed
+- CHANGE:	Alsa audio output driver tabstrip now fills a (non exhaustive) list of available alsa pcms
+- FIX:		Out of bounds MplayerClass.Analyze.1738
+- FIX:		Gb.image.effect isn't really needed.
+- New:		*experimental* Dynamic Overbright in videoequalizer (similar to dynamic contrast)
+- New:		"overbright" slider in video equalizer window.
+- FIX:		Do not crash on radio tab select if network is down
+- FIX:		Enable pulse audio driver controls
+- CHANGE:	Do not use dyndns urls anymore
+- FIX:		Playlist items move was broken, fixed.
+- FIX:		Do not parse unavailable audio/video output drivers
+- FIC:		Unvalidate cached options on profile load (??)
+
+* Mon Mar 31 2014 Antonio Orefice <xt7player@gmail.com> 3.5.2
+- FIX: Playlist items move was broken, fixed.
+- CHANGE: REQUIRES youtube-dl >= 2014.03.21 to watch youtube videos.
+
+* Thu Mar 13 2014 Antonio Orefice <xt7player@gmail.com> 3.5.2
+- NEW:    Hungarian Translation (thanks to Toroka)
+- NEW:    Initial Icecast support
+- NEW:    New Option (Generaloptions->Audio) to precise seek into mp3 streams. Enabled by default
+- NEW:    New stereo3d video filter available
+- NEW:    New option in Generaloptions->Network to prefer (or discard) 3D videos from youtube
+- NEW:    New reset button in video equalizer window to restore default values
+- FIX:    Try to keep the previously selected sub and audio stream across applies/mplayer restarts
+- FIX:    "Related videos" wasn't needed/used since youtube tree navigation for related videos was introduced months ago.
+- FIX:    Apply video equalizer settings (if auto apply is checked) and search for yt subtitles on apply/restart
+- FIX:    Do not delete files if the user closes the window asking for confirmation!
+- FIX:    Skip DASH (audio only or video only) youtube formats (youtube works again in git)
+- FIX:    Detect *.googlevideo.* as youtube urls too
+- FIX:    Workaround for date calculation on dvbt.
+- FIX:    Drop dvbt event on wrong datediff
+- FIX     epg search was broken, fixed
+- FIX:    Lyrics finder didn't work, fixed
+- FIX:    Do not crash when trying to play non existing files right from the album tab.
+- FIX:    Dropped gb.xml and replaced bu gb.libxml; packagers should update deps.
+- FIX:    fixed Simplified (and speedup) parsing of shoutcast feeds
+- CHANGE: Updated Russian Translation thanks to VictoR
+- CHANGE: Italian translation updates
+- CHANGE: Updated Russian Translation thanks to VictoR
+- CHANGE: Subtitles and audio stream choose buttons are now menu buttons.
+- WORKAROUND: Replace https urls with http ones due to mplayer limitation
+- WORKAROUND: Avoid 100% cpu use by replacing "FOR READ" with "FOR INPUT"
+
+* Tue Nov 05 2013 Antonio Orefice <xt7player@gmail.com> 3.5.1
+
+* Tue Nov 05 2013 Antonio Orefice <xt7player@gmail.com> 3.5.1
+
+* Tue Nov 05 2013 Antonio Orefice <xt7player@gmail.com> 3.5.1
+- FIX: fixed ans simplified parsing of shoutcast feeds
+
+* Tue Nov 05 2013 Antonio Orefice <xt7player@gmail.com> 3.5.0
+- FIX:    Missing links on some youtube streams
+- FIX:    Do not download thumbnails twice
+- FIX:    Simplified (and speedup) parsing of youtube feeds
+- FIX:    Removed deprecated (and not working anymore) youtube feeds from the tree
+- CHANGE: Reduced the lag at track change.
+- CHANGE: Ability to queue items to extract audio from and new skip/stop button
+- FIX:    Better workaround for missing picture on fullscreen switch
+- FIX:    xt7-player.png -> xt7-player in .desktop file (10x symbianflo)
+- CHANGE: Audio extraction/transcode capabilities for youtube, browse and playlist tabs
+- FIX:    Vdpau overlay surface was always disabled (not saved), now it is under generaloptions->video amd get saved.
+- CHANGE: defaults to "NOT" disabling vdpau overlay surface, if you need, please manually check it and save the profile.
+- FIX:    Typo in executable() which prevented idle mplayer from timeout
+- FIX:    Removed the icon path from .desktop file (10x symbianflo)
+- CHANGE: Updated Russian translation from VictoR
+- FIX:    Error when replacing playlists by an album tracks
+- FIX:    Avoid out of range values in ladspahelper (by setting value=minvalue)
+- FIX:    Possible runtime error on album browse
+- FIX:    Explicitely pass proxy to mplayer if environment variable is defined
+- FIX:    Use http_proxy (or https_proxy) environment variable and drop http_proxy option.
+- NEW:    Ability to rename custom audio and video filters (buttons) and added 2 more custom filters
+- NEW:    Lyrics finder via duckduckgo (click on the microphone icon when a music is playing).
+- NEW:    Display jpg,png,bmp pictures by using mf:// protocol, panning and zooming are supported
+- NEW:    New default hotkey: "del" will delete the playing file from disk after confirmtion.
+- FIX:    Don't try to play directories
+- FIX:    Update/sync views on file deletion
+- FIX:    workaround for missing picture when unredirecting fs windows is enabled and mplayer is paused
+- FIX:    Keep forced zoom mode across media
+
+* Mon Jul 22 2013 Antonio Orefice <xt7player@gmail.com> 3.4.4
+- Updated Russian translation from VictoR
+- Removed unneeded webkit dep
+
+* Fri Jul 19 2013 Antonio Orefice <xt7player@gmail.com> 3.4.3
+- CHANGE: Every change to a ladspa filter is applied/tested in realtime
+- CHANGE: Workaround to keep volume level after applying audio filter parameters change without restarting mplayer
+- CHANGE: Workaround to make xt7 recognize mplayer2 >20130219 statusline in the stderr stream
+- NEW:    Ability to rename custom audio and video filters (buttons) and added 2 more custom filters
+- NEW:    Lyrics finder via duckduckgo (click on the microphone icon when a music is playing).
+- NEW:    Display jpg,png,bmp pictures by using mf:// protocol, panning and zooming are supported
+- NEW:    New default hotkey: "del" will delete the playing file from disk after confirmation.
+- NEW:    Helper window to compile ladspa audio plugin parameters.
+- NEW:    A<->B loop button available on seekable media (works best with audio only files)
+- FIX:  Error when replacing playlists by an album tracks
+- FIX:  Possible runtime error on album browse
+- FIX:  Explicitely pass proxy to mplayer if environment variable is defined
+- FIX:  Use http_proxy (or https_proxy) environment variable and drop http_proxy option.
+- FIX:  Don't try to play directories
+- FIX:  Update/sync views on file deletion
+- FIX:  workaround for missing picture when unredirecting fs windows is enabled and mplayer is paused
+- FIX:  Keep forced zoom mode across media
+- FIX:  Following "browse" playqueue didnt work when starting xt7 with a mediafile argument (gb 3.4.1 bug)
+- FIX:  Try harder to keep pause state while switching fullscreen via dbl click.
+- FIX:  Volume level was resetted after every apply.
+- FIX:  fixed desktop file (thanks symbianflo)
+- FIX:  some msgboxes growed in size when opened multiple times
+- FIX:  Always stop mplayer at quit time
+- FIX:  Do not start a listening socket on pluginmode
+- FIX:  Corrected cachebar geometry in plugin mode
+- FIX:  Changing audio filters parameters in realtime was broken
+- FIX:  floatspinbox was broken since the switch from gambas2 to 3
+- FIX:  Try to clear only the audio filters currently loaded
+
+* Fri May 03 2013 Antonio Orefice <xt7player@gmail.com> 3.4.2
+
+* Fri May 03 2013 Antonio Orefice <xt7player@gmail.com> 3.4.2
+
+* Fri May 03 2013 Antonio Orefice <xt7player@gmail.com> 3.4.1
+- May 02 2013
+- FIX:    Following "browse" playqueue didnt work when starting xt7 with a mediafile argument (gb 3.4.1 bug)
+- FIX:    Try harder to keep pause state while switching fullscreen via dbl click.
+- Apr 30 2013
+- FIX:    Fix item selection in fileview with right click. (gb3.4 workaround)
+- Apr 26 2013
+- FIX:    Exception when taking another thumb on an early time
+- Apr 20 2013
+- FIX:    Correct text wrote into audioproperties panel
+- FIX:    Prevent blank column on embedded picture errors
+- NEW:    F5 and canc implemented in fileview; refresh clears selection.
+- Apr 18 2013
+- FIX:    Prevent a crash when fill properties grid for network streams with unknown size.
+- Apr 17 2013
+- FIX:    thumbnailer: timeout with sig 9
+- FIX:    thumbnailer: update grid on new thumbs
+- FIX:    regression, uncovered.txt wasn't found
+- FIX:    thumbnailer: Redirect thumbnailer output to dev null to avoid pipe stalls
+- FIX:    Prevent a runtime error on fullscreen switch
+- Apr 16 2013
+- FIX:    keep pause state (limited to mplayer ability) when changing volume
+- FIX:    Prevent xt7 from going crazy when autoadvance is selectd but several unplayable media are in the play queue
+- NEW:    Show total bitrate in mediaproperties tab (useful for mkv files)
+- Apr 05 2013
+- FIX:    Explicitely call updateprofilestablist after changing default profile
+- FIX:    Tabstrip captions names could be messed up, fixed
+- Apr 04 2013
+- CHANGE: Manually assign form names at startup for gambas 3.4.1
+- FIX:    Quit 40% faster if no setting has been saved.
+- FIX:    Fix on key events in fileview
+- Apr 02 2013
+- FIX:    Engage play queue shutdown for browse and youtube tabs too.
+- CHANGE: Auto-Select the next stream from the tab containing the previous one
+- FIX:    Lock onesectimer before playing the next stream, unlock it later. (fixes endless selectnext() )
+- FIX:    Replace "\n" with " " in pretext
+- FIX:    Replace "\n" with " " in forcename (when adding items to playlist or library)
+- FIX:    Do not send anything to mplayer while it is pausing
+- Mar 28 2013
+- FIX:    Give Autoresize property to some buttons
+- CHANGE: Shrink some gui elements
+- FIX:    Modal dialog size was wrong simetimes
+- FIX:    Replace &amp; with & in shoutcast titles
+- FIX:    Set covermanager hsplit layout explicitely (gambas 3.4)
+- Mar 27 2013
+- CHANGE: Be a bit more permissive on where to catch mouseup to seek after a drag
+- FIX:    Browse Tab (fileview) fixes for gambas 3.4
+- FIX:    Use -noconfig-all and -prefer-ipv{4|6} for thumbler
+- FIX:    Cleaned up some unused vars and functions
+- FIX:    "-noconfig-all" -> "-noconfig all"
+- Mar 26 2013
+- FIX:    shorter pause timeout when currenttime=0
+- FIX:    Don't seek on mouseup if mouse is outside seekbar
+- FIX:    Use global.mouseinside(obj)
+- NEW:    Disable vdpau overlay surface by default (new option in vdpau driver window)
+- Mar 25 2013
+- FIX:    Remove a debug line that interfree with pause/play
+- FIX:    Updated Russian translation (thanks to victorr2007)
+- Mar 22 2013
+- CHANGE: On seekbar drag, do a seek only when using left mouse button.
+- CHANGE: Bigger live previews
+- Mar 21 2013
+- FIX:    Some mthumbler graphic fixes, push :P
+- FIX:    Keep track of osdlevel
+- Mar 20 2013
+- FIX:    Last commit broke youtube play from tree, fixed.
+- NEW:    Optionally display animated video preview on seek
+- FIX:    Give thumbler a lower priority (+5) over main player
+- Mar 18 2013
+- FIX:    Use 2 labels into a panel for the statusbar
+- CHANGE: Use included volume,info and zoom icons
+- FIX:    Do not try to seek into unseekable streams via seek bar
+- CHANGE: Warn user when he can't seek into the stream
+- FIX:    Support for live youtube streams
+- Mar 14 2013
+- NEW:    New library popup menu to search for album tracks
+- FIX:    Highlight the album under the mouse before trying to set a cover on menu popup
+- Mar 13 2013
+- CHANGE: Add a small shade between the toolbar and the right side panel
+- Mar 12 2013
+- FIX:    Taller button panel
+- FIX:    pluginmode visual fixes
+- FIX:    shadeup was misplaced when starting the first time
+- Mar 11 2013
+- FIX:    Rewrote fileview selection code to be compatible with gambas 3.4.0
+
+* Fri Mar 08 2013 Antonio Orefice <xt7player@gmail.com> 3.4.1
+- CHANGE: Browse youtube tree by using subthreads
+- FIX: some youtube tree fixes
+
+* Thu Mar 07 2013 Antonio Orefice <xt7player@gmail.com> 3.4.0
+- Mar 07 2013
+- FIX:    Small cosmetic fix for gambas <3.4.0
+- Mar 06 2013
+- FIX:    Change shadeup.png visibility only when the form is fully loaded
+- FIX:    Fileview selection fixes
+- Mar 01 2013
+- FIX:    More workarounds to prevent gui glitches with gambas 3.4.0
+- FIX:    Reparent controlpanel for audiofiles too
+- Feb 28 2012
+- FIX:    Wider icon list column in generaloptions form
+- FIX:    Some workarounds to prevent gui glitches with gambas 3.4.0
+- Feb 27 2013
+- FIX:    Removed a margin
+- FIX:    Specific refresh and treeveiw fixes for gambas 3.4.0
+- Feb 21 2013
+- FIX:    Option to disable kde effects when in fullscreen works again
+- FIX:    Default filename to download youtube streams fixed (includes duration and extension)
+- FIX:    Youtube videos whose VideoID begins with "-" didn't play; fixed
+- Feb 11 2013
+- FIX:    Workarund for crash on exit with new libcurl 7.29.0
+- Feb 05 2013
+- CHANGE: Youtube tree: span title/duration over 2 lines.
+- Feb 04 2013
+- FIX:    More natural Goertzel filter (DFT)
+- FIX:    Replace &amp; with & in youtube titles
+- Jan 31 2013
+- CHANGE: Small shade on meterpt.png
+- FIX:    Sometimes scrollbars didn't show up in grids (again)
+- Jan 29 2013
+- FIX:    Switch visualization by clicking on the blank space too (not just the bar)
+- NEW:    Audio Spectrum visualization (click on the meter bars or set it in generaloptions)
+- Jan 24 2013
+- FIX:    Audio meters display is 4x faster
+- Jan 22 2013
+- CHANGE: A few of new icons (thanks to  Alessandro Bompadre)
+- FIX:    Keep pause state in some circumstances
+- FIX:    Extra mouse buttons (4,5) should be recognized again
+- Jan 21 2013
+- FIX:    Give video area tracking
+- FIX:    Composite mouse hotkeys (eg: right+wheel) where lost when moving the mouse
+- Jan 16 2013
+- FIX:    Slightly optimized meters calculation code
+- FIX:    Don't use taglib for wav files as it fails to parse channel number (https://github.com/taglib/taglib/issues/92)
+- FIX:    Vmeters spacing with channels number >2 was wrong
+- FIX:    Vmeters are instancied objects now
+
+* Wed Dec 19 2012 Antonio Orefice <xt7player@gmail.com> 3.3.5
+- Be compatible with youtube-dl >=2012.12.11
+
+* Wed Dec 19 2012 Antonio Orefice <xt7player@gmail.com> 3.3.4
+- Be compatible with youtube-dl >=2012.12.11
+
+* Fri Dec 14 2012 Antonio Orefice <xt7player@gmail.com> 3.3.4
+- CHANGE: gb.signal required
+- CHANGE: Update Russian (Виктор/VictorR2007) and italian translation
+- CHANGE: make cachebar background transparent
+- FIX:    Get rid of some graphical glitches
+- FIX:    Avoid crash on exit "FMain.UpdateVolumeSlider.3075"
+- FIX:    Avoid crash when skipping files too quickly
+- CHANGE: Allow to resize covers before set them
+- FIX:    Display folder picture for audiofiles even if the picture wasn't cached
+- FIX:    keep the pausing state when switching fullscreen mode
+- FIX:    Avoid the volume to stuck at 0%
+- FIX:    Unglitchy FS/win switch
+- FIX:    Video and audio drivers window werent' coreectly arranged if not resized
+- FIX:    Avoid crash when dragging video/audio drivers
+- FIX:    Video and audio filters window werent' coreectly arranged if not resized
+- NEW:    <Noemi>: Display next seek position on seekbar change. </Noemi>
+- FIX:    Youtube captions (subtitles) were broken
+- FIX:    with newer gambas (tested 3.3.2) dynagui object dragging didn't work properly
+- CHANGE: Bind pluginmode profile to -pluginmode option
+- FIX:    Only show panels in fullscreen if mouse is inside the fullscreen form
+- FIX:    Better commandline arguments parsing
+- NEW:    Intercept quit signals and quit as clean as possible
+- CHANGE: Default seekbar behaviour changed, click will seek to mouse position.
+- CHANGE: Use another form for fullscreen window (allows fullscreen to work with mozplugger)
+- CHANGE: Allow to choose to restart or not  the stream when seeking on youtube. (generaloptions -> network)
+- FIX:    Workaround to let shoutcast and podcasts works with newer (and buggy) gambas xml component
+- FIX:    Faster youtube url retrival
+- FIX:    Do not overwrite files saved from youtube.
+- FIX:    Unable to update items containing "[,]" characters
+- CHANGE: Allow multiple selection in file view
+- FIX:    Flash files wasn't saved to the right path
+- FIX:    Move to first item after the last (and viceversa) in youtube tab.
+- FIX:    Show the right youtube title when hitting the play button
+- FIX:    Don't jump every second video when playing from youtube tab continuosly.
+- NEW:    General options -> style: Allow to set a background image for the bottom panel
+- NEW:    Allow to use a menubutton instead of menu bar (switch via windows menu back to menu bar or with CTRL-M)
+- NEW:    Drag'n drop any image from the web or from a local file into the bottom panel to theme it :)
+- CHANGE: Faster retrival youtube videos by parallelizing youtube-dl instances
+- FIX:    Try hardly to allow youtube seeking by searching mp4 first, then webm and flv as last chance.
+- FIX:    Prevent "Null Object error" when trying to tag an item which is not in library or playlist.
+- FIX:    Cycle through items (last->first) in browse tab too.
+
+* Tue Oct 02 2012 Antonio Orefice <xt7player@gmail.com> 3.3.0
+
+* Tue Oct 02 2012 Antonio Orefice <xt7player@gmail.com> 3.3.0
+
+* Tue Oct 02 2012 Antonio Orefice <xt7player@gmail.com> 3.3.0
+
+* Tue Oct 02 2012 Antonio Orefice <xt7player@gmail.com> 3.3.0
+
+* Tue Oct 02 2012 Antonio Orefice <xt7player@gmail.com> 3.3.0
+- Oct 02 2012
+- FIX:    Fixed versioncheck() function
+- Sep 28 2012
+- CHANGE: Default seekbar behaviour changed, click will seek to mouse position.
+- CHANGE: Use another form for fullscreen window (allows fullscreen to work with mozplugger)
+- Sep 24 2012
+- FIX:    Workaround to avoid stuck mouse buttons
+- CHANGE: Allow to choose to restart or not  the stream when seeking on youtube. (generaloptions -> network)
+- FIX:    Give tracking to controlframe picturebox solve stuck mouse button issue (i think it is a gambas bug)
+- FIX:    Temporally switch browse tab to single selection mode before selecting prev/next item
+- FIX:    Code cleanup (removed some unused vars/functions)
+- CHANGE: Changed default rss (tiny) icon
+- CHANGE: Fixed minimum required gambas version to 3.3.0
+- FIX:    Workaround to let shoutcast and podcasts works with newer (and buggy) gambas xml component
+- FIX:    Faster youtube url retrival
+- Sep, 10 2012
+- NEW:    Initial work to check for updates at startup
+- Aug, 22 2012
+- FIX:    Do not overwrite files saved from youtube.
+- Aug, 8 2012
+- FIX:    Unable to update items containing "[,]" characters
+- Aug, 6 2012
+- CHANGE: Allow multiple selection in file view
+- FIX:    Save faster when changing background
+- Aug, 4 2012
+- FIX:    Forgot to save the picture file...
+- FIX:    Saving the profile aftter setting a bg image via drag'n drop corrupted the current profile
+- Aug, 3 2012
+- FIX:    Flash files wasn't saved to the right path
+- FIX:    Move to first item after the last (and viceversa) in youtube tab.
+- FIX:    Show the right youtube title when hitting the play button
+- FIX:    Don't jump every second video when playing from youtube tab continuosly.
+- FIX:    Wrong(inverted) seek/skip pictures
+- Aug, 1
+- NEW:    General options -> style: Allow to set a background image for the bottom panel
+- NEW:    Use menubutton instead of menu bar (switch via windows menu back to menu bar or with CTRL-M)
+- July, 31 2012
+- NEW:    Drag'n drop any image from the web or from a local file into the bottom panel to theme it :)
+- NEW:    Updated Russian translation, thanks to Виктор/VictorR2007
+- CHANGE: New default control buttons
+- July, 24 2012
+- CHANGE: Faster retrival youtube videos by parallelizing youtube-dl instances
+- CHANGE: --prefer-ipv4 now disabled by default
+- July, 21 2012
+- WORKAROUND: Apply youtube feeds workaround for gambas 3.2.1 too
+- July, 20 2012
+- FIX:    Workaround for wrong encoded characters when getting youtube videos
+- July, 18 2012
+- FIX:    Don't call "gbx -v", but use system.Fullversion to do gambas version check (faster)
+- WORKAROUND: Make youtube feeds work with gambas 3.2.0 (still charset problems will probably be fixed with gb > 3.2.0)
+- FIX:    Added some missing tooltips
+- CHANGE: Italian translation updates.
+- July, 16 2012
+- FIX:    Try hardly to allow youtube seeking by searching mp4 first, then webm and flv as last chance.
+- FIX:    Prevent "Null Object error" when trying to tag an item which is not in library or playlist.
+- FIX:    Cycle through items (last->first) in browse tab too.
+- July, 01 2012
+- FIX:     'User Options' weren't take into account when hitting apply, fixed
+- June, 27 2012
+- CHANGE:   Seeking youtube streams works *MUCH* better by restarting the player to the new position
+- June, 25 2012
+- FIX:      Prev,next buttons works again on cd audio playing
+- FIX:      Allow cdda grid columns to be resized
+- FIX:      Fixed Dvd playback
+- NEW:      Handy 'User Options' under 'General options' to type additional commandline options
+- CHANGE:   Use more stock icons
+- FIX:      Possible Null object error if no playlist item selected when changing icon width
+- June, 21 2012
+- FIX:      Corrected wrong media tooltip behaviour in some cases
+- FIX:      Prevent the video to disappear when it is paused and the box is resized
+- FIX:      Update status bar when mplayer is paused and the spliter is resized
+- FIX:      Possible out of bounds when switching to albums view with just one album loaded
+- June, 13 2012
+- CHANGE:   Everything is translated to Italian
+- FIX:      Avoid crash when saving subtitles and selecting automatic extension
+- NEW:      Button near the dvbt filter box to open dvbt option window.
+- June, 12 2012
+- FIX:      prevent missing tags message box from be hidden by the cover search form
+- CHANGE:   Hide the tooltray tip when pointer stay on the tray icon for 5 seconds.
+- CHANGE:   Added a little padding around the tooltray tip
+- FIX:      Reset main form caption when media ends.
+- June, 11 2012
+- CHANGE:   Version set to 3.0.999. Means: 'hunting for bugs' before 3.1
+- FIX:      Automatic extension when exporting a playlist wasn't working
+- June, 8 2012
+- FIX:      Dont' ask what to do with a playlist just saved
+- FIX:      Save file dialogs wern't working good; fixed
+- June, 7 2012
+- FIX:      Library grid missed keyboard events: fixed
+- FIX:      Don't save  selected/total length boxes into profile
+- FIX:      Wrong values in selected/total length box
+- FIX:      Restore gridviews sorting at startup (side effect: speedup loading when results are filtered... yay!)
+- June, 6 2012
+- CHANGE:   Make question dialogs modal
+- June, 5 2012
+- NEW:      Option for stop-xscreensaver (General options -> video) - enabled by default.
+- June, 4 2012
+- CHANGE:   Make use of vsplitters in drivers and filters forms
+- June, 3 2012
+- FIX:      Higher mediaheaders timeout for dvb streams (fix a radio issue with default xt7 settings)
+- June, 1 2012
+- FIX:      Initialize tryicon tooltip mask only when it is first called
+- May, 31 2012
+- New:      Option to choose when/if make use of dvb_set_channel (check mplayer bugid 2070)
+- FIX:      Keep track if audio is switched inside mplayer class rather than fmain.
+- May, 29 2012
+- FIX:      Allow to change audio tracks when zapping through dvbt channels
+- FIX:      Better default cache values for dvbt
+- FIX:      Don't use dvb_set_channel after switching audio (workaround an mplayer bug, going to report it...)
+- May, 28 2012
+- CHANGE:   Show program info when clicking on now/next panel
+- CHANGE:   Go to the tuned epg channel when clicking on epg button
+- FIX:      Don't throw an error when selecting an initial tuning file
+- NEW:      zoom option available in general options -> video
+- NEW:      Initial support for multiple audio streams in dvbt
+- May, 26 2012
+- CHANGE:   Little tweak to the tray icon widget
+- May, 25 2012
+- CHANGE:   Temporary disabled Now/next Panel
+- FIX:      Simplified arrangecpl function
+- CHANGE:   Only show record button when a stream can be dumped
+- CHANGE:   When tuned to a dvb channel, show the info button to popup the now/next panel
+- FIX:      re-enabled now/next panel
+- May, 24 2012
+- FIX:      Hide the panel now/next as soon as you click on it
+- CHANGE:   clear the epg search box the first time it got focus
+- FIX:      Some fixes to dvb now/next panel
+- May, 23 2012
+- FIX:      Panel Now/next is still under work, don't show on every mousedown event
+- CHANGE:   gambas component image.effect is NOT needed anymore, sorry.
+- CHANGE:   Tune to a channel when dblclick on the channel name from the epg window.
+- May, 22 2012
+- FIX:    Working on epg broke non dvbt play, fixed
+- FIX:    Several epg related fixes (if you wanna try, please install dvbsnoop)
+- FIX:    missing audio/video panel if media started when already in fullscreen
+- FIX:    More EPG fixes
+- CHANGE: Check if youtube-dl is installed and popup a message if not
+- May, 21 2012
+- NEW:    Integrated multiple playlists support (use the playlist combobox in playlist tab)
+- CHANGE: Faster DVB "Zapping" by re-using the playing mplayer instance and dvb_set_channel
+- FIX:    Understand when the window is set to fullscreen by 'outside'
+- FIX:    Added new tooltip messages
+- FIX:    Updated Italian translation
+- CHANGE: Allow to change dvb channels by using Next/Previous buttons
+- NEW:    Check if a systemtray is available before init the trayicon (will work with the upcoming gambas version)
+- NEW:    Very alpha stage epg window integration (dvbt tab, epg button)
+- May, 20 2012
+- FIX:    (regression) Wrong behaviour when cropping black bars in fullscreen
+- May 19 2012
+- FIX:    (regression) wrong panel color when hitting stop
+- May 18 2012
+- CHANGE: Use Xrefresh when exiting Fs
+- FIX:    Wrong colors when showing fullscreen panel
+- FIX:    New Antiglitch Fs/win/Fs routine
+- FIX:    Restored Tooltip messages in librarygrid
+- REVERTED BACK All the glitch patches
+- May 17 2012
+- FIX:    Use control.proxy to allow events under shadeup/low pictureboxes
+- FIX:    Sort Tracks when appending them to the playlist from album view
+- FIX:    More "unglitchy" Fullscreen/window/fullscreen transitions
+- CHANGE: Pause mplayer and unpause it when chainging resolutions/framerates
+- FIX:    Just manage the screen where xt7 is when entering fullscreen (multihead systems)
+- FIX:    Just manage the screen where xt7 is when entering fullscreen (multihead systems)
+- FIX:    Still trying to unglitch fw/win/fs
+- FIX:    Still trying to unglitch fw/win/fs (multihead)
+- May 11 2012
+- FIX:    Simple DVB tuner window: fix select/unselect all
+- May 07 2012
+- FIX:    Interpret m3u,asx,wax,wvx,ram,b4s files as playlists as well (was only *.pls)
+- CHANGE: Try to read 2K of data from mplayer, may be more or less stable or change nothing, trying it...
+- May 03 2012
+- FIX:    Removed an unuseful debug message
+- FIX:    Grab hotkeys only when mplayer is running (fixes a latency when clicking in the video box and then into the library)
+- May 02 2012
+- FIX:    Force playlist controls panel to be always visible
+- FIX:    Try to avoid a startup error "DrawingArea is being drawn"
+- Apr 27 2012
+- FIX:    Changed required gambas version to 3.1.1
+- FIX:    Fixed a bad bug that could lead to *grid.txt to grow over time
+- CHANGE: Removed the warning message about mplayer issues with ubuntu
+- FIX:    Check (and do it) if *grid.txt may be shrinked at save time
+- NEW:    Allow to rename any (was only dvbt) Grid item by popup menu
+- CHANGE: Some graphical tweaks
+- FIX:    Wrong subs when choosing between embedded and file subs
+- Apr 26 2012
+- FIX:    Use "Natural" sorting on columns so that (eg) 2 comes before 10
+- FIX:    Right click -> open containing folder was recently broken
+- FIX:    Correctly set default list background color to color.textbackrgound
+- FIX:    Better calculation of total desktop width and height (mainly for trayicon tooltip)
+- NEW:    Draw shadows on the gridviews, please file a bug if you see graphical glithces.
+- FIX:    Explicitely show the player window when executed from 'outside'
+- Apr 24 2012
+- FIX:    Changed right mouse behaviour to workaround gb3.1,gb3.1.1
+- CHANGE: Faster deletion of thumbnails
+- CHANGE: Allow video filters when using vdpau, but still clears them when using a gpu accelerated codec
+- CHANGE: Use Faenza-like icon for tray too
+- FIX:    Main form not restored on tray icon click
+- CHANGE: Skip task bar for Alloptions form
+- CHANGE: do not shade the first column
+- FIX:    Leave more space when autosizing columns
+- CHANGE: CoverManager window stacking set to "above"
+- CHANGE: Changed Default colors
+- FIX:    Make sure tray icon tooltip is not off-screen
+- FIX:    Set colors/fonts user preference over some missing controls
+- Apr 23 2012
+- FIX:    Don't generate tooltips as long as mouse is moving (improved)
+- FIX:    Regression: Use 2 threads to get thumbnails from video files
+- Apr 20 2012
+- FIX:    Better fullscreen scripts command timings
+- FIX:    correct mouse cursor shape in A/V drivers form
+- CHANGE: Call xrefresh when entering to window mode to force a screen update
+- FIX:    Remove cover and thumbnail cache when removing items from library
+- Apr 19 2012
+- NEW:    Prebuffer cover dir + some old code cleanup + more readable debug messages
+- CHANGE: Split mplayer logs for "-*" for better readablity
+- NEW:    Allow user to override environment variables (generaloptions -> misc)
+- Beware that if you specified an environment varialbe right into the mplayer
+- textbox in the past, now you NEED to move it into the new textbox
+- NEW:    Avoid idling mplayers to be left if xt7-crashes or something by start them with timeout (10 minutes)
+- NEW:    Use a timeout for mplayer thumbnailer processes too (30sec)
+- FIX:    Remove useless capture parameter from idle mplayer processes
+- NEW:    Draw a rounded box under the current albumview item
+- Apr 18 2012
+- FIX:    Tweaks and fixes to the drag'n drop routines (chains window)
+- Apr 17 2012
+- NEW:    Get covers from picture files inside folders too
+- NEW:    Auto search for covers when displaying albums tab too
+- FIX:    Possible runtime error at albumview.init
+- FIX:    See the last :)
+- FIX:    Fixed division by 0
+- FIX:    Playlistclass.AddDir() was broken by a typo
+- FIX:    Save uncovered cache file when saving all settings too
+- FIX:    Avoid to show inwdows off-screen (happens with openbox)
+- Apr 16 2012
+- FIX:    "round" to calc tha total rows into albums view (fix missing albums)
+- FIX:    Clear the albums view before searching (fixes wrong/ghost item results)
+- FIX:    Update albums view when something library is updated
+- FIX:    Update albums view on tab change too
+- NEW:    Allow to use a different size for covers in albums view
+- FIX:    Don't show the last empty row when albums view is just one column
+- FIX:    "all menus" debug voice removed
+- CHANGE: Use a timer to update total selection length, it is lighter and less glitchy
+- Apr 13 2012
+- FIX:    Don't reset playlist row height when moving items
+- FIX:    Workaround for weird gambas behaviour with playlistclass.getvalue()
+- FIX:    Manual rows update is now faster and with no glitches.
+- NEW:    New albumview tab, not fully tested, but not harmful at all.
+- NEW:    Draw a light shadow under youtube thumbs
+- FIX:    Workaround for gb3.1 to display covers as they are found
+- Apr 12 2012
+- FIX:    Make xt7 work with gb3.0 by just "trying" to use new gb3.1 features
+- CHANGE: Better Columns autosize
+- CHANGE: Faster columns sort when grid display is filtered
+- Apr 11 2012
+- NEW:    Show sort indicator and shade the sorted column into grids
+- NEW:    execute ~/.config/gambas3/Xt7-Player/switch.fs.command.sh <fps> or switch.win.command.sh
+- when switching to fullscreen/windowed mode, so you can write a script that change video mode
+- to match video refresh rate.
+- CHANGE: Thanks to Arabian Man , there's a new Faenza like default icon.
+- FIX:    Workaround for the buggy Gridview.RowAt() that comes with gb3.1
+- Apr 10 2012
+- FIX:    Segmentation fault with gambas 3.1 fixed
+- FIX:    Possible runtime error when a profile wasn't found
+- FIX:    Changed gridview code to be compatible with gambas3.1
+- FIX:    Keep the gui more reactive when selecting items in a huge library
+- FIX:    Changed grids selection code to be compatible with gambas 3.1
+- Apr 06 2012
+- FIX:    Don't allow uncovered.txt to be 0 bytes (temporary fix)
+- FIX:    Spare cpu cycles when the pointer moves into the grid with active tooltips
+- FIX:    Spare cpu cycles when the pointer moves into the grid with active tooltips (again)
+- Apr 05 2012
+- CHANGE: Avoid volume=0 as softvol has issues with it
+- FIX:    Make sure user typed option are always appended to the end of command line
+- Apr 03 2012
+- FIX:    Use directory chooser, not file chooser to set dvb recording folder
+- FIX:    Regression: call generaloptions.init() before loading it
+- Apr 02 2012
+- FIX:    Avoid overflows when displaying filesize
+- FIX:    Save capturing stream on stop and on exit too
+- NEW:    Allow to capture in realtime any mpeg muxed media (useful for dvbt://*)
+- FIX:    media tooltips in playlist now works correctly
+- NEW:    Use the last volume level as the initial volume for new media
+- FIX:    hitting cancel when renaming dvb channels resulted into an empty name, fixed.
+- FIX:    Explicitely set libtag_c version 0 for distro that don't make libtag_c.so -> .so.0 symlinks
+- FIX:    Use full paths to mark uncovered
+
+* Thu Mar 29 2012 Antonio Orefice <xt7player@gmail.com> 3.0.1
+- FIX: Runtime error at start if Excludedirs.txt doesn't exist
+- * Wed Mar 28 2012 Antonio Orefice <xt7player@gmail.com> 3.0.0
+- FIX:    When saving all forms settings at once, some options were restored to factory defaults
+- FIX:    Use constant icon size in browse tab list
+- Mar 21 2012
+- FIX:    Row highlighting (last?!) fixes
+- NEW:    Popup menu to sort (only library) by album,artist or full path
+- Mar 19 2012
+- FIX:    Fix row height for hotkeys and subtitles grids
+- FIX:    Make list inactive whan asking for deleting items from disk (safer)
+- CHANGE: Modified default subtitle options
+- CHANGE: 'it' translation update
+- CHANGE: 'pl' translation update (eloaders)
+- CHANGE: other translation update
+- Mar 10 2012
+- FIX:    Use user preferred languages list when manual searching on os.org
+- FIX:    remove null results from os.org searches
+- CHANGE: Manual search by tag and query on Opensubtitles.org (more results)
+- Mar 09 2012
+- FIX:    Avoid crashes when unable to get video length
+- FIX:    use shell() instead of double quotes in mplayer.do_play()
+- FIX:    Make scrolling in grids smoother by delaying coverslookertimer when scrolling
+- FIX:    fixed Possible bad row index at CoverManager.CoversLookerTimer_timer.877
+- FIX:    Allows to drag'n drop playlists (.m3u,.pls...) from browsers into the library or playlist
+- FIX:    Changed default user agent for opensubtitles.org to "xt7player"
+- NEW:    "Opensubtitles.org" manual search and save option
+- Mar 08 2012
+- FIX:    Some padding/spacing/margin fix
+- FIX:    Never use a "File not found" icon for uries (tv://, dvb://...)
+- FIX:    Always use quickmode when adding youtube streams to library/playlist
+- FIX:    No more glitches in grids when deleting items
+- FIX:    Clear opensubtitles across plays
+- NEW:    "Opensubtitles.org" voice under existing subtitles menu, allows to search by moviehash
+- CHANGE: gb.compress is needed
+- Mar 05 2012
+- CHANGE: Keep the playing media selected across searches
+- FIX:    Don't return the previous cover if the current doesn't exists
+- FIX:    Reset "previouscoverfile" when user changes cover
+- FIX:    keep cover aspect ratio in the right side panel
+- FIX:    Don't crop covers in the right side panel
+- FIX:    Regression: Wrong sized icons when not viewing covers ( DefaultLibraryIcon() )
+- FIX:    Regression: allow to set a custom cover for network streams too.
+- FIX:    Play() fuinction changed interface, some calls needed to be fixed
+- FIX:    RemoveCoverCache(): check if there is something in memory to clean before trying to
+- Mar 02 2012
+- FIX:    Tuned highlight row table
+- FIX:    Safer coverfile()/fixfilename() function
+- FIX:    Column autosize tweaked to take into account big covers
+- FIX:    Some optimizations
+- FIX:    Proper support of unsquared covers
+- Mar 01 2012
+- NEW:    popup menu item for library and playlist to explicitely search for embedded covers
+- NEW:    heuristic support For jpg embedded into mkv containers (attachments)
+- NEW:    heuristic support For jpg embedded into mp4 containers
+- CHANGE: Defaults to ".mp4" for youtube downloader
+- FIX:    Try harder to take a thumb from video files
+- FIX:    Video thumbnailer: use "-nocache" to speedup things
+- FIX:    If present, display any custom item title (eg: youtube streams added to playlist) instead of url at play time
+- CHANGE: Simplified play() function (again)
+- CHANGE: Simplified play() function
+- CHANGE: Be lighter with highlightresults on logarea and shoutcast window  (start searching after 0.5sec after user typed)
+- CHANGE: Be lighter with updatesearchresults(), (start searching after 0.5sec after user typed)
+- FIX:    Avoid twice updatesearchresults() at startup
+- Feb 29 2012
+- CHANGE: Use an hardcoded table to choose the highlight factor
+- FIX:    Runtime   Return img.pictureerror when a youtube link was added into playlist
+- FIX:    item highlighter was broken by long time, fixed
+- FIX:    Transparent background for webradio.png
+- FIX:    Have the same size for all icons in view.
+- Feb 28 2012
+- FIX:    speed up scrolling (due to frame shadows)
+- NEW:    Optionally (see button next to search bar) display tooltips when hovering media list items
+- FIX     Keep the selected item visible across icon size changes
+- NEW:    Draw a shadow frame under the covers
+- FIX:    Big speedup in retriving embedded jpg from oggs,flacs and mp3s
+- FIX:    Current playing cover weren't update when setting a cover from a gridview
+- FIX:    Remove one unuseful space from the right of statusbar text
+- CHANGE: Use a button instead of a label to show possible search fields
+- FIX:    Defer the files not found discovery to avoid to block the ui
+- Feb 27 2012
+- NEW:    Generaloptions->style: choose to show and generate video thumbnails
+- NEW:    Generate and display video thumbnails
+- NEW:    Allow to change library/playlist row size to display bigger icons (16->256px)
+- NEW:    Clean unused video thumbnails cache when syncing library (video thumbs will come shortly)
+- NEW:    Missed commit (jpg embedded in ogg and flac are working)
+- NEW:    Dropped functionality: gui maximum size
+- FIX:    Wrong toolbar icon spacing
+- FIX:    Bad inconsistency between gridview and the internal data structure
+- CHANGE: Use stock folder icon in browse tab
+- CHANGE: Use stock clock icon while loading covers
+- CHANGE: Use stock icons for default images on audio video and network entries
+- FIX:    Try to load covers asynchronously
+- Feb 24 2012
+- FIX:    Regression: allow panscan zoom to be < 1
+- FIX:    Retain black bars cutting setting when switching to/from fullscreen
+- FIX:    Clear streams menu at every stop
+- NEW:    Set a cover via menu with right click on a list item
+- NEW:    popup message when no cover could be found
+- CHANGE: Slightly changed covermanager form
+- FIX:    Get out of vmeters timer event if we're in pause, (reduce cpu usage while paused)
+- NEW:    select a dropped item when it is present in playlist and/or library
+- CHANGE: Animate covers only when they change
+- FIX:    Remove cover caches when updating a library/playlist item
+- FIX:    A bit faster embedded jpgs discover
+- NEW:    Support for jpgs embedded in ogg files (still inactive by now!)
+- NEW:    Display an error icon near files not found library/playlist)
+- Feb 8 2012
+- FIX:    Don't allow "\n" into comment tags, prevent crashes in playlist.do_sort()
+- Feb 7 2012
+- NEW:    Support for jpg embedded in audio files
+- Feb 6 2012
+- FIX:    No need to hit use after changing profile
+- CHANGE: Write last profile used as soon as it changes, not only at close time
+- Feb 3 2012
+- NEW:    Right clicking on the zoom icon will cycle through zoom modes to crop black bars
+- FIX:    Updated italian translation
+- Feb 2 2012
+- FIX:    Hide volume label when not hovering volume control
+- Jan 27 2012
+- CHANGE: Added some separators into generaloptions form
+- Jan 26 2012
+- FIX:    Make sure the tooltray tip doesn't use a background image
+- CHANGE: Changed default tooltray tip appaerance
+- Jan 24 2012
+- FIX:    Prevent a possible runtime error when dropping urls from other applications
+- CHANGE: Apply all video equalizer settings even if changing just a slider
+- Jan 16 2012
+- Change: Display red text (possible clipping) when volume > 100%
+- FIX:    Display correct volume value when the maximum can be over 100%
+- CHANGE: don't use a window to popup volume information, works better with some WMs (metacity)
+- FIX:    Always use ISO-8859-1 (and convert from/to desktop charset ) to write and read tags from audio files.
+- CHANGE: Optionally use cddb to get audio cd information
+- FIX:    Add /dev/sr* to the list of auto-guessed cd/dvd devices
+- Jan 13 2012
+- FIX:    Ass subtitle alignment was broken, fixed
+- CHANGE: Raise player window for video files only
+- FIX:    Dvd playing was somehow broken, fixed
+- Jan 12 2012
+- NEW:    Added polish translation (eloaders)
+- CHANGE: Reorganized subtitle controls a bit
+- Change: Use system icon for file-open image
+- Jan 10 2012
+- FIX:    Italian Translation updates
+- FIX:    Several fixes in subtitle loading and handling
+- NEW:    New menu voice under subtitle menu list to load subtitles from disk apart of drag'n drop.
+- Jan 9 2012
+- FIX:    Unsharp video filter was deleted by mistake
+- CHANGE: Workaround a problem with wrong or no length reported by mplayer with *ts files
+- NEW:    Support for more subtitle encodings
+- Jan 5 2012
+- FIX:    Do not use sudo to renice mplayer, if it ask for a pass xt7 can't exit
+- CHANGE: Use x11 as default subtitle preview driver (prevent crashes on buggy catalyst drivers)
+- NEW:    Use a background/transparent png under the play controls (backpanel.png)
+- FIX:    Runtime error on startup with no existing profiles
+- CHANGE: Removed startup animation as it seems to cause problems on 64bit and/or catalyst due to xv driver
+- FIX:    If there's no cookie file, don't use "-cookies-file" option
+- Jan 4 2012
+- NEW:    mpris interface: loop,shuffle,volume,play,pause,play/pause,stop,previous,next,open uri,seek
+- CHANGE: Toolbar buttons are now plain buttons (still need other size fixes)
+- NEW:    Initial mpris 2.1 interface support (Headers only)
+- NEW:    Dropping all old dbus code (will be replaced by mpris)
+- FIX:    Drag'n drop from gtk apps works again
+- Jan 3 2012
+- NEW:    Osd messages for contrast,gamma,hue,saturation,brightness
+- Dec 31 2011
+- FIX:    Avoid to "try" to register to dbus twice
+- Dec 30 2011
+- FIX:    Avoid a segfault with gambas 2.99.7 when changing videobox cached property
+- Dec 23 2011
+- FIX:    Use a method to iconify the main form that doesn't break playlisting.
+- Dec 22 2011
+- FIX:    Adjusted Margins,spacings,paddings and so on...
+- CHANGE: TrayIcon disabled by default: avoid problems in environments without system tray support
+- FIX:    Avoid to init forms twice
+- FIX:    More credits in the about window
+- CHANGE: Forcing -demuxer ogg is not needed anymore due to use of taglib
+- FIX:    Correctly show audio equalizer filter configuration
+- Dec 21 2011
+- FIX:    Enable Tag editor button when selecting an item from library/playlist or browse
+- Dec 19 2011
+- FIX:    Init Audio and Video filters window before trying to load them
+- FIX:    Skip notifying the needs to apply settings if is the first time they're loaded.
+- Dec 15 2011
+- FIX:    Don't exit from fullscreen mode in playlisting mode.
+- FIX:    open,play,change chain,use -> nothing changes
+- FIX:    When hitting "Use" button, apply settings in other forms too.
+- FIX:    Recreate the export file when hitting "use" so that vmeters will continue to work
+- Dec 06..13 2011
+- FIX:    Don't allow to change tab orientation when in fullscreen mode
+- CHANGE: Prefer mp4 over webm for youtube due to problems with webm/vp8 in ffmpeg/mplayer
+- FIX:    Audio panel disappeared when playing, stop and playing again the same (audio) media.
+- CHANGE: Cosmetic changes to AudioVideoCodec Form
+- CHANGE: Removed tab orientation option in generaloptions
+- FIX:    Useless (and sometimes harmfull) reloading the current profile
+- FIX:    Restore left tabs visibility at startup
+- Dec 06, 2011
+- FIX:    Removed some wrong tooltip messages
+- FIX:    Unknown symbol 'DvdminCacheCheckbox' in class 'GeneralOptions'.
+- Dec 05, 2011
+- FIX:    Copy factory settings to default profile if no previous configuration found
+- CHANGE: 'Little bigger' icons in taskbar
+- FIX:    Changed titlebar message when user didn't set a maximum cache value
+- FIX:    Don't save scrollviews visibility
+- FIX:    Sometimes xt7 failed to switch profiles at runtime
+- FIX:    Check if confdir exists before trying to make any parent folder
+- FIX:    Don't display the cover twice on start
+- FIX:    ...but still update meters!
+- FIX:    Catch row highlight errors
+- Dec 02, 2011
+- CHANGE: Unminimize and raise main window when the player is invoked from outside
+- FIX:    Immediataly update message logs after when using new settings
+- CHANGE: Reload current profile now reloads all the forms
+- FIX:    Quit a bit faster
+- FIX:    Runtime error when enabling/disabling tooltips.
+- FIX:    Audio/video chains were saved everytime on exit
+- Dec 01, 2011
+- CHANGE: Some translations update may require you to reconfigure subtitle languages
+- CHANGE: Filters not supported by local mplayer now are disabled objects
+- ........And the user will be warned if it insists in using them
+- CHANGE: Drivers not supported by local mplayer now are disabled objects
+- Nov 30, 2011
+- Start where you left functionality added
+

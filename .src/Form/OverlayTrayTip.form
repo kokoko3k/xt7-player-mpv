@@ -1,0 +1,79 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  Move(0,0,270,102)
+  #Scaled = False
+  Font = Font["Bold,-1"]
+  Background = &H000000&
+  Foreground = &HFFFFFF&
+  Ignore = True
+  Text = ("Xt7TrayPanel")
+  Picture = Picture["roundmask.png"]
+  Resizable = False
+  Border = False
+  Stacking = Window.Above
+  Sticky = True
+  SkipTaskbar = True
+  { Panel2 Panel
+    Move(0,0,329,102)
+    Background = &H2A2D3C&
+    { Timer1 #Timer
+    }
+    { Panel1 Panel
+      Move(3,3,78,78)
+      Background = &H000000&
+      Foreground = &H000000&
+      Padding = 1
+      { PictureBox1 PictureBox
+        Move(7,0,77,77)
+        Background = &H000000&
+        Foreground = &H000000&
+        Stretch = True
+      }
+    }
+    { PictureBox2 PictureBox
+      Move(0,0,270,102)
+      Picture = Picture["backpanel.png"]
+      Stretch = True
+    }
+    { Label1 Label
+      Move(87,7,182,91)
+      Foreground = &HFFFFFF&
+      Mouse = Mouse.SizeAll
+      Expand = True
+    }
+    { pinbutton ToggleButton
+      Move(238,5,24,24)
+      Visible = False
+      Picture = Picture["icon:/16/lock"]
+      Border = False
+    }
+    { HBox1 Panel
+      Move(3,83,77,17)
+      { btnprev PictureBox
+        Move(0,0,17,17)
+        Picture = Picture["media-skip-backward.png"]
+        Stretch = True
+      }
+      { btnplaypause PictureBox
+        Move(14,0,17,17)
+        Picture = Picture["media-playback-start.png"]
+        Stretch = True
+      }
+      { btnstop PictureBox
+        Move(28,0,17,17)
+        Picture = Picture["media-playback-stop.png"]
+        Stretch = True
+      }
+      { btnnext PictureBox
+        Move(42,0,17,17)
+        Picture = Picture["media-skip-forward.png"]
+        Stretch = True
+      }
+    }
+    { Labelshadow Label
+      Move(154,42,84,42)
+      Foreground = &H000000&
+    }
+  }
+}

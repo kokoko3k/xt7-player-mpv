@@ -1,0 +1,157 @@
+' Gambas class file
+
+
+Public CoverSize As Integer = 160
+Public CSTEP As Integer = 8
+
+Public Sub UpdateLength(length As String)
+  
+  Label19.text = length
+  
+End
+
+Public Sub AudioAreaGroup_Drop()
+
+  FMain.VideoAreaGroup_Drop()
+End
+
+Public Sub AudioAreaGroup_MouseDrag()
+  
+  FMain.VideoAreaGroup_MouseDrag()
+  
+End
+
+Public Sub AudioAreaGroup_MouseDown()
+  FMain.VideoAreaGroup_MouseDown()
+End
+
+
+Public Sub AudioAreaGroup_KeyPress()
+  
+  FMain.VideoAreaGroup_KeyPress()
+  
+End
+
+Public Sub AudioAreaGroup_MouseUp()
+  
+  FMain.VideoAreaGroup_MouseUp()
+  
+End
+
+Public Sub AudioAreaGroup_MouseWheel()
+  
+  FMain.VideoAreaGroup_MouseWheel()
+  
+End
+
+Public Sub AudioAreaGroup_DblClick()
+  
+  FMain.VideoAreaGroup_DblClick()
+  
+End
+
+Public Sub AudioAreaGroup_Enter()
+  
+  AudioPanel.setfocus()
+  
+End
+
+Public Sub CoverBox_Enter()
+
+  Last.Border = border.Plain
+
+End
+
+Public Sub CoverBox_Leave()
+
+  Last.border = border.none
+
+End
+
+Public Sub CoverBox_MouseDown()
+  FMain.CoverBox_DblClick()
+End
+
+
+Public Sub TimerZoomIn_Timer()
+  TimerZoomOut.stop
+  If CoverBox.w < Coversize Then
+    If CoverBox.w + CSTEP > coversize Then
+      CoverBox.Resize(Coversize, Coversize)
+        Else
+      CoverBox.Resize(CoverBox.w + CSTEP, CoverBox.h + CSTEP)
+      CoverBox.visible = True
+    Endif
+      Else
+    TimerZoomin.STOP
+  Endif
+End
+
+Public Sub TimerZoomOut_Timer()
+    TimerZoomin.stop
+    If CoverBox.w >= 0 Then
+      If CoverBox.w - CSTEP < 0 Then
+        CoverBox.Resize(0, 0)
+        CoverBox.visible = False
+          Else
+        CoverBox.Resize(CoverBox.w - Cstep, CoverBox.h - Cstep)
+      Endif
+        Else
+      TimerZoomout.STOP
+      CoverBox.visible = False
+  Endif
+End
+
+Public Function cutstring(mystr As String, MaxL As Integer) As String
+  Dim tmpsplit As String
+  If Len(mystr) > MaxL Then
+    tmpsplit = Left(mystr, MaxL)
+    If (Trim(Left(tmpsplit, RInStr(tmpsplit, "]"))) <> "") Then tmpsplit = Left(tmpsplit, RInStr(tmpsplit, "]"))
+    If (Trim(Left(tmpsplit, RInStr(tmpsplit, "-"))) <> "") Then tmpsplit = Left(tmpsplit, RInStr(tmpsplit, "-"))
+    mystr = Left(tmpsplit, RInStr(tmpsplit, " ")) & "..."
+  Endif
+  Return mystr
+End
+
+Public Sub cutstrings()
+  audioform.RadioLabel.text = cutstring(audioform.RadioLabel.text, 50)
+End
+
+
+Public Sub Form_Open()
+
+  
+
+End
+
+Public Sub AudioAreaGroup_MouseMove()
+
+  FMain.VideoAreaGroup_MouseMove()
+
+End
+
+
+Public Sub BarBox_MouseDown()
+  Try FMain.mymeters.nextvis()
+End
+
+Public Sub PictureBox2_Enter()
+  
+End
+Public Sub PictureBox2_leave()
+  'Last.border = False
+End
+
+Public Sub PictureBox2_MouseDown()
+  If Trim(FMain.mplayer.getP("Artist")) = "" Or Trim(FMain.mplayer.getP("title")) = "" Then
+    Message.Error(("Missing Artist and/or Song information"))
+    Return
+  Endif
+  FormLyrics.Searchlyrics(FMain.mplayer.getP("artist"), FMain.mplayer.getP("title"))
+End
+
+
+
+Public Sub Label17_MouseDown()
+  PictureBox2_MouseDown()
+End

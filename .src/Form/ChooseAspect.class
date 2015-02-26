@@ -1,0 +1,47 @@
+' Gambas class file
+
+Public choice As String
+
+Public Sub CancelBtn_Click()
+  choice = "-1"
+  Me.hide
+End
+
+Public Sub OkBtn_Click()
+  choice = Ratiobox.Text
+  Me.hide
+End
+
+Public Sub SpinW_Change()
+  Calc()
+End
+Public Sub SpinH_Change()
+  Calc()
+End
+
+Public Sub Calc()
+  Dim MyValue As String
+  MyValue = SpinW.Value / SpinH.Value
+  If Len(myvalue) > 6 Then myvalue = Left(myvalue, 6)
+  Ratiobox.text = myVALUE
+  testvalues()
+End
+
+Public Sub testvalues()
+  FMain.mplayer.set_property_mpv("video-aspect", Ratiobox.text)
+  FMain.ForcedAspectRT = Ratiobox.text
+  FMain.CorrectAreaAspect()
+End
+
+Public Sub TestBtn_Click()
+testvalues()
+End
+
+Public Sub Form_Close()
+  CancelBtn_Click()
+End
+
+Public Sub Form_Show()
+  Me.x = FMain.x + 32
+  Me.y = FMain.y + 32
+End

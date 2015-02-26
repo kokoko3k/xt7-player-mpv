@@ -1,0 +1,267 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+'we'll use this to track object dragging operations and correctly handle mouseup
+'ie don't confuse click and dragging
+Public ObjDragging As Boolean = False
+
+'it could happen that controls are not correctly centered under the mouse
+' during drag'n drop operation, use this to correct such behaviour
+  Public XOffset As Integer = 0
+  Public YOffset As Integer = 0
+
+Public ConstrainWidth As Integer = -1 'Try to resize the dropped control to this Width
+Public ConstrainHeight As Integer = -1 'Try to resize the dropped control to this Height
+
+Public AddSpace As Integer = "0"       'Add pixels to source borders while dragging to facilitate insertions
+Public AddPadding As Integer = "0"     'Add pixels between source controls while dragging to facilitate insertions
+
+Public AllowedContainers As New String[] 'Container names of allowed destinations for dropped objects
+
+
+Private OldParent As Object
+
+
+Public DelayEndDrag As New Timer As "DelayEndDrag"
+
+'PRIVATE dragcursor AS NEW Cursor(Picture.Load("icon:/16/book"))
+'PRIVATE dragcursor AS NEW Cursor(Picture.Load("drag.png"))
+
+Public Sub DelayEndDrag_Timer()
+  ObjDragging = False
+  DelayEndDrag.Stop
+End
+
+
+
+Public Function IsVerticalArranged(Myobj As Object) As Boolean
+  'returns the arrangment type of an object
+  'in case of error (eg: myobj is not a container) then False is returned
+  Dim IsVertical As Boolean = False
+    If (object.type(Myobj) = "Vbox") Or (object.type(Myobj) = "VPanel") Then
+        Return True
+          Else
+        Try IsVertical = (MyObj.arrangement = Arrange.Vertical) Or (MyObj.arrangement = Arrange.TopBottom)
+    Endif
+  Return IsVertical
+End
+
+Public Sub ObjectsUnderMouse(TheForm As Object) As Object[]
+  'returns an array of references to 
+  'containers under the mouse pointer
+  Dim obj As Object
+  Dim objs As New Object[]
+  Dim Dx0, Dx1, Dy0, Dy1 As Integer = 0
+  Dim Found As Boolean = False
+  For Each obj In TheForm.Controls
+    If (obj Is Container) Or (obj Is Form) Then
+      Dx0 = obj.ScreenX
+      Dx1 = Dx0 + obj.Width
+      Dy0 = obj.ScreenY
+      Dy1 = Dy0 + obj.Height
+      With mouse
+        found = (.screenX > Dx0) And (.screenX < Dx1) And (.screenY > Dy0) And (.screenY < Dy1)
+      End With
+      If found Then objs.Add(obj)
+    Endif
+  Next
+  Return objs
+End
+
+
+
+Private ShadowObj As Object 'qt4 workaround, make a copy of the object to mimic a drag'n drop...
+Private offsetx As Integer
+Private offsety As Integer
+Private OriginalWidth As Integer
+Private OriginalHeight As Integer
+
+Public Sub DetachFrom(TheObject As Object, TheForm As Object)
+  Dim symbol As String
+
+  If Not ObjDragging Then
+    offsetx = Mouse.screenx - TheObject.screenx + TheForm.screenx
+    offsety = Mouse.screeny - TheObject.screeny + TheForm.screeny
+    OldParent = TheObject.parent
+
+    Select Case Lower(object.type(TheObject))
+      Case "button"
+        ShadowObj = New Button(zzzfake) As "shadowobj"
+      Case "checkbox"
+        ShadowObj = New Checkbox(zzzfake) As "shadowobj"
+      Case "toolbutton"
+        ShadowObj = New ToolButton(zzzfake) As "shadowobj"
+       Case "label"
+        ShadowObj = New Label(zzzfake) As "shadowobj"
+      Case Else
+        ShadowObj = New Button(zzzfake) As "shadowobj"
+    End Select
+
+    For Each symbol In object.Class(TheObject).Symbols
+      Try object.get_property_mpv(TheObject, symbol)
+       If Not Error Then
+         Try object.SetProperty(ShadowObj, symbol, object.get_property_mpv(TheObject, symbol))
+       Endif
+    Next
+
+    shadowobj.visible = False
+    ShadowObj.ignore = True
+    shadowobj.reparent(theform)
+    shadowobj.visible = True
+
+    shadowobj.enabled = TheObject.enabled
+
+    ' Try shadowobj.autoresize = True 'gambas3
+    ' If Error Then 
+        shadowobj.w = TheObject.w 'gambas2
+        shadowobj.h = TheObject.h 'gambas2
+    ' Endif
+
+    TheObject.enabled = False
+    TheObject.ignore = True
+    OriginalWidth = TheObject.w
+    OriginalHeight = TheObject.h
+    TheObject.h = 0
+    TheObject.w = 0
+  Endif
+  ObjDragging = True
+  ShadowObj.raise
+  'If needhighlight Then highlightDestination(theform, True)
+
+End
+
+
+
+Public Sub MoveObject(TheObject As Object, TheForm As Object)
+  Dim MenuHeight As Integer
+  Dim SafeBack As Integer = 8
+  
+  
+    If mouse.left Then Try Theform.mouse = 18 'missing mouse constant
+    Try MenuHeight = TheForm.Font.textheight("Ij") + 4 'gambas3
+    If Error Then   'gambas2
+      MenuHeight = TheForm.Font.Textheight("Ij") + 4
+    Endif
+    
+    If Mouse.screenx - safeback < TheForm.screenx Then mouse.Move(TheForm.screenx + safeback, mouse.screeny)
+    If Mouse.screeny - safeback < TheForm.screeny + MenuHeight Then mouse.Move(mouse.screenx, TheForm.screeny + MenuHeight + SafeBack)
+    If Mouse.screenx + safeback > TheForm.screenx + TheForm.width Then mouse.move(TheForm.screenx + TheForm.width - safeback, mouse.screeny)
+    If Mouse.screeny + safeback > TheForm.screeny + TheForm.Height Then mouse.move(mouse.screenx, TheForm.screeny + TheForm.Height - safeback)
+    If ObjDragging Then
+      'move the object on the screen and center it under the mouse pointer
+      'If Mouse.button <> 0 Then
+        Try ShadowObj.x = Mouse.screenx - ShadowObj.Parent.ScreenX - ShadowObj.Width Div 2 + XOffset
+        Try ShadowObj.y = Mouse.screeny - ShadowObj.Parent.Screeny - ShadowObj.Height Div 2 + YOffset
+      'Endif
+    Endif
+End
+
+Private Function IsAnAllowedContainer(TheContainer As Object) As Boolean
+'This function will compare "TheContainer name" with a list of allowed Container names
+'Returning True if one one of them matches
+  Dim i As Integer = 0
+  Dim IsAllowed As Boolean = False
+  
+  'If no allowed containers were provided then all containers will be valid.
+    IsAllowed = (AllowedContainers.count = 0)
+  
+  While Not (IsAllowed) And (i < AllowedContainers.count)
+    IsAllowed = IsAllowed Or TheContainer.name = AllowedContainers[i]
+    i = i + 1
+  Wend
+  Return IsAllowed
+End
+
+
+Public Sub SmartInsert(TheObject As Object, TheForm As Object)
+'If you drop an object in a container and call this function on mouseup event,
+'the object indexes are reorganized as per their coordinates accordingly to the container
+'arrangement method.
+'That way, if you call the container arrangement function, they will be arranged
+'as expected and their order can be changed runtime.
+'For this function to works well, it is necessary that destination container arrangment property
+'is set to Horizontal,LeftRight,TopBottom or Vertical.
+
+
+  Dim draggedname As String
+  Dim i As Integer = 0
+  Dim skipone As Boolean = False
+  Dim found As Boolean = False
+  Dim DestinationObj As Object
+  Dim PointedObjects As Object[]
+  'HiddenBox is a temporary container used to reparent objects 
+  'Dim hiddenBox As Form
+  'wait for the form to be refreshed (by the mousemove function)
+
+  
+  'As we're in MouseUp events, we must distinguish the drag operation from the click
+  'ObjDragging is updated in the mousedrag event
+    If ObjDragging Then
+      PointedObjects = ObjectsUnderMouse(TheForm)
+      Try DestinationObj = PointedObjects[PointedObjects.count - 1]
+        If Not Error Then
+          'if the destination container doesn't match the allowed ones we'll reparent
+          'our object to his previous one.
+          If Not (IsAnAllowedContainer(DestinationObj)) Then DestinationObj = OldParent
+          DestinationObj.visible = False 'speedup things
+          draggedname = TheObject.name
+          'find where to insert the dragged object
+
+          For i = 0 To DestinationObj.children.count - 1
+            If DestinationObj.children[i].name = TheObject.name Then skipone = True
+            If IsVerticalArranged(DestinationObj) Then
+              found = (DestinationObj.children[i].ScreenY > mouse.screenY)
+              Debug DestinationObj.children[i].name, DestinationObj.children[i].ScreenY
+                Else
+              found = (DestinationObj.children[i].ScreenX > mouse.screenX)
+            Endif
+            If found Then Break
+          Next 
+
+          'now reparent the dragged object:
+          If skipone Then i = i - 1
+
+          TheObject.ignore = False
+          TheObject.reparent(DestinationObj)
+          TheObject.raise
+
+          MoveObject(TheObject, TheForm) '(This is needed to correctly position the object in the new container)
+          'now trow down (raise) the lower objects
+          If found Then
+            Repeat
+              Try DestinationObj.Children[i].raise
+            Until DestinationObj.children[i].name = draggedname
+          Endif
+          DestinationObj.visible = True
+            Else
+          TheObject.reparent(OldParent)
+          TheObject.ignore = False
+        Endif
+    Endif
+    If ConstrainWidth > 0 Then
+      Last.Width = ConstrainWidth
+        Else
+      If (OriginalWidth > 0) Then TheObject.w = OriginalWidth
+    Endif
+    If ConstrainHeight > 0 Then
+      Last.Height = ConstrainHeight
+        Else
+      If (OriginalHeight > 0) Then TheObject.h = OriginalHeight
+    Endif
+    OriginalWidth = 0
+    OriginalHeight = 0
+    
+    Try TheObject.parent.padding = TheObject.parent.padding - AddPadding
+    Try TheObject.parent.spacing = TheObject.parent.spacing - AddSpace
+    ' As Click event is raised after mouseup, we'll NEED set ObjDragging to False in Click procedure, not here.
+    ' ObjDragging = FALSE
+    DelayEndDrag.Delay = 100
+    DelayEndDrag.Start
+    TheForm.mouse = mouse.normal
+    ' TheObject.enabled = True
+    Try TheObject.enabled = ShadowObj.enabled
+    Try ShadowObj.Delete
+    Try Last.mouse = mouse.default
+End

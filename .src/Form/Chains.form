@@ -1,0 +1,359 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,91.4286,74)
+  Tag = "reparents"
+  Text = ("Chains Editor")
+  Icon = Picture["pipe.png"]
+  Persistent = True
+  Arrangement = Arrange.Vertical
+  Margin = True
+  Padding = 4
+  { MenuProfile Menu
+    Text = ("Profile")
+    { MenuLoadDefault Menu
+      Text = ("Reload current profile")
+      Picture = Picture["icon:/16/open"]
+    }
+    { MenuSaveDefault Menu
+      Text = ("Save to current profile")
+      Picture = Picture["icon:/16/save"]
+    }
+  }
+  { Timer1 #Timer
+    Enabled = True
+    Delay = 500
+  }
+  { HBox1 HBox
+    MoveScaled(0,2,90,60)
+    Expand = True
+    Spacing = True
+    Margin = True
+    Padding = 4
+    { SidePanel1 SidePanel
+      MoveScaled(1,2,24,55)
+      Arrangement = Arrange.Fill
+      Orientation = Align.Left
+      { VBox3 VBox
+        MoveScaled(2,2,22,51)
+        ToolTip = ("Available video filters.\nDrag them into the video chain to use them.\nClick on a filter to bring up his configuration window.")
+        Expand = True
+        { VideoFiltersLabel Label
+          MoveScaled(1,0,18,3)
+          AutoResize = True
+          Text = ("Video Filters Toolbox")
+          Alignment = Align.Left
+        }
+        { VideoFiltersBox ScrollView DragBox
+          Name = "VideoFiltersBox"
+          MoveScaled(1,2,20,44)
+          Background = Color.TextBackground
+          Expand = True
+          Arrangement = Arrange.Vertical
+          Spacing = True
+          Margin = True
+          Padding = 8
+          { HQdn3d Button VideoFilterObj
+            Name = "HQdn3d"
+            MoveScaled(-1,-45,16.4286,4)
+            Background = &HFFFF5F&
+            Tag = "       hqdn3d[=luma_spatial:chroma_spatial:luma_tmp:chroma_tmp]\n              High precision/quality version of the denoise3d filter.  Parame-\n              ters and usage are the same.\n\n------------------------------------------------------------------------------\n\n       denoise3d[=luma_spatial:chroma_spatial:luma_tmp:chroma_tmp]\n              This  filter  aims to reduce image noise producing smooth images\n              and making still images really still (This should  enhance  com-\n              pressibility.).\n                 <luma_spatial>\n                      spatial luma strength (default: 4)\n                 <chroma_spatial>\n                      spatial chroma strength (default: 3)\n                 <luma_tmp>\n                      luma temporal strength (default: 6)\n                 <chroma_tmp>\n                      chroma  temporal strength (default: luma_tmp*chroma_spa-\n                      tial/luma_spatial)\n"
+            Text = ("HQDenoise3D")
+            Picture = Picture["icon:/16/next"]
+          }
+          { Yadif Button VideoFilterObj
+            Name = "Yadif"
+            MoveScaled(0,1,16.4286,4)
+            Background = &HFFFF5F&
+            Tag = "       yadif=[mode[:field_dominance]]\n              Yet another deinterlacing filter\n                 <mode>\n                      0: Output 1 frame for each frame.\n                      1: Output 1 frame for each field.\n                      2: Like 0 but skips spatial interlacing check.\n                      3: Like 1 but skips spatial interlacing check.\n                 <field_dominance> (DEPRECATED)\n                      Operates like tfields.\n                      NOTE: This option will possibly be removed in  a  future\n                      version.  Use -field-dominance instead.\n"
+            Text = ("Yadif")
+            Picture = Picture["icon:/16/next"]
+          }
+          { Unsharp Button VideoFilterObj
+            Name = "Unsharp"
+            MoveScaled(0,5,16.4286,4)
+            Background = &HFFFF5F&
+            Tag = "       unsharp[=l|cWxH:amount[:l|cWxH:amount]]\n              unsharp mask / gaussian blur\n\n                 l:\n                      Apply effect on luma component.\n\n                 c:\n                      Apply effect on chroma components.\n\n                 <width>x<height>:\n                      width and height of the matrix, odd sized in both directions (min =  3x3,\n                      max = 13x11 or 11x13, usually something between 3x3 and 7x7)\n\n                 amount:\n                      Relative  amount  of  sharpness/blur  to  add  to the image (a sane range\n                      should be -1.5-1.5).\n                         <0: blur\n                         >0: sharpen\n"
+            Text = ("Unsharp")
+            Picture = Picture["icon:/16/next"]
+          }
+          { GradFun Button VideoFilterObj
+            Name = "GradFun"
+            MoveScaled(0,10,16.4286,4)
+            Background = &HFFFF5F&
+            Tag = "       gradfun[=strength[:radius]]\n              Fix the banding artifacts that are sometimes introduced into nearly flat re-\n              gions by truncation to 8bit colordepth.   Interpolates  the  gradients  that\n              should go where the bands are, and dithers them.\n\n              This  filter  is  designed  for playback only.  Do not use it prior to lossy\n              compression, because compression tends to lose the dither and bring back the\n              bands.\n\n                 <strength>\n                      Maximum  amount by which the filter will change any one pixel.  Also\n                      the threshold for detecting nearly flat regions (default: 1.2).\n\n                 <radius>\n                      Neighborhood to fit  the  gradient  to.   Larger  radius  makes  for\n                      smoother gradients, but also prevents the filter from modifying pix-\n                      els near detailed regions (default: 16).\n"
+            Text = ("GradFun")
+            Picture = Picture["icon:/16/next"]
+          }
+          { Scale Button VideoFilterObj
+            Name = "Scale"
+            MoveScaled(0,15,16.4286,4)
+            Background = &HFFFF5F&
+            Tag = "       scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]\n              Scales  the image with the software scaler (slow) and performs a\n              YUV<->RGB colorspace conversion (also see -sws).\n\n                 <w>,<h>\n                      scaled width/height (default: original width/height)\n                      NOTE: If -zoom is used, and underlying filters  (includ-\n                      ing  libvo)  are  incapable  of  scaling, it defaults to\n                      d_width/d_height!\n                          0:   scaled d_width/d_height\n                         -1:   original width/height\n                         -2:   Calculate w/h using the other dimension and the\n                         prescaled aspect ratio.\n                         -3:   Calculate w/h using the other dimension and the\n                         original aspect ratio.\n                         -(n+8): Like -n above, but rounding the dimension  to\n                         the closest multiple of 16.\n\n                 <ilaced>\n                      Toggle interlaced scaling.\n                         0: off (default)\n                         1: on\n\n                 <chr_drop>\n                      chroma skipping\n                         0: Use all available input lines for chroma.\n                         1: Use only every 2. input line for chroma.\n                         2: Use only every 4. input line for chroma.\n                         3: Use only every 8. input line for chroma.\n\n                 <par>[:<par2>] (also see -sws)\n                      Set  some  scaling  parameters  depending on the type of\n                      scaler selected with -sws.\n                         -sws 2 (bicubic):  B (blurring) and C (ringing)\n                         0.00:0.60 default\n                         0.00:0.75 VirtualDub's \"precise bicubic\"\n                         0.00:0.50 Catmull-Rom spline\n                         0.33:0.33 Mitchell-Netravali spline\n                         1.00:0.00 cubic B-spline\n                         -sws 7 (gaussian): sharpness (0 (soft) - 100 (sharp))\n                         -sws 9 (lanczos):  filter length (1-10)\n                 <presize>\n                      Scale to preset sizes.\n                         qntsc:   352x240 (NTSC quarter screen)\n                         qpal:    352x288 (PAL quarter screen)\n                         ntsc:    720x480 (standard NTSC)\n                         pal:     720x576 (standard PAL)\n                         sntsc:   640x480 (square pixel NTSC)\n                         spal:    768x576 (square pixel PAL)\n\n                 <noup>\n                      Disallow upscaling past the original dimensions.\n                         0: Allow upscaling (default).\n                         1:  Disallow  upscaling  if one dimension exceeds its\n                         original value.\n                         2: Disallow upscaling if both dimensions exceed their\n                         original values.\n\n                 <arnd>\n                      Accurate  rounding for the vertical scaler, which may be\n                      faster or slower than the default rounding.\n                         0: Disable accurate rounding (default).\n                         1: Enable accurate rounding.\n\n"
+            Text = ("Scale")
+            Picture = Picture["icon:/16/next"]
+          }
+          { MyExpand Button VideoFilterObj
+            Name = "MyExpand"
+            MoveScaled(0,19,16.4286,4)
+            Background = &HFFFF5F&
+            Tag = "      expand[=w:h:x:y:o:a:r]\n              Expands (not scales) movie resolution to the given  value  and\n              places the unscaled original at coordinates x, y.  Can be used\n              for placing subtitles/OSD in the resulting black bands.\n\n                 <w>,<h>\n                      Expanded     width,height      (default:      original\n                      width,height).  Negative values for w and h are treat-\n                      ed as offsets to the original size.\n\n                      EXAMPLE:\n                           expand=0:-50:0:0\n                                  Adds a 50 pixel border to  the  bottom  of\n                                  the picture.\n\n                 <x>,<y>\n                      position  of original image on the expanded image (de-\n                      fault: center)\n\n                 <o>\n                      OSD/subtitle rendering\n                         0: disable (default)\n                         1: enable\n\n                 <a>\n                      Expands to fit an aspect instead of a resolution  (de-\n                      fault: 0).\n\n                      EXAMPLE:\n                           expand=800:::::4/3\n                                  Expands  to  800x600, unless the source is\n                                  higher resolution, in which  case  it  ex-\n                                  pands to fill a 4/3 aspect.\n\n                 <r>\n                      Rounds  up  to make both width and height divisible by\n                      <r> (default: 1)."
+            Text = ("Expand")
+            Picture = Picture["icon:/16/next"]
+          }
+          { DeLogo Button VideoFilterObj
+            Name = "DeLogo"
+            MoveScaled(0,23,16.4286,4)
+            Background = &HFFFF5F&
+            Tag = "       delogo[=x:y:w:h:t]\n              Suppresses  a  TV  station logo by a simple interpolation of the\n              surrounding pixels.  Just set a rectangle covering the logo  and\n              watch it disappear (and sometimes something even uglier appear -\n              your mileage may vary).\n                 <x>,<y>\n                      top left corner of the logo\n                 <w>,<h>\n                      width and height of the cleared rectangle\n                 <t>  Thickness of the fuzzy edge of the rectangle (added to w\n                      and  h).   When set to -1, a green rectangle is drawn on\n                      the screen to simplify finding the right x,y,w,h parame-\n                      ters.\n\n"
+            Text = ("DeLogo")
+            Picture = Picture["icon:/16/next"]
+          }
+          { eq Button VideoFilterObj
+            Name = "eq"
+            MoveScaled(0,28,16.4286,4)
+            Background = &H9FFF9F&
+            Tag = "       eq2[=gamma:contrast:brightness:saturation:rg:gg:bg:weight]\n              Alternative software equalizer that  uses  lookup  tables  (very\n              slow),  allowing  gamma correction in addition to simple bright-\n              ness and contrast adjustment.  Note that it uses  the  same  MMX\n              optimized  code  as -vf eq if all gamma values are 1.0.  The pa-\n              rameters are given as floating point values.\n                 <0.1-10>\n                      initial gamma value (default: 1.0)\n                 <-2-2>\n                      initial contrast, where negative values result in a neg-\n                      ative image (default: 1.0)\n                 <-1-1>\n                      initial brightness (default: 0.0)\n                 <0-3>\n                      initial saturation (default: 1.0)\n                 <0.1-10>\n                      gamma value for the red component (default: 1.0)\n                 <0.1-10>\n                      gamma value for the green component (default: 1.0)\n                 <0.1-10>\n                      gamma value for the blue component (default: 1.0)\n                 <0-1>\n                      The weight parameter can be used to reduce the effect of\n                      a high gamma value on bright image areas, e.g. keep them\n                      from getting overamplified and just plain white.  A val-\n                      ue of 0.0 turns the gamma correction all  the  way  down\n                      while 1.0 leaves it at its full strength (default: 1.0).\n"
+            Text = ("Eq")
+            Picture = Picture["icon:/16/next"]
+          }
+          { Stereo3D Button VideoFilterObj
+            Name = "Stereo3D"
+            MoveScaled(0,33,16.4286,4)
+            Background = &H9FFF9F&
+            Tag = "stereo3d[=in:out]\n\nStereo3d converts between different stereoscopic image formats.\n\n  <in> (Stereoscopic image format of input.) Possible values:\n    sbsl or side_by_side_left_first\n      side by side parallel (left eye left, right eye right)\n    sbsr or side_by_side_right_first\n      side by side crosseye (right eye left, left eye right)\n    sbs2l or side_by_side_half_width_left_first\n      side by side with half width resolution (left eye left, right eye right)\n    sbs2r or side_by_side_half_width_right_first\n      side by side with half width resolution (right eye left, left eye right)\n    abl or above_below_left_first\n      above-below (left eye above, right eye below)\n    abl or above_below_right_first\n      above-below (right eye above, left eye below)\n    ab2l or above_below_half_height_left_first\n      above-below with half height resolution (left eye above, right eye below)\n    ab2r or above_below_half_height_right_first\n      above-below with half height resolution (right eye above, left eye below)\n\n  <out> Stereoscopic image format of output. Possible values are all the input formats as well as:\n    arcg or anaglyph_red_cyan_gray\n      anaglyph red/cyan gray (red filter on left eye, cyan filter on right eye)\n    arch or anaglyph_red_cyan_half_color\n      anaglyph red/cyan half colored (red filter on left eye, cyan filter on right eye)\n    arcc or anaglyph_red_cyan_color\n      anaglyph red/cyan color (red filter on left eye, cyan filter on right eye)\n    arcd or anaglyph_red_cyan_dubois\n      anaglyph red/cyan color optimized with the least squares projection of dubois (red filter on left eye, cyan filter on right eye)\n    agmg or anaglyph_green_magenta_gray\n      anaglyph green/magenta gray (green filter on left eye, magenta filter on right eye)\n    agmh or anaglyph_green_magenta_half_color\n      anaglyph green/magenta half colored (green filter on left eye, magenta filter on right eye)\n    agmc or anaglyph_green_magenta_color\n      anaglyph green/magenta colored (green filter on left eye, magenta filter on right eye)\n    aybg or anaglyph_yellow_blue_gray\n      anaglyph yellow/blue gray (yellow filter on left eye, blue filter on right eye)\n    aybh or anaglyph_yellow_blue_half_color\n      anaglyph yellow/blue half colored (yellow filter on left eye, blue filter on right eye)\n    aybc or anaglyph_yellow_blue_color\n      anaglyph yellow/blue colored (yellow filter on left eye, blue filter on right eye)\n    irl or interleave_rows_left_first\n      Interleaved rows (left eye has top row, right eye starts on next row)\n    irr or interleave_rows_right_first\n      Interleaved rows (right eye has top row, left eye starts on next row)\n    ml or mono_left\n      mono output (left eye only)\n    mr or mono_right\n      mono output (right eye only)\n\nNOTE: To use either of the interleaved-rows output formats to display full-screen on a row-interleaved 3D display,\nyou will need to scale the video to the correct height first using the \"scale\" filter,\nif it is not already the right height. \nTypically, that is 1080 rows\n(so use e.g. \"-vf scale=1440:1080,stereo3d=sbsl:irl\" for a 720p side-by-side encoded movie)."
+            Text = ("Stereo3D")
+            Picture = Picture["icon:/16/next"]
+          }
+          { CustomVideo1 Button VideoFilterObj
+            Name = "CustomVideo1"
+            MoveScaled(0,38,16.4286,4)
+            Background = &HFF5B5B&
+            Tag = "Here you can manually type your filters and parameters.\nOmit -af or -vf and separe multiple filters with commas or use a different slot."
+            ToolTip = ("Right click to rename")
+            Text = ("Custom 1")
+            Picture = Picture["icon:/16/next"]
+          }
+          { CustomVideo2 Button VideoFilterObj
+            Name = "CustomVideo2"
+            MoveScaled(0,43,16,4)
+            Background = &HFF5B5B&
+            Tag = "Here you can manually type your filters and parameters.\nOmit -af or -vf and separe multiple filters with commas or use a different slot."
+            ToolTip = ("Right click to rename")
+            Text = ("Custom 2")
+            Picture = Picture["icon:/16/next"]
+          }
+          { CustomVideo3 Button VideoFilterObj
+            Name = "CustomVideo3"
+            MoveScaled(0,48,16,4)
+            Background = &HFF5B5B&
+            Tag = "Here you can manually type your filters and parameters.\nOmit -af or -vf and separe multiple filters with commas or use a different slot."
+            ToolTip = ("Right click to rename")
+            Text = ("Custom 3")
+            Picture = Picture["icon:/16/next"]
+          }
+        }
+      }
+    }
+    { Panel1 Panel
+      MoveScaled(27,1,36,50)
+      ToolTip = ("Filters are processed from up to down\ntill the Audio/Video driver.")
+      Expand = True
+      Arrangement = Arrange.Horizontal
+      Spacing = True
+      Padding = 8
+      Border = Border.Sunken
+      { VBox2 VBox
+        MoveScaled(1,5,17,40)
+        Expand = True
+        Spacing = True
+        { VideoChainLabel Label
+          MoveScaled(1,1,11,3)
+          AutoResize = True
+          Text = ("VideoChain")
+          Alignment = Align.Left
+        }
+        { VideoChainBox ScrollView DragBox
+          Name = "VideoChainBox"
+          MoveScaled(2,4,13,28)
+          Background = Color.TextBackground
+          Expand = True
+          Arrangement = Arrange.Vertical
+          Spacing = True
+          Margin = True
+          Padding = 8
+          ScrollBar = Scroll.Vertical
+        }
+        { VideoDriverBTN Button
+          MoveScaled(2,33,13,4.5714)
+          ToolTip = ("No driver Defined")
+          Text = ("VideoDriver")
+          Picture = Picture["icon:/16/tools"]
+        }
+      }
+      { VBox1 VBox
+        MoveScaled(19,5,17,40)
+        Expand = True
+        Spacing = True
+        { AudioChainLabel Label
+          MoveScaled(3,1,11,3)
+          AutoResize = True
+          Text = ("AudioChain")
+          Alignment = Align.Left
+        }
+        { AudioChainBox ScrollView DragBox
+          Name = "AudioChainBox"
+          MoveScaled(1,4,14,28)
+          Background = Color.TextBackground
+          Expand = True
+          Arrangement = Arrange.Vertical
+          Spacing = True
+          Margin = True
+          Padding = 8
+          ScrollBar = Scroll.Vertical
+        }
+        { AudioDriverBTN Button
+          MoveScaled(1,33,15,4.5714)
+          ToolTip = ("No driver Defined")
+          Text = ("AudioDriver")
+          Picture = Picture["icon:/16/tools"]
+        }
+      }
+    }
+    { SidePanel2 SidePanel
+      MoveScaled(67,0,26,56)
+      Arrangement = Arrange.Fill
+      Orientation = Align.Right
+      { VBox4 VBox
+        MoveScaled(-1,1,24,49)
+        ToolTip = ("Available audio filters.\nDrag them into the audio chain to use them.\nClick on a filter to bring up his configuration window.")
+        { AudioFiltersLabel Label
+          MoveScaled(1,2,18,3)
+          AutoResize = True
+          Text = ("Audio Filters Toolbox")
+          Alignment = Align.Left
+        }
+        { AudioFiltersBox ScrollView DragBox
+          Name = "AudioFiltersBox"
+          MoveScaled(2,5,20,41)
+          Background = Color.TextBackground
+          Expand = True
+          Arrangement = Arrange.Vertical
+          Spacing = True
+          Margin = True
+          Padding = 8
+          { drc Button AudioFilterObj
+            Name = "drc"
+            MoveScaled(2,1,16.4286,4)
+            Background = &HDAFFA2&
+            Tag = "       volnorm[=method:target]\n              Maximizes the volume without distorting the sound.\n                 <method>\n                      Sets the used method.\n                         1: Use a single sample to smooth the  variations  via\n                         the  standard  weighted  mean  over past samples (de-\n                         fault).\n                         2: Use several samples to smooth the  variations  via\n                         the standard weighted mean over past samples.\n\n                 <target>\n                      Sets  the  target amplitude as a fraction of the maximum\n                      for the sample type (default: 0.25).\n"
+            Text = ("DRC")
+            Picture = Picture["icon:/16/next"]
+          }
+          { ExtraStereo Button AudioFilterObj
+            Name = "ExtraStereo"
+            MoveScaled(2,6,16.4286,4)
+            Background = &HDAFFA2&
+            Tag = "       extrastereo[=mul]\n              (Linearly) increases the difference between left and right chan-\n              nels which adds some sort of \"live\" effect to playback.\n                 <mul>\n                      Sets  the  difference  coefficient  (default: 2.5).  0.0\n                      means mono sound (average of both  channels),  with  1.0\n                      sound  will be unchanged, with -1.0 left and right chan-\n                      nels will be swapped.\n"
+            Text = ("Extra Stereo")
+            Picture = Picture["icon:/16/next"]
+          }
+          { Karaoke Button AudioFilterObj
+            Name = "Karaoke"
+            MoveScaled(2,12,16.4286,4)
+            Background = &HDAFFA2&
+            Tag = "       karaoke\n              Simple  voice  removal  filter exploiting the fact that voice is\n              usually recorded with mono gear and later  'center'  mixed  onto\n              the  final audio stream.  Beware that this filter will turn your\n              signal into mono.  Works well for 2 channel tracks; do not both-\n              er trying it on anything but 2 channel stereo.\n"
+            Text = ("Karaoke")
+            Picture = Picture["icon:/16/next"]
+          }
+          { Equalizer Button AudioFilterObj
+            Name = "Equalizer"
+            MoveScaled(2,21,16.4286,4)
+            Background = &HDAFFA2&
+            Tag = "       equalizer=[g1:g2:g3:...:g10]\n              10  octave  band  graphic  equalizer, implemented using 10 IIR\n              band pass filters.  This means that  it  works  regardless  of\n              what  type of audio is being played back.  The center frequen-\n              cies for the 10 bands are:\n\n              No. frequency\n              0    31.25 Hz\n              1    62.50 Hz\n              2   125.00 Hz\n              3   250.00 Hz\n              4   500.00 Hz\n              5    1.00 kHz\n              6    2.00 kHz\n              7    4.00 kHz\n              8    8.00 kHz\n              9   16.00 kHz\n\n              If the sample rate of the sound being played is lower than the\n              center  frequency for a frequency band, then that band will be\n              disabled.  A known bug with this filter is that the character-\n              istics  for the uppermost band are not completely symmetric if\n              the sample rate is close to the center frequency of that band.\n              This  problem can be worked around by upsampling the sound us-\n              ing the resample filter before it reaches this filter.\n                 <g1>:<g2>:<g3>:...:<g10>\n                      floating point numbers representing the gain in dB for\n                      each frequency band (-12-12)\n\n              EXAMPLE:\n                 mplayer -af equalizer=11:11:10:5:0:-12:0:5:12:12 media.avi\n                      Would  amplify  the  sound in the upper and lower fre-\n                      quency region while  canceling  it  almost  completely\n                      around 1kHz.\n"
+            Text = ("Equalizer ")
+            Picture = Picture["icon:/16/next"]
+          }
+          { Volume Button AudioFilterObj
+            Name = "Volume"
+            MoveScaled(2,25,16.4286,4)
+            Background = &HDAFFA2&
+            Tag = "       volume[=<volumedb>[:...]]\n              Implements software volume control. Use this filter with caution\n              since it can reduce the signal to noise ratio of the  sound.  In\n              most  cases  it is best to use the Master volume control of your\n              sound card or the volume knob on your amplifier.\n\n              NOTE: This filter is not reentrant and  can  therefore  only  be\n              enabled once for every audio stream.\n\n              <volumedb>\n                     Sets  the  desired  gain  in  dB  for all channels in the\n                     stream from -200 dB to +60 dB, where -200  dB  mutes  the\n                     sound  completely  and  +60  dB  equals  a  gain  of 1000\n                     (default: 0).\n\n              replaygain-track\n                     Adjust volume gain according to the track-gain replaygain\n                     value stored in the file metadata.\n\n              replaygain-album\n                     Like  replaygain-track,  but  using  the album-gain value\n                     instead.\n\n              replaygain-preamp\n                     Pre-amplification gain in dB to  apply  to  the  selected\n                     replaygain gain (default: 0).\n\n              replaygain-clip=yes|no\n                     Prevent  clipping  caused  by replaygain by automatically\n                     lowering the gain (default).  Use  replaygain-clip=no  to\n                     disable this.\n\n              softclip\n                     Turns  soft clipping on. Soft-clipping can make the sound\n                     more smooth if very high volume levels are  used.  Enable\n                     this  option  if the dynamic range of the loudspeakers is\n                     very low.\n\n                     WARNING: This feature creates distortion  and  should  be\n                     considered a last resort.\n\n\n              s16    Force  S16 sample format if set. Lower quality, but might\n                     be faster in some situations.\n\n              detach Remove the filter if the volume is not changed  at  audio\n                     filter  config  time. Useful with replaygain: if the cur‐\n                     rent file has no replaygain tags, then the filter will be\n                     removed  if this option is enabled.  (If --softvol=yes is\n                     used and the player volume controls are used during play‐\n                     back, a different volume filter will be inserted.)\n\n                 Example\n\n                 mpv --af=volume=10.1 media.avi\n                        Would  amplify  the  sound by 10.1 dB and hard-clip if\n                        the sound level is too high.\n"
+            Text = ("Volume ")
+            Picture = Picture["icon:/16/next"]
+          }
+          { scaletempo Button AudioFilterObj
+            Name = "scaletempo"
+            MoveScaled(2,30,16.4286,4)
+            Background = &HDAFFA2&
+            Tag = "          scaletempo[=option1:option2:...]\n              Scales  audio tempo without altering pitch, optionally synced to\n              playback speed (default).\n              This works by playing 'stride' ms of audio at normal speed  then\n              consuming  'stride*scale'  ms  of  input  audio.   It pieces the\n              strides together by blending 'overlap'%  of  stride  with  audio\n              following  the  previous stride.  It optionally performs a short\n              statistical analysis on the next 'search' ms of audio to  deter-\n              mine the best overlap position.\n                 scale=<amount>\n                      Nominal  amount  to  scale tempo.  Scales this amount in\n                      addition to speed.  (default: 1.0)\n                 stride=<amount>\n                      Length in milliseconds to output each stride.  Too  high\n                      of  value  will  cause  noticable  skips  at  high scale\n                      amounts and an echo at low scale amounts.  Very low val-\n                      ues  will alter pitch.  Increasing improves performance.\n                      (default: 60)\n                 overlap=<percent>\n                      Percentage of stride to  overlap.   Decreasing  improves\n                      performance.  (default: .20)\n                 search=<amount>\n                      Length  in milliseconds to search for best overlap posi-\n                      tion.  Decreasing improves performance greatly.  On slow\n                      systems,  you  will  probably want to set this very low.\n                      (default: 14)\n                 speed=<tempo|pitch|both|none>\n                      Set response to speed change.\n                         tempo\n                              Scale tempo in sync with speed (default)\n                         pitch\n                              Reverses effect of filter.  Scales pitch without\n                              altering     tempo.      Add    '[    speed_mult\n                              0.9438743126816935'    and     ']     speed_mult\n                              1.059463094352953' to your input.conf to step by\n                              musical semi-tones.  WARNING: Looses synch  with\n                              video.\n                         both Scale both tempo and pitch\n                         none Ignore speed changes\n\n              EXAMPLE:\n                 mplayer -af scaletempo -speed 1.2 media.ogg\n                      Would playback media at 1.2x normal speed, with audio at\n                      normal pitch.  Changing playback speed, would change au-\n                      dio tempo to match.\n                 mplayer  -af  scaletempo=scale=1.2:speed=none  -speed 1.2 me-\n                 dia.ogg\n                      Would playback media at 1.2x normal speed, with audio at\n                      normal pitch, but changing playback speed has no  effect\n                      on audio tempo.\n                 mplayer  -af  scaletempo=stride=30:overlap=.50:search=10  me-\n                 dia.ogg\n                      Would tweak the quality and performace parameters.\n                 mplayer -af format=floatne,scaletempo media.ogg\n                      Would  make  scaletempo use float code.  Maybe faster on\n                      some platforms.\n                 mplayer -af scaletempo=scale=1.2:speed=pitch audio.ogg\n                      Would playback audio file at 1.2x normal speed, with au-\n                      dio  at  normal  pitch.   Changing playback speed, would\n                      change pitch, leaving audio tempo at 1.2x.\n\n"
+            Text = ("ScaleTempo")
+            Picture = Picture["icon:/16/next"]
+          }
+          { CustomAudio1 Button AudioFilterObj
+            Name = "CustomAudio1"
+            MoveScaled(2,35,16.4286,4)
+            Background = &HFF5B5B&
+            Tag = "Here you can manually type your filters and parameters.\nOmit -af or -vf and separe multiple filters with commas or use a different slot."
+            ToolTip = ("Right click to rename")
+            Text = ("Custom 1")
+            Picture = Picture["icon:/16/next"]
+          }
+          { CustomAudio2 Button AudioFilterObj
+            Name = "CustomAudio2"
+            MoveScaled(2,40,16.4286,4)
+            Background = &HFF5B5B&
+            Tag = "Here you can manually type your filters and parameters.\nOmit -af or -vf and separe multiple filters with commas or use a different slot."
+            ToolTip = ("Right click to rename")
+            Text = ("Custom 2")
+            Picture = Picture["icon:/16/next"]
+          }
+          { CustomAudio3 Button AudioFilterObj
+            Name = "CustomAudio3"
+            MoveScaled(2,45,16.4286,4)
+            Background = &HFF5B5B&
+            Tag = "Here you can manually type your filters and parameters.\nOmit -af or -vf and separe multiple filters with commas or use a different slot."
+            ToolTip = ("Right click to rename")
+            Text = ("Custom 3")
+            Picture = Picture["icon:/16/next"]
+          }
+        }
+      }
+    }
+  }
+  { HBox2 HBox
+    MoveScaled(1,63,76,5)
+    Spacing = True
+    Margin = True
+    Padding = 3
+    { HBox3 HBox
+      MoveScaled(6,0,5,4)
+      Expand = True
+    }
+    { Button1 Button
+      MoveScaled(11,0,16,4)
+      Text = ("Button1")
+    }
+    { SaveBTN Button
+      MoveScaled(29,0,13.5714,3.7143)
+      ToolTip = ("Save and use new settings")
+      AutoResize = True
+      Text = ("Save")
+      Picture = Picture["icon:/16/save"]
+    }
+    { ApplyBTN Button
+      MoveScaled(44,0,14,4)
+      Tag = "Use new settings without save"
+      AutoResize = True
+      Text = ("Use ")
+      Picture = Picture["icon:/16/redo"]
+    }
+    { OkBTN Button
+      MoveScaled(60,0,14,4)
+      Tag = "Close the window"
+      AutoResize = True
+      Text = ("Close")
+      Picture = Picture["icon:/16/cancel"]
+    }
+  }
+}

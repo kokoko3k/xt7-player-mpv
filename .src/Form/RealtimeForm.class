@@ -1,0 +1,117 @@
+' Gambas class file
+
+Public Sub PanscanSlider_Change()
+  If (Last Is Slider) And (Last.next Is Spinbox) Then
+    Try Last.Next.value = Last.value
+    If FMain.FullyLoaded Then FMain.resizefactor = (Last.value / 10000)
+    If Not FMain.switchingfullscreen Then FMain.ForcedZoomRT = ""
+    FMain.CorrectAreaAspect
+  Endif
+End
+
+Public Sub PanScanSpinBox_Change()
+  If (Last Is Spinbox) And (Last.previous Is Slider) Then
+    Try Last.previous.value = Last.value
+  Endif
+End
+
+Public Sub AudioDelaySpinBox_Change()
+  If (Last Is Spinbox) And (Last.previous Is Slider) Then
+    Try Last.previous.value = Last.value
+  Endif
+End
+
+
+Public Sub AudioDelaySlider_Change()
+  If (Last Is Slider) And (Last.next Is Spinbox) Then
+    Try Last.Next.value = Last.value
+    FMain.mplayer.set_property_mpv(Last.tag, Last.value / 1000, True)
+  Endif
+End
+
+Public Sub SubDelaySpinBox_Change()
+  If (Last Is Spinbox) And (Last.previous Is Slider) Then
+    Try Last.previous.value = Last.value
+  Endif
+End
+
+Public Sub SubDelaySlider_Change()
+  If (Last Is Slider) And (Last.next Is Spinbox) Then
+    Try Last.Next.value = Last.value
+    If FMain.FullyLoaded Then FMain.mplayer.set_property_mpv(Last.tag, Last.value / 1000, True)
+  Endif
+End
+
+Public Sub Clears_Click()
+  If (Last Is Toolbutton) And (Last.next Is Slider) And (Last.next.next Is Spinbox) Then
+    Try Last.next.value = 0
+    Try Last.next.next.value = 0
+  Endif
+End
+
+
+Public Sub ClearZoomButton_Click()
+  If (Last Is Toolbutton) And (Last.next Is Slider) And (Last.next.next Is Spinbox) Then
+    Try Last.next.value = 10000
+    Try Last.next.next.value = 10000
+  Endif
+End
+
+Public Sub SubPositionSlider_Change()
+  If (Last Is Slider) And (Last.next Is Spinbox) Then
+    Try Last.Next.value = Last.value
+    If FMain.FullyLoaded Then FMain.mplayer.set_property_mpv(Last.tag, Last.value, True)
+  Endif
+End
+
+Public Sub SubPositionSpinBox_Change()
+  If (Last Is Spinbox) And (Last.previous Is Slider) Then
+    Try Last.previous.value = Last.value
+  Endif
+End
+
+Public Sub SubScaleSpinBox_Change()
+  If (Last Is Spinbox) And (Last.previous Is Slider) Then
+    Try Last.previous.value = Last.value
+  Endif
+End
+
+Public Sub SubScaleSlider_Change()
+  If (Last Is Slider) And (Last.next Is Spinbox) Then
+    Try Last.Next.value = Last.value
+    If FMain.FullyLoaded Then FMain.mplayer.set_property_mpv(Last.tag, (Last.value / 10), True)
+  Endif
+End
+
+
+Public Sub ToolButton4_Click()
+
+  SubScaleSlider.value = 10
+
+End
+
+
+Public Sub FrameDropCHK_Click()
+  If FrameDropCHK.value Then 
+    Try FrameDropCombobox_Click()
+      Else
+    If FMain.FullyLoaded Then FMain.mplayer.set_property_mpv("framedrop", "no", True)
+  Endif
+End
+
+Public Sub FrameDropCombobox_Click()
+  If FMain.FullyLoaded Then 
+    If FrameDropCHK.value Then 
+      FMain.mplayer.set_property_mpv("framedrop", Trim(Split(FrameDropCombobox.text, "-", "", True)[0]), True)
+    Endif
+  Endif
+End
+
+
+
+Public Sub Form_Show()
+
+  PanscanSlider.value = FMain.ResizeFactor * 10000
+
+End
+

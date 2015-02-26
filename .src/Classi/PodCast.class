@@ -1,0 +1,240 @@
+' Gambas class file
+
+Public channelinfo As String
+Public items As New String[]
+Public ts As String = Chr(8)
+
+
+
+
+
+Public Function Fetch(PodCastUrl As String) As String[]
+
+  Dim buffer As String
+  Dim xml As New Xmldocument
+  Dim node As Xmlnode
+
+
+  Dim tmpfile As String = Temp()
+  Dim wget As New Wgetclass
+  channelinfo = ""
+  'SHELL "wget '" & PodcastUrl & "' --timeout=4 --tries=3 --output-document=" & tmpfile WAIT
+  'TRY buffer = File.Load(tmpfile)
+  buffer = wget.DownloadAsync(podcasturl)
+  If Error Then Return ""
+   If Trim(buffer) = "" Then Return ""
+   Try xml.FromString(buffer)
+   If Error Then Return ""
+   node = xml.Root
+   items.clear
+   channelinfo = parsechannel(node)
+   parsenode(node)
+   Return items
+   Try Kill tmpfile
+End
+
+Private Function ParseChannel(node As XmlNode) As String
+  'returns podcast title,link,description,icon
+  Dim t As Integer
+  Dim node1 As XmlNode
+
+  Dim title As String = ""
+  Dim feedlink As String = ""
+  Dim description As String = ""
+  Dim image As String = ""
+  Dim imageAttribute As Xmlnode
+  
+  Dim channelfound As Boolean = False
+  'find channel
+  For t = 0 To node.Children.Count - 1
+    If node.Children[t].name = "channel" Then
+      node1 = node.Children[t]
+      channelfound = True
+      Break
+    Endif
+  Next
+  If channelfound Then
+    For t = 0 To node1.Children.Count - 1
+      If node1.Children[t].name Like "*image" Then
+         For Each ImageAttribute In node1.Children[t].Attributes
+         
+           If ImageAttribute.name = "href" Then
+             image = ImageAttribute.value
+           Endif
+         Next
+      Endif
+      If node1.Children[t].name = "title" Then title = node1.Children[t].value
+      If node1.Children[t].name = "link" Then feedlink = node1.Children[t].value
+      If node1.Children[t].name = "description" Then description = node1.Children[t].value
+       '<itunes:image href="http://www.probotproductions.com/vidcasts/A5SQposter300x300.jpg" />
+    Next
+  Endif
+  Return (title & ts & feedlink & ts & description & ts & image)
+  
+End
+
+
+Private Sub parseNode(node As XmlNode)
+  Dim t, t1 As Integer
+  Dim node1 As XmlNode
+  Dim buf As String
+  Dim title, description, item_link As String
+  Dim EnclosureAttribute As Xmlnode
+  For t = 0 To node.Children.Count - 1
+    node1 = node.Children[t]
+    If node1.name = "item" Then
+      For t1 = 0 To node1.Children.Count - 1
+        buf = node1.Children[t1].name
+        If buf = "title" Then
+          title = node1.Children[t1].value
+        Else If buf = "description" Then
+          description = node1.Children[t1].value
+        Else If buf = "enclosure" Then
+          For Each EnclosureAttribute In node1.Children[t1].Attributes
+            If EnclosureAttribute.name = "url" Then
+              item_link = EnclosureAttribute.value
+            Endif
+          Next
+        End If
+      Next
+      
+    'fetch return format:
+    'Items.Add(title & ts & description & ts & item_link)
+      
+      Items.Add(title & ts & description & ts & item_link)
+      'PRINT "title=" & title & " Desc=" & description & " link=" & item_LINK
+    Else
+      If node1.Children.Count > 0 Then parseNode(node1)
+    End If
+  Next
+End
+
+
+Public Sub Add(PodCastUrl As String, PodcastTree As Treeview)
+  Dim newitem, title, desc, podlink As String
+  Dim mousebefore As Integer = PodcastTree.mouse
+  
+
+  PodcastTree.mouse = mouse.wait
+  Try PodcastTree.Add(PodcastUrl, PodCastUrl, picture["rssbig.png"])
+  
+  'TRY PodcastTree.Add(PodCastUrl, Global.oneof(Channeltitle, PodCastUrl), ChannelCover)
+  If Not Error Then
+    For Each newitem In Fetch(PodcastUrl)
+      title = Split(newitem, ts)[0]
+      desc = Split(newitem, ts)[1]
+      podlink = Split(newitem, ts)[2]
+      'Try PodcastTree.Add(podlink, title, picture["filetypeuri.png"], PodcastUrl)
+      Try PodcastTree.Add(podlink, title, picture["rss.png"], PodcastUrl)
+    Next 'newitem
+  Endif
+  'set channel info (to do after fetch)
+  SetchannelInfo(podcasturl, PodcastTree)
+  PodcastTree.mouse = MouseBefore
+End
+
+
+Private Sub SetchannelInfo(PodCastUrl As String, PodcastTree As Treeview)
+  Dim ChannelTitle As String = ""
+  Dim ChannelCoverUrl As String = ""
+  Dim channelcover As New Image
+  Dim tmpfile As String
+  Dim wget As New Wgetclass
+  Try Channeltitle = Split(channelinfo, ts)[0]
+  Try Channelcoverurl = Split(channelinfo, ts)[3]
+
+  'tmpfile = Temp("channelcover" & Rnd(1000000, 9999999))
+
+  tmpfile = (wget.DownloadAsync(ChannelCoverUrl, True))
+  Try channelcover = image.Load(tmpfile)
+
+  If Not Error Then
+    Debug "loaded " & tmpfile
+    Try channelcover = channelcover.Stretch(32, 32)
+    Try PodcastTree[podcasturl].Picture = channelcover.Picture
+      Else
+    channelcover = image.Load("rssbig.png")
+  Endif
+  Try Kill tmpfile
+  
+  PodcastTree[podcasturl].text = Global.Oneof(ChannelTitle, podcasturl)
+  PodcastTree[podcasturl].text = "[" & PodcastTree[podcasturl].children & "]" & " " & PodcastTree[podcasturl].text
+  Wait 0.01
+End
+
+
+
+Public Sub Append(PodCastUrl As String, PodcastTree As Treeview)
+  Dim newitem, title, desc, podlink As String
+  Try PodcastTree.Add(PodcastUrl, PodCastUrl, picture["rssbig.png"])
+  If Error Then
+    For Each newitem In Fetch(PodcastUrl)
+      title = Split(newitem, ts)[0]
+      desc = Split(newitem, ts)[1]
+      podlink = Split(newitem, ts)[2]
+      Try PodcastTree.Add(podlink, title, picture["rss.png"], PodcastUrl)
+    Next 'newitem
+  Endif
+End
+
+Public Sub Del(PodCastUrl As String, PodcastTree As Treeview)
+  PodcastTree.Remove(PodcastUrl)
+End
+
+
+Public Sub RefreshAll(PodcastTree As Treeview)
+  'DIM mousebefore AS Integer = PodcastTree.cursor
+  If PodcastTree.Count > 0 Then
+    PodcastTree.MoveFirst
+    Repeat
+      Refresh(PodcastTree.Item.Key, PodcastTree)
+      Print PodcastTree.Item.Key
+    Until PodcastTree.movenext()
+  Endif
+  
+End
+
+
+Public Sub Refresh(PodCastUrl As String, PodcastTree As Treeview)
+  Dim mousebefore As Integer = PodcastTree.mouse
+  PodcastTree.mouse = mouse.wait
+  'remove all child items
+  Repeat
+    PodcastTree.MoveTo(PodCastUrl)
+    PodcastTree.MoveChild()
+    Try PodcastTree.Item.Delete
+  Until Error
+  'append new results 
+  Try Append(PodCastUrl, PodcastTree)
+  'set channel attributes
+  SetchannelInfo(PodCastUrl, PodcastTree)
+  'restore the previous position
+  PodcastTree.MoveTo(PodCastUrl)
+  PodcastTree.mouse = MouseBefore
+End
+
+
+
+
+Public Sub SavePods(outfile As String, PodcastTree As Treeview)
+  Dim pods As String = ""
+  PodcastTree.MoveFirst
+  If PodcastTree.Count > 0 Then
+    Repeat
+      pods = pods & ts & PodcastTree.Item.Key
+    Until PodcastTree.movenext()
+  Endif
+  Try Kill outfile
+  File.Save(outfile, pods)
+End
+
+Public Sub LoadPods(infile As String, PodcastTree As Treeview)
+  Dim pods As String
+  Dim pod As String
+  Try pods = File.Load(infile)
+  
+  For Each pod In Split(pods, ts)
+    Try PodcastTree.Add(Pod, Pod, picture["rssbig.png"])
+  Next 'pod
+End
+

@@ -1,0 +1,330 @@
+' Gambas class file
+
+'Thanks to:
+'http://www.yanniel.info/2012/01/open-subtitles-api-in-delphi.html
+
+Public OpenSubsUrl As String = "http://api.opensubtitles.org/xml-rpc"
+
+Public defaultagent As String = "xt7player"
+
+Public Function AnswerTo(question As String) As String
+  Dim responsefile As String = Temp()
+  Dim timeout As Integer = 1000 ' centisecs
+  Dim myhttp As New Httpclient
+  Dim answer As String
+
+  myhttp.url = OpenSubsUrl
+  myhttp.Async = True
+  myhttp.Post("text/xml", question,, Responsefile)
+  While (timeout > 0) And ((myhttp.status = Net.connecting) Or (myhttp.status = Net.ReceivingData))
+    Wait 0.01
+    timeout -= 1
+  Wend
+  If timeout = 0 Then Return "-1"
+  If Exist(Responsefile) Then
+    answer = Trim(File.Load(responsefile))
+  Endif
+  Return File.Load(Responsefile)
+End
+
+Public Function StringFromName(ByRef aXml As String, aName As String, discard As Boolean) As String
+  Dim sstart, eend As Integer
+  Dim out As String
+    'else, get the token
+    sstart = InStr(aXml, "<name>" & aName & "</name>")
+    If sstart = 0 Then Return ""
+    sstart = InStr(aXml, "<string>", sstart) + 8 'len("<string>") == 8
+    If sstart = 0 Then Return ""
+    eend = InStr(aXml, "</string>", sstart)
+    If eend = 0 Then Return ""
+    out = Mid(aXml, sstart, eend - sstart)
+    If discard Then axml = Right(axml, Len(axml) - eend)
+    Return out
+End
+
+Public Function LogOut(token As String) As String
+  Dim answer, question As String
+  question = "<?xml version='1.0'?>"
+           "<methodCall>"
+           "  <methodName>LogOut</methodName>"
+           "  <params>"
+           "    <param>"
+           "      <value><string>" & token & "</string></value>"
+           "    </param>"
+           "  </params>"
+           "</methodCall>"
+  answer = AnswerTo(question)
+  If answer = -1 Then 
+    Return "-1"
+      Else
+    Return StringFromName(answer, "status", False)
+  Endif
+End
+
+Public Function TokenFromLogIn(Username As String, Password As String, Language As String, UserAgent As String) As String
+  Dim question, answer, status As String
+  question = "<?xml version='1.0'?>"
+           "<methodCall>"
+           "  <methodName>LogIn</methodName>"
+           "  <params>"
+           "    <param>"
+           "      <value><string>" & Username & "</string></value>"
+           "    </param>"
+           "    <param>"
+           "      <value><string>" & Password & "</string></value>"
+           "    </param>"
+           "    <param>"
+           "      <value><string>" & Language & "</string></value>"
+           "    </param>"
+           "    <param>"
+           "      <value><string>" & UserAgent & "</string></value>"
+           "    </param>"
+           "  </params>"
+           "</methodCall>"
+
+  answer = AnswerTo(question)
+  If answer = "-1" Then Return "-1"
+  status = StringFromName(answer, "status", False)
+  If status Like "200 *" Then
+    Debug "Ok, got token from opensubtitles"
+    Debug
+    Return StringFromName(answer, "token", False)
+      Else
+    Debug "Error status= " & status
+    Debug
+    Return "-1"
+  Endif
+End
+
+
+
+Public XmlFields As String = "SubFileName,SubLanguageID,SubFormat,SubRating,SubDownloadsCnt,SubDownloadLink,SubtitlesLink"
+
+Public Function SearchByTag(token As String, Language As String, myquery As String) As Collection[]
+  Dim question, subs As String
+  Dim field As String 
+  Dim mysub As Collection
+  Dim mysubs As New Collection[]
+  Dim t As String
+  question = "<?xml version='1.0'?>"
+                     "<methodCall>"
+                     "  <methodName>SearchSubtitles</methodName>"
+                     "  <params>"
+                     "    <param>"
+                     "      <value><string>" & token & "</string></value>"
+                     "    </param>"
+                     "  <param>"
+                     "   <value>"
+                     "    <array>"
+                     "     <data>"
+                     "      <value>"
+                     "       <struct>"
+                     "        <member>"
+                     "         <name>sublanguageid</name>"
+                     "         <value><string>" & language & "</string>"
+                     "         </value>"
+                     "        </member>"
+                     "        <member>"
+                     "         <name>tag</name>"
+                     "         <value><string>" & myquery & "</string></value>"
+                     "        </member>"
+                     "       </struct>"
+                     "      </value>"
+                     "     </data>"
+                     "    </array>"
+                     "   </value>"
+                     "  </param>"
+                     " </params>"
+                     "</methodCall>"
+
+  subs = AnswerTo(question)
+
+  Repeat
+    mysub = New Collection
+    For Each field In Split(XmlFields, ",")
+      t = StringFromName(ByRef subs, field, True)
+      If Trim(t) <> "" Then 
+        mysub.Add(t, field)
+      Endif
+    Next 'field
+    mysubs.Add(mysub)
+  Until Not (mysubs[mysubs.count - 1].Exist("SubFileName")) 'exit as soon as a no filename has been added
+  mysubs = removenullitems(mysubs)
+  Debug "results: " & mysubs.count
+  Debug
+  Return mysubs
+End
+
+Public Function removenullitems(mysubs As Collection[]) As Collection[]
+
+  Dim i As Integer
+  For i = 0 To mysubs.count - 1
+    If Trim(mysubs[i]["SubDownloadLink"]) = "" Then mysubs.Remove(i)
+  Next
+  Return mysubs
+End
+
+
+Public Function SearchByQuery(token As String, Language As String, myquery As String) As Collection[]
+  Dim question, subs As String
+  Dim field As String 
+  Dim mysub As Collection
+  Dim mysubs As New Collection[]
+  Dim t As String
+  question = "<?xml version='1.0'?>"
+                     "<methodCall>"
+                     "  <methodName>SearchSubtitles</methodName>"
+                     "  <params>"
+                     "    <param>"
+                     "      <value><string>" & token & "</string></value>"
+                     "    </param>"
+                     "  <param>"
+                     "   <value>"
+                     "    <array>"
+                     "     <data>"
+                     "      <value>"
+                     "       <struct>"
+                     "        <member>"
+                     "         <name>sublanguageid</name>"
+                     "         <value><string>" & language & "</string>"
+                     "         </value>"
+                     "        </member>"
+                     "        <member>"
+                     "         <name>query</name>"
+                     "         <value><string>" & myquery & "</string></value>"
+                     "        </member>"
+                     "       </struct>"
+                     "      </value>"
+                     "     </data>"
+                     "    </array>"
+                     "   </value>"
+                     "  </param>"
+                     " </params>"
+                     "</methodCall>"
+
+  subs = AnswerTo(question)
+
+  Repeat
+    mysub = New Collection
+    For Each field In Split(XmlFields, ",")
+      t = StringFromName(ByRef subs, field, True)
+      If Trim(t) <> "" Then 
+        mysub.Add(t, field)
+      Endif
+    Next 'field
+    mysubs.Add(mysub)
+  Until Not (mysubs[mysubs.count - 1].Exist("SubFileName")) 'exit as soon as a no filename has been added
+  If Trim(mysub["SubDownloadLink"]) <> "" Then mysubs.Add(mysub)
+  mysubs = removenullitems(mysubs)
+  Debug "results: " & mysubs.count
+  Return mysubs
+End
+
+Public Function SearchByHash(token As String, Language As String, moviehash As String, moviesizebytes As Long) As Collection[]
+  Dim question, subs As String
+  Dim field As String 
+  Dim mysub As Collection
+  Dim mysubs As New Collection[]
+  Dim t As String
+  question = "<?xml version='1.0'?>"
+              "<methodCall>"
+              "  <methodName>SearchSubtitles</methodName>"
+              "  <params>"
+              "    <param>"
+              "      <value><string>" & token & "</string></value>"
+              "    </param>"
+              "  <param>"
+              "   <value>"
+              "    <array>"
+              "     <data>"
+              "      <value>"
+              "       <struct>"
+              "        <member>"
+              "         <name>sublanguageid</name>"
+              "         <value><string>" & Language & "</string>"
+              "         </value>"
+              "        </member>"
+              "        <member>"
+              "         <name>moviehash</name>"
+              "         <value><string>" & moviehash & "</string></value>"
+              "        </member>"
+              "        <member>"
+              "         <name>moviebytesize</name>"
+              "         <value><double>" & CStr(moviesizebytes) & "</double></value>"
+              "        </member>"
+              "       </struct>"
+              "      </value>"
+              "     </data>"
+              "    </array>"
+              "   </value>"
+              "  </param>"
+              " </params>"
+              "</methodCall>"
+
+  subs = AnswerTo(question)
+
+  Repeat
+    mysub = New Collection
+    For Each field In Split(XmlFields, ",")
+      t = StringFromName(ByRef subs, field, True)
+      If Trim(t) <> "" Then 
+        mysub.Add(t, field)
+      Endif
+    Next 'field
+    mysubs.Add(mysub)
+  Until Not (mysubs[mysubs.count - 1].Exist("SubFileName")) 'exit as soon as a no filename has been added
+  Return mysubs
+End
+
+
+Public Function MovieHash(filename As String) As String
+  Dim out As String 
+  Dim tmp As String = Temp()
+  Try Mkdir tmp
+  filename = Shell(filename)
+
+  Try Copy "Hash.py" To tmp & "/Hash.py"
+  If Error Then 
+    Debug "error on copying hash.py"
+    Debug
+    Return
+  Endif
+  Shell "python " & tmp & "/Hash.py " & filename To out 
+  If Trim(out) = "" Then
+    Shell "python2 " & tmp & "/Hash.py " & filename To out
+      Else
+    Return Trim(out)
+  Endif
+
+  If Trim(out) = "" Then 
+    Debug "Hash.py failed"
+    Debug
+    Return "-1"
+      Else
+    Return Trim(out)
+  Endif
+End
+
+Public Function SaveSub(SubUrl As String, Target As String) As Boolean
+
+  Dim Cp As New Uncompress
+  Dim tmpfile As String = Temp() & ".gz"
+  Dim timeout As Integer = 1000 'centisecs
+  Dim mywget As New WgetClass
+  Try File.Save(tmpfile, mywget.DownloadAsync(suburl, False))
+  If Error Then Return False
+  ' myhttp.url = SubUrl
+  ' myhttp.async = True
+  ' myhttp.Get(, tmpfile)
+  ' While (timeout > 0) And ((myhttp.status = Net.connecting) Or (myhttp.status = Net.ReceivingData))
+  '   Wait 0.01
+  '   timeout -= 1
+  ' Wend
+  If timeout = 0 Then Return False
+  cp.type = "zlib"
+  Try cp.File(tmpfile, Target)
+  If Error Then Return False
+  Return True
+End
+
+

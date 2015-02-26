@@ -1,0 +1,172 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Inherits Panel
+
+
+Private MyValueBox As ValueBox
+Private MySpinButton As Button
+Private Const SpinButtonWidth As Integer = 19
+Public FStep As Variant = 0.1
+Public MinValue As Variant = -10
+Public MaxValue As Variant = 10
+Public DecimalSeparator As String = ","
+
+
+'Timer Related
+  Public RepeatDelayms As Integer = 100
+  Private TimerIncDec As New Timer As "TimerIncDec"
+  Private Incrementing As Boolean = True
+  
+  Public Sub TimerIncDec_Timer()
+  If Incrementing Then
+    Increment()
+      Else
+    Decrement()
+  Endif
+End
+'
+
+Private hobs As Observer
+
+
+Public Sub _NEW()
+  Dim hpic_up As Picture
+  Dim coordinate As Integer[]
+
+
+  Super.Border = Border.None
+  MyValueBox = New ValueBox(Me) As "MyValueBox"
+  MyValueBox.expand = True
+  
+  hObs = New Observer(MyValueBox.Children[0]) As "MyValueBox" 
+  
+  MySpinButton = New Button(Me) As "MySpinButton"
+  MySpinButton.width = SpinButtonWidth
+  
+  'Create UpDown image on the fly  
+    hpic_up = New Picture(11, 13, True)
+    Draw.Begin(hpic_up)
+      Draw.FillStyle = 1
+      draw.Foreground = color.gradient(Color.ButtonBackground, Color.ButtonForeground)
+      
+
+      Draw.fillcolor = Color.ButtonForeground
+      coordinate = [2, 4, 8, 4, 5, 1]
+      Draw.Polygon(coordinate)
+      coordinate = [2, 8, 8, 8, 5, 11]
+      Draw.Polygon(coordinate)
+    Draw.End
+  
+  MySpinButton.picture = hpic_up
+  'MySpinButton.picture = Picture["UpDown.png"]
+  Super.Arrangement = Arrange.horizontal
+  Super.AutoResize = False
+
+  
+End
+
+Property Text As String
+ Function Text_READ() As String
+   Dim tmp As String
+   tmp = MyValueBox.Text
+   If Left(MyValueBox.text, 1) = "," Then
+    tmp = "0" & tmp
+      Else
+    If Left(tmp, 2) = "-," Then tmp = "-0" & Mid(tmp, 2)
+   Endif
+   Return Replace(tmp, ",", DecimalSeparator)
+ End
+ Sub Text_WRITE(Text As String)
+   MyValueBox.text = Text
+ End
+
+
+' PROPERTY value AS Variant
+'  FUNCTION value_READ() AS Variant
+'    DIM tmp AS String
+'    tmp = MyValueBox.value
+'    IF Left(MyValueBox.value, 1) = "," THEN 
+'     tmp = "0" & tmp
+'       ELSE 
+'     IF Left(tmp, 2) = "-," THEN tmp = "-0" & Mid(tmp, 2)
+'    ENDIF
+'    RETURN Replace(tmp, ",", DecimalSeparator)
+'  END
+'  SUB Text_WRITE(value AS String) 
+'    MyValueBox.text = Text
+'  END
+
+
+Property Value As Variant
+ Function Value_READ() As Variant
+   Return MyValueBox.value
+   'PRINT MyValueBox.value
+ End
+ Sub Value_WRITE(Value As Variant)
+   MyValueBox.Value = Replace(CStr(Value), ",", ".")
+   
+   'Text_WRITE(value)
+ End
+
+
+Public Sub MySpinButton_MouseUp()
+  TimerIncDec.stop
+End
+
+
+Public Sub MySpinButton_MouseDown()
+  TimerIncDec.Delay = RepeatDelayms
+  If Mouse.y < (Last.H Div 2) Then
+    Incrementing = True
+    TimerIncDec_Timer
+    TimerIncDec.start
+      Else
+    Incrementing = False
+    TimerIncDec_Timer
+    TimerIncDec.start
+  Endif
+End
+
+Private Sub CheckMinMax()
+  If MyValueBox.value > MaxValue Then
+    MyValueBox.value = MaxValue
+      Else
+    If MyValueBox.value < MinValue Then MyValueBox.value = MinValue
+  Endif
+End
+
+
+Private Sub Increment()
+  MyValueBox.value = MyValueBox.value + Fstep
+  CheckMinMax()
+End
+
+Private Sub Decrement()
+  MyValueBox.value = MyValueBox.value - Fstep
+  CheckMinMax()
+End
+
+
+Public Sub MySpinButton_MouseWheel()
+  If Mouse.delta > 0 Then
+    Increment()
+      Else
+    Decrement()
+  Endif
+End
+
+Public Sub MyValueBox_MouseWheel()
+ MySpinButton_MouseWheel()
+End
+
+
+
+Public Sub MyValueBox_Change()
+ Try CheckMinMax()
+ Raise Change()
+End
+
+Event Change()

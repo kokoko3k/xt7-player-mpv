@@ -1,0 +1,49 @@
+# Gambas Form File 3.0
+
+{ Form Form 
+  MoveScaled(0,0,45,12)
+  Text = ("Choose an Aspect Ratio")
+  Icon = Picture["icon:/16/help"]
+  Resizable = False
+  Stacking = Window.Above
+  { OkBtn Button 
+    MoveScaled(31,7,13,4)
+    Text = ("Ok")
+    Picture = Picture["icon:/16/ok"]
+  }
+  { CancelBtn Button 
+    MoveScaled(1,7,13,4)
+    Text = ("Cancel")
+    Picture = Picture["icon:/16/cancel"]
+  }
+  { SpinW SpinBox 
+    MoveScaled(8,2,8,4)
+    MinValue = 1
+    MaxValue = 1000
+    Value = 16
+  }
+  { Label1 Label 
+    MoveScaled(17,2,3,4)
+    Text = (":")
+  }
+  { SpinH SpinBox 
+    MoveScaled(19,2,8,4)
+    MinValue = 1
+    MaxValue = 1000
+    Value = 9
+  }
+  { Label2 Label 
+    MoveScaled(28,2,3,4)
+    Text = ("=")
+  }
+  { RatioBox TextBox 
+    MoveScaled(31,2,8,4)
+    Text = ("1.7778")
+    ReadOnly = True
+  }
+  { TestBtn Button 
+    MoveScaled(16,7,13,4)
+    Text = ("Test")
+    Picture = Picture["icon:/16/apply"]
+  }
+}

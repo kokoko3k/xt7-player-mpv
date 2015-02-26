@@ -1,0 +1,99 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,105.7143,69)
+  Text = ("Video Filters configuration")
+  Icon = Picture["video-television.png"]
+  Persistent = True
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { MenuProfile Menu
+    Text = ("Profile")
+    { MenuLoadDefault Menu
+      Text = ("Reload current profile")
+      Picture = Picture["icon:/16/open"]
+    }
+    { MenuSaveDefault Menu
+      Text = ("Save to current profile")
+      Picture = Picture["icon:/16/save"]
+    }
+    { MenuSaveToAll Menu
+      Text = ("Save these settings to all profiles")
+      Picture = Picture["icon:/16/save"]
+    }
+  }
+  { Frame1 Frame
+    MoveScaled(4,1,86,61)
+    Expand = True
+    { VBox1 VBox
+      MoveScaled(1,1,19,58)
+      Spacing = True
+      { Label1 Label
+        MoveScaled(2,2,11,4)
+        AutoResize = True
+        Text = ("Video Filters list")
+        Alignment = Align.Justify
+      }
+      { FilterList ListBox
+        MoveScaled(2,5,15,52)
+        Expand = True
+      }
+    }
+    { VSplit1 VSplit
+      MoveScaled(21,1,63,57)
+      Expand = True
+      { TabStrip1 TabStrip
+        MoveScaled(-2,0,63,35)
+        Arrangement = Arrange.Vertical
+        Count = 5
+        Index = 0
+        Text = ("UnSharp")
+        Index = 1
+        Text = ("Tab 1")
+        Index = 2
+        Text = ("Tab 2")
+        Index = 3
+        Text = ("Tab 3")
+        Index = 4
+        Text = ("Tab 4")
+        Index = 0
+      }
+      { DescriptionArea TextArea
+        MoveScaled(0,35,61,22)
+        Expand = True
+        Text = ("TextArea1")
+        ReadOnly = True
+      }
+    }
+  }
+  { HBox1 HBox
+    MoveScaled(2,62,76,4)
+    Spacing = True
+    { HBox2 HBox
+      MoveScaled(6,0,5,4)
+      Expand = True
+    }
+    { SaveBTN Button
+      MoveScaled(29,0,13.5714,3.7143)
+      ToolTip = ("Save and use new settings")
+      AutoResize = True
+      Text = ("Save")
+      Picture = Picture["icon:/16/save"]
+    }
+    { ApplyBTN Button
+      MoveScaled(44,0,14,4)
+      ToolTip = ("Use new settings without save")
+      AutoResize = True
+      Text = ("Use ")
+      Picture = Picture["icon:/16/redo"]
+    }
+    { OkBTN Button
+      MoveScaled(60,0,14,4)
+      ToolTip = ("Close the window")
+      AutoResize = True
+      Text = ("Close")
+      Picture = Picture["icon:/16/cancel"]
+    }
+  }
+}

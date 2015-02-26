@@ -1,0 +1,16 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Public Sub Form_Show()
+  Me.Caption = ("Select search fields")
+  Global.Center(Fmain, Me)
+End
+
+Public Sub SearchFieldsCHK_Click()
+
+  FMain.UpdateSearchResults(FMain.MyLibrary, FMain.LibraryGrid, fmain.FullyLoaded, fmain.Searchfield.text)
+  FMain.UpdateSearchResults(FMain.MyPlaylist, FMain.PlaylistGrid, fmain.FullyLoaded, fmain.SearchfieldPLS.text)
+
+End

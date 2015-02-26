@@ -1,0 +1,396 @@
+' Gambas class file
+
+Inherits DBusObject
+
+Create Static
+
+
+Public Sub doStop()
+  FMain.ButtonStop_Click()
+End
+
+Public Sub doTogglePause()
+  FMain.ButtonPlay_click()
+End
+
+Public Sub doNext()
+  FMain.SelectNext(False, FMain.GetActivePlayQueue())
+End
+
+Public Sub doPrevious()
+  FMain.ButtonPrev_click()
+End
+
+Public Sub doHideMain()
+  FMain.Hide
+End
+
+Public Sub doShowMain()
+  FMain.show
+End
+
+Property FullPath As String 
+Property FullPathPlaying As String
+Property Length As String
+Property Size As String
+Property Type As String
+Property AudioCodec As String
+Property AudioBitrate As String
+Property AudioRate As String
+Property Channels As String
+Property VideoCodec As String
+Property VideoBitrate As String
+Property VideoFps As String
+Property Width As String
+Property Height As String
+Property VideoOutWidth As String
+Property VideoOutHeight As String
+Property Author As String
+Property Artist As String
+Property Genre As String
+Property Album As String
+Property TrackNo As String
+Property Title As String
+Property Name As String
+Property Comment As String
+Property Comments As String
+Property MyYear As String
+Property CreationDate As String
+
+
+Private P_FullPath As String = ""
+Private P_FullPathPlaying As String = ""
+Private P_Length As String = ""
+Private P_Size As String = ""
+Private P_Type As String = ""
+Private P_AudioCodec As String = ""
+Private P_AudioBitrate As String = ""
+Private P_AudioRate As String = ""
+Private P_Channels As String = ""
+Private P_VideoCodec As String = ""
+Private P_VideoBitrate As String = ""
+Private P_VideoFps As String = ""
+Private P_Width As String = ""
+Private P_Height As String = ""
+Private P_VideoOutWidth As String = ""
+Private P_VideoOutHeight As String = ""
+Private P_Author As String = ""
+Private P_Artist As String = ""
+Private P_Genre As String = ""
+Private P_Album As String = ""
+Private P_TrackNo As String = ""
+Private P_Title As String = ""
+Private P_Name As String = ""
+Private P_Comment As String = ""
+Private P_Comments As String = ""
+Private P_MyYear As String = ""
+Private P_CreationDate As String = ""
+
+
+Public Sub Clear()
+  Debug
+ P_FullPath = ""
+ P_FullPathPlaying = ""
+ P_Length = ""
+ P_Size = ""
+ P_Type = ""
+ P_AudioCodec = ""
+ P_AudioBitrate = ""
+ P_AudioRate = ""
+ P_Channels = ""
+ P_VideoCodec = ""
+ P_VideoBitrate = ""
+ P_VideoFps = ""
+ P_Width = ""
+ P_Height = ""
+ P_VideoOutWidth = ""
+ P_VideoOutHeight = ""
+ P_Author = ""
+ P_Artist = ""
+ P_Genre = ""
+ P_Album = ""
+ P_TrackNo = ""
+ P_Title = ""
+ P_Name = ""
+ P_Comment = ""
+ P_Comments = ""
+ P_MyYear = ""
+ P_CreationDate = ""
+End
+
+
+
+
+
+' 'non cancellarla, altrimenti non viene esportato nulla...
+' Public Sub Compute(value1 As Float, value2 As Float) As Float
+'   Return 1
+' End
+
+Function FullPath_Read() As String
+  Return P_FullPath
+End
+
+Function FullPathPlaying_Read() As String
+  Return P_FullPathPlaying
+End
+
+
+Function Length_Read() As String
+  Return P_Length
+End
+
+
+Function Size_Read() As String
+  Return P_Size
+End
+
+
+Function Type_Read() As String
+  Return P_Type
+End
+
+
+Function AudioCodec_Read() As String
+  Return P_AudioCodec
+End
+
+
+Function AudioBitrate_Read() As String
+  Return P_AudioBitrate
+End
+
+
+Function AudioRate_Read() As String
+  Return P_AudioRate
+End
+
+
+Function Channels_Read() As String
+  Return P_Channels
+End
+
+
+Function VideoCodec_Read() As String
+  Return P_VideoCodec
+End
+
+
+Function VideoBitrate_Read() As String
+  Return P_VideoBitrate
+End
+
+
+Function VideoFps_Read() As String
+  Return P_VideoFps
+End
+
+
+Function Width_Read() As String
+  Return P_Width
+End
+
+
+Function Height_Read() As String
+  Return P_Height
+End
+
+
+Function VideoOutWidth_Read() As String
+  Return P_VideoOutWidth
+End
+
+
+Function VideoOutHeight_Read() As String
+  Return P_VideoOutHeight
+End
+
+
+Function Author_Read() As String
+  Return P_Author
+End
+
+
+Function Artist_Read() As String
+  Return P_Artist
+End
+
+
+Function Genre_Read() As String
+  Return P_Genre
+End
+
+
+Function Album_Read() As String
+  Return P_Album
+End
+
+
+Function TrackNo_Read() As String
+  Return P_TrackNo
+End
+
+
+Function Title_Read() As String
+  Return P_Title
+End
+
+
+Function Name_Read() As String
+  Return P_Name
+End
+
+
+Function Comment_Read() As String
+  Return P_Comment
+End
+
+
+Function Comments_Read() As String
+  Return P_Comments
+End
+
+
+Function MyYear_Read() As String
+  Return P_MyYear
+End
+
+
+Function CreationDate_Read() As String
+  Return P_CreationDate
+End
+
+
+
+Function FullPath_Write(value As String)
+  P_FullPath = value
+End
+
+Function FullPathPlaying_Write(value As String)
+  P_FullPathPlaying = value
+End
+
+
+Function Length_Write(value As String)
+  P_Length = value
+End
+
+
+Function Size_Write(value As String)
+  P_Size = value
+End
+
+
+Function Type_Write(value As String)
+  P_Type = value
+End
+
+
+Function AudioCodec_Write(value As String)
+  P_AudioCodec = value
+End
+
+
+Function AudioBitrate_Write(value As String)
+  P_AudioBitrate = value
+End
+
+
+Function AudioRate_Write(value As String)
+  P_AudioRate = value
+End
+
+
+Function Channels_Write(value As String)
+  P_Channels = value
+End
+
+
+Function VideoCodec_Write(value As String)
+  P_VideoCodec = value
+End
+
+
+Function VideoBitrate_Write(value As String)
+  P_VideoBitrate = value
+End
+
+
+Function VideoFps_Write(value As String)
+  P_VideoFps = value
+End
+
+
+Function Width_Write(value As String)
+  P_Width = value
+End
+
+
+Function Height_Write(value As String)
+  P_Height = value
+End
+
+
+Function VideoOutWidth_Write(value As String)
+  P_VideoOutWidth = value
+End
+
+
+Function VideoOutHeight_Write(value As String)
+  P_VideoOutHeight = value
+End
+
+
+Function Author_Write(value As String)
+  P_Author = value
+End
+
+
+Function Artist_Write(value As String)
+  P_Artist = value
+End
+
+
+Function Genre_Write(value As String)
+  P_Genre = value
+End
+
+
+Function Album_Write(value As String)
+  P_Album = value
+End
+
+
+Function TrackNo_Write(value As String)
+  P_TrackNo = value
+End
+
+
+Function Title_Write(value As String)
+  P_Title = value
+End
+
+
+Function Name_Write(value As String)
+  P_Name = value
+End
+
+
+Function Comment_Write(value As String)
+  P_Comment = value
+End
+
+
+Function Comments_Write(value As String)
+  P_Comments = value
+End
+
+
+Function MyYear_Write(value As String)
+  P_MyYear = value
+End
+
+
+Function CreationDate_Write(value As String)
+  P_CreationDate = value
+End

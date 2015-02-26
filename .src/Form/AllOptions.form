@@ -1,0 +1,60 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,23,48)
+  Text = ("ToolBox")
+  Icon = Picture["configure.png"]
+  Persistent = True
+  Resizable = False
+  SkipTaskbar = True
+  Arrangement = Arrange.Vertical
+  AutoResize = True
+  { OkBTN2 Button
+    MoveScaled(0,0,22.5714,5.8571)
+    AutoResize = True
+    Text = ("General Options")
+    Picture = Picture["icon:/22/tools"]
+  }
+  { OkBTN5 Button
+    MoveScaled(0,5,22.5714,5.8571)
+    AutoResize = True
+    Text = ("Chains")
+    Picture = Picture["pipe.png"]
+  }
+  { VideoDriverBTN2 Button
+    MoveScaled(0,10,22.5714,5.8571)
+    AutoResize = True
+    Text = ("Video Drivers")
+    Picture = Picture["icon:/22/video"]
+  }
+  { OkBTN1 Button
+    MoveScaled(0,15,23,5.8571)
+    AutoResize = True
+    Text = ("Audio Drivers")
+    Picture = Picture["icon:/22/audio"]
+  }
+  { VideoDriverBTN Button
+    MoveScaled(0,21,22.5714,5.8571)
+    AutoResize = True
+    Text = ("Video Filters")
+    Picture = Picture["icon:/22/video"]
+  }
+  { OkBTN3 Button
+    MoveScaled(-1,27,22.5714,5.8571)
+    AutoResize = True
+    Text = ("Audio Filters")
+    Picture = Picture["icon:/22/audio"]
+  }
+  { OkBTN4 Button
+    MoveScaled(0,34,22.5714,5.8571)
+    AutoResize = True
+    Text = ("Subs and OSD")
+    Picture = Picture["icon:/22/font"]
+  }
+  { OkBTN6 Button
+    MoveScaled(0,41,22.5714,5.8571)
+    AutoResize = True
+    Text = ("HotKeys")
+    Picture = Picture["Hotkeys.png"]
+  }
+}

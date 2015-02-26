@@ -1,0 +1,578 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Public Struct mpvOption
+  name As String
+  data As String
+End Struct
+
+Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
+Public InitDone As Boolean = False
+
+Public Sub Form_Open()
+  If Not AlreadyLoaded Then 
+     Alreadyloaded = True
+     MenuLoadDefault_Click()
+     Chains.AlreadyLoaded = True
+     Chains.MenuLoadDefault_Click()
+     VFiltersCfg.AlreadyLoaded = True
+     VFiltersCfg.MenuLoadDefault_Click()
+  Endif
+  Global.Center(Fmain, Me)
+  Me.show()
+  Wait 
+  Form_Resize()
+End
+
+Private pre As String = Global.pre
+
+
+Public Sub FillFilters()
+Dim MyFilters As New String[]
+Dim Filter As String
+Dim i, prevcount As Integer
+Dim AScrollview As ScrollView
+
+  MyFilters.add("volume")
+  MyFilters.add("drc")
+  MyFilters.add("extrastereo")
+  MyFilters.add("karaoke")
+  MyFilters.add("scaletempo")
+  MyFilters.add("CustomAudio1")
+  MyFilters.add("CustomAudio2")
+  MyFilters.add("CustomAudio3")
+  
+  For Each Filter In MyFilters
+    FilterList.Add(Filter)
+  Next
+  'we add these filters to tabstrip, so that
+  'we can even add them by the gambas ide.
+  prevcount = TabStrip1.count
+  TabStrip1.count = prevcount + MyFilters.Count
+  For i = 0 To Tabstrip1.count - 1 - prevcount
+    Tabstrip1.index = i + prevcount
+    TabStrip1.text = MyFilters[i]
+    Ascrollview = New ScrollView(Tabstrip1)
+    Ascrollview.name = TabStrip1.text & ".ScrollView"
+    Ascrollview.expand = True
+    Ascrollview.Arrangement = Arrange.vertical
+    Ascrollview.padding = 8
+    Ascrollview.Spacing = True
+    Ascrollview.border = False
+    Ascrollview.margin = True
+    Ascrollview.ScrollBar = Scroll.Both
+  Next 'i
+  
+End
+
+Public Sub SyncFiltersList(CheckFilterName As String, IsInChain As Boolean)
+  'this will add or remove the "*" symbol from filter name
+  'in VideoFilterList
+
+  Dim i As Integer
+  For i = 0 To FilterList.count - 1
+    If (Upper(FilterList[i].text) = Upper(CheckFilterName)) Or (Upper(FilterList[i].text) = Pre & Upper(CheckFilterName)) Then
+      If IsInChain Then
+        If Not (Upper(FilterList[i].text) = Pre & Upper(CheckFilterName)) Then FilterList[i].text = Pre & FilterList[i].text
+          Else
+        If (Upper(FilterList[i].text) = Pre & Upper(CheckFilterName)) Then FilterList[i].text = Mid(FilterList[i].text, Len(Pre) + 1)
+        Break
+      Endif
+    Endif
+  Next 'i
+End
+
+
+
+
+Private Sub DrawFiltersGui()
+  Dim AllParams As New Variant[]
+  Dim NotSwitchable As Boolean = False
+  Dim Switchable As Boolean = True
+  Dim ladspacompiledin As Boolean = False
+  ladspacompiledin = FMain.mplayer.supportsladspa()
+  
+  AllParams.Clear
+  'drc[=method:target]
+  AllParams.add(["CHOOSE", ("Method"), "1", "2", "VolNorm1", ""])
+  AllParams.add(["RANGEFLOAT", ("Target"), "0", "0.25", "2", "VolNorm2", ""])
+  Global.DrawGui(AllParams, "drc", Tabstrip1, NotSwitchable)
+  AllParams.Clear
+
+  'extrastereo[=mul]
+  AllParams.add(["RANGEFLOAT", ("Amount"), "0", "2.25", "10", "ExtraStereo1", ""])
+  Global.DrawGui(AllParams, "extrastereo", Tabstrip1, NotSwitchable)
+  AllParams.Clear
+
+  
+  'Karaoke
+    Global.DrawGui(AllParams, "karaoke", Tabstrip1, NotSwitchable)
+    AllParams.Clear
+
+
+  'volume[=<volumedb>[:...]]
+    AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
+    AllParams.add(["SWITCH", "replaygain-track:", "DISABLED", "Volume2", ("Use track-gain from replaygain metadata value")])
+    AllParams.add(["SWITCH", "replaygain-album:", "DISABLED", "Volume3", ("Like replaygain-track, but using the album-gain value")])
+    AllParams.add(["RANGE", "replaygain-preamp=", "-20", "0", "20", "Volume4", ("Pre-amplification in dB to apply to the replaygain gain")])
+    AllParams.add(["CHOOSE", "replaygain-clip=", "yes", "no", "Volume5", ("Prevent replaygain clipping by lowering the gain")])
+    AllParams.add(["SWITCH", "softclip", "ENABLED" "Volume6", ("Turns on soft clipping")])
+    Global.DrawGui(AllParams, "volume", Tabstrip1, Switchable)
+    AllParams.Clear
+    
+  'scaletempo[=option1:option2:...]
+  'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+
+    AllParams.add(["RANGEFLOAT", "scale=", "0.1", "1", "4", "scaletempo5", ""])
+    AllParams.add(["RANGE", "stride=", "5", "60", "500", "scaletempo2", "ms"])
+    AllParams.add(["RANGEFLOAT", "overlap=", "0.10", "0.20", "1", "scaletempo3", "%"])
+    AllParams.add(["RANGE", "search=", "1", "14", "100", "scaletempo4", "ms"])
+    AllParams.add(["CHOOSE", "speed=", "both", "tempo", "pitch", "none", "scaletempo1", ("Runtime responce to speed change")])
+    Global.DrawGui(AllParams, "scaletempo", Tabstrip1, Switchable)
+    AllParams.Clear
+    
+
+    
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom11", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom12", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom13", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom14", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom15", ("E.g.:resample=44100:1:2,hrtf=s")])
+    If ladspacompiledin Then
+      Global.DrawGui(AllParams, "CustomAudio1", Tabstrip1, Switchable,, ButtonLadspaHelper)
+        Else
+      Print "WARNING:----------------------------------------------"
+      Print "        Your mplayer has not been compiled with ladspa support"
+      Print "        You will not be able to use any ladspa filter"
+      Print "        and ladspahelper window will be unavaileble in xt7."
+      Print "        Recompile mplayer with ladspa support or ask your"
+      Print "        distribution to fix it."
+      Print ""
+      Global.DrawGui(AllParams, "CustomAudio1", Tabstrip1, Switchable)
+      
+    Endif
+    AllParams.Clear
+  
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom21", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom22", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom23", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom24", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom25", ("E.g.:resample=44100:1:2,hrtf=s")])
+    If ladspacompiledin Then
+      Global.DrawGui(AllParams, "CustomAudio2", Tabstrip1, Switchable,, ButtonLadspaHelper)
+        Else
+      Global.DrawGui(AllParams, "CustomAudio2", Tabstrip1, Switchable)
+    Endif
+
+    AllParams.Clear
+    
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom26", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom27", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom28", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom29", ("E.g.:resample=44100:1:2,hrtf=s")])
+    AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom30", ("E.g.:resample=44100:1:2,hrtf=s")])
+    If ladspacompiledin Then
+      Global.DrawGui(AllParams, "CustomAudio3", Tabstrip1, Switchable,, ButtonLadspaHelper)
+        Else
+      Global.DrawGui(AllParams, "CustomAudio3", Tabstrip1, Switchable)
+    Endif
+
+    AllParams.Clear
+End
+
+
+
+
+Public Sub Init()
+  If initdone Then Return
+  FillFilters()
+  DrawFiltersGui()
+  InitDone = True
+End
+
+
+
+
+Public Sub Form_Resize()
+  vsplit1.y = 8
+  VBox1.y = vsplit1.y
+  VBox1.Height = Frame1.Height - VBox1.y - 8
+  vsplit1.w = Frame1.Width - FilterList.Width - 24
+  vsplit1.x = FilterList.x + FilterList.Width + 16
+  vsplit1.h = VBox1.Height 
+End
+
+
+
+Public Sub FilterList_Select()
+ Dim caption As String
+ Dim ChainObj As Object
+   'Fire up the tab relative to the item list by its name:
+      Caption = FilterList.Current.text
+      TabStrip1.index = Global.TabIndexByName(Caption, Tabstrip1)
+   'Next, Paste the filter description from the tag of Filters to the chain form:
+      For Each ChainObj In Chains.controls
+        If (Upper(ChainObj.name) = Upper(Caption)) Or (pre & Upper(ChainObj.name) = Upper(Caption)) Then
+          DescriptionArea.text = ChainObj.tag
+          Break
+        Endif
+      Next
+End
+
+
+Public Sub ShowFilterConfiguration(Filter As String)
+ 'Find the filter name in the Tab list
+  TabStrip1.index = Global.TabIndexByName(Filter, Tabstrip1)
+ 'Highlight it in the filter list
+  Global.FilterListFromTab(Tabstrip1, Filterlist)
+End
+
+
+Public Sub CancelBTN_Click()
+  Me.hide
+End
+
+
+Public Sub TabStrip1_Click()
+  'find the current tab caption in the filter list
+  Global.FilterListFromTab(tabstrip1, Filterlist)
+End
+
+Public Function ParseFiltersGui(Filtername As String) As String
+  'will parse the tabstrip at filtername index and output
+  'a commandline to add a filter in mplayer
+  Dim ParsedFilter As String = Lower(Global.RemoveShortcut(FilterName))
+  Dim TmpString As String = ""
+  Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
+                              'in the tab, it is created in the fillfilters function
+  Dim PanelObject As Object 'the Hbox which contains a single parameter
+                            'it is created by DrawFiltersGui function
+  Dim SubObject As Object
+
+  Dim parse As Boolean = True
+  
+  'Find the ParsedFilter Tab and activate it:
+  Tabstrip1.index = Global.TabIndexByName(ParsedFilter, Tabstrip1)
+  If ParsedFilter = "equalizer" Then
+    Return ParseEq()
+  Else If Parsedfilter Like "customaudio*" Then
+    Return ParseCustom()
+      Else
+    'Discend the Tab objects,parse them and build the commandline
+    'hierarchy is:
+    'Tabstrip -> scrollviews -> Panels -> ParameterObjects
+    For Each MyScrollview In Tabstrip1.Children
+      For Each PanelObject In MyScrollView.Children
+        If PanelObject.name Like "*HBox" Then
+          parse = True
+          For Each SubObject In PanelObject.Children
+            If Not (SubObject Is Label) Then
+              If (SubObject Is Checkbox) Then
+                parse = SubObject.value '(is a checkbox,parse only if it is checked)
+                  Else If Lower(subobject.name) Like "noparse*" Then
+                    parse = False
+              Endif
+              If SubObject.text <> "" Then
+                If (parse And Not (subobject Is Checkbox)) Then TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0] & ":")
+                If (parse And (subobject Is Checkbox)) Then
+                  TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0]) 'fixmempv perchè non mette i due punti alla fine del checkbox?
+                Endif
+                  Else
+                If parse Then
+                  Print subobject.name
+                  TmpString = global.RemoveShortcut(TmpString & ":")
+                Endif
+              Endif
+            Endif
+          Next
+        Endif
+      Next
+    Next
+    Stop
+    If (Right(tmpstring) = ":") Then
+      TmpString = Left(Tmpstring, - 1)
+    Endif
+
+    If tmpstring <> "" Then
+      Return ParsedFilter & "=" & TmpString
+        Else
+      Return ParsedFilter
+    Endif
+
+  Endif
+End
+
+Private Function parsecustom() As String
+'will parse the filter which the user can freely configure.
+  Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
+                              'in the tab, it is created in the fillfilters function
+  Dim PanelObject As Object 'the Hbox which contains a single parameter
+                            'it is created by DrawFiltersGui function
+  Dim SubObject As Object
+  Dim customfilter As String = ""
+  
+  For Each MyScrollview In Tabstrip1.Children
+    For Each PanelObject In MyScrollView.Children
+      If PanelObject.name Like "*HBox" Then
+        For Each SubObject In PanelObject.Children
+          If Not (SubObject Is Label) Then
+            If (SubObject Is Checkbox) Then
+              If subobject.value = True Then
+                If subobject.next Is Textbox Then
+                  If Trim(subobject.NEXT.text) <> "" Then
+                    If customfilter = "" Then
+                      customfilter = customfilter & subobject.NEXT.text
+                        Else
+                      customfilter = customfilter & "," & subobject.NEXT.text
+                    Endif
+                  Endif
+                Endif
+              Endif
+            Endif
+          Endif
+        Next
+      Endif
+    Next
+  Next
+  Return customfilter
+End
+
+
+
+
+Public Sub OkBTN_Click()
+  If global.FromChains Then
+    Chains.Show
+    global.FromChains = False
+  Endif
+  Wait 0.1
+  FMain.VideoBox.SetFocus()
+  Me.hide
+End
+
+
+
+Public Sub ApplyBTN_Click()
+  OkToChangeToCustom = False
+  Chains.ApplyBTN_Click()
+  OkToChangeToCustom = True
+End
+
+Public Function GetCurrentTabIndex() As Integer
+  Return TabStrip1.Index
+End
+
+Public Sub SetCurrentTabIndex(Index As Integer)
+  TabStrip1.Index = index
+End
+
+Public Sub GoChainsBTN_Click()
+  Chains.Show
+  Me.hide
+End
+
+Public Sub MenuLoadDefault_Click()
+  Dim MySettings As New SettingsClass
+  If Not InitDone Then Init()
+  MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
+  AlreadyLoaded = True
+  'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
+End
+
+Public Sub MenuSaveDefault_Click()
+  SaveCurrent()
+End
+Public Sub SaveBTN_Click()
+  SaveCurrent()
+End
+Public Sub SaveCurrent()
+  Dim MySettings As New SettingsClass
+  MySettings.Save(Me, global.confpath & "/" & global.CurrentProfile)
+End
+
+Public Sub MenuSaveToAll_Click()
+  Dim profilename, profilenamesplitted As String
+  Dim MySettings As New SettingsClass
+  If MyQuestion.Ask(("This will save this window settings\n to all profiles found but the 'Factory_defaults' one"), ("Proceed"), ("Don't")) = 2 Then
+    Return
+      Else
+     For Each profilename In Dir(global.confpath & "/", "*.profile")
+        If Stat(global.confpath & "/" & profilename, True).type = gb.Directory Then
+          profilenamesplitted = Split(profilename, ".")[0]
+          If profilenamesplitted <> "Factory_Defaults" Then
+            MySettings.Save(Me, global.confpath & "/" & profilenamesplitted)
+          Endif
+        Endif
+     Next 'profilename
+  Endif
+End
+
+Public Sub Form_Show()
+  Dim ChainFilter As Object
+
+  FilterList_Select()
+  'Add "*" to every filter which is in the active chain
+  For Each ChainFilter In Chains.AudioChainBox.Children
+    SyncFiltersList(ChainFilter.name, True)
+  Next
+  'remove "*" from every filter which is in the active chain
+  For Each ChainFilter In Chains.AudioFiltersBox.children
+    SyncFiltersList(ChainFilter.name, False)
+  Next
+End
+
+Public Sub Form_Close()
+  FMain.VideoBox.setfocus()
+End
+
+Public Sub Form_Hide()
+  FMain.VideoBox.setfocus()
+End
+
+'-------------- Manage Audio Equalizer ------------------
+Public NewEq As String
+
+Private Function ParseEq() As String
+  'Force an update of neweq
+      SlidersFreq_Change()
+  Return neweq
+End
+
+'salva 'il settagio custom su un file
+'ricaricalo quando si sceglie custom
+'quando salvare il settaggio su un file?
+'basta salvarlo quando si cambia preset
+
+Private OkToChangeToCustom As Boolean = True
+
+Public Sub SlidersFreq_Change()
+  Dim Theslider, TheTextbox As Object
+  Dim params As String = ""
+  Dim i As Integer = 0
+  If Not presetting Then
+    If OkToChangeToCustom Then
+      customizing = True
+      PresetsCombobox.text = ("Custom")
+      customizing = False
+    Endif
+  Endif
+  If UpdatingGui Then Return
+  For Each Theslider In sliderscontainer.Children
+    If Theslider Is Slider Then
+      'params = params & (12 - TheSlider.value - 12) & ":"
+      params = params & (TheSlider.value) & ":"
+      'params = params & ":"
+      TheTextbox = valuescontainer.children[i]
+      'TheTextbox.text = (12 - TheSlider.value - 12)
+      TheTextbox.text = TheSlider.value
+      i = i + 1
+    Endif
+  Next 'slider
+  params = Left$(params, Len(params) - 1)
+  NewEq = "equalizer=" & params
+   Try FMain.mplayer.send("pausing_keep af_cmdline equalizer " & params)
+   If Lower(PresetsCombobox.text) = "custom" Then SaveCustomEqSettings(params)
+End
+
+Private presetting As Boolean = False
+
+Private customizing As Boolean = False
+Public Sub PresetsCombobox_click()
+  If Customizing Then Return
+  presetting = True
+  Select Case Trim(Lower(PresetsCombobox.text))
+    Case "flat"
+      UpdateGui("0:0:0:0:0:0:0:0:0:0")
+    Case "1965"
+      UpdateGui("-20:-7:-4:-7:3:-2:-4:4:1:-6")
+    Case "air"
+      UpdateGui("0:0:0:0:0:0:0:0:0:3")
+    Case "brittle"
+      UpdateGui("-12:-9:-7:-5:-2:-2:-2:-1:4:1")
+    Case "car stereo"
+      UpdateGui("-5:1:0:-4:-5:-3:-2:-2:1:-2")
+    Case "classic v"
+     UpdateGui("5:0:-5:-8:-7:-4:-3:-1:3:5")
+    Case "clear"
+     UpdateGui("1:0:0:0:0:0:0:0:2:2")
+    Case "death"
+     UpdateGui("20:12:4:0:0:0:0:0:0:0")
+    Case "dark"
+      UpdateGui("-6:-2:-2:-2:-2:-2:-5:-8:-12:-18")
+    Case "drums"
+     UpdateGui("2:0:0:0:0:0:0:2:0:0")
+    Case "home theater"
+     UpdateGui("5:0:-3:-6:-5:-1:0:-1:3:3")
+    Case "loudness"
+      UpdateGui("4:4:-2:-2:-2:-2:-4:-10:0:4")
+    Case "metal"
+     UpdateGui("4:5:0:-2:0:1:1:1:-1:-1")
+    Case "pop"
+     UpdateGui("6:3:-2:-4:-3:0:0:2:2:5")
+    Case "premaster"
+     UpdateGui("0:3:-3:0:0:0:0:3:3:3")
+    Case "presence"
+      UpdateGui("0:0:0:0:0:5:4:3:0:0")
+    Case "punch & sparkle"
+      UpdateGui("3:3:-3:-5:-2:1:1:0:1:5")
+    Case "shimmer"
+      UpdateGui("0:0:-2:-5:0:0:0:4:3:4")
+    Case "soft bass"
+      UpdateGui("3:4:-13:-5:-1:5:1:-1:-2:-9")
+    Case "strings"
+      UpdateGui("-3:-4:-5:-4:-2:-2:-2:-1:3:-2")
+     Case "custom"
+       UpdateGui(LoadCustomEqSettings())
+  End Select
+  SlidersFreq_Change()
+  presetting = False
+End
+
+Private UpdatingGui As Boolean = False
+Public Sub UpdateGui(Params As String)
+  Dim value As Integer
+  Dim i As Integer = 0
+  Dim valueobj, sliderobj As Object
+  UpdatingGui = True
+    For Each value In Split(params, ":", "", True)
+      valueobj = valuescontainer.children[i]
+      sliderobj = sliderscontainer.children[i]
+      valueobj.text = value
+      sliderobj.value = value
+      i = i + 1
+    Next 'value
+  UpdatingGui = False
+End
+
+Private Sub SaveCustomEqSettings(EqSettings As String)
+  File.Save(global.confpath & "/" & global.currentprofile & ".profile/audioequalizer.txt", EqSettings)
+End
+
+Private Function LoadCustomEqSettings() As String
+  Return File.Load(global.confpath & "/" & global.currentprofile & ".profile/audioequalizer.txt")
+End
+
+
+'-----------------------------------------------
+
+
+
+Public Sub ButtonLadspaHelper_Click()
+  Dim ptext As String
+
+  If Not global.which("analyseplugin") Then
+    If MyQuestion.ask(("Even if your mplayer has ladspa support compiled in,\nyou seem to miss the ladspa package.\nbecause 'analyseplugin' executable is not found"), ("Continue anyway"), ("Abort")) = 2 Then Return
+  Endif
+  ladspahelper.LOADING = True
+  Try ptext = Last.previous.text
+  If ptext Like "ladspa=*" Then
+    ladspahelper.TextBox1.text = ptext
+    ladspahelper.button2_click()
+  Endif
+  global.Center(Me, Ladspahelper)
+  ladspahelper.parentcontainer = Last.previous
+  ladspahelper.show
+  ladspahelper.LOADING = False
+End

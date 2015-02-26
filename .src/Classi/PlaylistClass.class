@@ -1,0 +1,1735 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+
+'PRIVATE InfoTags AS String[] = ["Filename", "Length", "Artist", "Album", "Year", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+
+
+Private Alternate As Boolean = True
+Private Ascendent As Boolean = True
+
+Public MplayerTag As New MplayerClass
+Public ColumnIndex As New Collection
+
+Public PTable As New String[0] 'String array, separator for columns = "|@CI=X "
+Public SearchTable As New String[0] 'String array, separator for columns = "|@CI=X "
+Private SortTable As New String[0] 'copy of ptable sorted by fullpath
+
+Public TableSeparator As String = Chr(8)
+Public Loading As Boolean = False
+
+Public FilesToProcess As Integer = 0
+Public FilesProcessed As Integer = 0
+
+Private LastSortedField As String = ""
+
+Private RandomArray As New Integer[] 'stores the last successful rolls
+'stores the media already player, used to listen the previous media in random mode
+
+Public AlreadyPlayedString As New String[]
+
+
+Public Sub Init(WithMplayer As Boolean)
+  Randomize
+  If WithMplayer Then
+    MplayerTag.quick = True
+    'mplayertag.ImIdlePlaying = True
+    'MplayerTag.do_play("", "-idle -ao null -vo null -channels 6", True)
+  Endif
+  Columnindex["Filename"] = 0
+  Columnindex["Length"] = 1
+  Columnindex["Artist"] = 2
+  Columnindex["Album"] = 3
+  Columnindex["Year"] = 4
+  Columnindex["Track"] = 5
+  Columnindex["Title"] = 6
+  Columnindex["Genre"] = 7
+  Columnindex["Comment"] = 8
+  Columnindex["Type"] = 9
+  Columnindex["Audio Codec"] = 10
+  Columnindex["Audio Bitrate"] = 11
+  Columnindex["Audio Rate"] = 12
+  Columnindex["Channels"] = 13
+  Columnindex["Video Codec"] = 14
+  Columnindex["Video Bitrate"] = 15
+  Columnindex["Fps"] = 16
+  Columnindex["Width"] = 17
+  Columnindex["Height"] = 18
+  Columnindex["Full Path"] = 19
+  Columnindex["File Size"] = 20
+  Columnindex["Added on"] = 21
+End
+
+' Private Sub CheckPlayerAlive()
+' 'will restart mplayer if it is crashed  
+' 
+' 
+'   Dim restart As Boolean = True
+'   If Not (MplayerTag.ProcessRunningOvr()) Then
+'     mplayertag = New Mplayerclass
+'     MplayerTag.do_play("", "-idle -ao null -vo null -channels 6", restart)
+'     Debug "(Re)starting player"
+'     Debug
+'     Wait 0.5
+'   Endif
+' End
+
+
+
+Private Function OneOf(one As String, two As String) As String
+  If one <> "" Then
+    Return one
+      Else
+    Return two
+  Endif
+End
+
+
+Public Sub OLD_Load(myplaylist As Gridview, profilename As String)
+  Dim filename As String = Profilename & "/" & myplaylist.name & ".txt"
+  Dim i As Integer
+  Dim Layout As String[]
+  Loading = True
+  Try PTable = Split(file.Load(filename), "\n")
+  PTable.Resize(PTable.count - 1)
+  
+  If ptable.Count > 0 Then
+    If Ptable[0] Like "Layout*" Then
+      'load column layout
+        Layout = Split(Ptable[0], ";", "", False)
+        ptable.Remove(0, 1)
+        For i = 1 To layout.count - 1
+          myplaylist.Columns[i - 1].w = layout[i]
+        Next 'i
+    Endif
+  Endif
+  myplaylist.Rows.count = myplaylist.Rows.count + PTable.count
+  InitSearchTable()
+  Debug "Load()at: " & Time
+  Debug
+End
+
+Public Sub Load(mygrid As Gridview, ConfDir As String)
+  Dim pTableFile As String = ConfDir & "/" & mygrid.name & ".txt"
+  Dim sTableFile As String = ConfDir & "/" & mygrid.name & ".sTable.txt"
+  Loading = True
+
+  If Exist(sTableFile, True) Then
+    LoadTable(ByRef pTable, pTableFile, mygrid)
+    LoadTable(ByRef searchtable, sTableFile, mygrid)
+      Else
+    LoadTable(ByRef pTable, pTableFile, mygrid)
+    InitSearchTable()
+  Endif
+End
+
+Public Sub LoadTable(ByRef table As String[], filename As String, mygrid As Gridview)
+  Dim i As Integer
+  Dim Layout As String[]
+  Try Table = Split(file.Load(filename), "\n")
+  Table.Resize(Table.count - 1)
+  
+  If table.Count > 0 Then
+    If table[0] Like "Layout*" Then
+      'load column layout
+        Layout = Split(table[0], ";", "", False)
+        table.Remove(0, 1)
+        For i = 1 To layout.count - 1
+          mygrid.Columns[i - 1].w = layout[i]
+        Next 'i
+    Endif
+  Endif
+  'mygrid.Rows.count = mygrid.Rows.count + Table.count 'why i've wrote this, it is not an append
+  mygrid.Rows.count = Table.count
+  Debug "Load()at: " & Time
+  Debug
+End
+
+
+Public Sub SaveAs(FileName As String)
+  Dim MyFile As File
+  Dim ext As String
+
+  Myfile = Open filename For Write Create
+  ext = Upper(Myfile.ext(filename))
+  If ext = "M3U" Then
+      SaveM3u(MyFile)
+        Else If ext = "PLS" Then
+          SavePls(MyFile)
+        Else
+          SaveXpl(MyFile)
+  Endif
+  Close #MyFile
+End
+
+Public Sub LoadFile(Filename As String, Grid As Gridview, Optional Appendit As Boolean = False)
+
+  Dim ext As String
+  Loading = True
+  Debug "PlaylistClass: Load()at: " & Time
+  Debug
+  ext = Upper(file.ext(filename))
+  If (Not Appendit) Then Ptable.Resize(0)
+  If ext = "M3U" Then
+        Try Ptable.Insert(LoadM3u(Filename))
+      Else If ext = "PLS" Then
+        Try Ptable.Insert(LoadPls(FileName))
+      Else
+        Try Ptable.Insert(LoadXpl(FileName))
+  Endif
+  Grid.Rows.count = PTable.count '- 1 '+Grid.Rows.count
+  InitSearchTable()
+End
+
+Private Function LoadPls(filename As String) As String[]
+  'Read a pls playlist, convert it in ptable format and return it
+  Dim TempTable As New String[]
+  Dim NewPTable As New String[]
+  Dim MyCollection As New Collection
+  Dim i, NumberOfEntries As Integer
+  Dim CurrentLine, Length, name, Path, Size, newrow As String
+  Dim ts As String = Chr(8)
+  TempTable = Split(file.Load(filename), "\n")
+  Length = ""
+  name = ""
+  Path = ""
+  newrow = ""
+  'find the number of entries
+  i = 0
+  Repeat
+    currentline = TempTable[i]
+    I = I + 1
+  Until (i = TempTable.count) Or (Upper(Currentline) Like "NUMBEROFENTRIES=*")
+  If Upper(Currentline) Like "NUMBEROFENTRIES=*" Then
+    NumberOfEntries = (Split(Currentline, "=")[1])
+    If Error Then Return
+      Else
+    Return
+  Endif
+  For i = 0 To TempTable.count - 1
+    CurrentLine = TempTable[i]
+    If Upper(Currentline) Like "FILE*=*" Then
+          Path = Replace(Currentline, Split(CurrentLine, "=")[0] & "=", "")
+          MyCollection.Add(path, Upper(Split(CurrentLine, "=")[0]))
+        Else If Currentline Like "TITLE*=*" Then
+          Name = Replace(Currentline, Split(CurrentLine, "=")[0] & "=", "")
+          MyCollection.Add(name, Upper(Split(CurrentLine, "=")[0]))
+        Else If Currentline Like "LENGTH*=*" Then
+          Length = MplayerTag.FormatTime(Replace(Currentline, Split(CurrentLine, "=")[0] & "=", ""))
+          MyCollection.Add(length, Upper(Split(CurrentLine, "=")[0]))
+    Endif
+Next 'i
+    
+
+  
+  NewPtable.Resize(0)
+  For i = 1 To NumberOfEntries
+    NewRow = ""
+    'Build a ptableRow
+      Try size = Stat(MyCollection["FILE" & i]).size
+        If Error Then size = "?"
+      NewRow = Newrow & ts & "Filename" & ts & MyCollection["TITLE" & i]
+      NewRow = Newrow & ts & "Length" & ts & MyCollection["LENGTH" & i]
+      NewRow = Newrow & ts & "Type" & ts
+      NewRow = Newrow & ts & "Audio Codec" & ts
+      NewRow = Newrow & ts & "Audio Bitrate" & ts
+      NewRow = Newrow & ts & "Audio Rate" & ts
+      NewRow = Newrow & ts & "Channels" & ts
+      NewRow = Newrow & ts & "Video Codec" & ts
+      NewRow = Newrow & ts & "Video Bitrate" & ts
+      NewRow = Newrow & ts & "Fps" & ts
+      NewRow = Newrow & ts & "Width" & ts
+      NewRow = Newrow & ts & "Height" & ts
+      NewRow = Newrow & ts & "Full Path" & ts & MakeRelAbsPath(MyCollection["FILE" & i], filename)
+      NewRow = Newrow & ts & "File Size" & ts & Size
+      NewRow = Newrow & ts & "Added on" & ts & Now
+      NewRow = Newrow & ts & "Album" & ts
+      NewRow = Newrow & ts & "Artist" & ts
+      NewRow = Newrow & ts & "Title" & ts
+      NewRow = Newrow & ts & "Year" & ts
+      NewRow = Newrow & ts & "Genre" & ts
+      NewRow = Newrow & ts & "Track" & ts
+      NewRow = Newrow & ts & "Comment" & ts
+      NewPtable.Add(NewRow)
+  Next 'i
+  
+  Return NewPtable
+  
+End
+
+
+Private Function SavePls(MyFile As File) As String[]
+  Dim r As Integer
+  Dim MyRow, Length, Name, Path As String
+  Print #Myfile, "[playlist]" 'pls start marker
+  Print #Myfile, "NumberOfEntries=" & PTable.Count
+  Print #Myfile
+  For r = 0 To PTable.Count - 1
+    MyRow = Ptable[r]
+    Length = MplayerTag.DeFormatTime(GetValue(MyRow, "Length"))
+    Name = GetValue(MyRow, "FileName")
+    Path = GetValue(MyRow, "Full Path")
+    Print #Myfile, "File" & CStr(r + 1) & "=" & path
+    Print #Myfile, "Title" & CStr(r + 1) & "=" & Name
+    Print #Myfile, "Length" & CStr(r + 1) & "=" & Length
+    Print #Myfile
+    Print #MyFile, "Version = 2"
+  Next 'r
+End
+
+
+Private Function MakeRelAbsPath(stream As String, RootPath As String) As String
+  'will return an absolute path starting from a relativeOne (if any)
+  'or return the same path
+  'eg: MakeRelAbsPath("mymusic/1.mp3","/tmp/mypls.m3u") == "/tmp////mymusic/1.mp3"
+  'eg: MakeRelAbsPath("/mymusic/1.mp3","/tmp/mypls.m3u") == "/mymusic/1.mp3"
+  'eg: MakeRelAbsPath("http://www.mysite.it/mymusic/1.mp3","/tmp/mypls.m3u") == "http://www.mysite.it/mymusic/1.mp3"
+ 
+ While Stat(rootpath).type = gb.link  'traceback sym links
+    rootpath = Stat(rootpath).link
+ Wend
+  rootpath = file.Dir(rootpath)
+
+  If ISURI(stream) Or (Left(stream) = "/") Then
+    Return stream
+      Else
+    Return RootPath & "////" & stream
+  Endif
+End
+
+
+Private Function LoadM3U(filename As String) As String[]
+  'Read an (extended) m3u playlist, convert it in ptable format and return it
+  Dim TempTable As New String[]
+  Dim NewPTable As New String[]
+  Dim i As Integer
+  Dim CurrentLine, Length, name, Path, Size, newrow As String
+  Dim ts As String = Chr(8)
+  TempTable = Split(file.Load(filename), "\n", "", True)
+  name = ""
+  Path = ""
+  newrow = ""
+  For i = 0 To TempTable.count - 1
+    CurrentLine = Trim(TempTable[i])
+    If Not (Trim(currentline) = "") Then
+      If Not (CurrentLine = "#EXTM3U") Then
+        If Upper(CurrentLine) Like "#EXTINF:*" Then
+          Length = MplayerTag.FormatTime(Split(Split(CurrentLine, ",")[0], ":")[1])
+          Name = Replace(Currentline, Split(CurrentLine, ",")[0] & ",", "")
+            Else
+          Path = MakeRelAbsPath(CurrentLine, filename)
+          Try Size = Stat(Path).Size
+          If Error Then Size = "?"
+          'Build a ptableRow
+            NewRow = Newrow & ts & "Filename" & ts & name
+            NewRow = Newrow & ts & "Length" & ts & Length
+            NewRow = Newrow & ts & "Type" & ts
+            NewRow = Newrow & ts & "Audio Codec" & ts
+            NewRow = Newrow & ts & "Audio Bitrate" & ts
+            NewRow = Newrow & ts & "Audio Rate" & ts
+            NewRow = Newrow & ts & "Channels" & ts
+            NewRow = Newrow & ts & "Video Codec" & ts
+            NewRow = Newrow & ts & "Video Bitrate" & ts
+            NewRow = Newrow & ts & "Fps" & ts
+            NewRow = Newrow & ts & "Width" & ts
+            NewRow = Newrow & ts & "Height" & ts
+            NewRow = Newrow & ts & "Full Path" & ts & Path
+            NewRow = Newrow & ts & "File Size" & ts & Size
+            NewRow = Newrow & ts & "Added on" & ts & Now
+            NewRow = Newrow & ts & "Album" & ts
+            NewRow = Newrow & ts & "Artist" & ts
+            NewRow = Newrow & ts & "Title" & ts
+            NewRow = Newrow & ts & "Year" & ts
+            NewRow = Newrow & ts & "Genre" & ts
+            NewRow = Newrow & ts & "Track" & ts
+            NewRow = Newrow & ts & "Comment" & ts
+            
+            NewPtable.Add(NewRow)
+            
+            Length = ""
+            name = ""
+            Path = ""
+            newrow = ""
+        Endif
+      Endif
+    Endif
+  Next 'i
+  NewPTable.Resize(NewPTable.count)
+  Return NewPtable
+End
+
+
+Private Sub Savem3u(MyFile As File)
+  Dim r As Integer
+  Dim MyRow, Length, Name, Path As String
+  Print #Myfile, "#EXTM3U" 'm3u start marker
+  For r = 0 To PTable.Count - 1
+    MyRow = Ptable[r]
+    Length = MplayerTag.DeFormatTime(GetValue(MyRow, "Length"))
+    Name = GetValue(MyRow, "FileName")
+    Path = GetValue(MyRow, "Full Path")
+  'Example: #EXTINF: 307, Jingle bells
+    Print #MyFile, "#EXTINF:" & Length & "," & Name
+    Print #MyFile, Path
+  Next 'c
+End
+
+Private Function LoadXpl(filename As String) As String[]
+  Dim Ptable As String[]
+  PTable = Split(file.Load(filename), "\n")
+  If ptable.count = 0 Then Return
+  If Not (ptable[0] Like "*" & TableSeparator & "*") Then Return
+  PTable.Resize(PTable.count - 1)
+  Return Ptable
+End
+
+Private Sub SaveXpl(MyFile As File)
+  Dim r As Integer
+  For r = 0 To PTable.Count - 1
+    Print #Myfile, PTable[r]
+  Next 'c
+End
+
+
+Public Sub Save(mygrid As Gridview, ConfDir As String)
+  Dim pTableFile As String = ConfDir & "/" & mygrid.name & ".txt"
+  Dim sTableFile As String = ConfDir & "/" & mygrid.name & ".sTable.txt"
+  Randomize
+  If Rnd(0, 11) > 10 Then CheckAndFixBloat() 'do this one out of 10 times
+  If ptable.count = searchtable.count Then
+    SaveTable(searchtable, pTableFile, mygrid)
+    Try Kill sTableFile
+      Else
+    SaveTable(searchtable, sTableFile, mygrid)
+    SaveTable(ptable, pTableFile, mygrid)
+  Endif
+End
+
+Public Sub SaveTable(table As String[], filename As String, mygrid As Gridview)
+  Dim i, r As Integer
+  Dim layout As String = "Layout"
+  Dim MyFile As File
+  Myfile = Open filename For Write Create
+  'write table layout
+  For i = 0 To mygrid.Columns.Count - 1
+    Layout = Layout & ";" & mygrid.Columns[i].w
+  Next 'i
+  Print #Myfile, Layout
+  For r = 0 To Table.Count - 1
+    Print #Myfile, Table[r]
+  Next 'c
+  Close #MyFile
+End
+
+
+
+
+
+Private Sub InitSearchTable()
+  Dim i As Integer
+  SearchTable.Resize(0)
+  'fill searchtable from ptable
+    For i = 0 To PTable.Count - 1
+      SearchTable.Add(PTable[i])
+    Next 'i
+    'fixme... usare string[]copy
+End
+
+
+
+Public Function GetValue(TableRow As String, Field As String) As String
+  Dim Startpos, MidPos, EndPos As Integer
+
+  Dim out As String
+  StartPos = InStr(TableRow, TableSeparator & Field)
+  MidPos = InStr(TableRow, TableSeparator, StartPos + 2)
+  EndPos = InStr(TableRow, TableSeparator, Midpos + 1)
+  out = Mid(TableRow, midpos + 1, Endpos - (midpos + 1))
+  'the following is needed to strip out some spurious byte from the string
+  'my fault or gambas fault? Anyway, this works...
+  Return Left(out, Len(out) - 1) & Right(out)
+End
+
+
+Public Function GetFullPaths(filter As String) As String[]
+  Dim out As New String[]
+  Dim i As Integer 
+  Dim fullpath As String
+  For i = 0 To PTable.count - 1
+    fullpath = GetValue(ptable[i], "Full Path")
+    If (fullpath Like filter) Then out.Push(fullpath)
+  Next
+  Return out
+End
+
+
+Public Function CellValue(LibraryGrid As Gridview, R As Integer, C As Integer) As String
+  Dim ColumnCaption As String = LibraryGrid.Columns[c].text
+  Dim tablerow As String
+  Try tablerow = SearchTable[r]
+  
+  'IF librarygrid.columns[c].w <> 10 THEN librarygrid.columns[c].w = 10
+
+  Return GetValue(tablerow, ColumnCaption)
+  
+End
+
+
+Public Sub FillColumns(LibraryGrid As Gridview, r As Integer)
+  Dim TagsAndValues As String[] = Split(SearchTable[r], TableSeparator)
+  Dim DstCol As Integer 'eg 0
+  Dim Tag As String 'eg FileName
+  Dim Value As String 'eg my.mp3
+  Dim i As Integer
+
+  'DIM StartTime AS Float = Timer
+  'DIM DiffTime AS Float3
+
+  For i = 0 To TagsAndValues.count - 2
+    Tag = TagsAndValues[i + 1]
+    Value = TagsAndValues[i + 2]
+    DstCol = ColumnIndex[tag]
+    LibraryGrid[r, DstCol].text = Value
+    i = i + 1 '(next couple)
+  Next 'i
+
+  'DiffTime = Timer - StartTime
+  'PRINT "FillColums() time:" & (DiffTime * 1000) & " msec"
+  
+'per ogni indice di nomecolonna trovato alla posizione r di Ptable
+  'assegna a LibraryGrid[r,quell'indice] il valore che trovi dopo l'uguale
+End
+
+
+
+
+
+
+Public Function SelectRandom(LibraryGrid As GridView) As Integer
+  Dim Random As Integer = 0
+  Dim timeout As Integer = LibraryGrid.rows.count 'we don't want to wait forever to play something
+
+  If LibraryGrid.Rows.count > 0 Then
+    'save the first selected row in the array
+    If Not RandomArray.Exist(LibraryGrid.row) Then RandomArray.Add(LibraryGrid.row)
+    Repeat
+      timeout = timeout - 1
+      random = Int(Rnd(0, LibraryGrid.Rows.count))
+    'roll the dice again if we got the same result,and if the result does not fit into library
+    '(it could happen due to the float type of the rnd function)
+    Until (Not RandomArray.Exist(random) Or timeout <= 0) And (random <= LibraryGrid.Rows.count - 1) And (random <> LibraryGrid.row)
+    'if we got a new successful roll, remember it!
+    If timeout > 0 Then RandomArray.Add(random)
+  Endif
+  Return random
+End
+
+Public Sub SelectNext(LibraryGrid As GridView, Optional random As Boolean = False)
+  'will return false if we reached the end, true if the next has been selected.
+  Dim NextRandom As Integer = 0
+  librarygrid.rows[librarygrid.row].selected = False
+  Try AlreadyPlayedString.Push(librarygrid[librarygrid.row, Columnindex["Full Path"]].text)
+  If Random Then
+    NextRandom = SelectRandom(LibraryGrid)
+    If Not (LibraryGrid.Row = nextrandom) Then Try LibraryGrid.Row = nextrandom
+      Else
+    If LibraryGrid.row = LibraryGrid.Rows.Count - 1 Then
+      LibraryGrid.row = 0
+      Global.IsNextSelected = False
+        Else
+      LibraryGrid.row = LibraryGrid.row + 1
+      Global.IsNextSelected = True
+    Endif
+  Endif
+  librarygrid.rows[librarygrid.row].selected = True
+End
+
+Public Function FindRowByPath(LibraryGrid As GridView, path As String) As Integer
+  'will search in librarygrid for path and return the row index
+  Dim i As Integer
+  For i = 0 To LibraryGrid.Rows.count - 1
+    If (LibraryGrid[i, Columnindex["Full Path"]].text = path) Then Return i
+  Next 'i
+  Return -1
+End
+
+
+
+Public Sub SelectPrev(LibraryGrid As Gridview)
+  Dim previouspath As String
+  librarygrid.rows[librarygrid.row].selected = False
+  Try previouspath = LibraryGrid[LibraryGrid.row, Columnindex["Full Path"]].text
+  'first, try to play the prevoiusly played item:
+  Try LibraryGrid.row = FindRowByPath(librarygrid, AlreadyPlayedString.Pop())
+  ' if we have none, select the prevoius.
+  If Error Then
+    'invalidate the history
+    AlreadyPlayedString.clear
+    'select the previous (ordered) item
+    If LibraryGrid.row = 0 Then
+      Try LibraryGrid.row = LibraryGrid.Rows.count - 1
+        Else
+      Try LibraryGrid.row = LibraryGrid.row - 1
+    Endif
+  Endif
+  librarygrid.rows[librarygrid.row].selected = True
+End
+
+
+Public Sub clear(myplaylist As GridView)
+ Ptable.Remove(0, ptable.count)
+ Searchtable.Remove(0, SearchTable.Length)
+ SyncGrid(myplaylist, searchtable, 0, 0)
+ AutoSizeColumns(myplaylist)
+End
+
+Public Function HowManySelected(MyPlaylist As GridView) As Integer
+  Dim row, count As Integer
+  If myplaylist.rows.count > 0 Then
+    count = 0
+    For row = 0 To myplaylist.Rows.count - 1
+      If myplaylist.Rows[row].selected Then
+        count = count + 1
+      Endif
+    Next 'row
+  Endif
+  Return count
+End
+
+
+
+Public Function OnlyOneSelected(MyPlaylist As Gridview) As Boolean
+  Dim row, count As Integer
+  If myplaylist.rows.count > 0 Then
+    count = 0
+    For row = 0 To myplaylist.Rows.count - 1
+      If myplaylist.Rows[row].selected Then
+        count = count + 1
+        If (count > 1) Then Return False
+      Endif
+    Next 'row
+  Endif
+  Return True
+End
+
+Public Sub ZapFromPath(MyGrid As GridView, itempath As String)
+'   'will delete the item from the grid and from the disk
+'   'will delete any thumb associated
+'   'then will update the view
+'   Dim PrevScrollX, PrevScrollY As Integer
+'   Dim ColToSelect As Integer = 0
+'   Dim RowToSelect As Integer = 0
+' 
+'   Dim i As Integer
+'   Dim thumbstodelete As New String[]
+'   Dim thumbtodelete As String
+' 
+'   Try Kill itempath
+'   If Error Then 
+'   
+'   Try ColToSelect = MyGrid.Column
+'   Try RowToSelect = MyGrid.row
+'   Try PrevScrollX = MyGrid.scrollx
+'   Try PrevScrollY = MyGrid.scrollY
+'   Try MyGrid.Window.mouse = mouse.wait
+' 
+'   'Remove item from PTable
+'       If (Not ISURI(itempath)) Then
+'         PTable.Remove(PTable.Find(Searchtable[r]))
+'         SearchTable.Remove(SearchTable.Find(Searchtable[r]))
+'         Searchtable.Remove(r)
+'         'find the ptable row to delete
+'         For i = 0 To ptable.Max
+'           If GetValue(ptable[i], "Full Path") = itempath Then
+'             If MyGrid.name = "LibraryGrid" Then thumbstodelete.Add(ptable[i])
+'             ptable.Remove(i)
+'             Break
+'           Endif
+'         Next 'i
+'         RowToSelect = r
+'       Endif
+' 
+' 
+' '  rowheight = MyGrid.Rows.h
+'   SyncGrid(MyGrid, SearchTable, rowtoselect, ColToSelect)
+' '  MyGrid.Rows.h = rowheight
+'    ' [GB2:FNTH] MyGrid.Rows.h = MyGrid.Font.Textheight("^_") + global.rowpadding '<<--
+'    'MyGrid.Rows.h = MyGrid.Font.TextHeight("^_") + global.rowpadding '<<--
+'   Try MyGrid.scrollx = PrevScrollX
+'   Try MyGrid.scrollY = PrevScrollY
+'   
+'   If MyGrid.name = "LibraryGrid" Then
+'     For Each thumbtodelete In thumbstodelete
+'       DeleteThumbsOf(thumbtodelete)
+'     Next
+'   Endif
+'   
+'   Try MyGrid.Window.mouse = mouse.default
+End
+
+
+Public Sub DeleteSelected(MyPlaylist As GridView, Optional DeleteURIes As Boolean = True)
+  Dim r As Integer
+  Dim PrevScrollX, PrevScrollY As Integer
+  Dim ColToSelect As Integer = 0
+  Dim RowToSelect As Integer = 0
+  Dim tmpfullpath As String = ""
+
+  Dim i As Integer
+  Dim thumbstodelete As New String[]
+  Dim thumbtodelete As String
+  
+  Try ColToSelect = MyPlaylist.Column
+  Try RowToSelect = MyPlaylist.row
+  Try PrevScrollX = MyPlaylist.scrollx
+  Try PrevScrollY = MyPlaylist.scrollY
+
+  Try myplaylist.Window.mouse = mouse.wait
+
+  'Remove selected items from PTable in reverse order
+  r = myplaylist.Rows.Count - 1
+  While (r >= 0)
+    If myplaylist.Rows[r].Selected Then
+      tmpfullpath = Myplaylist[r, Columnindex["Full Path"]].text
+      If ((Not ISURI(tmpfullpath)) Or DeleteURIes) Then
+        'PTable.Remove(PTable.Find(Searchtable[r]))
+        Searchtable.Remove(r)
+        'find the ptable row to delete
+        For i = 0 To ptable.Max
+          If GetValue(ptable[i], "Full Path") = tmpfullpath Then
+            If myplaylist.name = "LibraryGrid" Then thumbstodelete.Add(ptable[i])
+            ptable.Remove(i)
+            Break
+          Endif
+        Next 'i
+        RowToSelect = r
+      Endif
+    Endif
+    r = r - 1
+  Wend
+'  rowheight = MyPlaylist.Rows.h
+  SyncGrid(MyPlaylist, SearchTable, rowtoselect, ColToSelect)
+'  MyPlaylist.Rows.h = rowheight
+   ' [GB2:FNTH] MyPlaylist.Rows.h = MyPlaylist.Font.Textheight("^_") + global.rowpadding '<<--
+   'MyPlaylist.Rows.h = MyPlaylist.Font.TextHeight("^_") + global.rowpadding '<<--
+  Try MyPlaylist.scrollx = PrevScrollX
+  Try MyPlaylist.scrollY = PrevScrollY
+  
+  If myplaylist.name = "LibraryGrid" Then
+    For Each thumbtodelete In thumbstodelete
+      DeleteThumbsOf(thumbtodelete)
+    Next
+  Endif
+  
+  Try myplaylist.Window.mouse = mouse.default
+End
+
+Public Sub EraseSelected(MyPlaylist As GridView)
+  Dim r As Integer
+  Dim tmpfullpath As String = ""
+  fmain.mouse = mouse.Wait
+  'Erase selected items from disk
+  r = myplaylist.Rows.Count - 1
+  While (r >= 0)
+    If myplaylist.Rows[r].Selected Then
+      tmpfullpath = Myplaylist[r, Columnindex["Full Path"]].text
+      If (Not ISURI(tmpfullpath)) Then
+        Try Kill tmpfullpath
+      Endif
+    Endif
+    r = r - 1
+  Wend
+  fmain.mouse = mouse.Default
+End
+
+Public Sub DeleteThumbsOf(myrow As String)
+  Dim album, artist As String
+
+  Dim p As String
+  Try p = GetValue(myrow, "Full Path")
+  If Error Then
+    Debug "couldn't delete thumbnails"
+    Debug 
+  Endif
+  album = GetValue(myrow, "Album")
+  Artist = GetValue(myrow, "Artist")
+  CoverManager.DeleteThumbsBy(album, artist, p)
+End
+
+
+Public Function ISURI(fullpath As String) As Boolean
+  If fullpath Like "*://*" Then
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+
+Public Sub UpdateSelected(G As Gridview)
+  Dim iRow, sRow, pRow, c As Integer
+  Dim p As String
+  For iRow = 0 To g.Rows.Max                      ' cerca in tutte le righe
+    If g.Rows[iRow].selected Then                 ' ...solo quelle selezionate
+      p = g[iRow, Columnindex["Full Path"]].Text  
+      If (Not ISURI(p)) Then                      ' ...(che siano file, e non uri)
+        sRow = TableRowByPath(p, searchtable)       'poi tramite il path p trova gli elementi da aggiornare
+        pRow = TableRowByPath(p, Ptable)            '...in ptable e searchtable
+        If (sRow = -1) Or (pRow = -1) Then
+          Debug "UpdateSelected failed to find the row to update (!?)"
+          Debug "sRow= " & sRow
+          Debug "pRow= " & pRow
+          Debug
+          Return
+        Endif
+        Searchtable[sRow] = UpdateTableRow(Searchtable[sRow]) 'aggiornali in searchtable
+        Ptable[pRow] = Searchtable[sRow]                      '...e rifletti la modifica in ptable
+  
+        'Discard the uncovered state so that cover will be searched again
+        CoverManager.UnMarkUncovered(p)
+        'invalida la riga della gridview in modo che l'evento data la ricompili con le info aggiornate
+        For c = 0 To g.Columns.Max
+          g[iRow, c].text = ""
+          g[iRow, c].clear
+        Next
+      Endif
+    Endif
+  Next
+End
+
+
+Public Sub Alternatecolor(myplaylist As GridView)
+ Dim r, c As Integer
+     For r = 0 To myplaylist.Rows.count - 1
+       If Not Alternate Then
+         For c = 0 To MyPlaylist.Columns.count - 1
+           MyPlaylist[r, c].text = MyPlaylist[r, c].text
+           MyPlaylist[r, c].background = Global.Alternatecolor
+         Next 'c
+           Else
+         For c = 0 To MyPlaylist.Columns.count - 1
+           MyPlaylist[r, c].text = MyPlaylist[r, c].text
+           ' [GB2:BCOL] MyPlaylist[r, c].background = MyPlaylist.background
+           MyPlaylist[r, c].background = MyPlaylist.Background
+         Next 'c
+       Endif
+       Alternate = Not (alternate)
+   Next 'r
+End
+
+
+
+
+Public Sub AddDir(LibraryGrid As Gridview, DirToAdd As String, ExcludeList As ListBox)
+ Dim filename As String
+ Dim quickmode As Boolean = True
+ Dim MyEXIST As Boolean = True
+ Dim MatchExcluded As Boolean = False
+ Dim i As Integer
+ 'SyncSortedTable() '<-could be necessary for playlist.isdupe() 
+ 'FUNCTION , but very slow, so I TRY TO remove AND see what happens...
+
+
+ If (ExcludeList.count) > 0 Then
+  For i = 0 To ExcludeList.count - 1
+    If (DirToAdd = ExcludeList[i].text) Or (DirToAdd & "/" = ExcludeList[i].text) Then
+      MatchExcluded = True
+      Debug "Excluded item: " & DirToAdd
+      Debug
+      Break
+    Endif
+  Next 'i
+ Endif
+ 
+
+ 
+ 
+ If Exist(dirtoadd) And (Not MatchExcluded) Then
+   For Each filename In Dir(DirToAdd).Sort()
+    If Right(DirToAdd) <> "/" Then DirToadd = DirToAdd & "/"
+    MyExist = True
+    If Stat(DirToAdd & filename).type = gb.Link Then
+      MyExist = Exist(Stat(DirToAdd & filename).link)
+    Endif
+    If MyExist Then
+      If Stat(DirToAdd & filename, True).Type = gb.file Then
+          AddFile(LibraryGrid, DirToAdd & filename, Not (quickmode), False)
+          If Global.LSyncing Then fmain.WaitPanel.text = Global.LSyncingMessage & "<br>" & dirtoadd
+        Else If Stat(DirToAdd & filename, True).Type = gb.Directory Then
+          Try AddDir(LibraryGrid, DirToAdd & filename, ExcludeList)
+          'IF Global.LSyncing THEN fmain.WaitPanel.text = Global.LSyncingMessage & "<br>" & filename
+      Endif
+    Endif
+   ' ENDIF
+   Next
+ Endif
+ 'Alternatecolor(LibraryGrid)
+End
+
+
+
+Public Sub SyncSortedTable()
+'Will fill SortTable with Full paths from ptable
+'and sort it to allow fast searches for duplicates through function IsDupe()
+'** SyncSortTable must be called from outside after ptable updates. **
+  'DIM starttime AS Date = Now
+  'DIM endtime AS Date
+   
+  
+  Dim i As Integer
+
+
+  Dim Field As String = "Full Path"
+  SortTable.clear
+  'PRINT "Debug: playlistclass syncsorttable() start at: " & Time
+  For i = 0 To ptable.count - 1
+    ' StartPos = InStr(Ptable[i], TableSeparator & Field)
+    ' MidPos = InStr(Ptable[i], TableSeparator, StartPos + 1)
+    ' EndPos = InStr(Ptable[i], TableSeparator, Midpos + 1)
+    ' MyValue = Mid(Ptable[i], midpos + 1, Endpos - (midpos + 1))
+    SortTable.Add(GetValue(Ptable[i], Field))
+  Next 'i
+  ' [GB2:TEXT] SortTable = SortTable.Sort(gb.text)
+  SortTable = SortTable.Sort(gb.IgnoreCase)
+  'PRINT "Debug: playlistclass syncsorttable() end at: " & Time
+  
+  'endtime = Now
+  'Global.syncsorttabletime = Global.syncsorttabletime + CFloat(endtime) - CFloat(starttime)
+  
+End
+
+
+Private Function BinarySearch(item As String) As Integer
+  Dim first, Tlast, middle As Integer
+
+  Dim MiddleItem As String
+  first = 0
+  Tlast = SortTable.count - 1
+  ' IF item = "/mnt/disco2/vcast/download/Star_trek_migliori.mp4" THEN 
+  '   PRINT "break"
+  ' ENDIF
+  Repeat
+    middle = (first + tlast) / 2
+    MiddleItem = SortTable[middle]
+    If Trim(MiddleItem) = Trim(item) Then
+      Return middle
+    
+    'gb.text is a case unsensitive comparision, 
+    'we've to manage the sensitive comparision
+    'via a gb.binary search
+    Else If Trim(Lower(middleitem)) = Trim(Lower(item)) Then
+      If Comp(MiddleItem, item, gb.binary) < 0 Then
+        first = middle + 1
+          Else
+        tlast = middle - 1
+      Endif
+      
+    ' [GB2:TEXT] Else If Comp(MiddleItem, item, gb.text) < 0 Then  'ITEM > middle
+    Else If Comp(MiddleItem, item, gb.IgnoreCase) < 0 Then  'ITEM > middle
+        first = middle + 1
+    ' [GB2:TEXT] Else If Comp(MiddleItem, item, gb.text) > 0 Then  'ITEM < middle
+    Else If Comp(MiddleItem, item, gb.IgnoreCase) > 0 Then  'ITEM < middle
+        tlast = middle - 1
+    Endif
+  Until first > Tlast
+End
+
+
+
+
+Public Function IsDupe(item As String) As Boolean
+'binary search in sorttable for item
+  If SortTable.count > 0 Then
+    If BinarySearch(item) > 0 Then
+      Return True
+        Else
+      'PRINT "Debug: PlaylistClass: IsDupe() Not Dupe= " & item   
+      Return False
+    Endif
+  Endif
+End
+
+
+Public Function RemoveNonExisting() As String[]
+  'will scan ptable (field FullPath)
+  'and remove non existing files from it
+  Dim i, startpos, midpos, endpos As Integer
+  Dim FullPathName As String
+  Dim ReturnString As New String[]
+  i = ptable.count - 1
+  While i >= 0
+    Startpos = InStr(Ptable[i], TableSeparator & "Full Path")
+    MidPos = InStr(Ptable[i], TableSeparator, StartPos + 1)
+    EndPos = InStr(Ptable[i], TableSeparator, Midpos + 1)
+    FullPathName = Mid(Ptable[i], MidPos + 1, endpos - midpos - 1)
+    If Not (Exist(FullPathName)) Then
+      ptable.Remove(i)
+      ReturnString.Add(FullPathName)
+      'PRINT "Debug: PlaylistClass: RemoveNonExisting(): Removed: " & FullPathName
+    Endif
+    i = i - 1
+  Wend
+  Return ReturnString
+End
+
+
+Public Function RemoveNonExistingOld28062010() As String[]
+  'will scan ptable (field FullPath)
+  'and remove non existing files from it
+  Dim i, startpos, midpos, endpos As Integer
+  Dim FullPathName As String
+  Dim ReturnString As New String[]
+  i = ptable.count - 1
+  While i > 0
+    i = i - 1
+    Startpos = InStr(Ptable[i], TableSeparator & "Full Path")
+    MidPos = InStr(Ptable[i], TableSeparator, StartPos + 1)
+    EndPos = InStr(Ptable[i], TableSeparator, Midpos + 1)
+    FullPathName = Mid(Ptable[i], MidPos + 1, endpos - midpos - 1)
+    If Not (Exist(FullPathName)) Then
+      ptable.Remove(i)
+      ReturnString.Add(FullPathName)
+      'PRINT "Debug: PlaylistClass: RemoveNonExisting(): Removed: " & FullPathName
+    Endif
+  Wend
+  Return ReturnString
+End
+
+Public Sub DeleteFromPath(fullpath As String, grid As Gridview)
+  'will scan ptable (field FullPath)
+  'and remove the item associated with fullpath
+  Dim i, startpos, midpos, endpos As Integer
+  Dim FullPathName As String
+  'from ptable
+  i = ptable.count - 1
+  While i >= 0
+    Startpos = InStr(ptable[i], TableSeparator & "Full Path")
+    MidPos = InStr(ptable[i], TableSeparator, StartPos + 1)
+    EndPos = InStr(ptable[i], TableSeparator, Midpos + 1)
+    FullPathName = Mid(ptable[i], MidPos + 1, endpos - midpos - 1)
+    If fullpathname = fullpath Then
+      ptable.Remove(i)
+      Debug "PlaylistClass: Deletefrompath(): Deleted: " & FullPathName
+    Endif
+    i = i - 1
+  Wend
+  'from searchtable
+  i = SearchTable.count - 1
+  While i >= 0
+    Startpos = InStr(SearchTable[i], TableSeparator & "Full Path")
+    MidPos = InStr(SearchTable[i], TableSeparator, StartPos + 1)
+    EndPos = InStr(SearchTable[i], TableSeparator, Midpos + 1)
+    FullPathName = Mid(SearchTable[i], MidPos + 1, endpos - midpos - 1)
+    If fullpathname = fullpath Then
+      SearchTable.Remove(i)
+      Debug "PlaylistClass: Deletefrompath(): Deleted: " & FullPathName
+    Endif
+    i = i - 1
+  Wend
+  SyncGrid(grid, SearchTable, grid.row, grid.column, grid.scrollx, grid.scrolly)
+End
+  
+Public Sub FormatTime(seconds As String) As String
+
+  Dim iseconds, hh, mm, ss, restosec As Integer
+  Dim Shh, Smm, Sss As String
+
+  Try iseconds = Val(seconds)
+  If Error Then iseconds = 0
+  hh = iseconds Div 3600
+  restosec = (iseconds - (hh * 3600))
+  mm = restosec Div 60
+  ss = (restosec - (mm * 60))
+  Sss = ss
+  If Len(Sss) = 1 Then Sss = "0" & Sss
+  Smm = mm
+  If Len(Smm) = 1 Then Smm = "0" & Smm
+  Shh = hh
+  If Len(Shh) = 1 Then Shh = "0" & Shh
+  Return Shh & ":" & Smm & ":" & Sss
+
+End
+
+Private Function makenewrow(Optional librarygrid As Gridview, forcename As String, filetoadd As String, length As String, type As String, acodec As String, abitrate As String, arate As String, channels As String, vcodec As String, vbitrate As String, fps As String, w As String, h As String, artist As String, album As String, myyear As String, track As String, title As String, genre As String, comment As String, Optional ReturnSth As Boolean = False, Optional OldAddedOn As String = Now) As String
+  Dim nr As String 'newrow
+  Dim ts As String = TableSeparator
+  Dim filesize As Long = 0
+
+  If track = 0 Then track = ""
+  If myYear = 0 Then myYear = ""
+  
+  Try filesize = Stat(filetoadd).size Div 1024
+  If forcename <> "" Then
+    nr = nr & ts & "Filename" & ts & forcename
+      Else
+    nr = nr & ts & "Filename" & ts & file.Name(filetoadd)
+  Endif
+
+  nr = nr & ts & "Length" & ts & FormatTime(length)
+  nr = nr & ts & "Artist" & ts & artist
+  nr = nr & ts & "Album" & ts & album
+  nr = nr & ts & "Year" & ts & myyear
+  nr = nr & ts & "Track" & ts & track
+  nr = nr & ts & "Title" & ts & title
+  nr = nr & ts & "Genre" & ts & genre
+  nr = nr & ts & "Comment" & ts & Replace(comment, "\n", " ")
+  nr = nr & ts & "Type" & ts & type
+  nr = nr & ts & "Audio Codec" & ts & acodec
+  nr = nr & ts & "Audio Bitrate" & ts & abitrate
+  nr = nr & ts & "Audio Rate" & ts & arate
+  nr = nr & ts & "Channels" & ts & channels
+  nr = nr & ts & "Video Codec" & ts & vcodec
+  nr = nr & ts & "Video Bitrate" & ts & vbitrate
+  nr = nr & ts & "Fps" & ts & fps
+  nr = nr & ts & "Width" & ts & w
+  nr = nr & ts & "Height" & ts & h
+  nr = nr & ts & "Full Path" & ts & filetoadd
+  nr = nr & ts & "File Size" & ts & filesize
+  If Not ReturnSth Then 
+    nr = nr & ts & "Added on" & ts & Now & ts
+      Else
+    nr = nr & ts & "Added on" & ts & oldaddedon & ts
+  Endif
+   
+  If Not ReturnSth Then 
+    ptable.Add(nr)
+    Searchtable.Add(nr)
+    LibraryGrid.Rows.count = LibraryGrid.Rows.count + 1
+    Return
+      Else
+    Return nr
+  Endif
+End
+
+
+Public Sub GetTags(f As String, ByRef Leng As String, ByRef Art As String, ByRef Alb As String, ByRef tra As String, ByRef Yea As String, ByRef tit As String, ByRef gen As String, ByRef com As String, ByRef typ As String, ByRef aco As String, ByRef abi As String, ByRef ara As String, ByRef cha As String, ByRef vco As String, ByRef vbi As String, ByRef fps As String, ByRef w As String, ByRef h As String, ByRef fsi As String, quick As Boolean)
+Dim tl As New Taglib
+Dim fileUtf8 As String
+  Try fileUtf8 = DConv(f) 'from system charset to utf8
+  If Error Then fileutf8 = f
+  fileutf8 = f
+  fileutf8 = Trim(fileutf8)
+  If tl.IsSupported(fileUtf8) Then
+    If tl.Init(fileutf8) Then 'use fast taglib when possible
+      Leng = tl.Length
+      typ = "audio"
+      aco = file.Ext(fileUtf8)
+      abi = tl.Bitrate
+      ara = tl.Samplerate
+      cha = tl.Channels
+      vco = ""
+      vbi = ""
+      fps = ""
+      w = ""
+      h = ""
+      art = (tl.Artist)
+      alb = (tl.Album)
+      yea = tl.MyYear
+      tra = tl.Track
+      tit = (tl.Title)
+      gen = (tl.Genre)
+      com = (tl.Comment)
+      tl.tlFree()
+    Endif
+      Else 'but fallback to mplayertag if needed
+    Debug "TagLib doesnt support " & f & ",fallback to mplayer routines..."
+    Debug
+    'CheckPlayerAlive()
+    MplayerTag.quick = quick
+    If Not quick Then MplayerTag.do_idleplay(f)
+    Try Leng = Split(mplayertag.getP("=Length"), ",.")[0]
+    typ = mplayertag.getP("file-format") 'fixmempv riempi la tag (fatto oppure no?)
+    aco = mplayertag.getP("Audio-Codec")
+    abi = mplayertag.getP("=Audio-Bitrate")
+    ara = mplayertag.getP("=audio-samplerate")
+    cha = mplayertag.getP("=audio-Channels")
+    vco = mplayertag.getP("Video-Codec")
+    vbi = mplayertag.getP("=Video-Bitrate")
+    fps = mplayertag.getP("Fps")
+    w = mplayertag.getP("Width")
+    h = mplayertag.getP("Height")
+    art = mplayertag.getP("Artist")
+    alb = mplayertag.getP("Album")
+    yea = mplayertag.getP("Year")
+    tra = mplayertag.getP("TrackNo")
+    tit = mplayertag.getP("Title")
+    gen = mplayertag.getP("Genre")
+    com = OneOf(mplayertag.getP("Comment"), mplayertag.getP("Comments"))
+  Endif
+End
+
+
+Public Function TableRowByPath(p As String, t As String[]) As Integer
+  Dim fstr As String = (TableSeparator & "Full Path" & TableSeparator & p)
+  Dim i As Integer
+  For i = 0 To t.Max
+    If InStr(t[i], fstr, 0, gb.Binary) > 0 Then
+      Return i
+    Endif
+  Next
+  Return -1
+End
+
+
+Public Function UpdateTableRow(Tablerow As String) As String
+  Dim length, type, acodec, abitrate, arate, channels, vcodec, vbitrate, fps, w, h, fullpath As String
+  Dim artist, album, myyear, track, title, genre, comment As String
+  Dim oldaddedon As String
+  Dim forcename As String
+  Dim filesize As Long = 0
+    
+  Fullpath = GetValue(Tablerow, "Full Path")
+  forcename = GetValue(TableRow, "Filename")
+  oldaddedon = GetValue(TableRow, "Added on")
+  GetTags(FullPath, ByRef Length, ByRef Artist, ByRef Album, ByRef track, ByRef myyear, ByRef title, ByRef genre, ByRef comment, ByRef type, ByRef acodec, ByRef abitrate, ByRef arate, ByRef channels, ByRef vcodec, ByRef vbitrate, ByRef fps, ByRef w, ByRef h, ByRef filesize, False)
+  Return makenewrow(, forcename, fullpath, length, type, acodec, abitrate, arate, channels, vcodec, vbitrate, fps, w, h, artist, album, myyear, track, title, genre, comment, True, OldAddedOn)
+End
+
+
+  Public Function AddFile(LibraryGrid As GridView, FileToAdd As String, Optional quick As Boolean = True, Optional Urimode As Boolean = False, Optional Forcename As String = "") As Boolean
+
+
+  Dim filesize As Long = 0
+  Dim quickmode As Boolean = quick And (GeneralOptions.SlowTagsCHK.value Or Global.IsNonTaggableMedia(FileToAdd))
+
+
+  Dim length, type, acodec, abitrate, arate, channels, vcodec, vbitrate, fps, w, h As String
+  Dim artist, album, myyear, track, title, genre, comment As String
+  
+  FilesProcessed = FilesProcessed + 1
+  UpdateProgress(FMain.MyLibraryProgressBar)
+  Wait 0.0001
+
+  If Trim(filetoadd) = "" Then Return True
+
+  forcename = Replace(forcename, "\n", " ")
+
+  If quickmode Then
+    makenewrow(librarygrid, forcename, filetoadd, length, type, acodec, abitrate, arate, channels, vcodec, vbitrate, fps, w, h, artist, album, myyear, track, title, genre, comment)
+    Return True
+  Endif
+  
+  Try filesize = Stat(FileToAdd).Size
+  If filesize = 0 Then Return True
+  If Not (Exist(filetoadd)) Then Return True
+  If Not (global.IsMediaFile(filetoadd)) Then Return True  
+  If IsDupe(filetoadd) Then Return True
+
+  GetTags(filetoadd, ByRef Length, ByRef Artist, ByRef Album, ByRef track, ByRef myyear, ByRef title, ByRef genre, ByRef comment, ByRef type, ByRef acodec, ByRef abitrate, ByRef arate, ByRef channels, ByRef vcodec, ByRef vbitrate, ByRef fps, ByRef w, ByRef h, ByRef filesize, quickmode)
+  makenewrow(librarygrid, forcename, filetoadd, length, type, acodec, abitrate, arate, channels, vcodec, vbitrate, fps, w, h, artist, album, myyear, track, title, genre, comment)
+  Return True
+End
+
+
+
+Private Sub UpdateProgress(TheProgressbar As ProgressBar)
+  If FilesToProcess = 0 Then FilesToProcess = 1
+  TheProgressBar.Value = Filesprocessed / FilesToProcess
+  
+End
+
+Public Sub ClearAround(LibraryGrid As Gridview, FirstVisibleRow As Integer, LastVisibleRow As Integer)
+  ' DIM r AS Integer
+  ' DIM c AS Integer
+  ' DIM howmanyrows AS Integer = ((LastVisibleRow - FirstVisibleRow) DIV 8) - 4
+  '   
+  ' IF howmanyrows < 0 THEN howmanyrows = 1  
+  ' IF FirstVisibleRow - howmanyrows > 0 THEN  
+  '   LibraryGrid.Rows.Remove(FirstVisibleRow - howmanyrows, howmanyrows)
+  '   LibraryGrid.Rows.insert(FirstVisibleRow - howmanyrows, howmanyrows)
+  ' ENDIF
+  ' 
+  ' IF LastVisibleRow + howmanyrows < LibraryGrid.rows.count THEN
+  '   LibraryGrid.Rows.Remove(LastVisibleRow, howmanyrows)
+  '   LibraryGrid.Rows.insert(lastVisibleRow, howmanyrows)
+  ' ENDIF
+End
+
+
+
+Public Sub CheckAndFixBloat()
+  'Check for duplicates fields (is possible due to a (now fixed) xt7 bug
+  Dim fields As New String[]
+  Dim field As String
+  fields.add("Filename")
+  fields.add("Length")
+  fields.add("Artist")
+  fields.add("Album")
+  fields.add("Year")
+  fields.add("Track")
+  fields.add("Title")
+  fields.add("Genre")
+  fields.add("Comment")
+  fields.add("Type")
+  fields.add("Audio Codec")
+  fields.add("Audio Bitrate")
+  fields.add("Audio Rate")
+  fields.add("Channels")
+  fields.add("Video Codec")
+  fields.add("Video Bitrate")
+  fields.add("Fps")
+  fields.add("Width")
+  fields.add("Height")
+  fields.add("Full Path")
+  fields.add("File Size")
+  fields.add("Added on")
+
+  Debug "Checking for dupe fields into pTable..."
+  Debug ""
+  If pTable.Count > 0 Then
+    For Each field In fields
+      If occurrences(TableSeparator & field & TableSeparator, pTable[0]) > 1 Then
+        Debug PTable[0]
+        Debug "Dupe fields found, fixing pTable"
+        Debug
+        FixBloat(fields)
+        Break
+      Endif
+    Next
+  Endif
+End
+
+
+Public Function occurrences(what As String, where As String) As Integer
+  'returns how many occurrences of "what" are found in "where"
+  Dim c As Integer
+  Dim nomore As Boolean = False
+  Dim pos As Integer = 0
+  Repeat
+    pos = InStr(where, what, pos + 1)
+    If pos = 0 Then
+      nomore = True
+        Else
+      c += 1
+    Endif
+  Until nomore
+  Return c
+End
+
+Public Sub FixBloat(fields As String[])
+  'remove dupes field occurrences from table pTable
+  Dim i As Integer
+  Dim FixedRow, field As String
+  For i = 0 To pTable.max
+    For Each field In fields
+      FixedRow &= TableSeparator & field & TableSeparator & GetValue(pTable[i], field)
+    Next
+    pTable[i] = FixedRow
+    FixedRow = ""
+  Next
+End
+
+
+Public Sub AreEquivalentRows(r1 As String, r2 As String) As Boolean
+  'Check if two Table rows has the same fields content
+  ' Dim fields As New String[]
+  Dim fields As New String[]
+  Dim field As String
+  fields.add("Filename")
+  fields.add("Length")
+  fields.add("Artist")
+  fields.add("Album")
+  fields.add("Year")
+  fields.add("Track")
+  fields.add("Title")
+  fields.add("Genre")
+  fields.add("Comment")
+  fields.add("Type")
+  fields.add("Audio Codec")
+  fields.add("Audio Bitrate")
+  fields.add("Audio Rate")
+  fields.add("Channels")
+  fields.add("Video Codec")
+  fields.add("Video Bitrate")
+  fields.add("Fps")
+  fields.add("Width")
+  fields.add("Height")
+  fields.add("Full Path")
+  fields.add("File Size")
+  fields.add("Added on")
+  
+  For Each field In fields
+    If GetValue(r1, field) <> GetValue(r2, Field) Then
+      Return False
+    Endif
+  Next
+  Return True
+End
+
+
+
+Public Sub DoSort(Field As String, Optional ByRef table As String[] = ptable)
+  Dim i As Integer
+  Dim Startpos, MidPos, EndPos As Integer
+  Dim MyValue As String
+
+
+
+  For i = 0 To table.count - 1
+    StartPos = InStr(table[i], TableSeparator & Field)
+    MidPos = InStr(table[i], TableSeparator, StartPos + 1)
+    EndPos = InStr(table[i], TableSeparator, Midpos + 1)
+    MyValue = Mid(table[i], Startpos, Endpos - startpos)
+    table[i] = Replace(table[i], MyValue, "") '<-- fixed a bad bug that could lead to *grid.txt to grow over time!
+    table[i] = MyValue & table[i]
+  Next 'i
+
+  If Ascendent Then
+    ' [GB2:TEXT] ptable = ptable.Sort(gb.Ascent + gb.text)
+    table = table.Sort(gb.Ascent + gb.Natural + gb.IgnoreCase) 'gb.IgnoreCase)
+      Else
+    ' [GB2:TEXT] Ptable = ptable.Sort(gb.Descent + gb.text)
+    table = table.Sort(gb.Descent + gb.Natural + gb.IgnoreCase) 'gb.IgnoreCase)
+  Endif
+  Ascendent = Not Ascendent
+  '"public" the last sorted field
+  LastSortedField = field
+  'Debug Tablesize(table)
+End
+
+
+
+
+
+
+
+
+
+
+
+
+Public Sub AlternatecolorRange(myplaylist As GridView, StartRow As Integer, EndRow As Integer, Optional SKIPFIRST As Boolean = False)
+  Dim r, c As Integer
+  Dim Alternate As Boolean
+  Try Alternate = Not (MyPlaylist[StartRow - 1, 0].background = Global.Alternatecolor)
+  'maybe a gambas bug requires the text to be rewritten before changing the color
+  'but if we have a picture in the control, it would be deleted, so skipfirst
+  'will not recolor anything, leaving the picture intact (used in the retag routine)
+  For r = StartRow To EndRow
+    If Alternate Then
+      For c = 0 To MyPlaylist.Columns.count - 1
+        If Not (SKIPFIRST And c = 0) Then
+          MyPlaylist[r, c].text = MyPlaylist[r, c].text
+          MyPlaylist[r, c].background = Global.Alternatecolor
+        Endif
+      Next 'c
+        Else
+      For c = 0 To MyPlaylist.Columns.count - 1
+        If Not (SKIPFIRST And c = 0) Then
+          MyPlaylist[r, c].text = MyPlaylist[r, c].text
+          ' [GB2:BCOL] MyPlaylist[r, c].background = MyPlaylist.background
+          MyPlaylist[r, c].background = MyPlaylist.Background
+        Endif
+      Next 'c
+    Endif
+    Alternate = Not (alternate)
+  Next 'r
+End
+
+Public Sub LegacyAutoSizeColumns(MyGrid As GridView) 'will autosize Every Row.
+    Dim TheColumn As Integer
+    If fmain.closing Then Return
+     For TheColumn = 0 To MyGrid.Columns.count - 1
+       Wait 0.001
+       MyGrid.Columns[TheColumn].W = -1
+   Next 'thecolumn
+End
+
+
+
+
+Public Sub AutoSizeColumns(MyGrid As GridView) 
+
+    Dim R, FirstR, LastR As Integer
+    Dim C, FirstC, LastC, CharW As Integer
+    Dim TextW As Integer
+    Dim ccaption As String
+    Dim t0 As Float = Timer()
+    Dim t1 As Float
+    Dim RStep As Integer
+    Dim MaxW, MaxGbW As Integer
+    If MyGrid.Rows.count <= 0 Then Return
+
+    'find the maximum Gambas column width
+    For TextW = 3000 DownTo 0 Step 4
+      Try MyGrid.Columns[0].w = TextW
+      If MyGrid.Columns[0].w = TextW Then Break
+    Next
+    maxgbw = TextW
+
+    FirstR = global.MyRowAt(MyGrid, MyGrid.y)
+    LastR = global.MyRowAt(MyGrid, MyGrid.h)
+
+    If LastR = -1 Then LastR = Mygrid.rows.count - 1
+    If firstR = -1 Then firstR = 0
+
+    For c = firstC To LastC 'visible rows are always correct
+      MaxW = CInt((Len(MyGrid.Columns[c].text) + 6) * CharW)
+      ccaption = MyGrid.Columns[c].text
+      For r = firstR To lastR Step rstep
+        Textw = (Len(GetValue(Searchtable[r], ccaption)) + 6) * CharW
+        If MaxW < TextW Then MaxW = textW
+        If MaxW >= MaxGbW Then 
+          MaxW = MaxGbw
+          Break
+        Endif
+      Next 'r
+      Mygrid.Columns[c].w = CInt(MaxW) + 100
+    Next 'c
+
+    FirstC = 0
+    LastC = MyGrid.Columns.max
+    FirstR = 0
+    LastR = Mygrid.Rows.max
+    CharW = MyGrid.Font.TextWidth("_")
+    charw = CInt(charw * 1.1)
+    Rstep = (LastR Div 100) 'get 100 samples
+    If rstep = 0 Then rstep = 1
+    For c = firstC To LastC
+      MaxW = CInt((Len(MyGrid.Columns[c].text) + 6) * CharW)
+      ccaption = MyGrid.Columns[c].text
+      For r = firstR To lastR Step rstep
+        Textw = (Len(GetValue(Searchtable[r], ccaption)) + 10) * CharW
+        If MaxW < TextW Then MaxW = textW
+        If MaxW >= MaxGbW Then 
+          MaxW = MaxGbw
+          Break
+        Endif
+      Next 'r
+      Mygrid.Columns[c].w = CInt(MaxW)
+    Next 'c
+
+    
+    Try MyGrid.Columns[0].w = MyGrid.Columns[0].w + Mygrid[0, 0].Picture.W
+
+    t1 = Timer()
+    Debug "AutosizeColumns, total time: " & CStr((t1 - t0))
+    Debug
+End
+
+
+Public Sub SyncGrid(LibraryGrid As Gridview, SearchTable As String[], RowToSelect As Integer, ColToSelect As Integer, Optional scrolx As Integer = 0, Optional scroly As Integer = 0)
+Dim c As Integer
+Dim rowheight As Integer
+  Try rowheight = librarygrid.Rows[RowToSelect].h
+  If Error Then rowheight = 32
+'will sync LibraryGrid to SearchTable.
+  'It is not necessary to blank the entire Playlist,
+  '(We'll blank only the "FileName" Column because FillRows checks just it)
+  Try c = Columnindex["Filename"]
+  If Error Then Return
+  LibraryGrid.Rows.count = 0
+  LibraryGrid.rows.count = SearchTable.Count
+  LibraryGrid.moveto(RowToSelect, ColToSelect)
+  librarygrid.Rows.h = rowheight
+  librarygrid.scrollx = scrolx
+  librarygrid.scrolly = scroly
+End
+
+
+Public Function PtableFromSearch(searchexp As String, Optional fields As String[], Optional CaseSensitive As Boolean = False) As String[]
+  Dim SearchTerms As String[] 
+  Dim i As Integer
+  Dim searchterm, cline, fline, field As String
+  Dim outlist As New String[]
+  If Not casesensitive Then searchexp = Upper(searchexp)
+  SearchTerms = Split(SearchExp, "|")
+
+  For i = 0 To ptable.count - 1
+    If casesensitive Then 
+      cline = ptable[i]
+        Else
+      cline = Upper(ptable[i])
+    Endif
+    For Each searchterm In searchterms
+      If fields.count = 0 Then
+        If cline Like "*" & Searchterm & "*" Then outlist.add(cline)
+          Else
+        For Each field In fields
+          If Not casesensitive Then field = Upper(field)
+          fline = (Trim(GetValue(cline, field))) 
+          If (fline <> "") And (fline Like "*" & searchterm & "*") Then 
+            outlist.add(ptable[i])
+             '  Else
+             ' If (fline <> "") Then Debug searchterm & " <> " & "*" & fline & "*"
+          Endif
+        Next 'field
+      Endif
+    Next 'searchterm
+  Next 'ptable item
+  Return outlist
+End
+
+
+
+Public Sub Search(LibraryGrid As GridView, SearchExp As String)
+'Search in ptable and add to Searchtable
+  Dim SearchTerms As String[] = Split(SearchExp, "|")
+  Dim SearchTerm, MyValue As String
+  Dim UserField As Boolean = False 'matches the search field the user want find
+  Dim TheCheckBox As Object
+  Dim r As Integer
+
+  Searchtable.Resize(0)
+  If SearchExp <> "" Then
+    For r = 0 To PTable.count - 1
+      For Each Searchterm In SearchTerms
+        SearchTerm = Upper(Replace(SearchTerm, "*", ""))
+        If (Upper(ptable[r]) Like "*" & Searchterm & "*") Or (searchterm = Null) Then
+          UserField = False
+          'restrict search to user field search fields
+          For Each TheCheckBox In Searchfields.Controls
+            MyValue = Upper(Trim(GetValue(ptable[r], TheCheckBox.tag)))
+            If TheCheckBox Is CheckBox Then
+              If TheCheckBox.value = True Then
+                If (myvalue <> "") And (MyValue Like ("*" & Searchterm & "*")) Then
+                  'PRINT "Debug: PlaylistClass: Search(): " & myvalue & " is like " & "*" & Searchterm & "* "
+                  'PRINT "Debug: PlaylistClass: Search(): " & Searchterm & " found in " & TheCheckBox.tag
+                  UserField = True
+                    Else
+                  'PRINT "Debug: PlaylistClass: Search(): " & myvalue & " is NOT like " & "*" & Searchterm & " *" 
+                Endif
+              Endif
+            Endif
+            If UserField Then Break
+          Next
+          If userfield Then SearchTable.Add(ptable[r])
+          Break
+        Endif
+      Next
+    Next  'r
+      Else
+    For r = 0 To PTable.count - 1
+      SearchTable.Add(ptable[r])
+    Next 'r
+  Endif
+  SyncGrid(LibraryGrid, SearchTable, 0, 0)
+End
+
+Public Sub UpdateTableAndGridTags(LibraryGrid As Gridview, FullPath As String, Album As String, Artist As String, Title As String, MyYear As String, Genre As String, TrackNo As String, Comment As String)
+  'write relevant tags on SearchTable and blindly reflect changes on the grid
+  Dim myrow As String
+  Dim SearchRowIndex, PTableRowIndex As Integer
+  Dim backcolor, row As Integer
+
+  Dim ts As String = TableSeparator
+  'find the searchtable item in ptable and assign his index to myrowindex
+  SearchRowIndex = FindRowByPath(Librarygrid, FullPath)
+  If SearchRowIndex < 0 Then Return 'item not found!
+  PTableRowIndex = Ptable.Find(Searchtable[SearchRowIndex])
+  If PTableRowIndex < 0 Then
+    'PRINT "Debug: PlaylistClass: UpdateTableAndGridTags(): ITEM NOT FOUND"
+    Return 'item not found!
+  Endif
+  MyRow = Ptable[PTableRowIndex]
+  Backcolor = LibraryGrid[row, 0].background
+  'Do the substitutions  and update the grid
+   If Album <> ts Then 'ts means that we don't have to update anything
+      MyRow = Replace(MyRow, ts & "Album" & ts & GetValue(MyRow, "Album") & Ts, ts & "Album" & ts & Album & Ts)
+      LibraryGrid[SearchRowIndex, Columnindex["Album"]].text = Album
+      'LibraryGrid[SearchRowIndex, Columnindex["Album"]].background = backcolor
+   Endif
+   If Artist <> ts Then
+      MyRow = Replace(MyRow, ts & "Artist" & ts & GetValue(MyRow, "Artist") & Ts, ts & "Artist" & ts & Artist & Ts)
+      LibraryGrid[SearchRowIndex, Columnindex["Artist"]].text = Artist
+      'LibraryGrid[SearchRowIndex, Columnindex["Artist"]].background = backcolor
+   Endif
+   If Title <> ts Then
+      MyRow = Replace(MyRow, ts & "Title" & ts & GetValue(MyRow, "Title") & Ts, ts & "Title" & ts & Title & Ts)
+      LibraryGrid[SearchRowIndex, Columnindex["Title"]].text = Title
+      'LibraryGrid[SearchRowIndex, Columnindex["Title"]].background = backcolor
+   Endif
+   If MyYear <> ts Then
+      MyRow = Replace(MyRow, ts & "Year" & ts & GetValue(MyRow, "Year") & ts, ts & "Year" & ts & MyYear & ts)
+      LibraryGrid[SearchRowIndex, Columnindex["Year"]].text = MyYear
+      'LibraryGrid[SearchRowIndex, Columnindex["Year"]].background = backcolor
+   Endif
+   If Genre <> ts Then
+      MyRow = Replace(MyRow, ts & "Genre" & ts & GetValue(MyRow, "Genre") & ts, ts & "Genre" & ts & Genre & ts)
+      LibraryGrid[SearchRowIndex, Columnindex["Genre"]].text = Genre
+      'LibraryGrid[SearchRowIndex, Columnindex["Genre"]].background = backcolor
+   Endif
+   If TrackNo <> ts Then
+      MyRow = Replace(MyRow, ts & "Track" & ts & GetValue(MyRow, "Track") & ts, ts & "Track" & ts & TrackNo & ts)
+      LibraryGrid[SearchRowIndex, Columnindex["Track"]].text = TrackNo
+      'LibraryGrid[SearchRowIndex, Columnindex["Track"]].background = backcolor
+   Endif
+   If Comment <> ts Then
+      MyRow = Replace(MyRow, ts & "Comment" & ts & GetValue(MyRow, "Comment") & ts, ts & "Comment" & ts & Comment & ts)
+      LibraryGrid[SearchRowIndex, Columnindex["Comment"]].text = Comment
+      'LibraryGrid[SearchRowIndex, Columnindex["Comment"]].background = backcolor
+   Endif
+ 'Update Ptable
+    Ptable[PTableRowIndex] = MyRow
+    Searchtable[SearchRowIndex] = MyRow
+ '  
+    AlternatecolorRange(Librarygrid, SearchRowIndex, SearchRowIndex, True)
+End
+
+
+Public Sub Exclude(Librarygrid As Gridview, ExcludeList As Listbox)
+  
+  'will scan ptable (field FullPath)
+  'and remove files in ExcludedList from it
+  Dim i, k, startpos, midpos, endpos As Integer
+  Dim FullPathName As String
+  Dim ReturnString As New String[]
+  Dim myMatch As Boolean = False
+  i = ptable.count - 1
+  While i > 0
+    myMatch = False
+    i = i - 1
+    Startpos = InStr(Ptable[i], TableSeparator & "Full Path")
+    MidPos = InStr(Ptable[i], TableSeparator, StartPos + 1)
+    EndPos = InStr(Ptable[i], TableSeparator, Midpos + 1)
+    FullPathName = Mid(Ptable[i], MidPos + 1, endpos - midpos - 1)
+    
+    'Will filename match any excluded path?
+    For k = 0 To ExcludeList.count - 1
+      If (FullPathName Like (ExcludeList[k].text & "*")) Then
+        myMatch = True
+        Break
+      Endif
+    Next 'k
+    
+    
+    If myMatch Then
+      ptable.Remove(i)
+      ReturnString.Add(FullPathName)
+      'PRINT "Debug: PlaylistClass: Exlcude(): Removed: " & FullPathName
+    Endif
+  Wend
+  'RETURN ReturnString
+End
+
+Public Function GetSelectedAndLength(MyPlaylist As Gridview) As String
+  'returns: [SelectedItems;TotalItems;SelectedLength;TotelLength]
+  Dim row As Integer
+  Dim TotalItems, SelectedItems, TotalLength, SelectedLength, CurrentLength As Integer
+  Dim SlenStr, TotLenStr As String
+
+  TotalItems = myplaylist.rows.count
+
+  If TotalItems > 0 Then
+    SelectedItems = 0
+    SelectedLength = 0
+    TotalLength = 0
+    
+    For row = 0 To TotalItems - 1
+      CurrentLength = MplayerTag.DeFormatTime(MyPlaylist[row, Columnindex["Length"]].Text)
+      If myplaylist.Rows[row].selected Then
+        SelectedItems = SelectedItems + 1
+        SelectedLength = SelectedLength + CurrentLength
+      Endif
+        TotalLength = TotalLength + CurrentLength
+    Next 'row
+  Endif
+  SlenStr = mplayertag.FormatTime(SelectedLength)
+  TotLenStr = mplayertag.FormatTime(TotalLength)
+  Return SelectedItems & ";" & TotalItems & ";" & SlenStr & ";" & TotLenStr
+End
+
+
+  'Fmain.Mylibrary.Exclude(Fmain.LibraryGrid, NoParseExcludedListbox)

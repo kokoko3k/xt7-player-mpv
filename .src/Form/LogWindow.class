@@ -1,0 +1,147 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+
+
+Public Sub Form_Open()
+'logarea.text = File.Load("/tmp/text")
+  Global.Center(Fmain, Me)
+End
+
+Public Sub OkBTN_Click()
+  Me.hide
+  Wait 0.1
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.SetFocus()
+End
+
+Public Sub RefreshBTN_Click()
+
+  ShowLogs()
+
+End
+
+Public Sub Form_Show()
+
+  ShowLogs()
+
+End
+
+
+Public Sub clearlogs()
+  Try logarea.Clear
+  Try errorarea.clear
+End
+
+Public Struct mpvOption 
+  name As String
+  data As String
+End Struct
+
+Public Sub ShowLogs()
+  Dim name, data As String
+
+  streamtextbox.text = FMain.mplayer.getP("fullpath")
+  Logarea.Clear
+  errorarea.clear
+  
+  logarea.text &= "Commandline:\n"
+  logarea.text &= FMain.mplayer.commandline & "\n\n"
+  
+  logarea.text &= "Options:\n"
+
+  For Each FMain.mplayer.mpvOptions
+    name = FMain.mplayer.mpvOptions.Key
+    data = FMain.mplayer.mpvOptions[name]
+    logarea.text &= " [*] " & name & " = " & data & "\n"
+  Next
+  logarea.text &= "\n"
+  
+  logarea.text &= FMain.mplayer.stdout
+  errorarea.text &= FMain.mplayer.stderr
+End
+
+
+
+Public Sub ShowLogs_old_mplayer()
+  ' Dim Tmp As String = ""
+  ' Dim i As Integer
+  ' LogWindow.Label2.visible = False
+  ' 'Logarea.Clear
+  ' If FMain.mplayer.mediaheaders.Count > 1 Then
+  '   tmp = "Commandline:" & "\n"
+  '   tmp = tmp & Replace(FMain.mplayer.Commandline, " -", "\n -") & "\n" & "\n"
+  '   tmp &= "------------------------------------------------------------------------------\n\n"
+  '   For i = 0 To FMain.mplayer.mediaheaders.Count - 1
+  '     tmp = tmp & FMain.mplayer.mediaheaders[i] & "\n"
+  '   Next 'i
+  '   logarea.text = tmp
+  ' Endif
+End
+
+
+Public Sub searchterm_Click()
+  HighLight(logarea, Last.text)
+End
+
+
+Public Sub searchterm2_Click()
+  HighLight(errorarea, Last.text)
+End
+
+
+Public Sub Searchterm_Keyrelease()
+  Dim previous_search As String = searchterm.text
+  Wait 0.5
+  If previous_search <> searchterm.text Then Return
+  HighLight(logarea, Last.text)
+End
+
+
+Public Sub Searchterm2_Keyrelease()
+  HighLight(errorarea, Last.text)
+End
+
+
+Public Sub Highlight(logarea As Object, searchterm As String)
+  If (Trim(Last.text) = "") Then 
+    Last.background = Color.Background
+    Return
+  Endif
+  If DoHighlight(logarea, searchterm) Then
+    Last.background = Color.Background
+      Else
+    Last.background = Color.red
+  Endif  
+End
+
+
+Private Function DoHighlight(logarea As Object, foundstr As String) As Boolean
+  Dim lenfoundstr As Integer = 0
+  Dim rtext As String
+  Dim hlight1 As String = "<font color=red><b>"
+  Dim hlight2 As String = "</b></font>"
+  Dim i, sfound As Integer
+  Dim found As Boolean = False
+  Dim MyLeft, MyMid, MyRight As String
+  lenfoundstr = Len(foundstr)
+  logarea.EnsureVisible
+  rtext = logarea.text
+  i = 0  
+  rtext = Replace(logarea.text, "\n", "<br>", gb.IgnoreCase)
+  Repeat
+    sfound = InStr(rtext, foundstr, i, gb.IgnoreCase)
+    If sfound = 0 Then Break
+    myleft = Left(rtext, sfound - 1) 
+    mymid = hlight1 & Mid(rtext, sfound, lenfoundstr) & hlight2
+    myright = Mid(rtext, sfound + lenfoundstr, Len(rtext))
+    rtext = myleft & mymid & myright
+    i = Len(myleft) + Len(mymid) + 1
+    found = True
+  Until (sfound = 0) Or (i >= Len(rtext))
+
+  logarea.RichText = rtext  
+  Return found
+End
+

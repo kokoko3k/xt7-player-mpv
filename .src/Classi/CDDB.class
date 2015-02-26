@@ -1,0 +1,132 @@
+' Gambas class file
+
+
+'Credit goes to: http://www.gambas-it.org
+'http://www.gambas-it.org/wiki/index.php?title=Calcolare_l%27ID-disc_di_un_CD_con_le_funzioni_del_API_di_libcdio
+'This file is licensed under:
+'   Creative commons
+'   Attribution - NonCommercial - ShareAlike 3.0 Unported(CC BY - NC - SA 3.0)
+'   http://creativecommons.org/licenses/by-nc-sa/3.0/
+
+Library "libcdio"
+
+Private Enum DRIVER_UNKNOWN = 0, DRIVER_AIX, DRIVER_BSDI, DRIVER_FREEBSD, DRIVER_NETBSD, DRIVER_LINUX, DRIVER_SOLARIS,
+             DRIVER_OS2, DRIVER_OSX, DRIVER_WIN32, DRIVER_CDRDAO, DRIVER_BINCUE, DRIVER_NRG, DRIVER_DEVICE
+            
+Private Enum CDIO_CDROM_LBA = &01, CDIO_CDROM_MSF = &02, CDIO_CDROM_DATA_TRACK = &04, CDIO_CDROM_CDtraccia = &10,
+             CDIO_CDROM_XA_TRACK = &20, CDIO_CD_MAX_TRACKS = 99, CDIO_CDROM_LEADOUT_TRACK = &AA, CDIO_INVALID_TRACK = &FF 
+            
+Private Const CDIO_CD_FRAMES_PER_SEC As Integer = 75
+
+' CdIo_t * cdio_open (const char *psz_source, driver_id_t driver_id)
+' Sets up to read from place specified by psz_source and driver_id.
+Private Extern cdio_open(psz_source As String, driver_id As Integer) As Pointer
+
+' track_t cdio_get_num_tracks(const CdIo_t * p_cdio)
+' Get the number of tracks on the CD.
+Private Extern cdio_get_num_tracks(cdioP As Pointer) As Integer
+
+' lba_t cdio_get_track_lba(const CdIo_t * p_cdio, track_t u_track)
+' Get the starting LBA for track number traccia in p_cdio.
+Private Extern cdio_get_track_lba(cdioP As Pointer, u_track As Integer) As Integer
+
+' void cdio_destroy(CdIo_t * p_cdio)
+' Free any resources associated with p_cdio.
+Private Extern cdio_destroy(cdioP As Pointer)
+
+
+Private Function Calcolo_cddb(i As Integer) As Integer
+ Dim ris As Integer
+ While (i > 0)
+   ris += i Mod 10
+   i /= 10
+ Wend
+ Return ris
+End
+
+Private Function CDDBID(device As String) As String
+  Dim p_cdio As Pointer
+  Dim traccia, lba, n, iniz_sec As Integer
+  Dim leadout_sec, totale, id As Integer
+  Dim num_tracce As Byte
+  p_cdio = cdio_open(device, DRIVER_UNKNOWN)
+  
+  If IsNull(p_cdio) Then 
+    Debug "Can't access device " & device
+    Return ""
+  Endif
+  
+  num_tracce = cdio_get_num_tracks(p_cdio)
+   
+  For traccia = 1 To num_tracce
+      lba = cdio_get_track_lba(p_cdio, traccia)
+      n += Calcolo_cddb(lba / CDIO_CD_FRAMES_PER_SEC)
+  Next
+  
+  iniz_sec = cdio_get_track_lba(p_cdio, 1) / CDIO_CD_FRAMES_PER_SEC
+  
+  leadout_sec = cdio_get_track_lba(p_cdio, CDIO_CDROM_LEADOUT_TRACK) / CDIO_CD_FRAMES_PER_SEC
+  
+  totale = leadout_sec - iniz_sec
+  
+  id = ((n Mod 255) * CInt(2 ^ 24)) Or (totale * CInt(2 ^ 8)) Or num_tracce
+  
+  cdio_destroy(p_cdio)
+  Return Hex(id, 8)
+End
+
+
+Public Struct CDINFO
+  Artist As String
+  Title As String
+  Years As String
+  tracks As String[]
+End Struct
+
+Public Function cddb_query(device As String, Optional timeout_decisecs As Integer = 100) As CDINFO
+  Dim discid As String
+  Dim info As CDINFO
+  Dim cddbquery As String
+  Dim out, aline, fileout As String = Temp()
+
+  Shell "which cddb_query" To cddbquery
+   If Trim(cddbquery) = "" Then 
+     Debug "can't find cddb_query from libcddb" 
+     Return Null
+   Endif
+  cddbquery = Trim(cddbquery)
+  discid = CDDBID(device)
+  If discid = "" Then Return Null
+  Debug cddbquery & " read misc " & discid & " > " & out
+  Shell cddbquery & " read misc " & discid & " > " & out
+
+  Repeat
+    Wait 0.1
+    timeout_decisecs -= 1
+    fileout = File.Load(out)
+  Until (Len(fileout) > 0) Or timeout_decisecs < 0
+  If timeout_decisecs < 0 Then 
+    Debug "cddb timeout"
+    Return Null
+  Endif
+
+  info = New Cdinfo
+  info.tracks = New String[]
+  For Each aline In Split(fileout, "\n", "", True)
+    Select Case Lower(aline)
+      Case Like "artist:*"
+        info.Artist = Trim(Split(aline, ":", "", True)[1])
+      Case Like "Title:*"
+        info.Title = Trim(Split(aline, ":", "", True)[1])
+      Case Like "Year:*"
+        info.Years = Trim(Split(aline, ":", "", True)[1])
+      Case Like "*[0-9][0-9]*'*'*"
+        info.tracks.Add(aline)
+    End Select
+  Next
+  Return info
+End
+
+
+
+

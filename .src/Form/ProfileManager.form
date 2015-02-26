@@ -1,0 +1,79 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,50,34)
+  Text = ("Profile Manager")
+  Icon = Picture["icon:/16/properties"]
+  Persistent = True
+  Resizable = False
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  Padding = 4
+  { HBox1 HBox
+    MoveScaled(1,1,46,29)
+    { VBox2 VBox
+      MoveScaled(0,1,21,27)
+      Padding = 4
+      { VBox3 VBox
+        MoveScaled(6,0,10,3)
+        Expand = True
+      }
+      { NewBtn Button
+        MoveScaled(3,2,16,4)
+        Text = ("Make new...")
+      }
+      { VBox5 VBox
+        MoveScaled(6,6,10,3)
+        Expand = True
+      }
+      { DeleteBtn Button
+        MoveScaled(3,8,16,4)
+        Text = ("Delete:")
+      }
+      { VBox6 VBox
+        MoveScaled(6,12,10,3)
+        Expand = True
+      }
+      { SwitchBtn Button
+        MoveScaled(3,14,16,4)
+        Text = ("Switch to:")
+      }
+      { VBox4 VBox
+        MoveScaled(6,18,10,3)
+        Expand = True
+      }
+      { CopyBtn Button
+        MoveScaled(3,20,16,4)
+        Visible = False
+        Text = ("Make a copy")
+      }
+      { VBox7 VBox
+        MoveScaled(6,24,10,3)
+        Expand = True
+      }
+    }
+    { VBox1 VBox
+      MoveScaled(22,1,24,27)
+      Expand = True
+      Spacing = True
+      Padding = 4
+      { ProfilesList ListBox
+        MoveScaled(2,2,20,24)
+        Expand = True
+      }
+    }
+  }
+  { Panel1 Panel
+    MoveScaled(1,30,46,4)
+    Arrangement = Arrange.Horizontal
+    Spacing = True
+    Padding = 4
+    { CurrentProfileLabel Label
+      MoveScaled(1,0,22,4)
+      Expand = True
+      Text = ("Current Profile: ")
+      Alignment = Align.Left
+    }
+  }
+}

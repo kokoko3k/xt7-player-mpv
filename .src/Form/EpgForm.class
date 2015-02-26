@@ -1,0 +1,749 @@
+' Gambas class file
+
+Public dvbsnoop As Dvbsnoop_class
+Private ChannelsFile As String = User.home & "/.config/mpv/channels.conf.ter"
+Private TimeLabelW As Integer = 180 '180pixels = 1 hour -> 1pix = 1/3minute
+Private TimeLabelCount As Integer = 168
+Private StartDate As Date
+
+Public InitDone As Boolean = False
+
+Public Struct EventInfo
+  Start_time_date As Date
+  ServiceID As String
+  EventID As String
+  ChannelName As String
+  Duration_date As Date
+  Free_Ca_mode As String
+  event_name As String
+  text_char As String
+  category As String
+  icon As String
+End Struct
+
+
+Public Sub Form_Open()
+  Dim dvbsnoopinstalled As String = ""
+
+  'Message.Warning("Epg integration is still\nIn early development stage", "Ok")
+  If Not GeneralOptions.InitDone Then GeneralOptions.Init()
+  Shell "which " & GeneralOptions.dvbsnoopExeText.text To dvbsnoopinstalled
+  If Trim(dvbsnoopinstalled) = "" Then 
+    Message.error(("dvbsnoop seems to be missing. \nInstall it to get EPG data"), "Ok")
+  Endif
+  If Not initdone Then Init()
+End
+
+Public Sub Init()
+  StartDate = DateAdd(Now(), gb.hour, -2) 'start from 2 hours before now
+'  StartDate = Date(2012, 5, 14, 9, 1, 1) 'ufficio
+  StartDate = Date(Year(StartDate), Month(StartDate), Day(StartDate), Hour(StartDate)) 'round to hour.
+  ' Debug DateToMinutes(Now()) 'DateDiff("23:00:00", Now(), gb.Day)
+  epgview.Proxy = pictureshadeup
+  pictureshadeup.proxy = pictureshadelow
+  dvbsnoop = New Dvbsnoop_class As "dvbsnoop"
+  'dvbsnoop.Init("/home/root/Desktop2_kde4/dvbsnoop", ChannelsFile)
+  dvbsnoop.Init("dvbsnoop", ChannelsFile)
+  dvbsnoop.Startit()
+  FillGrid()
+  InitDone = True
+End
+
+Public Sub FillGrid()
+  Dim i As Integer
+  Dim Data As Date = Now()
+  Dim channels As String[]
+  Dim channel As String
+  Dim mylabel As Label
+  'Dim mybuttonchannel As Button
+  Dim mybuttonchannel As Label
+  Dim w As Integer
+
+'channels
+  channels = Split(File.Load(ChannelsFile), "\n") 
+  For i = 0 To channels.Max                                               
+    Try channel = Split(channels[i], ":", "", True, False)[0]
+    If Not Error Then 
+      w = ScrollViewChannels.Font.TextWidth(channel & "____")
+      If w > ScrollViewChannels.w Then
+        ScrollViewChannels.w = w 
+      Endif
+    Endif
+  Next
+  
+  For i = 0 To channels.Max
+    Try channel = Split(channels[i], ":", "", True, False)[0] 
+    If Not Error Then                                                     
+      'mybuttonchannel = New Button(ScrollviewChannels)
+      mybuttonchannel = New Label(ScrollviewChannels) As "mybuttonchannel"
+      mybuttonchannel.tag = channel
+      mybuttonchannel.text = "  " & channel
+      mybuttonchannel.h = mybuttonchannel.Font.TextHeight("|") * 2
+      mybuttonchannel.border = Border.raised
+      mybuttonchannel.x = 0
+      mybuttonchannel.y = mybuttonchannel.h * (i - 1)
+      mybuttonchannel.w = mybuttonchannel.Parent.w '- (Style.FrameWidth * 2)
+      'mybuttonchannel.alignment = Align.Justify
+      mybuttonchannel.background = Color.SetRGB(Color.black, 11, 58, 120)
+      mybuttonchannel.Foreground = Color.white
+      'mybuttonchannel.transparent = True
+    Endif
+  Next
+
+  'make an empty label at the end:
+  mylabel = New Label(ScrollviewChannels)
+  mylabel.text = "  " 
+  mylabel.h = Style.ScrollbarSize
+  mylabel.border = Border.none
+  mylabel.x = 0
+  mylabel.y = mylabel.Font.TextHeight("|") * 2 * (channels.count - 2)     
+  mylabel.w = mylabel.Parent.w
+  mylabel.alignment = Align.Justify
+
+  'make a fake label into the scrollview to make it scroll even without contents
+  mylabel = New Label(epgview)
+  mylabel.x = TimeLabelCount * timelabelw
+  mylabel.y = (channels.count + 1) * ScrollViewChannels.Children[0].h    
+  mylabel.w = 0
+  mylabel.h = 0
+
+  mylabel = New Label(ScrollviewTime)
+  mylabel.text = "|" & Date()
+  mylabel.width = ScrollViewChannels.w
+
+  data = StartDate
+
+  For i = 0 To TimeLabelCount  '(7*24)
+    mylabel = New Label(ScrollviewTime)
+    mylabel.text = "|" & Make2(Hour(data)) & ":" & Make2(Minute(data))
+    mylabel.width = timelabelw
+    'mylabel.border = Border.raised
+    Data = DateAdd(Data, gb.Hour, 1)
+  Next
+  TodayLabel.w = ScrollViewChannels.w
+  TextBoxSearchEvent.w = ScrollViewChannels.w - Style.FrameWidth
+End
+
+Public Sub mybuttonchannel_DblClick()
+  Dim lastcolor As Integer = "-1"
+  lastcolor = Last.Foreground
+  Last.Foreground = Color.Yellow
+  FMain.playselecteddvb(Trim(Last.text))
+  Last.Foreground = Color.black
+  Wait 0.05
+  Last.Foreground = Color.Yellow
+  Wait 0.05
+  Last.Foreground = Color.black
+  Last.Foreground = lastcolor
+End
+
+Public Sub mybuttonchannel_MouseDown()
+  Dim lastcolor As Integer = "-1"
+  Try lastcolor = Last.Foreground
+  If Not Error Then 
+    Last.Foreground = Color.Yellow
+    Wait 0.05
+    Last.Foreground = Color.black
+    Wait 0.05
+  Endif
+   Last.Foreground = lastcolor 
+End
+
+
+Public Function Make2(n As String) As String
+  Dim t, neg As String
+  If n Like "-*" Then neg = "-"
+  t = Abs(CInt(n))
+  While Len(t) < 2
+    t = "0" & t
+  Wend
+  Return neg & t
+End
+
+
+Public Sub dvbsnoop_GotInfo(MyEventInfo As EventInfo)
+
+
+
+Dim tmp As String
+Dim mOffset As Long
+Dim gOffset As Integer
+Dim mDuration As Integer
+Dim gDuration As Integer
+Dim i As Integer
+Dim EpgButton As Button
+  
+  BlinkTimer.delay = 1
+  BlinkTimer.start
+  
+  Try moffset = DateDiff(StartDate, MyEventInfo.Start_time_date, gb.Minute)
+  If Error Then 
+    Debug "could not make datediff:"
+    Debug "DateDiff(" & StartDate & "," & MyEventInfo.Start_time_date & "," & gb.Minute & ")"
+    Debug "dropping Event!"
+  Endif
+  If moffset < 0 Then
+    Debug "Event scheduled for the past, dropping"
+    Return
+  Endif
+  gOffset = mOffset * (timelabelw Div 60)
+  mDuration = (Hour(MyEventInfo.Duration_date) * 60) + Minute(MyEventInfo.Duration_date)
+  If mDuration = 0 Then 
+    Debug "Missing duration, assuming 5 minutes."
+    mDuration = 5
+  Endif
+
+  If mOffset > 10080 Then
+    Debug "Event scheduled more than a week in the future, dropping"
+    Return
+  Endif
+
+  gDuration = mDuration * (timelabelw Div 60)
+  'Find the right row by channel name
+  For i = 0 To ScrollViewChannels.Children.count - 1
+    If Lower(Object.GetProperty(ScrollViewChannels.Children[i], "tag")) = Lower(MyEventInfo.ChannelName) Then Break
+  Next
+  If i < ScrollViewChannels.Children.count Then
+    EpgButton = New Button(EpgView) As "EpgButton"
+
+    EpgButton.x = gOffset
+    EpgButton.y = ScrollViewChannels.Children[i].y
+    EpgButton.h = ScrollViewChannels.Children[i].H
+    EpgButton.w = gDuration
+
+    If EpgButton.Font.TextWidth(MyEventInfo.event_name) <= EpgButton.w Then
+     EpgButton.text = MyEventInfo.event_name
+        Else
+      i = 1
+      While (EpgButton.Font.TextWidth(tmp) <= EpgButton.w) Or i = Len(MyEventInfo.event_name)
+        tmp &= Mid(MyEventInfo.event_name, i, 1)
+        i += 1
+      Wend
+      EpgButton.text = Left(tmp, Len(tmp) - 2)
+    Endif
+    EpgButton.tag = MyEventInfo
+    EpgButton.background = ColorFromDuration(mDuration)
+
+    Debug "New event: ", MyEventInfo.ServiceID, MyEventInfo.EventID, MyEventInfo.ChannelName, MyEventInfo.event_name, MyEventInfo.Start_time_date
+  Endif
+End
+
+Private BlinkTimer As New Timer As "BlinkTimer"
+
+Public Sub BlinkTimer_timer()
+  BlinkTimer.stop
+  Try ledpic.picture = Picture.Load("LedOn.png")
+  Try Ledtext.text = dvbsnoop.EventDB.count & " " & ("Events")
+  Wait 0.05
+  Try ledpic.picture = Picture.Load("LedOff.png")
+End
+
+Private Function ColorFromDuration(d As Integer) As Integer
+  If d <= 10 Then Return Color.lighter(Color.white)
+  If d <= 30 Then Return Color.Lighter(Color.magenta)
+  If d <= 60 Then Return Color.lighter(Color.red)
+  If d <= 90 Then Return Color.Lighter(Color.Cyan)
+  Return Color.yellow
+End
+
+Public Sub ShowPanelInfo(eInfo As EventInfo)
+  Dim msg As String
+  DoCenter(InfoPanel, epgview) '.parent.parent)
+
+  TextInfo1.text = eInfo.event_name
+  TextInfoShadow.text = eInfo.event_name
+  TextInfoShadow.x = TextInfo1.x - 2
+  TextInfoShadow.y = TextInfo1.y + 2
+  TextInfoShadow.w = TextInfo1.w
+  TextInfoShadow.h = TextInfo1.h
+
+  msg = eInfo.ChannelName & "<br>"
+  msg &= ("Start at: ") & eInfo.Start_time_date & "<br>"
+  msg &= ("Duration: ") & eInfo.Duration_date & "<br>"
+  If eInfo.category <> "" Then msg &= ("Category: ") & eInfo.category & "<br>"
+  If eInfo.Free_Ca_mode = 0 Then 
+    msg &= ("Freeview")
+      Else
+    msg &= ("Crypted")
+  Endif
+  msg &= "<br>"
+  msg &= "<br>"
+  msg &= eInfo.text_char 'wordwrap(eInfo.text_char, textinfo2)
+
+  TextInfo2.text = msg
+  Textinfo2shadow.text = msg
+  Textinfo2shadow.x = textinfo2.x - 2
+  Textinfo2shadow.y = textinfo2.y + 2
+  Textinfo2shadow.h = textinfo2.h
+  Textinfo2shadow.w = textinfo2.w
+  
+  InfoPanelShadow.raise
+  InfoPanelShadow.show
+  InfoPanelShadow.Move(InfoPanel.x - 5, InfoPanel.y - 5, InfoPanel.w + 10, InfoPanel.h + 10)
+  InfoPanel.show
+  InfoPanel.raise
+End
+
+Public Function wordwrap(s As String, container As Object) As String
+  Dim i As Integer
+  Dim words As String[]
+  Dim myline, lines, nextword As String
+  Dim maxw As Integer = container.w
+
+  words = Split(s, " ", "", True)
+  For i = -1 To words.count - 2
+    Try nextword = words[i + 1]
+    If Error Then Break
+    If container.Font.TextWidth(myLine) + container.Font.TextWidth(nextword) < maxw Then
+      myline &= " " & nextword 
+        Else
+      lines &= Trim(myline) & "\n"
+      myline = nextword
+    Endif
+
+  Next
+      lines &= Trim(myline)
+  Return lines
+End
+
+Public Function DoCenter(what As Object, inwhat As Object)
+  'Center what in inwhat
+  what.x = inwhat.x + (InWhat.w / 2) - (what.w / 2)
+  what.y = inwhat.y + (InWhat.h / 2) - (what.h / 2)
+End
+
+Public Sub EpgView_Scroll()
+  Object.Lock(ScrollviewTime)
+  Object.Lock(Scrollviewchannels)
+  ScrollviewTime.Scroll(epgview.scrollx, 0)
+  Scrollviewchannels.Scroll(0, epgview.scrolly)
+  Object.UnLock(ScrollviewTime)
+  Object.unLock(Scrollviewchannels)
+  updateNowSeparator()
+  UpdateTodayLabel()
+  If epgview.scrolly > ScrollViewChannels.scrolly Then epgview.scrolly = ScrollViewChannels.scrolly
+End
+
+Public Sub ScrollViewTime_Scroll()
+  Object.Lock(epgview)
+  epgview.Scroll(ScrollViewTime.scrollx, ScrollViewchannels.scrolly)
+  Object.UnLock(epgview)
+End
+
+Public Sub ScrollViewChannels_Scroll()
+  Object.Lock(epgview)
+  epgview.Scroll(ScrollViewTime.scrollx, ScrollViewchannels.scrolly)
+  Object.UnLock(epgview)
+End
+
+Public Sub InfoPanel_DblClick()
+  Last.hide
+End
+
+Public Sub MyInfoPanel_MouseDown()
+  InfoPanel.hide
+  InfoPanelShadow.hide
+End
+
+Private mpx As Integer
+
+Public Sub EpgView_MouseDown()
+    mpx = Mouse.screenx 
+End
+
+
+Public Sub EpgView_MouseDrag()
+  Dim sx As Integer
+  sx = CInt((Mouse.screenx - mpx) * (epgview.w / 500))
+  epgview.Scroll(epgview.scrollx - sx, epgview.scrolly)
+  mpx = Mouse.screenx 
+End
+
+Public Function updateNowSeparator()
+  Dim moffset, goffset As Integer
+  If Not InitDone Then Return
+  moffset = DateDiff(StartDate, Now(), gb.Minute)
+  gOffset = mOffset * (timelabelw Div 60)
+  NowSeparator.y = epgview.scrolly
+  NowSeparator.h = epgview.h
+  NowSeparator.x = goffset
+  NowSeparator.Raise()
+End
+
+
+Public Sub Timer1_Timer()
+  ClockLabel.text = Split(Now(), ".", "", "", "")[0]
+  ClockLabel2.text = ClockLabel.text
+  ClockLabel2.x = ClockLabel.x - 1
+  Last.delay = 1000
+  updateNowSeparator()
+End
+
+
+Public Sub highlightobj(o As Object)
+  Dim tmp, i As Integer
+  tmp = o.foreground
+  If tmp = - 1 Then tmp = Color.Foreground
+  For i = 1 To 3
+    o.foreground = Color.merge(Color.yellow, tmp, 0.5)
+    Wait 0.05
+    o.foreground = Color.yellow 'Color.red
+    Wait 0.05
+    o.foreground = Color.merge(Color.yellow, tmp, 0.5)
+    Wait 0.05
+    o.foreground = tmp
+    Wait 0.05
+  Next
+End
+
+
+Public Sub TextBoxSearchChannel_Activate()
+  ScrollToChannel(Last.Text)
+End
+
+Public Sub TextBoxSearchEvent_Activate()
+  ScrollToEvent(Last.text)
+End
+Public Sub ButtonSearchEvent_Click()
+  ScrollToEvent(TextBoxSearchEvent.text)
+End
+
+Private LastChannelfound As String
+Public Sub ScrollToChannel(c As String)
+  Dim o As Object
+  Dim y As Integer
+
+  'start the search for a NEW channel from the current scroll position
+  For Each o In ScrollViewChannels.Children
+    If (Lower(o.tag) Like "*" & Lower(c) & "*") And o.y >= (ScrollViewchannels.Scrolly) And (o.tag <> LastChannelfound) Then Goto found
+  Next
+
+  'or search again from the beginning
+  For Each o In ScrollViewChannels.Children
+    If (Lower(o.tag) Like "*" & Lower(c) & "*") Then Goto found
+  Next
+
+  Return
+
+  found:
+  LastChannelfound = o.tag
+  y = ScrollViewchannels.Scrolly
+  Repeat
+    y = CInt((y + o.y) / 2) 
+    ScrollViewChannels.Scroll(ScrollViewchannels.ScrollX, y)
+    Wait 0.03
+  Until Abs(y - o.y) < 6
+
+  highlightobj(o)
+
+End
+
+Private Function MatchEvent(o As Object, e As String) As Boolean
+  Dim eInfo As Eventinfo
+  Dim s As String = "*" & e & "*"
+  'Debug o.text
+  If o.tag = Null Then Return
+  Try eInfo = o.tag
+  If Error Then Return False
+  If eInfo.event_name Like s Then Return True
+  If eInfo.text_char Like s Then Return True
+  If eInfo.ChannelName Like s Then Return True
+  Return False
+End
+
+
+
+
+
+
+
+
+
+
+
+Private lastsearch As String
+Private lastIndex As Integer
+Private DateHandle As New String[]
+
+Public Sub ScrollToEvent(e As String) 'fixme quando evendb si abboffa datehandle va svuotato e rifatto da capo
+  Dim o As Object
+  Dim eInfo As EventInfo
+  Dim x, y, ox, oy As Integer
+  
+  If (e <> lastsearch) Or (DateHandle.count = 0) Then
+    'crea un array con data|handle del bottone trovato
+    DateHandle.clear
+    For Each o In epgview.Children
+      If Object.Is(o, "Button") Then
+        If MatchEvent(o, e) Then
+          eInfo = o.tag
+          DateHandle.Add(eInfo.Start_time_date & "|" & o.x & "|" & o.y)
+        Endif
+      Endif
+    Next
+    DateHandle = DateHandle.Sort()
+    lastIndex = 0
+    lastsearch = e
+  Endif
+
+
+
+  Try ox = Split(DateHandle[lastIndex], "|")[1]
+  If Error Then Return
+  oy = Split(DateHandle[lastIndex], "|")[2]
+  If Error Then Return
+  o = epgview.FindChild(ox, oy)
+  ShowPanelInfo(o.tag)
+  
+  If lastindex >= DateHandle.max Then
+    lastindex = 0
+    DateHandle.clear
+      Else
+    Inc lastindex
+  Endif
+  
+  y = EpgView.scrolly
+  x = EpgView.scrollx
+  Repeat
+    y = CInt((y + o.y) / 2) 
+    x = CInt((x + o.x) / 2) 
+    EpgView.Scroll(x - 20, y - 20)
+    Wait 0.03
+  Until (Abs(y - o.y) < 10) And (Abs(x - o.x) < 10)
+
+  highlightobj(o)
+
+End
+
+Private LastepgFound As Button
+Public Sub OldScrollToEvent(e As String, Optional SecondSearch As Boolean = False)
+
+  Dim o As Object
+
+  Dim x, y As Integer
+  Dim FromScratch As Boolean
+
+  Dim lastx As Integer = 0
+  
+  Try lastx = lastepgfound.x
+
+  FromScratch = (LastepgFound = Null)
+  
+  For Each o In EpgView.Children
+    If (o.x >= lastx) And (o <> LastepgFound) Then
+      If Object.is(o, "Button") Then
+        If MatchEvent(o, e) Then Goto found
+      Endif
+    Endif
+  Next
+
+  If Not (secondSearch Or FromScratch) Then 'search again from the beginning
+    LastepgFound = Null
+    Try ScrollToEvent(e, True)
+  Endif
+
+  lastepgfound = Null
+  Return
+
+  found:
+  lastepgfound = o
+  y = EpgView.scrolly
+  x = EpgView.scrollx
+  Repeat
+    y = CInt((y + o.y) / 2) 
+    x = CInt((x + o.x) / 2) 
+    EpgView.Scroll(X, y)
+    Wait 0.03
+  Until (Abs(y - o.y) < 10) And (Abs(x - o.x) < 10)
+  highlightobj(o)
+End
+
+Private WantStop As Boolean = False
+Private tunerprocess As Process
+
+Public Sub ButtonRefreshAll_Click()
+  Dim channels As String[]
+  Dim muxers As New String[]
+  Dim uChannels As New String[]
+  Dim channel, muxer, uchannel As String
+  Dim TimePerChannel As Integer = 40 'How much seconds to stay tuned on a channel (max value)
+  Dim NoEventsTimeoutStart As Integer = 4 'How many seconds to wait for the first transponder event
+  Dim NoEventsTimeoutEnd As Integer = 3 'How many seconds to wait to understand the events for a transponder are all out
+  Dim NoEventsTimeout As Integer = 0
+  Dim i As Integer = 1
+  Dim prevcount, t, t1 As Integer
+  Dim tunercmd As String
+  Dim tunerpid As Integer = -1
+  
+  wantstop = False
+  Last.hide()
+  ButtonStop.show
+  If FMain.mplayer.ProcessRunningOvr() Then
+    If Lower(FMain.mplayer.getP("fullpath")) Like "dvb://*" Then
+      If MyQuestion.Ask(("It seems an mplayer instance is playing a dvb channel.") & "\n" & ("When other applications are using the dvbt card,") & "\n" & ("scanning may fail."), ("Stop mplayer and scan"), ("Try to scan")) = 1 Then
+        FMain.ButtonStop_Click()
+        Wait 0.01
+      Endif
+    Endif
+  Endif
+
+  
+  Debug "Scan start at" & Now()
+  EpgScanProcess.Value = 0
+  epgscanprocess.Show()
+  channels = Split(File.Load(ChannelsFile), "\n")
+  
+  For Each channel In channels
+    Try muxer = Split(channel, ":", "", True)[1]
+    If Not Error Then 
+      If muxers.Find(muxer) = -1 Then 
+        muxers.Add(muxer)
+        uChannels.Add(Split(channel, ":", "", True)[0])
+      Endif
+    Endif
+  Next
+
+  For Each uchannel In uChannels
+    NoEventsTimeout = NoEventsTimeoutStart
+    Debug i & "/" & uChannels.count, "Mux: " & muxers[i - 1], "Tuning to " & uchannel
+    dvbsnoop.Stopit()
+    dvbsnoop.Startit()
+    'tunercmd = "timeout " & TimePerChannel & " mplayer -tsprobe 1 \"dvb://" & uchannel & "\" -dumpstream -dumpfile /dev/null " & "< /dev/null &>/dev/null"
+    'fixmempv tunercmd
+    tunercmd = "mplayer -tsprobe 1 \"dvb://" & uchannel & "\" -dumpstream -dumpfile /dev/null " & "< /dev/null &>/dev/null"
+    
+    tunerprocess = Shell tunercmd '"sh -c '" & tunercmd & "'"
+    'tunerprocess = Shell "mplayer -tsprobe 1 \"dvb://" & uchannel & "\" -dumpstream -dumpfile /dev/null " & "< /dev/null &>/dev/null"
+
+    For t = 1 To TimePerChannel + 1
+      prevcount = dvbsnoop.EventDB.count
+      Wait 1
+      'ButtonRefreshAll.text = dvbsnoop.EventDB.count
+      If dvbsnoop.EventDB.count = prevcount Then
+        Inc t1
+        Debug t1
+          Else
+        t1 = 0
+        NoEventsTimeout = NoEventsTimeoutEnd
+      Endif
+      If wantstop Then Goto ButtonStopPressed
+      If t1 > NoEventsTimeout Then
+        Debug "No new events received in " & NoEventsTimeout & " seconds, going next..."
+        t1 = 0
+        Repeat
+          Try tunerprocess.Kill()
+          Wait 0.1
+          tunerpid = -1
+          Try tunerpid = tunerprocess.Handle
+          If tunerpid > 0 Then
+            Shell "kill -9 " & tunerpid
+            Wait 0.1
+          Endif
+          If wantstop Then Goto ButtonStopPressed
+        Until tunerprocess.state <> Process.Running
+        Break
+      Endif
+    Next 'second wait
+    i += 1
+    Try epgscanprocess.value = i / uChannels.count
+  Next 'channel
+
+  Debug "Scan finish  at" & Now()
+  epgscanprocess.Hide()
+  
+  
+  Return
+  ButtonStopPressed:
+  StopScan()
+End
+
+Public Sub StopScan()
+  If Not InitDone Then Return
+  wantstop = True
+  Wait
+  Try tunerprocess.kill
+  Try dvbsnoop.Stopit()
+  Try ButtonRefreshAll.Show()
+  Try ButtonStop.Hide()
+  Try epgscanprocess.Hide()
+End
+
+
+Public Sub Form_Close()
+    Timer1.Stop()
+End
+
+Public Sub EpgView_Arrange()
+  updateNowSeparator()
+End
+
+Public Sub Form_Arrange()
+  UpdateTodayLabel()
+End
+
+Public Sub UpdateTodayLabel()
+  TodayLabel.x = HBox2.X
+  TodayLabel.h = ScrollviewTime.h
+  TodayLabel.y = ScrollviewTime.y
+  TodayLabel.w = ScrollViewChannels.w
+  TodayLabel.text = Date((DateAdd(StartDate, gb.minute, (epgview.scrollx Div 3))))
+End
+
+
+
+Public Sub HBox2_Arrange()
+  pictureshadeup.Move(epgview.x, epgview.y, epgview.ClientW, 15)
+  pictureshadelow.Move(epgview.x, epgview.y + epgview.clienth - 15, epgview.ClientW, 15)
+  pictureshadeleft.Move(epgview.x, epgview.y, 15, epgview.clienth)
+  pictureshaderight.Move(epgview.x + epgview.clientw - 15, epgview.y, 15, epgview.clienth)
+End
+
+Public Sub pictureshade_MouseUp()
+  Dim but As Object
+  Dim eInfo As EventInfo
+  Try but = epgview.Find(Mouse.x + epgview.scrollx, Mouse.y + epgview.scrolly)
+  If but = Null Then Return
+  Try eInfo = but.tag
+  ShowPanelInfo(eInfo)
+End
+
+Public Sub EpgButton_Click()
+  Dim eInfo As EventInfo
+  Try eInfo = Last.tag
+  ShowPanelInfo(eInfo)
+End
+
+
+Public Sub ButtonStop_Click()
+  wantstop = True
+End
+
+
+Public Sub Button1_Click()
+  Debug "Now:  ", dvbsnoop.WhatsNow("italia1").Start_time_date
+  Debug "Now:  ", dvbsnoop.WhatsNow("italia1").event_name
+  Debug "Next: ", dvbsnoop.WhatsNext("italia1").Start_time_date
+  Debug "Next: ", dvbsnoop.WhatsNext("italia1").event_name
+  Sleep 3
+End
+
+
+
+Public Sub TextBoxSearchEvent_GotFocus()
+  If TextBoxSearchEvent.tag = "" Then 
+    TextBoxSearchEvent.Text = ""
+    TextBoxSearchEvent.tag = "1"
+  Endif
+End
+
+Public Sub VBox1_GotFocus()
+
+  
+
+End
+
+Public Sub Form_Show()
+
+  Timer1.Start()
+
+End

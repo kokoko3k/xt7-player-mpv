@@ -1,0 +1,116 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,87.5714,60)
+  ToolTip = ("Double click on a cell to enter a new hotkey.\nSelect a cell and hit \"canc\" to delete one.")
+  Text = ("Hotkeys")
+  Icon = Picture["Hotkeys.png"]
+  Persistent = True
+  Arrangement = Arrange.Vertical
+  Margin = True
+  Padding = 4
+  { MenuProfile Menu
+    Text = ("Profile")
+    { MenuLoadDefault Menu
+      Text = ("Reload current profile")
+      Picture = Picture["icon:/16/open"]
+    }
+    { MenuSaveDefault Menu
+      Text = ("Save to current profile")
+      Picture = Picture["icon:/16/save"]
+    }
+    { MenuSaveToAll Menu
+      Text = ("Save these settings to all profiles")
+      Picture = Picture["icon:/16/save"]
+    }
+  }
+  { TabStrip1 TabStrip
+    MoveScaled(1,1,63,53)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    Count = 2
+    Index = 0
+    Text = ("Local Hotkeys")
+    { Panel1 Panel
+      MoveScaled(0,0,46,32)
+      Background = Color.TextBackground
+      Expand = True
+      Arrangement = Arrange.Fill
+      Border = Border.Plain
+      { HotKeysGrid GridView
+        MoveScaled(0,0,45,31)
+        Expand = True
+        Border = False
+        Mode = Select.Single
+        Header = GridView.Both
+      }
+    }
+    { HBox1 HBox
+      MoveScaled(0,42,59,6)
+      Spacing = True
+      Margin = True
+      Padding = 6
+      { Button3 Button
+        MoveScaled(0,1,19,4)
+        AutoResize = True
+        Text = ("Print grid code to console")
+      }
+      { VBox1 VBox
+        MoveScaled(1,1,4,4)
+        Expand = True
+      }
+      { Button2 Button
+        MoveScaled(17,1,13.5714,4)
+        AutoResize = True
+        Text = ("Clear")
+        Picture = Picture["icon:/16/clear"]
+      }
+      { Button1 Button
+        MoveScaled(32,1,13.5714,4)
+        AutoResize = True
+        Text = ("Defaults")
+        Picture = Picture["icon:/16/undo"]
+      }
+      { SaveBTN Button
+        MoveScaled(45,1,13.5714,4)
+        ToolTip = ("Save and use new settings")
+        AutoResize = True
+        Text = ("Save")
+        Picture = Picture["icon:/16/save"]
+      }
+    }
+    Index = 1
+    Text = ("Global Hotkeys")
+    { Panel2 Panel
+      MoveScaled(0,0,45,28)
+      Background = Color.TextBackground
+      Expand = True
+      Arrangement = Arrange.Fill
+      Border = Border.Plain
+      { GlobalHotKeysGrid GridView
+        MoveScaled(0,0,44,27)
+        Expand = True
+        Border = False
+        Mode = Select.Single
+        ShowCursor = True
+        Header = GridView.Both
+      }
+    }
+    { HBox2 HBox
+      MoveScaled(0,42,60,6)
+      Spacing = True
+      Margin = True
+      Padding = 6
+      { VBox2 VBox
+        MoveScaled(1,1,4,4)
+        Expand = True
+      }
+      { Button4 Button
+        MoveScaled(42,1,17,4)
+        Text = ("Clear")
+        Picture = Picture["icon:/16/clear"]
+      }
+    }
+    Index = 0
+  }
+}

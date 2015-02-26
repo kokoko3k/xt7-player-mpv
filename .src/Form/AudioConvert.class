@@ -1,0 +1,264 @@
+' Gambas class file
+
+Public items As New String[]
+Private RequestStopALL As Boolean = False
+Private RequestSkip As Boolean = False
+Public converting As Boolean = False
+Private converteditems As New String[]
+
+Public Sub Form_Show()
+  Dim MySettings As New SettingsClass
+  MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
+  If buttonbox1.text = "" Then selectfolder
+End
+
+Public Sub selectfolder()
+  MyDialog.title = ("Choose output folder")
+  If MyDialog.SelectDirectory() Then Return
+  buttonbox1.text = MyDialog.path
+End
+
+Public ffproc As Process
+  
+Public Sub ConvertandSaveAudio()
+  Dim i, j As Integer
+  Dim youtube As New Youtubeclass
+  Dim currentstream As String
+  Dim outputfolder As String
+  Dim outfmt, q As String
+  Dim mymplayer As New MplayerClass
+  Dim mptimeout As Integer = 10
+  Dim tmpout As String
+  Dim outstr As String
+  Dim length As String
+  Dim ffcmdline As String
+  Dim ffprogressfile As String = Temp()
+  Dim ffout As String = Temp()
+  Dim tmpprogress As String[]
+  Dim ffcurtime As String
+  Dim audiotempfolder As String = global.confpath & "/audiotemp/"
+  Dim kbps As String
+  Dim finalfile As String
+  Dim yttitle As String
+  Dim MySettings As New SettingsClass
+  Dim fcaption As String = Me.text
+  Dim finalitem As String
+  
+  converteditems.Clear()
+  
+  Try Shell "mkdir -p " & audiotempfolder & " >/dev/null 2>&1" Wait
+  
+  mymplayer.wantlog = False
+  If converting Then
+    Message.Error("Sorry, another conversion is in progress")
+    Return
+  Endif
+  converting = True
+  Progressbar1.value = 0
+  Progressbar2.value = 0
+  
+  Try outfmt = Split(combobox1.text, " ")[0]
+  Try q = Split(combobox2.text, " ")[0]
+  If outfmt = "" Then
+    Message.error(("Choose output format."))
+    Goto returnlabel
+  Endif
+  If items.count = 0 Then 
+    Message.error(("Nothing to convert"))
+    Goto returnlabel
+  Endif
+  If q = "" Then
+    Message.error(("Choose quality level."))
+    Goto returnlabel
+  Endif
+
+
+    Me.mouse = Mouse.Wait
+    TextArea1.mouse = Me.mouse
+    combobox1.enabled = False
+    Wait
+    combobox2.enabled = combobox1.Enabled
+    buttonbox1.enabled = combobox1.Enabled
+    button1.enabled = combobox1.Enabled
+
+
+  MySettings.save(Me, global.confpath & "/" & global.currentprofile)
+
+  If buttonbox1.text = "" Then Form_Show()
+  outputfolder = buttonbox1.text 
+  'For i = 0 To items.max
+  i = 0
+  While i <= items.max
+    Me.text = fcaption & " - " & CStr(i + 1) & "/" & CStr(items.max + 1)
+    currentstream = items[i]
+    TextArea1.text &= items[i] & "\n"
+    yttitle = ""
+    If Youtube.IsYoutubeLink(currentstream) Then
+      TextArea1.text &= ("Seems a youtube link, getting real stream url and title...") & "\n"
+      Try yttitle = Youtube.GetTitle(currentstream)
+      TextArea1.text &= ("Title") & ":\n" & yttitle & "\n"
+      Try currentstream = Youtube.realvideourl(currentstream, GeneralOptions.Youtubeformat.text)
+      If Error Then
+        Message.error(("Unable to get the real stream url"))
+        Goto nextlabel 'skip item
+      Endif
+    Endif
+    
+  
+    tmpout = audiotempfolder & "/" & Rnd(0, 9999) & "." & i & ".wav"
+    TextArea1.text &= ("Extracting audio to PCM data...") & "\n"     
+    mymplayer.ExtractAudioTo(currentstream, tmpout)
+    While mymplayer.ProcessRunningOvr()
+      mymplayer.Send("get_percent_pos")
+      Wait 0.5
+      'TextArea1.text &= mymplayer.Media_percent_pos & "% " & "\n"
+      Try Progressbar1.value = mymplayer.getP("percent-pos") / 200
+      'Try Progressbar2.value = (Progressbar1.value / items.max) + (i / (items.max + 1))
+      If mymplayer.getP("percent-pos") = 100 Then mptimeout -= 1
+      If mptimeout = 0 Then Break
+      If RequestStopALL Then Goto returnlabel
+      If RequestSkip Then Goto nextlabel
+    Wend
+    mymplayer.do_stop()
+    Progressbar1.value = 0.5
+    Try Progressbar2.value = (Progressbar1.value / (items.max + 1)) + (i / (items.max + 1))
+    length = mymplayer.getP("=length")
+
+    TextArea1.text &= ("Done.") & "\n"
+    TextArea1.text &= "\n"
+    TextArea1.text &= ("Encoding...") & "\n"
+    
+    'ffmpeg -i /tmp/tmp.0.wav -y -b:a 192k -vn /tmp/out.mp3
+    'ffmpeg -i /tmp/tmp.0.wav -y  -acodec libvorbis -b:a 192k /tmp/out.ogg
+
+      If yttitle = "" Then 
+        'finalfile = Shell$(outputfolder & "/" & File.Name(currentstream))
+        finalfile = outputfolder & "/" & File.Name(currentstream)
+          Else
+        'finalfile = Shell$(outputfolder & "/" & yttitle)
+        finalfile = (outputfolder & "/" & yttitle) 
+      Endif
+
+    kbps = combobox2.text
+    ffcmdline = "ffmpeg -i " & tmpout & " -progress " & ffprogressfile & " -y "
+
+    If combobox1.text Like "*mp3*" Then
+      finalfile = finalfile & ".mp3"
+      ffcmdline = ffcmdline & " -b:a " & combobox2.text & " -vn " & "'" & finalfile & "'" & " -v warning &>" & ffout
+      ffproc = Shell ffcmdline
+      Debug ffcmdline
+        Else If combobox1.text Like "*ogg*" Then 
+          finalfile = finalfile & ".ogg"
+          ffcmdline = ffcmdline & "-acodec libvorbis -b:a " & combobox2.text & " -vn " & "'" & finalfile & "'" & " -v warning &>" & ffout
+          ffproc = Shell ffcmdline
+          Debug ffcmdline
+      Else
+          finalfile = finalfile & ".wav"
+          Progressbar1.value = 1
+          Try Progressbar2.value = (Progressbar1.value / (items.max + 1)) + (i / (items.max + 1))
+          Try Shell "mv " & tmpout & " " & "'" & finalfile & "'"
+    Endif
+    Wait 1
+    Try TextArea1.text &= File.Load(ffout) & "\n"
+    While ffProcessRunningOvr()
+      Wait 0.5
+       If RequestStopALL Then Goto returnlabel
+       If RequestSkip Then Goto nextlabel
+       tmpprogress = Split(File.Load(ffprogressfile), "\n")
+
+       'find the progress line
+       For j = tmpprogress.max DownTo 0
+         If tmpprogress[j] Like "*out_time=*" Then 
+           Try ffcurtime = Split(Split(tmpprogress[j], "=")[1], ".")[0]
+           Try ffcurtime = mymplayer.DeFormatTime(ffcurtime)
+           'TextArea1.text &= Split(CStr((CInt(ffcurtime) / CInt(length)) * 100), ".")[0] & "%" "\n"
+           Try Progressbar1.value = 0.5 + (ffcurtime / length / 2)
+           Try Progressbar2.value = (Progressbar1.value / (items.max + 1)) + (i / (items.max + 1))
+           Break
+         Endif
+       Next
+
+    Wend
+
+    TextArea1.text &= ("Done.") & "\n"
+    TextArea1.text &= "\n"
+    Debug outstr
+    
+    nextlabel:
+    mymplayer.do_stop()
+    Try ffkill()
+    If RequestSkip = False Then ConvertedItems.Add(finalfile)
+    RequestSkip = False
+    RequestStopALL = False
+    i += 1
+    Try Kill tmpout
+  Wend
+  
+  returnlabel:
+  Try ffkill()
+  mymplayer.do_stop()
+  RequestSkip = False
+  RequestStopALL = False
+
+  items.Clear()
+  Try Kill tmpout
+  
+  converting = False
+  Me.text = ("Updating Library/Playlist")
+  Wait
+  For Each finalitem In converteditems
+    If CheckLIB.Value Then FMain.MyPlaylist.AddFile(FMain.librarygrid, finalitem, False)
+    If CheckPLS.Value Then FMain.MyLibrary.AddFile(FMain.playlistgrid, finalitem, False)
+  Next 'finalitem
+  Me.text = fcaption
+  Me.mouse = Mouse.normal
+  TextArea1.mouse = Me.mouse
+  combobox1.enabled = True
+  Wait
+  combobox2.enabled = combobox1.Enabled
+  buttonbox1.enabled = combobox1.Enabled
+  button1.enabled = combobox1.Enabled
+  Me.text = fcaption
+  Return
+End
+
+Public Function ffProcessRunningOvr() As Boolean
+  'As gambas returns runtime error if process is not ready,
+  'we'll catch it here
+
+  Dim running As Boolean = False
+  Try running = (ffproc.state = 1)
+  Return running
+
+End
+
+Private Sub ffkill() 
+  
+  While ffProcessRunningOvr()
+    Try ffproc.Kill
+    If ffProcessRunningOvr() Then Wait 0.1
+  Wend
+  
+End
+
+
+Public Sub ButtonBox1_Click()
+  selectfolder()
+End
+
+Public Sub Button1_Click()
+  ConvertandSaveAudio()
+End
+
+
+Public Sub ButtonStop_Click()
+
+  RequestStopALL = True
+
+End
+
+Public Sub ButtonSkip_Click()
+
+  RequestSkip = True
+
+End

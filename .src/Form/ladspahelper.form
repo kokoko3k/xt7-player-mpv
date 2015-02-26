@@ -1,0 +1,103 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,90,75)
+  Icon = Picture["icon:/16/component"]
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { Panel2 Panel
+    MoveScaled(0,0,89,4)
+    Arrangement = Arrange.Horizontal
+    { Label1 Label
+      MoveScaled(0,0,22,4)
+      Text = ("Ladspa file")
+      Alignment = Align.Left
+    }
+    { ButtonBox1 ButtonBox
+      MoveScaled(27,0,61,4)
+      Expand = True
+      Text = ("Ladspa plugin file name")
+    }
+  }
+  { Panel3 Panel
+    MoveScaled(0,5,89,4)
+    Arrangement = Arrange.Horizontal
+    { Label2 Label
+      MoveScaled(0,0,22,4)
+      Text = ("Ladspa plugin label")
+      Alignment = Align.Left
+    }
+    { ComboLabel ComboBox
+      MoveScaled(27,0,61,4)
+      Expand = True
+      Text = ("Ladspa plugin label")
+    }
+  }
+  { Label3 Label
+    MoveScaled(0,11,47,4)
+    Font = Font["Bold"]
+    Text = ("Plugin controls:")
+    Alignment = Align.Bottom
+  }
+  { Panel1 ScrollView
+    MoveScaled(0,16,88,47)
+    Background = Color.ButtonBackground
+    Expand = True
+    Arrangement = Arrange.Column
+    Spacing = True
+    Margin = True
+    { applytimer #Timer
+      Delay = 500
+    }
+  }
+  { Panel4 Panel
+    MoveScaled(0,64,89,4)
+    Arrangement = Arrange.Horizontal
+    { Button1 Button
+      MoveScaled(0,0,16,4)
+      ToolTip = ("Show the ladspa commandline for mplayer \nfrom the selected plugin")
+      Text = ("Generate")
+    }
+    { TextBox1 TextBox
+      MoveScaled(17,0,54,4)
+      #Translate = False
+      Expand = True
+    }
+    { Button2 Button
+      MoveScaled(72,0,16,4)
+      ToolTip = ("Display the plugin controls and values from a valid \nmplayer ladspa command line in the form:\n<-af> ladspa=/path/to/ladspaplugin.so:\"ladspalabel\":param1:param2:param3:..:paramN")
+      Text = ("Reverse")
+    }
+  }
+  { HBox2 HBox
+    MoveScaled(1,69,88,5)
+    Spacing = True
+    Margin = True
+    Padding = 3
+    { HBox3 HBox
+      MoveScaled(6,0,5,4)
+      Expand = True
+    }
+    { CopyBTN Button
+      MoveScaled(43,0,14,4)
+      ToolTip = ("Generate the parameters,\nCopy the string into the previous custom audio filter field,\ncloses the window.")
+      AutoResize = True
+      Text = ("Accept")
+      Picture = Picture["icon:/16/apply"]
+    }
+    { TestBTN Button
+      MoveScaled(58,0,14,4)
+      AutoResize = True
+      Text = ("Test")
+      Picture = Picture["icon:/16/redo"]
+    }
+    { CloseBTN Button
+      MoveScaled(73,0,14,4)
+      ToolTip = ("Close the window and discard any change")
+      AutoResize = True
+      Text = ("Close")
+      Picture = Picture["icon:/16/cancel"]
+    }
+  }
+}

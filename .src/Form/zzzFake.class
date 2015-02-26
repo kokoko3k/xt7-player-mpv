@@ -1,0 +1,133 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Public Sub Start()
+  Dim i As Integer
+  Print ""
+  Print Application.name & " " & Application.version
+  Print "Usage: " & Application.name & ".gambas [Mediafile] [options]"
+  Print "Options:"
+  Print "-append (add the media specified before the option to the playlist)"
+  Print "Eg: xt7-player mediafile.avi -append"
+  Print "-pluginmode tells xt7 that it is embedded into another application"
+  Print ""
+  Print ""
+  Debug "Start at: " & Timer
+  Debug
+  global.init()
+
+  If (Application.Args.count > 1) Then
+      For i = 1 To Application.Args.Count - 1
+      If Application.Args[i] = "-pluginmode" Then
+        global.pluginmode = True
+      Endif
+    Next
+
+    For i = 1 To Application.Args.Count - 1
+
+      If Application.Args[i] = "-append" Then '-append specified, look for next
+        Try Sock_Append(Application.Args[i + 1])
+        Debug "Appended to the running playlist"
+        Quit
+      Endif
+            
+      If Not (Application.Args[i] Like "-*") Then 'file or url specified, maininit manages it
+        Try Global.Center(Fmain, Me)
+        FMain.maininit()
+        Return
+      Endif
+
+    Next
+  Endif
+      
+  'else is implicit, make sure every condition up there will return or quit
+     Try Global.Center(Fmain, Me)
+     FMain.maininit()
+    
+
+
+End
+
+
+
+
+
+
+
+
+Public Sub Form_Open()
+  'Start()
+End
+
+Public MyCSock As Socket
+
+Public Sub Sock_Append(URI As String)
+  Dim sBuf As String
+  MyCSock = New Socket
+  MyCSock.path = global.SocketFile
+  MyCSock.Port = Net.Local
+  MyCSock.Connect()
+  While (MyCSock.Status <> 7) And (MyCSock.Status > 0)
+    Wait 0.1
+  Wend
+  If MyCSock.Status = 7 Then
+    sBuf = "append " & URI & "\n"
+    Write #MyCSock, sBuf, Len(sBuf)
+    Close #MycSock
+  Endif
+End
+
+Public Sub Sock_Play(URI As String)
+  Dim sBuf As String
+  MyCSock = New Socket
+  MyCSock.path = global.SocketFile
+  MyCSock.Port = Net.Local
+  MyCSock.Connect()
+  While (MyCSock.Status <> 7) And (MyCSock.Status > 0)
+    Wait 0.1
+  Wend
+  If MyCSock.Status = 7 Then
+    sBuf = "play " & URI & "\n"
+    Write #MyCSock, sBuf, Len(sBuf)
+    Close #MycSock
+  Endif
+End
+
+Public Sub VSplit1_Resize()
+  If Not FMain.mplayer.getP("audioonly") Then
+    FMain.CorrectAreaAspect()
+    fmain.TimerHideShowVideo.start
+  Endif
+End
+
+Public Sub LabelPanel_MouseDown()
+  PanelNowNext.hide
+End
+
+Public Sub NowPanel_MouseDown()
+  'PanelNowNext.hide
+  ShowHidePinfo()
+End
+
+Public Sub NextPanel_MouseDown()
+  'PanelNowNext.hide
+  ShowHidePinfo()
+End
+
+Public Sub buttonepg_MouseDown()
+  global.Center(fmain, epgform)
+  EpgForm.Show()
+  PanelNowNext.hide
+  epgform.ScrollToChannel(Replace(fmain.mplayer.getP("fullpath"), "dvb://", ""))
+End
+
+
+
+
+Public Sub ShowHidePinfo()
+  LabelNowInfo.visible = Not LabelNowInfo.visible  
+  LabelNextInfo.visible = Not LabelNextInfo.visible
+  Fmain.PanelNowNextArrange(LabelNextInfo.visible)
+End

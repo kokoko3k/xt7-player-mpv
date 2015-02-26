@@ -1,0 +1,1842 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+'http://www.mplayerhq.hu/DOCS/tech/slave.txt
+
+
+'Public Audiofilter As String = "*.mp3;*.ogg;*.aac;*.flac;*.mpc;*.ac3;"
+Public ImIdlePlaying As Boolean = False 'setted by do_idle_play or from outside
+Public wantlog As Boolean = True
+Public IsNetworkURI As Boolean = False
+Public ICY As String
+Public ICYStreamTitle As String = ""
+Public AudioOnly As Boolean = False
+Public MediaHeaders As String[] = [" "]           'used to handle startup media properties
+Private MaxHeaders As Integer = 300               'we'll parse up to maxheaders lines
+Private Const MaxHeadersDVD As Integer = 400
+Private Const MaxHeadersFile As Integer = 400
+
+Private Playerprocess As Process
+Private cddbqueryprocess As Process
+Private RenicerProcess As Process
+Private Playeroutput As String = ""
+Public GotHeaders As Boolean = False
+Private LastSplittedOutput As String = ""
+Private stopping As Boolean = False
+
+Public pausing As Boolean = False
+
+
+Private Takingscreenshot As Boolean = False
+Private lastscreenshot As String = ""
+
+Public commandline As String = ""
+
+Public InputPipe As String = ""
+Public exportfile As String = ""
+
+Public Function executable() As String
+  Dim timeout As Integer = 600
+  Dim out As String
+  Dim proxy As String
+  out &= out & GeneralOptions.MplayerEnvVars.text & " " 'user specified environment variables
+  If GeneralOptions.vdpauooverlaycheck.value = True Then
+    out &= " " & "VDPAU_NVIDIA_NO_OVERLAY=1" & " "
+  Endif
+
+
+  'stop idle mplayer after 10 minutes
+  If ImIdlePlaying Then 
+    If global.pluginmode Then timeout = 10 'or after 10 seconds in pluginmode
+    out &= "timeout -s 9 " & timeout & " "
+      Else
+    'add c locale to workaround somw buggy ladspa filters which calls setlocale
+    out &= "LC_ALL=C "
+  Endif
+  proxy = global.proxyfromenv()
+  If proxy <> "" Then out &= "http_proxy=" & proxy & " "
+  out &= GeneralOptions.MplayerExeText.Text & " "
+  Return out
+End
+
+
+Public CurrentOptions As String = ""
+Public VoDriver As String = ""
+Public AoDriver As String = ""
+Public AVcodecs As String = ""
+Public VoAdditionalopts As String = " "
+Public AoAdditionalopts As String = " "
+Public AudioLanguages As String = "\"\""
+Public SubLanguages As String = "\"\""
+'Public Subfile As String = "_NuLl_nUlL"
+Public Subfile As String = ""
+Public Quick As Boolean = False                         'Skip Mediaheaders code
+
+Public Wid As String                                    'widget wid (.handle) to embed mplayer into
+Public Paused As Boolean = False
+
+'****************************************** Media Properties Variables *************************************
+Public Media_FullPath As String = ""
+Public Media_FullPath_Playing As String = ""
+Public Media_Length As String = ""      'in seconds
+Public Media_percent_pos As String = ""
+Public Media_Size As String = "0"         'in bytes
+Public Media_Type As String
+Public Media_AudioCodec As String
+Public Media_AudioBitrate As String
+Public Media_AudioRate As String
+Public Media_Channels As String
+Public Media_VideoCodec As String
+Public Media_VideoBitrate As String
+Public Media_VideoFps As String
+Public Media_Width As String
+Public Media_Height As String
+Public VideoOut_Width As String
+Public VideoOut_Height As String
+Public VideoOut_Driver As String 
+Public Media_Author As String
+Public Media_Artist As String
+Public Media_Genre As String
+Public Media_Album As String
+Public Media_TrackNo As String
+Public Media_Title As String
+Public Media_Name As String
+Public Media_Comment As String
+Public Media_Comments As String
+Public Media_Year As String
+Public Media_CreationDate As String
+Public Media_Seekable As String = 1
+
+Public audiotracks As New String[]
+Public subtitletracks As New String[]
+Public cddbtracks As New String[]
+
+'Realtime Media variables
+Public currentvolume As String = "0"
+Public CurrentAudioStream As String = "0"
+Public CurrentSubStream As String = ""
+Public osdlevel As String = ""
+
+
+Public Function FillMultitracks()
+
+  Dim i As Integer
+  Dim Aids, Sids As New Integer[]
+  Dim ID, NAME, LANGUAGE As String
+  Dim sid As Integer
+  'will read mediaheaders, searching for "ID_AUDIO_ID" and "ID_SUBTITLE_ID"
+  'and will fill audiotracks[] and subtitletracks[]
+  
+  audiotracks.Clear
+  subtitletracks.Clear
+
+  'find audio and sub id numbers
+  For i = 0 To mediaheaders.count - 1
+    If mediaheaders[i] Like "*ID_AUDIO_ID=*" Then Aids.add(GetTagValue(mediaheaders[i], "ID_AUDIO_ID"))
+    If mediaheaders[i] Like "*ID_SUBTITLE_ID=*" Then Sids.add(GetTagValue(mediaheaders[i], "ID_SUBTITLE_ID")) 'for embedded usb
+  Next 'i
+  'for every id in aids, find name and language
+  For i = 0 To Aids.count - 1
+    ID = Aids[i]
+    Name = " - " & FindTagValue("ID_AID_" & ID & "_NAME")
+    LANGUAGE = " - " & FindTagValue("ID_AID_" & ID & "_LANG")
+    '(add without duplicates)
+    If (audiotracks.Find(ID & NAME & LANGUAGE) = -1) Then audiotracks.Add(ID & NAME & LANGUAGE)
+    
+  Next 'i
+  'for every id in sids, find name and language
+  For i = 0 To Sids.count - 1
+    ID = Sids[i]
+    NAME = " - " & FindTagValue("ID_SID_" & ID & "_NAME")
+    LANGUAGE = " - " & FindTagValue("ID_SID_" & ID & "_LANG")
+    '(add without duplicates)
+    'If (subtitletracks.Find(ID & NAME & LANGUAGE) = -1) Then subtitletracks.Add(CStr(ID + 1) & NAME & LANGUAGE & " (embedded)")
+    If (subtitletracks.Find(ID & NAME & LANGUAGE) = -1) Then subtitletracks.Add(CStr(ID) & NAME & LANGUAGE & " (embedded)")
+  Next 'i
+  For i = 0 To mediaheaders.count - 1
+    If mediaheaders[i] Like "*ID_FILE_SUB_ID=*" Then
+      sid = GetTagValue(mediaheaders[i], "ID_FILE_SUB_ID")
+      NAME = file.Name(GetTagValue(mediaheaders[i + 1], "ID_FILE_SUB_FILENAME"))
+      'subtitletracks.Add(CStr(SID + 1) & " - " & NAME & " (File)")
+      subtitletracks.Add(CStr(SID) & " - " & NAME & " (File)")
+    Endif
+  Next
+End
+
+Public Function get_length()
+  If Media_Length = "" Then send("get_property length")
+End
+
+
+
+
+
+Private Function GetAllTags(Optional idleplay As Boolean = False)
+  'Fill MediaProperties Values
+
+  Dim tmp As String[]
+  Dim media As New TagLib
+  Dim tracks As Integer = 0
+  Dim cddbtrack As Integer = 0
+  Dim i As Integer = 0
+  Dim fileUtf8 As String
+  Try fileUtf8 = DConv(Media_FullPath) 'from system charset to utf8
+  If Error Then fileutf8 = Media_FullPath
+  fileutf8 = Media_FullPath
+  fileutf8 = Trim(fileutf8)
+  
+  
+  If Media_FullPath = "" Then Return
+  cddbtracks.clear()
+  AudioOnly = Media_AudioOnly()
+
+  Try Media_Seekable = FindTagValue("ID_SEEKABLE")
+
+  Try Media_Size = (Stat(Media_FullPath, True).Size Div 1024) 
+  Try Media_Type = FindTagValue("ID_DEMUXER")
+  Try Media_VideoCodec = FindTagValue("ID_VIDEO_FORMAT")
+  Try Media_AudioCodec = FindTagValue("ID_AUDIO_CODEC")
+  If Trim(media_audiocodec) = "" Then
+    Media_AudioCodec = FindTagValue("ID_AUDIO_CODEC")
+  Endif
+  'for audio only files, try to get common audio tags
+  'try first to get them using fast taglib
+  'but fallback to mplayer in idle mode
+  
+  If (AudioOnly And (Not Global.IsNetworkURI(Media_FullPath)) And media.IsSupported(fileutf8)) Then
+      If media.Init(Media_FullPath) Then
+        Media_Artist = media.Artist
+        Media_author = media.Artist
+        Media_Title = media.Title
+        Media_Album = media.Album
+        Media_Genre = media.Genre
+        media_year = media.MyYear
+        media_Comment = media.Comment
+        media_comments = media_Comment
+        Media_TrackNo = media.Track
+        Media_Length = media.Length
+        If Media_Length = 0 Then 
+          tmp = Split(Media_get_length(), ".")
+          tmp = Split(tmp[0], ",")
+          Media_Length = tmp[0]
+        Endif
+        Media_AudioBitrate = media.Bitrate
+        If Media_AudioBitrate = 0 Then Try Media_AudioBitrate = FindTagValue("ID_AUDIO_BITRATE")
+        Media_Channels = media.Channels
+        Media_AudioRate = media.Samplerate
+        Debug "got info from taglib on " & Media_FullPath & " --"
+        Debug
+        media.tlFree()
+          Else  'there was a problem with TagLib Class initialization, fallback to mplayer
+                'or was a network uri or a cddb 
+        tmp = Split(Media_get_length(), ".")
+        tmp = Split(tmp[0], ",")
+        Media_Length = tmp[0]
+        
+        If global.IsCdda(Media_FullPath) Then
+          Try cddbtrack = Split(Media_FullPath, "/ ", "", True, False)[1]
+          Try Media_Artist = FindTagValue("ID_CDDB_INFO_ARTIST")
+          Try Media_Author = FindTagValue("ID_CDDB_INFO_ARTIST")
+          Try Media_Genre = FindTagValue("ID_CDDB_INFO_GENRE")
+          Try Media_Album = FindTagValue("ID_CDDB_INFO_ALBUM")
+          Try tracks = FindTagValue("ID_CDDB_INFO_TRACKS")
+          If Not Error Then 
+            For i = 1 To tracks
+              Try cddbtracks.Add(FindTagValue("ID_CDDB_INFO_TRACK_" & i & "_NAME"))
+              If Error Then cddbtracks.add(("Unknown entry (connection problem?)"))
+            Next 'i 
+          Endif
+          Try Media_TrackNo = cddbtrack
+          Try Media_Title = cddbtracks[cddbtrack - 1]
+          Try Media_Name = Media_title
+               Else
+          Try Media_Artist = DConv(FindAudioTag("artist"))
+          Try Media_Author = DConv(FindAudioTag("author"))
+          Try Media_Genre = DConv(FindAudioTag("genre"))
+          Try Media_Album = DConv(FindAudioTag("album"))
+          Try Media_Year = DConv(FindAudioTag("year"))
+          Try Media_CreationDate = DConv(FindAudioTag("creation date"))
+          Try Media_TrackNo = DConv(FindAudioTag("track"))
+          Try Media_Title = DConv(FindAudioTag("title"))
+          Try Media_name = DConv(FindAudioTag("name"))
+          Try Media_Comment = DConv(FindAudioTag("comment")) ' & Media_ExtraComment
+          Try Media_Comments = DConv(FindAudioTag("comments")) ' & Media_ExtraComment
+        Endif
+        
+        
+      Endif
+          Else 'for not audio only files, use mplayer in idle mode.      
+        tmp = Split(Media_get_length(), ".")
+        Try tmp = Split(tmp[0], ",")
+        Try Media_Length = tmp[0]
+        Try Media_VideoBitrate = FindTagValue("ID_VIDEO_BITRATE")
+        Try Media_Width = FindTagValue("ID_VIDEO_WIDTH")
+        Try Media_Height = FindTagValue("ID_VIDEO_HEIGHT")
+        Try Media_VideoFps = FindTagValue("ID_VIDEO_FPS")
+        Try Media_AudioBitrate = FindTagValue("ID_AUDIO_BITRATE")
+        Try Media_Channels = FindTagValue("ID_AUDIO_NCH")
+        Try Media_AudioRate = FindTagValue("ID_AUDIO_RATE")  
+  Endif
+
+  
+  If (Not idleplay) Then FillMultitracks() 'will fill audiotracks[] and subtitletracks[] from mediaheaders
+  'end fill  
+  
+  Media_FullPath_Playing = Media_FullPath
+  
+End
+
+Public Sub Renice(nice As Integer, Optional JustThePlayer As Boolean = False)
+  Debug "nice=" & nice
+  Debug
+  If (Not JustThePlayer) Then RenicerProcess = Shell "renice " & nice & " -p " & Application.id  'renice the whole application to 'nice'
+  RenicerProcess = Shell "renice " & (nice - 1) & " -p " & playerprocess.id 
+End
+
+Public CurrentCache As String = ""
+
+
+
+
+Public Sub playerprocess_error(stderr As String)
+  'Debug stderr
+  If ((stderr Like "A:*") Or (stderr Like "V:*")) Then
+    playerprocess_read(stderr) 'mplayer2 workaround
+    Return
+  Endif
+    silences = 0 'so that Stimer (as stucktimer) will be fine...
+  If WantLog Then FMain.mplayererroravailable(stderr)
+End
+
+
+
+Public Sub playerprocess_read(Optional injected As String = "")
+
+  Dim Splitted As String[]
+  Dim VideoOut_dimensions As String
+  Dim tmpout, tmp As String = ""
+  Dim RposPercent As Integer
+  
+  
+  If Not (stopping) And ProcessRunningOvr() Then
+   
+    silences = 0 'so that Stimer (as stucktimer) will be fine...
+    'Line Input #playerprocess, Playeroutput
+    
+    If injected = "" Then  'as mplayer2 print statusline to stderr, we inject it here so that we can read anyway.
+      Try Read #playerprocess, playeroutput, -2048
+        Else
+      playeroutput = injected
+    Endif
+    'Debug playeroutput
+    'fill Requested Video window height AND width
+    If Playeroutput Like "*VO:*" Then
+      Splitted = Split(playeroutput, "\n\r")
+      For Each tmpout In splitted '
+        If tmpout Like "VO:*" Then
+          Try VideoOut_dimensions = Split(tmpout, " ")[4]
+          Try VideoOut_Width = Split(VideoOut_dimensions, "x")[0]
+          Try VideoOut_Height = Split(VideoOut_dimensions, "x")[1]
+          Try VideoOut_driver = Split((Split(tmpout, "[")[1]), "]")[0]
+          'Wait 0.01
+          FMain.CorrectAreaAspect()
+          'If GotHeaders Then Return
+        Endif
+      Next
+    Endif
+    
+    If Playeroutput Like "*ANS_*=*" Then
+      Splitted = Split(playeroutput, "\n\r")
+      For Each tmpout In splitted 'for every splitted part, search for "ANS_"
+        If tmpout Like "*ANS_VOLUME=*" Then
+          CurrentVolume = Mid(tmpout, InStr(tmpout, "=") + 1)
+        Else If tmpout Like "*ANS_SWITCH_AUDIO=*" Then
+          CurrentAudioStream = Mid(tmpout, InStr(tmpout, "=") + 1)
+        Else If tmpout Like "*ANS_SUB=*" Then
+          CurrentSubStream = Mid(tmpout, InStr(tmpout, "=") + 1)
+        Else If tmpout Like "*ANS_LENGTH=*" Then
+          Media_Length = Split(Mid(tmpout, InStr(tmpout, "=") + 1), ".")[0]
+        Else If tmpout Like "*ANS_PERCENT_POS*=*" Then
+          Media_percent_pos = Split(Mid(tmpout, InStr(tmpout, "=") + 1), ".")[0]
+        Else If tmpout Like "*ANS_OSDLEVEL*=*" Then
+          osdlevel = Mid(tmpout, InStr(tmpout, "=") + 1)
+        Endif
+      Next
+      'Debug "return from 1"
+      If GotHeaders Then Return
+    Endif
+    
+    'problema screenshot, riscrivere in modo che il run sia accettato da mplayer
+    'ora non funge perchè al posto di echo usiamo il print #stream
+    If takingscreenshot Then
+      If (playeroutput Like "*screenshot *.png*") Then
+        lastscreenshot = playeroutput
+        lastscreenshot = Split(playeroutput, "'", "", True)[1]
+        send("run \"mv " & lastscreenshot & " " & Global.ScreenshotFolder & "/" & lastscreenshot & "\"")
+        'send("run \"'mv " & lastscreenshot & " " & Global.ScreenshotFolder & "/" & lastscreenshot & "'\"") <--usare questo se si usa echo
+        lastscreenshot = Global.ScreenshotFolder & "/" & lastscreenshot
+        'send("run \"' touch /tmp/mp" & "'\"") <<- usare questo se si usa echo
+        send("run \"touch /tmp/mp" & "\"")
+        'Debug "return from 2"
+        If GotHeaders Then Return
+      Endif
+    Endif
+    
+    
+    If (playeroutput Like "*ID_PAUSED*") Then 
+      paused = True
+      'Debug playeroutput
+      If GotHeaders Then Return
+    Endif
+
+    
+    
+    If Not paused Then
+      If GotHeaders Then
+        If ((playeroutput Like "A:*") Or (playeroutput Like "V:*")) Then
+           RposPercent = RInStr(playeroutput, "%")
+           Try CurrentCache = Split(Trim(Mid$(playeroutput, RposPercent - 2)), " ")[0]
+           Return
+        Endif
+      Endif
+    Endif
+    
+
+
+    
+    'Fetch webradio ICY infos
+    If IsNetworkURI Then
+      If (Playeroutput Like "*ICY Info*") Then
+        ICY = playeroutput
+        Debug "ICY= " & ICY
+        Debug
+        ICYStreamTitle = Get_ICYStreamTitle(ICY)
+        'Debug "return from 5"
+        If GotHeaders Then Return
+      Endif
+    Endif
+    
+
+    
+    If paused Then 'get cache value during pause too...
+      If Not ImIdlePlaying Then 
+        If playeroutput Like "*%*" Then
+          tmp = Trim(playeroutput)
+          currentcache = Trim(Right(playeroutput, 4))
+          ' Debug "currentcache=" & currentcache
+          ' Debug
+        Endif
+      Endif
+    Endif
+    
+    
+    If ((playeroutput Like "A:*") Or (playeroutput Like "V:*")) Then 
+      paused = False
+    Endif
+    
+    'Fill Mediaheaders until maxheaders  
+    If (Not GotHeaders) Then
+      If (MediaHeaders.count < maxheaders) Then
+        Splitted = Split(playeroutput, "\n\r")   'split playeroutput with separator = "\n"
+        For Each tmpout In splitted 'for every splitted part, add it as mediaheader
+          If tmpout <> "" Then
+            'Debug "MH.ADD: " & tmpout
+            'fill mediaheaders FOR later parsing, but skip some cache fill lines (9/10):
+            'skip even PROGRAM_ID lines (from dvbt)
+            If Not (tmpout Like "*%*(*)*" And tmpout Like "*byte*") Then ' Or Int(Rnd(1, 10)) = 1 Then 'cache filling
+              If Not (tmpout Like "*PROGRAM_ID=*") Then 
+                'Debug "adding header: " & tmpout
+                MediaHeaders.Add(tmpout)
+              Endif
+            Endif
+            If ((tmpout Like "A:*") Or (tmpout Like "V:*")) Then
+            'If tmpout Like "*tarting playbac*" Then
+              If (mediaheaders.count > 2) Then GotHeaders = True
+            Endif
+          Endif
+        Next
+      Endif
+
+      If (tmpout Like "*%*(*)*" And tmpout Like "*byte*") Then
+           tmp = Trim(playeroutput)
+           tmp = Split(tmp, ":", "", True, False)[1]
+           tmp = Split(tmp, "(", "", True, False)[0]
+           tmp = Split(tmp, ".", "", True, False)[0]
+           currentcache = Trim(tmp) & "%"
+        'currentcache = tmpout
+        Debug currentcache
+        Debug
+        Return
+      Endif
+    Endif
+
+    If WantLog Then FMain.mplayeroutputavailable(Playeroutput)
+  Endif
+End
+
+
+
+
+Private Function WaitForHeaders() As Boolean
+
+  Dim Prevcount As Integer = 0
+  Dim MaxWait As Integer = 400 'act as a timeout in case mplayer got stuck (400 = about 4secs)
+  If Media_FullPath Like "*://*" Then MaxWait = 800 'increase timeout on uries. (800 = about 8secs)
+  If Media_FullPath Like "dvd://*" Then MaxWait = 3000 ' for dvd, we'll wait 30 secs.
+  If Media_FullPath Like "dvdnav://*" Then MaxWait = 3000 ' for dvd, we'll wait 30 secs.
+  If Media_FullPath Like "dvb://*" Then MaxWait = 3000 ' for dvb, we'll wait 30 secs.
+  If Global.IsCdaudio(Media_FullPath) Then MaxWait = 3000 ' for cd, we'll wait 30 secs.
+  If Not Quick And Trim(Media_FullPath) <> "" Then
+    While (MediaHeaders.count < maxheaders) And ProcessRunningOvr() And (Not GotHeaders) And (MaxWait > 0)
+      'as wait steals cpu cycles, underlaying mplayer could soffer for it and don't output anything,
+      'so sleep could be helpfull
+      Sleep 0.001
+      'anyway wait is necessary for events to be processed ( i mean getting output from mplayer thorugh playerprocess_read() )
+      Wait 0.01
+      If (MediaHeaders.count = PrevCount) Then MaxWait = MaxWait - 1
+      PrevCount = MediaHeaders.count
+      'Debug "waiting headers on " & Media_FullPath
+    Wend
+    If (maxwait = 0) Or (MediaHeaders.count >= maxheaders) Then
+      Debug "Timeout! or maxheaders reached on Media_FullPath=" & Media_FullPath
+      Debug
+      ' if the player is in idle mode (used to sync library) then 
+      ' stop it to clear the pipe, so that it wont interfree with next media
+      If ImIdlePlaying Then
+        do_stop()
+        ImIdlePlaying = False 'set it again to false just to be sure (will be set to true again by the next do_idleplay)
+      Endif
+      'PRINT "Debug: MplayerClass: WaitforHeaders: inputpipe=" & inputpipe
+      If Global.LSyncing Then fmain.WaitPanel.text = fmain.WaitPanel.text & "<br> <font color=red>" & Media_FullPath & "</font>"
+    Endif
+  Endif
+  If (mediaheaders.count < 2) And (Not QUICK) Then
+    Debug "mediaheaders.count= " & mediaheaders.count
+    Debug
+  Endif
+  Return True
+
+End
+
+'######################### Player controls section
+
+Public Sub do_restart(filename As String, options As String, Optional rewind As Boolean = True, Optional bugid1870 As Boolean = False, Optional SeekTo As Integer = "-1")
+
+  Dim NewOptions As String
+  Dim CurrentSeconds As Integer
+  Dim timeout As Integer = 1000
+  AudioSwitched = False
+  fmain.subnotset = True
+  CurrentCache = "0"
+  If Paused Then do_leave_pause()
+  mplayeroptions = options
+  Repeat 'We've to catch an error, because CurrentTime may not return Seconds!
+    NewOptions = options
+    
+    If seekto = -1 Then
+      Try CurrentSeconds = CurrentTime()
+      If Not Error Then 'catch if currenttime fails
+        If rewind Then 'seek some seconds back after an apply
+          If Not (Media_AudioOnly()) Then
+            CurrentSeconds = CurrentSeconds - 3 'if is video, then seek back some seconds more
+          Else
+            CurrentSeconds = CurrentSeconds - 1
+          Endif
+        Else 'dont rewind
+          CurrentSeconds = CurrentSeconds + 1
+        Endif
+      Endif
+
+      NewOptions = Options & " -ss " & CurrentSeconds
+        Else
+      NewOptions = Options & " -ss " & seekto
+    Endif
+    MyKillCancelled = True 
+    do_stop()
+    MyKillCancelled = False
+    do_play(filename, NewOptions, False, bugid1870)
+    Break
+    timeout = timeout - 1
+    Wait 0.001
+  Until (timeout = 0)
+
+End
+
+Public Function SupportsLadspa() As Boolean
+  Dim out As String
+  Shell executable() & " -af help | grep 'ladspa '" To out
+  Return Trim(out) <> ""
+End
+
+
+Private Sub SetUpInputPipe()
+
+  Dim Random1 As Integer = 0
+
+  Randomize
+  Random1 = Int(Rnd(0, 65535))
+  Try Mkdir global.confpath & "/.InputPipes"
+  inputpipe = global.confpath & "/.InputPipes/Xt7Input-" & Random1
+  If Exist(inputpipe) Then Shell "rm '" & inputpipe & "'" Wait
+  Shell "mkfifo " & inputpipe Wait
+  'SLEEP 1  
+End
+
+
+Private Silences As Integer = 0
+
+Public Sub stucktimer_timer()
+
+  Silences = silences + 1
+  If (ProcessRunningOvr() And (silences >= 2) And (Not paused)) Then
+    Debug "WARNING: Not receiving any output from mplayer which is not paused... did it freezed?"
+    Debug
+    If StuckRestartedTimes <= 3 Then
+      Debug "WARNING: Trying to restart it..."
+      Debug
+      do_restart(Media_FullPath_Playing, mplayeroptions, False)
+      StuckRestartedTimes = StuckRestartedTimes + 1
+    Else
+      Debug "WARNING: Giving up..."
+      Debug
+    Endif
+  Else
+    StuckRestartedTimes = 0
+  Endif
+
+End
+
+Private mplayeroptions As String = ""
+
+Public Function dvb_set_channel(channelname As String, dvbcardID As Integer) As Boolean
+  Dim channelN As String
+  
+  ChannelN = dvb_channel_to_number(channelname)
+  Send("dvb_set_channel " & ChannelN & " " & dvbcardID)
+  Wait 0.01
+  Send("dvb_set_channel " & ChannelN & " " & dvbcardID)
+  Wait 0.01
+  Send("dvb_set_channel " & ChannelN & " " & dvbcardID)
+
+  CurrentCache = "0"
+  ClearMediaHeaders()
+  GotHeaders = False
+  LastSplittedOutput = ""
+  Media_FullPath_Playing = ""
+  Audioonly = False
+  WaitForHeaders()
+  GetAllTags()
+
+  Media_FullPath_Playing = "dvb://" & channelname
+  Media_FullPath = "dvb://" & channelname
+
+
+
+      'here we may need to send the last volume (variable=lastvolume) to the running mplayer
+      'because it seems it resets the volume after each channel change
+      'the problem is that maybe we need to send it delayed..eg: after the channel as been tuned?
+  
+  Return True
+End
+
+Public Function dvb_channel_to_number(C As String) As Integer
+  Dim i As Integer
+  Dim chans As String[]
+  Dim chansfix As New String[]
+  Dim chanfile As String = User.home & "/.config/mpv/channels.conf.ter"
+  If Not (Exist(chanfile)) Then Return 0
+  
+  chans = Split(file.Load(chanfile), "\n")
+  For i = 0 To chans.Max 'we have to discard any non valid channel line, because so does mplayer
+    If Split(chans[i], ":").count = 13 Then chansfix.Add(chans[i])
+  Next
+  
+  For i = 0 To chansfix.Max
+    If Trim(chansfix[i]) <> "" Then
+      If Lower(Split(chansfix[i], ":")[0]) = Lower(C) Then 
+        Return i
+      Endif
+    Endif
+  Next
+  Return 0
+End
+
+Public MyKillCancelled As Boolean = False
+
+
+
+
+Public cookieoptsG As String = ""
+Public Function do_play(filename As String, options As String, Optional restart As Boolean, Optional bugid1870 As Boolean = False, Optional cookieopts As String = "", Optional dumpfile As String = "/tmp/stream.dump.xt7.mpeg", Optional doanalyze As Boolean = False) As Boolean
+  cookieoptsG = cookieopts
+  AudioSwitched = False
+  CurrentCache = "0"
+  mplayeroptions = options
+
+  If filename Like "https://*" Then
+    filename = Replace(filename, "https://", "http://")
+    Debug "Warning: Using http instead of https!"
+      Else If filename Like "HTTPS://*" Then 
+        filename = Replace(filename, "HTTPS://", "http://")
+        Debug "Warning: Using http instead of https!"
+  Endif
+
+  IsNetworkURI = Global.IsNetworkURI(filename) ' on network streams we'll try to guess "ICY:" information (webradios tag)
+  If ProcessRunningOvr() Then 
+    MyKillCancelled = True
+    do_stop() '(will also delete previous inputpipe)
+    MyKillCancelled = False
+  Endif
+  
+  If (Trim(filename) <> "") Or restart Then 'restart is used mainly to raise a dead mplayer in idleplay
+      'generate a new inputpipe
+      SetUpInputPipe()
+      
+      ClearMediaProperties()
+  
+    If global.IsImgFile(filename) And Not (filename Like "mf://*") Then
+      filename = "mf://" & filename & "," & filename
+    Endif
+      Media_FullPath = filename
+      
+  
+      
+      commandline = executable() & " " & "-identify -slave "
+      If wid <> "" Then commandline = commandline & " -wid " & wid
+      commandline = commandline & " -noconfig all "
+  
+      commandline = commandline & " " & VoDriver & " " & AoDriver & " " & VoAdditionalopts & " " & AoAdditionalopts
+      commandline = commandline & " " & AVcodecs
+      
+      commandline = commandline & " " & options
+      
+      If Not (options Like "* -idle *") Then 
+        commandline = commandline & " -mouse-movements "
+        If audiolanguages <> ("\"" & "\"") Then commandline = commandline & " -alang " & AudioLanguages & " "
+        If sublanguages <> ("\"" & "\"") Then commandline = commandline & " -slang " & SubLanguages
+        'commandline = commandline & " " & options
+        If (Trim(subfile) <> "") Then commandline = commandline & " -sub '" & subfile & "'"
+        'http://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870
+        If bugid1870 And (Lower(file.Ext(filename)) = "mkv") Then
+          commandline = commandline & " -subfile " & "\"" & SConv(filename) & "\""
+        Endif
+      Endif
+  
+    commandline = commandline & " -input conf=/tmp/FakeInput.conf:file=" & inputpipe
+      If global.isplaylist(filename) Then
+        commandline = commandline & " -playlist "
+      ' Else If (filename Like "*.ogg") And (Not (commandline Like "* -demuxer *")) Then
+      '   commandline = commandline & " -demuxer ogg "
+      Endif
+      'commandline = commandline & " " & "\"" & SConv(filename) & "\""
+      commandline = commandline & " " & Shell(SConv(filename))
+  
+      
+      
+      
+      If (commandline Like "*-vo vaapi*") Or (commandline Like "*-vo *,vaapi*") Or (commandline Like "*-vo xvmc*") Or (commandline Like "*-vo *,xvmc*") Then
+        Debug ("found vaapi output driver on enabled video driver list, disabling all video filters by appending -vf-clr")
+        commandline = commandline & " -vf-clr "
+        Debug
+      Endif
+      
+      If (commandline Like "*ffmpeg12vdpau*") Or (commandline Like "*ffwmv3vdpau*") Or (commandline Like "*ffvc1vdpau*") Or (commandline Like "*ffh264vdpau*") Or (commandline Like "*ffodivxvdpau*") Then
+        Debug ("found an ff*vdpau forced codec on enabled video codec list, disabling all video filters by appending -vf-clr")
+        commandline = commandline & " -vf-clr "
+        Debug
+      Endif
+      
+      
+      If (commandline Like "*-vo xvmc*") Or (commandline Like "*-vo *,xvmc*") Then
+        Debug ("found xvmc output driver on enabled video driver list, disabling all video filters by appending -vf-clr")
+        commandline = commandline & " -vf-clr "
+        Debug
+      Endif
+  
+      If commandline Like "*-dumpfile *" Then
+        Debug "-dumpfile option found in the command line, probably you will not be able to dump streams using the rec button"
+        Debug
+          Else
+        If (Not ImIdlePlaying) Then commandline = commandline & " -capture -dumpfile " & dumpfile
+      Endif
+      
+      
+      If (commandline Like "*-ac *hwac3*") Or (commandline Like "*-ac *hwdts*") Or (commandline Like "*-ac *hwmpa*") Or (commandline Like "*-afm *hwmpa*") Or (commandline Like "*-afm *hwmpa*") Then
+        Debug ("found one of (-ac,af) hwac3,hwdts or hwmpa audio passthrough options in the commandline")
+        Debug ("Disabling any audio filters in chain by appending -af-clr")
+          commandline = commandline & " -af-clr "
+        Debug 
+      Endif
+      
+      commandline = commandline & " " & cookieopts
+  
+      
+      GotHeaders = False
+      LastSplittedOutput = ""
+      'if we've a dvd, maxheaders need to be larger.
+      If filename Like "*dvd://*" Then
+        MaxHeaders = MaxheadersDVD
+      Else
+        MaxHeaders = MaxHeadersFile
+      Endif
+      
+      If Not (filename Like "*SubBackImage*.bmp*") Then 'do not apply limit to subtitles window!
+        If global.IsImgFile(filename) Then commandline &= " -fps 0.1 -nocache"
+      Endif
+   
+      Debug "Starting mplayer now:"
+      Debug "commandline=" & commandline
+      Debug
+      playerprocess = Shell commandline For Read As "playerprocess"
+  
+  
+  
+  
+      'playerprocess = Shell commandline For Input As "playerprocess"
+      MaxCache = parsecacheparam(commandline)
+  
+      stopping = False
+      Media_Length = "0"
+      Media_percent_pos = "0"
+      MediaHeaders.Resize(0) 'fixes an issue when playlisting youtube results
+    
+      WaitForHeaders()
+      GetAllTags()
+  
+    If Not ImIdlePlaying Then
+      If doanalyze And (Not audioonly) Then StartOverbrightAnalyze()
+    Endif
+  Endif
+  Return True
+End
+
+
+Public maxcache As String
+
+Private Function parsecacheparam(commandline As String) As String
+Dim start As Integer
+Dim tmp As String
+  If commandline Like "* -cache *" Then
+    start = InStr(commandline, "-cache")
+    tmp = Mid(commandline, start, Len(commandline))
+    tmp = Trim(tmp)
+    tmp = Split(tmp, " ", "", True, False)[1]
+    tmp = Trim(tmp)
+    Return tmp
+      Else
+    Return "0"
+  Endif
+End
+
+
+Public Stimer As Timer 'detect silence from mplayer
+Public stucktimeout As Integer = 5000 ' milliseconds to detect a stuck mplayer process
+Public StuckRestartedTimes As Integer = 0
+
+
+
+Public Function DeMuxerslist() As String[]
+  'returns a string array of supported audio codecs plus informations
+
+  Dim MPoutput As String
+  Dim MPLines, FuncOUT As New String[]
+  Dim MPLine, MPWord As String
+  Dim HeadSkipped As Boolean = False
+  Dim CheckHead As String = "demuxer:"
+  Dim Option As String = "-demuxer help"
+  Dim i As Integer
+
+  CheckHead = "demuxer:"
+  Option = " -noconfig all -demuxer help"
+  
+  Shell executable() & " " & Option To MPoutput
+  MpLines = Split(MPOutput, "\n", "", True)
+  For Each MPLine In MPLines
+    MPWord = Trim(Split(MPLine, " ", "", True)[0])
+    If MPWord = CheckHead Then HeadSkipped = True
+    ' 'get just the first word
+    If HeadSkipped And mpword <> CheckHead Then
+      'add white spaces to format output
+      Repeat
+        MpWord = Mpword & " "
+      Until Len(mpword) >= 13
+      Try MPWord = MPWord & Trim(Split(MPLine, " ", "", True)[2])
+      i = 2
+      Repeat
+        i = i + 1
+        Try MPWord = MPWord & " " & Trim(Split(MPLine, " ", "", True)[i])
+      Until Error
+
+      FuncOUT.Add(MPWord)
+    Endif
+
+  Next
+  Return FuncOut
+
+End
+
+Public Function TemporaryPlaylist(Fullpath As String) As String
+  'This is an hack because mplayer in idle mode doesn't like some filenames (i can't understand why)
+
+  Dim tmpfile As File
+  Dim PlaylistFileName As String = Temp("mytmpfile")
+
+  tmpfile = Open PlaylistFileName For Write Create
+  Print #tmpfile, Fullpath
+  Close tmpfile
+  Return PlaylistFileName
+
+End
+
+Public Function do_IdlePlay(filename As String) As Boolean
+  ImIdlePlaying = True
+  GotHeaders = False
+  If filename = "" Then SetUpInputPipe() 'called for the first time, need new inputpipe
+  ClearMediaProperties()
+  ClearMediaHeaders()
+  Media_FullPath = filename
+  LastSplittedOutput = ""
+  'Write filename in a playlist and load it.
+  'mplayer in idle mode seems to dislike some filenames, that way, it works (#?!)
+  send("loadlist " & TemporaryPlaylist(SConv(FileName)))
+  'send("loadfile " & Quote(SConv(Filename)))
+  WaitForHeaders()
+  do_pause() 'not necessary if we add -frames 0 ?
+  Media_Length = "0"
+  stopping = False
+  GetAllTags(True)
+  Return True
+End
+
+
+
+
+
+Public Function DoDeinterlace()
+  If commandline Like "*vdpau*" Then
+    send("step_property deinterlace")
+    Return
+  Endif
+  If commandline Like "*yadif*" Then
+    send("step_property deinterlace")
+    Return
+  Endif
+  If commandline Like "*xvmc*" Then
+    send("step_property deinterlace")
+    Return
+  Endif
+  If commandline Like "*vaapi*" Then
+    send("step_property deinterlace")
+    Return
+  Endif
+  If commandline Like "*kerndeint*" Then
+    send("step_property deinterlace")
+    Return
+  Endif
+  ShowText("Can't deinterlace, missing vdpau,xvmc,vaapi,yadif or kerndeint", 3000)
+End
+
+
+Public AudioSwitched As Boolean = False
+
+Public Function Send(command As String) As Boolean
+  Dim mystream As File
+  If pausing Then 
+    Debug "Not sending " & command & " because Of pausing."  
+    Debug
+    Return
+  Endif
+  If ProcessRunningOvr() And (Exist(inputpipe)) Then
+    If Stat(inputpipe).type = gb.pipe Then
+      mystream = Open inputpipe For Write
+      If command Like "*af_*" Then Debug command
+      If inputpipe <> "" Then 
+        Print #mystream, command
+      Endif
+    Endif
+  Endif
+  If Lower(command) Like "switch_audio*" Then AudioSwitched = True
+End
+
+
+Public SUPPORTEDAUDIOFILTERS As New String[] 
+
+Public Sub afclr()
+  'get the current audio filters and remove them one by one.
+  'needed because -af_clr slave command doesn't seem to work.
+  Dim out, filter As String
+  If SUPPORTEDAUDIOFILTERS.count = 0 Then 
+    Shell executable() & " -af help |grep ' : '" To out 
+    For Each filter In Split(out, "\n", "", True)
+      SUPPORTEDAUDIOFILTERS.add(Split(Trim(filter), " ", "", True)[0])
+    Next 'filter
+  Endif
+  For Each filter In SUPPORTEDAUDIOFILTERS
+    send("af_del " & filter) 'do it four times to be sure multiple instances
+    send("af_del " & filter) 'of the same filter are removed as well
+    send("af_del " & filter)
+    send("af_del " & filter)
+  Next 'filter
+End
+
+
+'old_send can workaround an ubuntu problem by using echo instead of print?
+Public Function Old_Send(command As String) As Boolean
+
+  If ProcessRunningOvr() And (Exist(inputpipe)) Then
+    If Stat(inputpipe).type = gb.pipe Then
+      'command = LadspaWorkaround(command)
+      If inputpipe <> "" Then Try Shell "echo " & command & " >" & inputpipe
+    Endif
+  Endif
+
+End
+
+Public Function ClearMediaHeaders()
+
+  Dim i As Integer
+
+  For i = 0 To MediaHeaders.count - 1
+    Try MediaHeaders[i] = ""
+  Next 'i
+  MediaHeaders.Resize(0)
+
+End
+
+Public Function do_pause_insist() As Boolean 'crea problemi...
+
+  Dim MaxWait As Integer = 50 'act as a timeout in case mplayer got stuck
+  Dim interval As Float = 0.1
+  Dim totalwait As Float = maxwait * interval
+  'WaitForHeaders()  <-- removed fixme, is it still needed?
+  Debug "trying to pause, will insist for " & CStr(totalwait) & " seconds"
+  Debug
+  Repeat
+    Wait interval / 2 
+    If (Not paused) Then send("pause")
+    MaxWait = MaxWait - 1
+    Wait interval / 2 
+  Until paused Or (MaxWait = 0)
+  If maxwait = 0 Then Debug "Doh, mplayer didn't paused in" & CStr(totalwait) & " seconds"
+End
+
+
+Public Function do_leave_pause_insist() As Boolean
+  Dim MaxWait As Integer = 1000 'act as a timeout in case mplayer got stuck
+  WaitForHeaders()
+  send("pause")
+  Repeat
+    Wait 0.0001
+    MaxWait = MaxWait - 1
+  Until (Not paused) Or (MaxWait = 0)
+End
+
+
+Public Function do_pause() As Boolean
+  Dim MaxWait As Integer = 1000 'act as a timeout in case mplayer got stuck
+  If (Not ProcessRunningOvr()) Then Return
+  send("pause")
+  pausing = True
+  While (Not paused) And (Maxwait > 0) 
+    Wait 0.001
+    MaxWait = MaxWait - 1
+  Wend
+  pausing = False
+End
+
+Public Function do_leave_pause() As Boolean
+  Dim MaxWait As Integer = 1000 'act as a timeout in case mplayer got stuck
+  Dim ccurrenttime As String = CurrentTime()
+  WaitForHeaders()
+  send("pause")
+  If (ccurrenttime = 0) Then maxwait = 100
+  Repeat 
+    Wait 0.0001
+    MaxWait = MaxWait - 1
+  Until (Not paused) Or (MaxWait = 0)
+End
+
+
+
+
+Public Function ProcessRunningOvr() As Boolean
+  'As gambas returns runtime error if process is not ready,
+  'we'll catch it here
+  Dim running As Boolean = False
+  Try running = (Playerprocess.state = 1)
+  Return running
+End
+
+Public Function do_stop() As Boolean
+  Dim maxtimeout As Integer = 11
+  Dim timeout As Integer 
+  Try mpAnalyze.kill
+  AudioSwitched = False
+  Try STimer.stop
+  stopping = True
+  ICY = ""
+  ICYStreamTitle = ""
+  ClearMediaHeaders()
+  timeout = maxtimeout
+  Repeat 'con le buone...
+    send("quit")
+    Wait 0.1
+    timeout = timeout - 1
+  Until ((timeout <= 0) Or (Not ProcessRunningOvr()))
+  timeout = maxtimeout
+  Repeat 'con le cattive..
+    Try Playerprocess.Kill
+    Wait 0.1
+    timeout = timeout - 1
+    Until ((timeout <= 0) Or (Not ProcessRunningOvr()))
+  'delete previous pipe
+  'If Trim(inputpipe) <> "" Then Shell "rm " & inputpipe Wait
+  Try Kill inputpipe
+  'delete export file
+  Try Kill exportfile
+  GotHeaders = False
+  LastSplittedOutput = ""
+  Media_FullPath_Playing = ""
+  Audioonly = False
+  GBXBUGCloseStream()
+  StopOverBrightAnalyze()
+  Return True
+End
+
+Public Function GBXBUGCloseStream()
+  Object.Lock(Me)
+  playerprocess = Shell "/dev/null/FakeCommand &>/dev/null" 'needed to (luckily) workaround a bug in gb when the process stream is closed and gb expects data...
+  Object.unLock(Me)
+  'http://code.google.com/p/gambas/issues/detail?id=494Stop
+End
+
+
+Public Function do_ffwd() As Boolean
+
+  send("speed_mult 1.059463094352953")
+
+End
+
+Public Function do_slow() As Boolean
+
+  send("speed_mult 0.9438743126816935")
+
+End
+
+Public Function do_seek(Percentual As String) As Boolean
+  Dim prevosdlevel As String = osdlevel 'this is updated from onesectimer asking mplayer to store osdlevel property.
+  If paused Then
+    If Not (commandline Like "*osdlevel*") Then send("osd 0")
+    send("seek " & Percentual & " 1")
+    send("pause")
+    If Not (commandline Like "*osdlevel*") Then 
+      send("pausing_keep osd 1")
+        Else
+      send("pausing_keep")
+    Endif
+    Wait 0.1
+    paused = True
+  Else
+    send("osd 0")
+    send("seek " & Percentual & " 1")
+    If prevosdlevel = "" Then prevosdlevel = "0"
+    send("osd " & prevosdlevel)
+  Endif
+
+End
+
+Public Function do_SetVolume(Percentual As String) As Boolean
+  send("pausing_keep volume " & Percentual & " 1")
+End
+
+'######################### Media Properties Section
+
+Private Sub ClearMediaProperties()
+
+  Media_FullPath = ""
+  Media_Length = ""
+  Media_Size = ""
+  Media_Type = ""
+  Media_AudioCodec = ""
+  Media_AudioBitrate = ""
+  Media_AudioRate = ""
+  Media_Channels = ""
+  Media_VideoCodec = ""
+  Media_VideoFps = ""
+  Media_VideoBitrate = ""
+  Media_Width = ""
+  Media_Height = ""
+  VideoOut_Width = ""
+  VideoOut_Height = ""
+  VideoOut_Driver = ""
+  Media_Author = ""
+  Media_Artist = ""
+  Media_Album = ""
+  Media_Year = ""
+  Media_CreationDate = ""
+  Media_TrackNo = ""
+  Media_Title = ""
+  Media_Genre = ""
+  Media_Comment = ""
+  Media_Comments = ""
+  Media_Name = ""
+
+End
+
+Public Function Get_ICYStreamTitle(ICYString As String) As String
+  'Input: ICY Info: sometag="";StreamTitle='Ferras - Hollywood's Not America';StreamUrl='';
+  'Output: Ferras - Hollywood's Not America
+  '-----
+
+  Dim tmpstring, tmpstring2 As String
+  Dim ICYTagArray As New String[]
+  Dim i As Integer
+  'ICY Info: StreamTitle='Ferras - Hollywood's Not America';StreamUrl='';
+  tmpstring = Trim(Split(ICYString, ":")[1])
+  tmpstring = Replace(tmpstring, "';", Chr(8))
+  ICYTagArray = Split(tmpstring, Chr(8))
+  'scan ICYArray for "StreamTitle"
+  For i = 0 To ICYTagArray.count - 1
+    tmpstring = ICYTagArray[i]
+    If Upper(tmpstring) Like "STREAMTITLE*" Then
+      tmpstring2 = Split(tmpstring, "=")[1]
+      Return Right(tmpstring2, Len(tmpstring2) - 1)
+      Break
+    Endif
+  Next 'i
+
+End
+
+Private previoustime As Integer = "0"
+Private previoustimefloat As Float = 0
+
+Public Sub CurrentTime() As String
+  Dim timeint As Integer = 0
+  Try timeint = Val(Trim(Mid(Playeroutput, 3, InStr(playeroutput, ".") - 3)))
+  If Error Then
+    Return CInt(previoustime)
+  Else
+    previoustime = timeint
+    Return CInt(previoustime)
+  Endif
+End
+
+Public Sub CurrentTimeFloat() As String
+  Dim timefloat As Float = 0
+  Try timefloat = CFloat(Trim(Mid(Playeroutput, 3, InStr(playeroutput, ".") - 1)))
+  If Error Then
+    Return previoustimefloat
+  Else
+    previoustimefloat = timefloat
+    Return previoustimefloat
+  Endif
+End
+
+
+Public Sub ShowText(message As String, Optional myTime As Integer = 3000)
+
+  send("pausing_keep osd_show_property_text " & "'" & message & "' " & mytime)
+
+End
+
+Public Function IsSubFile(SubfilePath As String) As Boolean
+
+  Dim SubExtensions As String = "*.SRT;*.ASS;*.SUB;*.SSA;"
+  Dim fileExt As String = "." & File.Ext(SubfilePath)
+
+  If Fileext = "." Then Return False
+  If (InStr(Upper(SubExtensions), Upper(fileExt)) > 0) Then
+    Return True
+  Else
+    Return False
+  Endif
+
+End
+
+
+Public Sub SubtitleAdd(SubFilePath As String)
+
+  Dim TotalFileSubtitles As String = "0"
+  Dim LastSubId As Integer = 0
+  Dim i As Integer
+  'Warning: for this to work correctly, FindTagValue should scan mediaheaders
+  'from end to beginning.
+  'AddedSubs += 1
+  'Try TotalSubtitles = CStr(CInt(FindTagValue("ID_FILE_SUB_ID")) + 1) + addedsubs
+  For i = 0 To subtitletracks.Max
+    If subtitletracks[i] Like "* (File)" Then TotalFileSubtitles += 1
+  Next
+  
+  'TotalFileSubtitles = subtitletracks.count
+  Debug "TotalSubtitles= " & TotalFileSubtitles
+  Debug
+  LastSubId = CInt(TotalFileSubtitles) - 1
+  Send("pausing_keep sub_load '" & SubFilePath & "'") 'NOTE THE Triple quotes ( "'subfile'", mplayer bug)
+  Debug "Send()" & "sub_load \"" & SubFilePath & "\""
+  Debug
+  ' Send("sub_select " & CStr(LastSubId + 1))
+  ' Debug "selecting sub id " & (LastSubId + 1)
+  'Send("sub_file '" & CStr(LastSubId + 1) & "'")
+  subfile = SubFilePath
+  subtitletracks.Add(CStr(lastsubid + 1) & " - " & file.Name(subfilepath) & " (File)")
+
+
+
+
+  'when you insert an external sub file into a file that embeds other subtitles like mkv,
+  'all other subtitles gets shifted and the file is inserted before them
+  'so we mark every inserted subtitle as "* (file)" and every embedded as "* embedded"
+  'and than we can select the right subtitle
+  
+  'All this should not be necessary, but it seems that mplayer mess sub_delay with sub_step :(
+  'send("sub_step +1")
+  '
+  '
+End
+
+Public Function get_screenshot(DeleteFILE As Boolean) As Picture
+
+  Dim Screenshot As Picture
+  Dim timeout As Integer = 20
+
+  Takingscreenshot = True
+  If ProcessRunningOvr() Then
+    send("screenshot")
+  Endif
+  While Not ((lastscreenshot <> "") Or (timeout = 0)) 'wait for mplayer answer
+    Wait 0.05
+    timeout = timeout - 1
+  Wend
+  If timeout = 0 Then
+    If Deletefile Then Try Kill lastscreenshot
+    Takingscreenshot = False
+    Return picture["null.png"]
+  Endif
+  timeout = 20
+  While Not ((Exist(lastscreenshot)) Or (timeout = 0)) 'wait for the file to be created
+    Wait 0.05
+    timeout = timeout - 1
+  Wend
+  If timeout = 0 Then
+    Debug "Timeout Error: Screenshot file does not exists!"
+    Debug
+    If Deletefile Then Try Kill lastscreenshot
+    Takingscreenshot = False
+    Return picture["null.png"]
+  Endif
+  'PRINT lastscreenshot
+  Screenshot = picture.Load(Replace(lastscreenshot, "//", "/"))
+  If Deletefile Then Try Kill lastscreenshot
+  Takingscreenshot = False
+  Return Screenshot
+
+End
+
+Public Function Media_AudioOnly() As Boolean
+
+  Dim OnlyAudio As Boolean = False
+  Dim t1 As String = ""
+  Dim i As Integer
+  
+  If ProcessRunningOvr() Then
+
+    Repeat
+      Try t1 = Trim(MediaHeaders[i])
+      'Example: "A:   1.3 (01.3) of 6.8 (06.8)  0.6%"
+      If (t1 Like "*:*)* of *%*") And Not (t1 Like "*" & Media_FullPath & "*") Then OnlyAudio = True
+      i = i + 1
+    Until onlyaudio Or i >= MediaHeaders.Count
+  Else
+    Media_FullPath_Playing = ""
+  Endif
+  Return OnlyAudio
+
+End
+
+Public Sub FormatTime(seconds As String) As String
+
+  Dim iseconds, hh, mm, ss, restosec As Integer
+  Dim Shh, Smm, Sss As String
+
+  Try iseconds = Val(seconds)
+  If Error Then iseconds = 0
+  hh = iseconds Div 3600
+  restosec = (iseconds - (hh * 3600))
+  mm = restosec Div 60
+  ss = (restosec - (mm * 60))
+  Sss = ss
+  If Len(Sss) = 1 Then Sss = "0" & Sss
+  Smm = mm
+  If Len(Smm) = 1 Then Smm = "0" & Smm
+  Shh = hh
+  If Len(Shh) = 1 Then Shh = "0" & Shh
+  Return Shh & ":" & Smm & ":" & Sss
+
+End
+
+Public Function DeFormatTime(FormattedTime As String) As String
+
+  Dim ss, mm, hh As Integer
+
+  Try ss = Split(FormattedTime, ":")[2]
+  If Error Then ss = "0"
+  Try mm = Split(FormattedTime, ":")[1]
+  If Error Then mm = "0"
+  Try hh = Split(FormattedTime, ":")[0]
+  If Error Then hh = "0"
+  Return ss + (mm * 60) + (hh * 3600)
+
+
+End
+
+Private Sub GetTagValue(myline As String, mytag As String) As String
+
+  Dim MyTagEndPos As String
+
+  MyTagEndPos = InStr(myline, mytag) + Len(mytag) + 1
+  Return Mid(myline, MyTagEndPos)
+
+End
+
+Public Sub FindTagValue(mytag As String) As String
+  'this sub will scan mediaheaders and return mytag's value   
+
+  Dim i As Integer = 0
+  Dim tmp, Value As String = ""
+
+  If ProcessRunningOvr() Then
+  ' For i = 0 To mediaheaders.count - 1
+  '   Print mediaheaders[i]
+  ' Next
+
+    If MediaHeaders.Count > 0 Then
+      i = MediaHeaders.Count - 1
+      If i < 1 Then Return 'hack, cant understand why, but sometimes i is -1 (!)
+      Repeat
+        tmp = Trim(MediaHeaders[i])
+        If (tmp Like "*" & mytag & "*") Then
+          Value = GetTagValue(tmp, Mytag)
+        Endif
+        i = i - 1
+      Until (i = 0) Or (Value <> "")
+    Endif
+    
+  Else
+    Media_FullPath_Playing = ""
+  Endif
+  'Debug mytag; " "; value
+  Return value
+
+End
+
+Public Sub FindAudioTag(mytag As String) As String
+
+  Dim i As Integer
+  Dim DpointPos As Integer '":" position in mediaheaders[i]
+
+  If ProcessRunningOvr() Then
+    'wait for headers to be filled, we'll work on them
+    For i = 0 To MediaHeaders.count - 1
+      If Upper(MediaHeaders[i]) Like "*" & Upper(mytag) & ": *" Then
+        DpointPos = InStr(MediaHeaders[i], ":")
+        Return Mid(MediaHeaders[i], DpointPos + 2, Len(MediaHeaders[i]) - DpointPos + 1)
+      Endif
+    Next
+  Endif
+
+End
+
+
+Public Sub Media_get_length() As String
+
+  Dim t1 As String = ""
+  Dim ofpos, i As Integer = 0
+
+  
+  'Next, let's see if it is an audio only or an audio/video file,
+  'we need to know because of buggy ID_LENGTH behaviour:
+  
+  If Media_AudioOnly() Then
+    i = MediaHeaders.Count - 1        'we'll reverse the search here to speedup, probably
+    Repeat
+      t1 = Trim(MediaHeaders[i])
+      If (t1 Like "*)*") And (t1 Like "* of *") And (t1 Like "*%*") And (t1 Like "*:*") And Not (InStr(t1, Media_FullPath)) Then
+        ofpos = InStr(t1, " of ")
+        'clear all the chars before " of " (included):
+        Media_Length = Mid(t1, ofpos + 4, 10)
+        'find first space
+        ofpos = InStr(t1, " ")
+        'copy the string until that
+        Media_Length = Mid(Media_Length, 1, ofpos)
+        Return Media_Length
+      Endif
+      i = i - 1
+    Until (i = 0) Or (Media_Length <> "0")
+    
+  Else 'is a video/audio file
+    i = 0
+    Repeat
+      Try t1 = Trim(MediaHeaders[i]) 'fixme
+      If (t1 Like "*ID_LENGTH*") Then
+        Media_Length = GetTagValue(t1, "ID_LENGTH")
+      Endif
+      i = i + 1
+
+    Until (i >= MediaHeaders.Count) Or (Media_Length <> "0")
+  Endif
+  Return Media_Length
+
+End
+
+
+Public Function CodecsList(TYPE As String) As String[]
+  'returns a string array of supported audio codecs
+
+  Dim MPoutput As String
+  Dim MPLines, FuncOUT As New String[]
+  Dim MPLine, MPWord As String
+  Dim HeadSkipped As Boolean = False
+  Dim CheckHead As String = "ac:"
+  Dim Option As String
+
+  If TYPE = "AUDIO" Then
+    CheckHead = "ac:"
+    Option = " -noconfig all -ac help"
+  Else
+    CheckHead = "vc:"
+    Option = " -noconfig all -vc help"
+  Endif
+  Shell executable() & " " & Option To MPoutput
+  MpLines = Split(MPOutput, "\n", "", True)
+  For Each MPLine In MPLines
+    'get just the first word
+    MPWord = Split(MPLine, " ", "", True)[0]
+    If HeadSkipped Then FuncOUT.Add(MPWord)
+    If MPWord = CheckHead Then HeadSkipped = True
+  Next
+  Return FuncOUT
+
+End
+
+
+Public Function GetListOf(TheType As String) As String[]
+  'return a list of available drivers/filters
+  'thetype can be ao,vo,af,vf
+  Dim list, mpline As String
+  Dim outlist As New String[]
+  Shell executable() & "  -noconfig all -" & TheType & " help" To List
+  Debug Timer
+  For Each mpline In Split(list, "\n", "", True)
+    outlist.Add(Lower(Split(mpline, " \t", "", True)[0]))
+  Next 'mpline
+  Return outlist
+End
+
+
+'  Dim mycd As New Cddb
+'    mycd.cddb_query("/dev/sr0")
+
+
+Public Function QueryCDDB(CdromDevice As String)
+  Dim cmdline As String
+  cmdline = "mplayer  -noconfig all cddb:// -identify -endpos 0 -v -v -v -v -cdrom-device " & CdromDevice & " </dev/null"
+  Debug cmdline
+  Debug
+  cddbqueryprocess = Shell cmdline For Read As "cddbqueryprocess"
+End
+
+Public Sub cddbqueryprocess_read()
+  Dim tmpout As String
+  'Debug cddbqueryprocess.ReadLine()
+   Try Read #playerprocess, tmpout, -1024
+   If Not Error Then Debug tmpout
+End
+
+Public Function cddbqueryprocess_error(stderr As String)
+  
+  Debug stderr
+  Debug
+End
+
+
+Public thumbprocess As Process
+Private newfilenamepriv As String
+Private outdirpriv As String
+Private Thumbfullpathpriv As String
+Private widthpriv As Integer
+Private columnpriv As Integer
+Private rowpriv As Integer
+Private gridpriv As Gridview
+
+
+
+Public Sub savethumb(fullpath As String, newfilename As String, Optional width As Integer = 256, Optional seconds As Integer = 300, mygrid As Gridview, row As Integer, column As Integer) 
+  Dim outdir As String = Shell(Temp()) & Rnd(0, 99999)
+  Dim cmdline As String = ""
+
+  Mkdir outdir
+
+  rowpriv = row
+  columnpriv = column
+  gridpriv = mygrid
+
+  'Create the thumb, but exit after 30 seconds 
+  cmdline = "timeout -s 9 5 mplayer" & " " & Shell(fullpath) & " -nocache "
+  cmdline &= "-vf scale=" & width & ":-2" & ",expand=:::::1/1" & " -ss " & seconds 
+  cmdline &= " -frames 1 -nosound -vo jpeg:quality=80:outdir=" & outdir
+  cmdline &= " -noconfig all -slave -quiet &>/dev/null"
+
+  
+  newfilenamepriv = newfilename
+  outdirpriv = outdir
+  Thumbfullpathpriv = fullpath
+  widthpriv = width
+  Debug cmdline
+  Debug
+  thumbprocess = Shell cmdline For Input As "thumbprocess" 
+End
+
+
+Public Sub playerprocess_kill()
+  GBXBUGCloseStream()
+  If (Not MyKillCancelled) Then Raise mykill()
+End
+
+Event mykill()
+Event ThumbAvailableFor(fullpath As String, g As Gridview, r As Integer, c As Integer)
+Event ThumbErrorFor(fullpath As String, g As Gridview, r As Integer, c As Integer)
+
+
+Private ShortMovieChecked As Boolean = False
+Public Sub thumbprocess_kill()
+  Try Copy outdirpriv & "/" & Dir(outdirpriv, "*")[0] To newfilenamepriv
+  Shell "rm -R " & outdirpriv & "&>/dev/null"
+  If Exist(newfilenamepriv) Then
+    Raise ThumbAvailableFor(Thumbfullpathpriv, gridpriv, rowpriv, columnpriv)
+      Else
+    If ShortMovieChecked Then 
+      Raise ThumbErrorFor(Thumbfullpathpriv, gridpriv, rowpriv, columnpriv)
+        Else 'maybe the movie was very short, try to get a screen at 5th second:
+      Debug "Couldn't get a thumb, retrying with an earlier time"
+      Debug
+      ShortMovieChecked = True
+      savethumb(Thumbfullpathpriv, newfilenamepriv, widthpriv, 150, gridpriv, rowpriv, columnpriv)
+    Endif
+  Endif
+End
+
+
+
+Public Sub ExtractAudioTo(src As String, dest As String)
+  do_play(src, " -vo null -vc null -ao pcm:waveheader:fast:file=" & dest, False, False)
+End
+
+
+Public Sub StartOverbrightAnalyze()
+  If Not ProcessRunningOvr() Then Return
+  stopob = False
+  TimerAnalyzePRE = New Timer As "TimerAnalizePRE"
+  TimerAnalyzePRE.Delay = 10
+  TimerAnalyzePRE.start
+End
+
+Private StopOB As Boolean = False
+Public Sub StopOverBrightAnalyze()
+  Try mpanalyze.kill
+  Try TimerAnalyzePRE.stop
+  Try TimerAnalyze.stop
+  Try mpanalyze.kill
+  StopOB = True
+End
+
+
+
+
+Private barray As String[]
+Public mpAnalyze As Process
+Private PrevCtime As Integer = -1
+
+Public Sub Analyze(videofile As String)
+  Dim cmd As String
+  Dim newpos As Integer
+  Dim i As New Image
+  Dim bAvg As Integer
+  Dim tmpdir As String = Temp() & "/"
+  Dim pLine, t As String
+  Dim mystream As File
+  Dim cTime, cTimei, cTimef As String
+  Dim outfile As String[]
+  Dim sFile As String
+  Dim timeout As Integer
+  lStart:
+  While ProcessRunningOvr()
+    If stopob Then Goto lEnd
+    barray = New String[80000] 
+    barray.Fill(-1, 0, 80000)
+    Shell "rm -Rf " & tmpdir Wait
+    Shell "mkdir -p " & tmpdir Wait
+    Shell "rm " & tmpdir & "/fifo" Wait
+    Shell "mkfifo " & tmpdir & "/fifo" Wait
+    Try mystream.close
+    mystream = Open tmpdir & "/fifo" For Write
+    Print #mystream, "pause"
+    cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 0  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -vf scale=64:64:0:3,scale=16:16:0:3,smartblur=5:1:0,scale -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
+    'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 3  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
+    Debug cmd
+    mpanalyze = Shell cmd
+    Repeat
+      If stopob Then Goto lEnd
+      Sleep 0.05
+      Try t = File.Load(tmpdir & "/mpout")
+    Until (Not Error )
+    Repeat
+      Try outfile = Split(File.Load(tmpdir & "/mpout"), "\n")
+      Sleep 0.05
+    Until (outfile.max > 1)
+    
+    While mpanalyze.state = Process.Running
+      'Debug
+      If stopob Then Goto lEnd
+      For Each sFile In Dir(tmpdir, "*.jpg*")
+        Kill tmpdir & "/" & sFile
+      Next
+      
+      'step ahead
+       newpos = CInt(currenttime()) + 4
+      If Not Error Then 
+        Print #mystream, "pausing_keep seek " & CStr(newpos) & " 2"
+        'Debug "Analize newseek", newpos
+      Endif
+      Repeat
+        If paused Or pausing Then TimerAnalyze.stop
+        Wait 1
+        If stopob Then Goto lEnd
+      Until Not (paused Or pausing)
+      TimerAnalyze.start
+      'Print #mystream, "pausing_keep seek +1"
+      
+      'wait for pic
+      timeout = 100
+      If Not Exist(tmpdir) Then Goto lStart
+      While Dir(tmpdir, "*.jpg").count = 0 And (timeout > 0) And mpanalyze.state = Process.Running
+        Wait 0.01
+        timeout -= 1
+      Wend
+      If timeout = 0 Then 
+        Debug "No Pics, restarting analyzer"
+        Try mpanalyze.Kill
+        Goto lStart
+      Endif
+      
+      '''''''''If (timeout <= 0) Or (mpanalyze.state <> Process.Running) Then Goto lEnd
+      outfile = Split(File.Load(tmpdir & "/mpout"), "\n\r", "", True) '<- this is sloooow over time, watchout!
+      pLine = outfile[outfile.max - 1]
+      'Try cTime = Val(Trim(Mid(pLine, 3, InStr(pLine, ".") - 3)))
+      Try ctime = CFloat(Trim(Mid(pLine, 3, InStr(pLine, ".") - 1))) 'get the current float time
+      Try cTimei = Split(cTime, ".")[0]
+      Try cTimef = Split(cTime, ".")[1]
+      Try t = tmpdir & Dir(tmpdir, "*.jpg")[0]
+      If Exist(t) Then
+        Try i = i.Load(tmpdir & Dir(tmpdir, "*.jpg")[0])
+        'Shell "mv  " & (tmpdir & Dir(tmpdir, "*.jpg")[0]) & " /tmp/tmp/" & ctime & ".jpg" Wait
+        If Not Error Then 
+          bavg = Color[i.Pixels[0]].value 
+          Debug "time", ctime, "AVG:", bavg
+          'barray index represents the integer part of the time, so we store the float part with the average picture brightness value in the array cell
+          'and set a delay afterwards for near pefect timing
+          Try barray[cTimei] = bAvg & ":" & ctimef
+          
+        Endif
+      Endif
+    Wend
+  Wend
+  lEnd:
+  stopob = False
+  mpanalyze.kill
+  Shell "rm -Rf " & tmpdir
+End
+
+
+
+Public TimerAnalyzePre As Timer
+Public Sub TimerAnalizePRE_timer()
+  TimerAnalyzePRE.stop
+  TimerAnalyze = New Timer As "TimerAnalize"
+  TimerAnalyze.delay = 33 'should be ok till 30fps source material
+  TimerAnalyze.start
+  Analyze(Shell(SConv(Media_FullPath_Playing)))
+End
+
+Public TimerAnalyze As Timer
+
+Event AnalyzerNewValue(bAvg As Integer, delay As Float)
+
+Public Sub TimerAnalize_timer()
+  Dim cTime As Integer
+  Dim bAvg As String
+  Dim delay As Float
+  Try cTime = CInt(CurrentTime())
+  If Error Then Return
+  If PrevCtime = cTime Then Return
+  prevCtime = cTime
+  bAvg = Split(barray[ctime], ":")[0]
+  If bAvg <> -1 Then
+    TimerAnalyze.Stop
+    'Debug "New value at index", i, bout[3]
+    'ShowText("Tempo media: " & ctime & " media: " & bAvg & " Tempo filmato " & CurrentTimeFloat())
+    'ShowText("barray: " & ctime & "movie: " & CurrentTimeFloat(), 1000)
+    delay = CFloat("0." & Split(barray[ctime], ":")[1])
+    delay = delay - (CFloat(CurrentTimeFloat()) - cTime)
+    Try Raise AnalyzerNewValue(bAvg, delay, cTime)
+    Debug "NewValue"
+    If Not stopob Then TimerAnalyze.start
+      'Else
+    'Debug "missing value in barray"
+  Endif
+End
+
+
+' Public Sub OLDImageRange(aImage As Image, ByRef bMin As Integer, ByRef bMax As Integer, ByRef bAvg As Integer)
+'   Dim ih As ImageHistogram
+'   Dim i, b, t, it As Integer
+'   'Dim h As New Integer[]
+'   bMin = 255
+'   bMax = 0
+'   iH = aImage.histogram()
+'   t = 0
+'   it = 0
+'   For i = 0 To 255 Step 1
+'     b = Max((Max(iH[Image.red, i], iH[Image.green, i])), iH[Image.blue, i])
+'     'b = (CInt((iH[Image.red, i] + iH[Image.green, i] + iH[Image.blue, i]) / 3))
+'     If b <= 255 Then
+'       'h.add(b)
+'       If bMin > b Then bMin = b
+'       If bMax < b Then bMax = b
+'       t += b
+'       it += 1
+'      ' Debug "b: ", b
+'     Endif
+'   Next 'i
+'   If iT = 0 Then
+'     bMin = 0 
+'     bMax = 255
+'     bAvg = 255
+'     Return
+'   Endif
+'   bAvg = t Div it
+' End
+
+' Public Sub ImageRange(aImage As Image, ByRef bMin As Integer, ByRef bMax As Integer, ByRef bAvg As Integer)
+'   Dim i, b As Integer
+'   'Dim c As Colorinfo
+'   'b = 0
+'   ' For i = 0 To aImage.Pixels.max Step 1
+'   '   b += Color[aImage.Pixels[i]].value 
+'   ' Next
+'   
+'   'bAvg = b Div (i - 1) 'range -17043521 -> -1
+'   bavg = Color[aImage.Pixels[i]].value 
+'   Debug bavg
+' End

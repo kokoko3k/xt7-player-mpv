@@ -1,0 +1,453 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+
+Public Struct mpvOption
+  name As String
+  data As String
+End Struct
+
+Private pre As String = Global.pre
+Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one timenu
+Public InitDone As Boolean = False
+
+Public Sub FillFilters()
+Dim MyFilters As New String[]
+Dim Filter As String
+Dim i As Integer
+Dim AScrollview As ScrollView
+
+   MyFilters.add("Expand")
+   MyFilters.add("Scale")
+   MyFilters.add("HqDn3D")
+   MyFilters.add("Eq")
+   MyFilters.add("UnSharp")
+   MyFilters.add("Yadif")
+   MyFilters.add("DeLogo")
+   MyFilters.Add("GradFun")
+   MyFilters.Add("Stereo3D")
+   MyFilters.add("CustomVideo1")
+   MyFilters.add("CustomVideo2")
+   MyFilters.add("CustomVideo3")
+  
+  
+  For Each Filter In MyFilters
+    FilterList.Add(Filter)
+  Next
+   
+  TabStrip1.count = MyFilters.Count
+   For i = 0 To Tabstrip1.count - 1
+    Tabstrip1.index = i
+    TabStrip1.text = MyFilters[i]
+    Ascrollview = New ScrollView(Tabstrip1)
+    Ascrollview.name = TabStrip1.text & ".ScrollView"
+    Ascrollview.expand = True
+    Ascrollview.Arrangement = Arrange.vertical
+    Ascrollview.padding = 8
+    Ascrollview.Spacing = True
+    Ascrollview.border = False
+    Ascrollview.margin = True
+    Ascrollview.ScrollBar = Scroll.Both
+   Next 'i
+  
+
+End
+
+
+
+
+
+Public Sub SyncFiltersList(CheckFilterName As String, IsInChain As Boolean)
+  'this will add or remove the "+" symbol from filter name
+  'in VideoFilterList
+
+  Dim i As Integer
+  For i = 0 To FilterList.count - 1
+    If (Upper(FilterList[i].text) = Upper(CheckFilterName)) Or (Upper(FilterList[i].text) = Pre & Upper(CheckFilterName)) Then
+      If IsInChain Then
+        If Not (Upper(FilterList[i].text) = Pre & Upper(CheckFilterName)) Then FilterList[i].text = Pre & FilterList[i].text
+          Else
+        If (Upper(FilterList[i].text) = Global.Pre & Upper(CheckFilterName)) Then FilterList[i].text = Mid(FilterList[i].text, Len(Pre) + 1)
+        Break
+      Endif
+    Endif
+  Next 'i
+End
+
+Public Function ParseFiltersGui(Filtername As String) As String
+  'will parse the tabstrip at filtername index and output
+  'a commandline to add a filter in mplayer
+  Dim ParsedFilter As String = Lower(Global.RemoveShortcut(FilterName))
+  Dim TmpString As String = ""
+  Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
+                              'in the tab, it is created in the fillfilters function
+  Dim PanelObject As Object 'the Hbox which contains a single parameter
+                            'it is created by DrawFiltersGui function
+  Dim SubObject As Object
+
+  Dim parse As Boolean = True
+
+  
+  'Find the ParsedFilter Tab and activate it:
+  Tabstrip1.index = Global.TabIndexByName(ParsedFilter, Tabstrip1)
+  If Parsedfilter Like "customvideo*" Then
+    Return ParseCustom()
+      Else
+    'Discend the Tab objects,parse them and build the commandline
+    'hierarchy is:
+    'Tabstrip -> scrollviews -> Panels -> ParameterObjects
+    For Each MyScrollview In Tabstrip1.Children
+      For Each PanelObject In MyScrollView.Children
+        If PanelObject.name Like "*HBox" Then
+          For Each SubObject In PanelObject.Children
+            If Not (SubObject Is Label) Then
+              If Not ((SubObject Is Checkbox) Or (subobject.name Like "NOPARSE*")) Then
+                parse = True
+                  Else
+                parse = SubObject.value '(is a checkbox,parse only if it is checked)
+              Endif
+              If SubObject.text <> "" Then
+                If parse Then TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0] & ":")
+                  Else
+                If parse Then TmpString = global.RemoveShortcut(TmpString & ":")
+              Endif
+            Endif
+          Next
+        Endif
+      Next
+    Next
+    TmpString = Left(Tmpstring, Len(TmpString) - 1)
+    If ParsedFilter Like "pp*" Then 
+      ParsedFilter = "pp"
+        Else If (Lower(ParsedFilter) = "myexpand") Then 'gbr3 workaround
+          parsedfilter = "expand"                       'gbr3 workaround
+    Endif
+  '   If parsedfilter = "stereo3d" Then
+  '     Debug "Adding scale filter after stereo3d filter to avoid problems"
+  '     Return ParsedFilter & "=" & TmpString & ",scale"
+  '       Else
+  '     Return ParsedFilter & "=" & TmpString
+  '   Endif
+  ' Endif
+    
+    
+    If tmpstring <> "" Then
+      Return ParsedFilter & "=" & TmpString
+        Else
+      Return ParsedFilter
+    Endif
+
+  Endif
+End
+
+
+Private Function parsecustom() As String
+'will parse the filter which the user can freely configure.
+  Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
+                              'in the tab, it is created in the fillfilters function
+  Dim PanelObject As Object 'the Hbox which contains a single parameter
+                            'it is created by DrawFiltersGui function
+  Dim SubObject As Object
+  Dim customfilter As String = ""
+  
+  For Each MyScrollview In Tabstrip1.Children
+    For Each PanelObject In MyScrollView.Children
+      If PanelObject.name Like "*HBox" Then
+        For Each SubObject In PanelObject.Children
+          If Not (SubObject Is Label) Then
+            If (SubObject Is Checkbox) Then
+              If subobject.value = True Then
+                If subobject.next Is Textbox Then
+                  If Trim(subobject.NEXT.text) <> "" Then
+                    If customfilter = "" Then
+                      customfilter = customfilter & subobject.NEXT.text
+                        Else
+                      customfilter = customfilter & "," & subobject.NEXT.text
+                    Endif
+                  Endif
+                Endif
+              Endif
+            Endif
+          Endif
+        Next
+      Endif
+    Next
+  Next
+  Return customfilter
+End
+
+Public Sub ShowFilterConfiguration(Filter As String)
+ 'Find the filter name in the Tab list
+  Try TabStrip1.index = Global.TabIndexByName(Filter, Tabstrip1)
+ 'Highlight it in the filter list
+  Global.FilterListFromTab(Tabstrip1, FilterList)
+  'Fill the filter description
+  FilterList_Select()
+End
+
+Private Sub DrawFiltersGui()
+  Dim AllParams As New Variant[]
+  Dim NotSwitchable As Boolean = False
+  Dim Switchable As Boolean = True
+  
+  AllParams.Clear
+  ' unsharp[=l|cWxH:amount[:l|cWxH:amount]]
+  AllParams.add(["CHOOSE", ("Luminance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp1", ("The higher, the slower")])
+  AllParams.add(["RANGEFLOAT", ("Luma amount"), "-2", "0", "5", "Sharp2", ("Negative means blur")])
+  AllParams.add(["CHOOSE", ("Chrominance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp3", ("The higher, the slower")])
+  AllParams.add(["RANGEFLOAT", ("Chroma amount"), "-2", "0", "5", "Sharp4", ("Negative means blur")])
+  Global.DrawGui(AllParams, "unsharp", TabStrip1, NotSwitchable)
+  AllParams.Clear
+  
+  'expand[ = w: h: x: y: o: a: r]
+  AllParams.add(["RANGE", ("Width"), "-2048", "0", "2048", "Expand1", ("0 to Disable; Negative as offset to original value")])
+  AllParams.add(["RANGE", ("Height"), "-2048", "0", "2048", "Expand2", ("0 to Disable; Negative as offset to original value")])
+  AllParams.add(["RANGE", ("X Position"), "-1", "-1", "2048", "Expand3", ("Original image position; -1 to center")])
+  AllParams.add(["RANGE", ("Y Position"), "-1", "-1", "2048", "Expand4", ("Original image position; -1 to center")])
+  AllParams.add(["CHOOSE", ("Fit an aspect instead of a resolution"), "", "4/3", "3/2", "16/9", "16/10", "1.85/1", "2.35/1", "2.39/1", "Expand6", ""])
+  AllParams.add(["RANGE", ("Make Width and Height divisible by"), "1", "1", "64", "Expand7", ""])
+  Global.DrawGui(AllParams, "expand", TabStrip1, NotSwitchable)
+  AllParams.Clear
+  
+   
+  'hqdn3d[ = luma_spatial: chroma_spatial: luma_tmp: chroma_tmp]
+  AllParams.Add(["RANGE", ("Spatial luma strength"), "0", "4", "200", "HqDn3D1", ""])
+  AllParams.Add(["RANGE", ("Spatial chroma strength"), "0", "3", "200", "HqDn3D2", ""])
+  AllParams.Add(["RANGE", ("Temporal luma strength"), "0", "6", "200", "HqDn3D3", ""])
+  AllParams.Add(["RANGE", ("Temporal chroma strength"), "0", "4", "200", "HqDn3D4", ""])
+  Global.DrawGui(AllParams, "hqdn3d", TabStrip1, NotSwitchable)
+  AllParams.Clear
+  
+  'scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]
+  AllParams.Add(["RANGE", ("Width"), "-11", "0", "2048", "Scale1", ("0 disables scaling,see man below")])
+  AllParams.Add(["RANGE", ("Height"), "-11", "0", "2048", "Scale2", ("0 disables scaling,see man below")])
+  AllParams.Add(["FREE", ("Scaling Parameters"), "", "Scale5", ("Depends on sws, leave blank if unsure")])
+  AllParams.Add(["FREE", ("Scaling Parameters"), "", "Scale6", ("Depends on sws, leave blank if unsure")])
+  AllParams.Add(["CHOOSE", ("Chroma skipping"), ("0 - Use all available input lines for chroma"), ("1 - Use only every 2. input line for chroma"), ("2 - Use only every 4. input line for chroma"), ("3 - Use only every 8. input line for chroma"), "Scale4", ("lower=slower")])
+  AllParams.Add(["CHOOSE", ("Disable Upscaling"), ("0 - Allow Upscaling"), ("1 - Disallow if one dimensions exceeds its original value"), ("2 - Disallow if both dimensions exceed their original values"), "scale8", ""])
+  AllParams.Add(["CHOOSE", ("Accurate Rounding"), ("no - Disable Accurate rounding"), ("yes - Enable Accurate rounding"), "scale9", ""])
+  Global.DrawGui(AllParams, "scale", TabStrip1, NotSwitchable)
+  AllParams.Clear
+  
+  'delogo[=x:y:w:h:t]
+  AllParams.Add(["RANGE", "X", "0", "0", "2048", "Delogo1", ("topLeft Corner")])
+  AllParams.Add(["RANGE", "Y", "0", "0", "2048", "Delogo2", ("TopLeft Corner")])
+  AllParams.Add(["RANGE", ("Width"), "0", "0", "2048", "Delogo3", ""])
+  AllParams.Add(["RANGE", ("Height"), "0", "0", "2048", "Delogo4", ""])
+  AllParams.Add(["RANGE", ("Tickness"), "-1", "0", "2048", "Delogo5", ("-1 draws a green border")])
+  AllParams.add(["SWITCH", "show", "DISABLED", "Delogo6", ("Draw a rectangle showing the area defined by x/y/w/h.")])
+  Global.DrawGui(AllParams, "delogo", TabStrip1, NotSwitchable)
+  AllParams.Clear
+
+  
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom11", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom12", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom13", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom14", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom15", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  Global.DrawGui(AllParams, "CustomVideo1", Tabstrip1, Switchable)
+  AllParams.Clear
+      
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom21", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom22", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom23", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom24", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom25", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  Global.DrawGui(AllParams, "CustomVideo2", Tabstrip1, Switchable)
+  AllParams.Clear
+
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom26", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom27", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom28", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom29", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom30", ("E.g.:mirror,smartblur=0.4:0.5:10")])
+  Global.DrawGui(AllParams, "CustomVideo3", Tabstrip1, Switchable)
+  AllParams.Clear
+      
+  'eq2[=gamma:contrast:brightness:saturation:rg:gg:bg:weight]
+  AllParams.add(["RANGEFLOAT", ("Gamma"), "0.1", "1.0", "10", "Eq1", ("Initial gamma value(default: 1.0)")])
+  AllParams.add(["RANGEFLOAT", ("Contrast"), "-2.0", "1.0", "2", "Eq2", ("Initial contrast (-x = negative image)")])
+  AllParams.add(["RANGEFLOAT", ("Brightness"), "-1", "0", "1", "Eq3", ("Initial brightness (default: 0.0)")])
+  AllParams.add(["RANGEFLOAT", ("Saturation"), "0", "1.0", "3", "Eq4", ("Initial Saturation (default: 0.0)")])
+  AllParams.add(["RANGEFLOAT", ("Gamma Red"), "0.1", "1.0", "10", "Eq5", ("gamma for the red component (default: 1.0)")])
+  AllParams.add(["RANGEFLOAT", ("Gamma Green"), "0.1", "1.0", "10", "Eq6", ("gamma for the green component (default: 1.0)")])
+  AllParams.add(["RANGEFLOAT", ("Gamma Blue"), "0.1", "1.0", "10", "Eq7", ("gamma for the blue component (default: 1.0)")])
+  AllParams.add(["RANGEFLOAT", ("Weight"), "0", "1.0", "1", "Eq8", ("Reduce effect of gamma correction")])
+  Global.DrawGui(AllParams, "eq", TabStrip1, NotSwitchable)
+  AllParams.Clear
+
+
+ 'gradfun[=strength[:radius]]
+  AllParams.Add(["RANGEFLOAT", ("Strength"), "0.51", "1.5", "64", "gradfun1", ("Maximum amount by which the filter will change any one pixel.  Also the threshold for detecting nearly flat regions (default: 1.2).")])
+  AllParams.Add(["RANGE", ("Radius"), "0", "16", "32", "gradfun2", ("Neighborhood to fit the gradient to.  Larger radius makes for smoother gradients, but also prevents the filter from modifying pixels near detailed regions (default: 16).")])
+  Global.DrawGui(AllParams, "gradfun", TabStrip1, NotSwitchable)
+  AllParams.Clear
+  
+ 'yadif=[mode[:field_dominance]]
+  AllParams.Add(["CHOOSE", ("Deinterlace mode"), "", ("frame - Output 1 frame for each frame."), ("field - Output 1 frame for each field."), ("frame-nospatial - Like 0 but skips spatial interlacing check."), ("field-nospatial - Like 1 but skips spatial interlacing check"), "yadif1", ""])
+  Global.DrawGui(AllParams, "yadif", TabStrip1, NotSwitchable)
+  AllParams.Clear
+  
+  
+  'stereo3d=[in:out]
+  AllParams.Add(["CHOOSE", ("Input format"), ("sbsl - side by side parallel (left eye left, right eye right)"), ("sbsr - side by side crosseye (right eye left, left eye right)"), ("abl - above-below (left eye above, right eye below)"), ("abr - above-below (right eye above, left eye below)"), ("ab2l - above-below with half height resolution (left eye above, right eye below)"), ("ab2r - above-below with half height resolution (right eye above, left eye below)"), "stereo3d1", ""])
+  AllParams.add(["CHOOSE", ("Output format"), ("arcg - anaglyph red/cyan gray (red filter on left eye, cyan filter on right eye)"), ("arch - anaglyph red/cyan half colored (red filter on left eye, cyan filter on right eye)"), ("arcc - anaglyph red/cyan color (red filter on left eye, cyan filter on right eye)"), ("arcd - anaglyph red/cyan color optimized with the least squares projection of dubois (red filter on left eye, cyan filter on right eye)"), ("agmg - anaglyph green/magenta gray (green filter on left eye, magenta filter on right eye)"), ("agmh - anaglyph green/magenta half colored (green filter on left eye, magenta filter on right eye)"), ("agmc - anaglyph green/magenta colored (green filter on left eye, magenta filter on right eye)"), ("aybg - anaglyph yellow/blue gray (yellow filter on left eye, blue filter on right eye)"), ("aybh - anaglyph yellow/blue half colored (yellow filter on left eye, blue filter on right eye)"), ("aybc - anaglyph yellow/blue colored (yellow filter on left eye, blue filter on right eye)"), ("irl - Interleaved rows (left eye has top row, right eye starts on next row)"), ("irr - Interleaved rows (right eye has top row, left eye starts on next row)"), ("ml - mono output (left eye only)"), ("mr - mono output (right eye only)"), "stereo3d2", ""])  
+  Global.DrawGui(AllParams, "stereo3d", TabStrip1, NotSwitchable)
+  AllParams.Clear
+End
+
+
+Public Sub Init()
+  If initdone Then Return
+  FillFilters()
+  DrawFiltersGui()
+  InitDone = True
+End
+
+
+Public Sub Form_Open()
+    If Not AlreadyLoaded Then 
+     Alreadyloaded = True
+     MenuLoadDefault_Click()
+     Chains.AlreadyLoaded = True
+     Chains.MenuLoadDefault_Click()
+     AFiltersCfg.AlreadyLoaded = True
+     AFiltersCfg.MenuLoadDefault_Click()
+  Endif
+  
+  Global.Center(Fmain, Me)
+  Me.show()
+  Wait 
+  Form_Resize()
+End
+
+
+
+Public Sub FilterList_Select()
+ Dim caption As String
+ Dim ChainObj As Object
+   'Fire up the tab relative to the item list by its name:
+      Caption = FilterList.Current.text
+      TabStrip1.index = Global.TabIndexByName(Caption, TabStrip1)
+   'Next, Paste the filter description from the tag of Filters to the chain form:
+      If Upper(caption) = "EXPAND" Then caption = "MYEXPAND" 'gb3 workaround
+      For Each ChainObj In Chains.controls
+        If (Upper(ChainObj.name) = Upper(Caption)) Or (pre & Upper(ChainObj.name) = Upper(Caption)) Then
+          DescriptionArea.text = ChainObj.tag
+          Break
+        Endif
+      Next
+End
+
+
+
+Public Sub CancelBTN_Click()
+  Me.hide
+End
+
+
+Public Sub TabStrip1_Click()
+  'find the current tab caption in the filter list
+  Global.FilterListFromTab(TabStrip1, FilterList)
+End
+
+
+
+Public Sub OkBTN_Click()
+  If global.FromChains Then
+    Chains.Show
+    global.FromChains = False
+  Endif
+  Me.hide
+  Wait 0.1
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.SetFocus()
+End
+
+
+Public Sub ApplyBTN_Click()
+  FMain.Apply()
+End
+
+Public Function GetCurrentTabIndex() As Integer
+  Return TabStrip1.Index
+End
+
+Public Sub SetCurrentTabIndex(Index As Integer)
+  TabStrip1.Index = index
+End
+
+Public Sub GoChainsBTN_Click()
+  Chains.Show
+  Me.hide
+End
+
+Public Sub Form_Resize()
+  vsplit1.y = 8
+  VBox1.y = vsplit1.y
+  VBox1.Height = Frame1.Height - VBox1.y - 8
+  vsplit1.w = Frame1.Width - FilterList.Width - 24
+  vsplit1.x = FilterList.x + FilterList.Width + 16
+  vsplit1.h = VBox1.Height 
+End
+
+Public Sub MenuLoadDefault_Click()
+  Dim MySettings As New SettingsClass
+  Init()
+  MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
+  AlreadyLoaded = True
+  'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
+End
+
+Public Sub MenuSaveDefault_Click()
+  If Not InitDone Then Init()
+  SaveCurrent()
+End
+Public Sub SaveBTN_Click()
+  SaveCurrent()
+End
+Public Sub SaveCurrent()
+  Dim MySettings As New SettingsClass
+  MySettings.Save(Me, global.confpath & "/" & global.CurrentProfile)
+End
+
+Public Sub MenuSaveToAll_Click()
+  Dim profilename, profilenamesplitted As String
+  Dim MySettings As New SettingsClass
+  If MyQuestion.Ask(("This will save this window settings\n to all profiles found but the 'Factory_defaults' one"), ("Proceed"), ("Don't")) = 2 Then
+    Return
+      Else
+     For Each profilename In Dir(global.confpath & "/", "*.profile")
+        If Stat(global.confpath & "/" & profilename, True).type = gb.Directory Then
+          profilenamesplitted = Split(profilename, ".")[0]
+          If profilenamesplitted <> "Factory_Defaults" Then
+            MySettings.Save(Me, global.confpath & "/" & profilenamesplitted)
+          Endif
+        Endif
+     Next 'profilename
+  Endif
+End
+
+Public Sub Form_Show()
+  Dim Chainfilter As Object
+   FilterList_Select()
+  'Add "*" to every filter which is in the active chain
+  For Each ChainFilter In Chains.VideoChainBox.Children
+    SyncFiltersList(ChainFilter.name, True)
+  Next
+  'remove "*" from every filter which is in the active chain
+  For Each ChainFilter In Chains.VideoFiltersBox.children
+    SyncFiltersList(ChainFilter.name, False)
+  Next
+  
+End
+
+Public Sub Form_Close()
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+End
+
+Public Sub Form_Hide()
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+
+End

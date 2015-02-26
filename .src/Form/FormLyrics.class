@@ -1,0 +1,266 @@
+' Gambas class file
+
+Private CURRENTURLIDX As Integer = 0
+Private PREVLINK As String = ""
+Private SEARCHING As Boolean = True
+Private blackdomains As String = "lyrics007.com;cityguideny.com;youtube.com;google.com;bing.com;yahoo.com;google.com;twitter.com;facebook.com;amazon.com"
+Private baddomains As String = "sweetslyrics.com;lyricsfreak.com;lyricsondemand.com;lyricsbox.com;lyricsreg.com;lyricsty.com;lyrics007.com;mp3lyrics.org;lyrster.com;nl.visit-it.com;supermusic.cz;songmeanings.net;loglar.com;lyyyrics.blogas.lt;lyrics007.com"
+
+
+
+
+
+
+
+Private Function httpget(url As String, Optional dumpfile As String = "") As String
+  Dim httpclient1 As New Httpclient
+  Dim hastimedout As Boolean = True
+  Dim wdata As String
+  HttpClient1.async = True
+  HttpClient1.UserAgent = "Links (2.7; Linux 3.7.9-2-ARCH x86_64; GNU C 4.7.1; text)" '"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
+  HttpClient1.timeout = 10
+  HttpClient1.url = url
+  Try httpclient1.Proxy.Host = Global.proxyfromenv()
+  HttpClient1.Get
+
+  hastimedout = waitforhttp(HttpClient1, 1000)
+  If ((HttpClient1.status < 0) Or hastimedout) Then
+    Message.Error(("Network error"))
+    Return
+  Endif
+  If Lof(HttpClient1) Then Read #HttpClient1, wdata, Lof(HttpClient1)
+  If dumpfile <> "" Then Try File.Save(dumpfile, wdata)
+  Return wdata
+End
+
+
+
+Private Function waitforhttp(myhttpclient As HttpClient, timeout As Integer) As Boolean
+  'timeout is in millisecs,return true on timeout
+  While (timeout > 0) And ((myhttpclient.status = Net.connecting) Or (myhttpclient.status = Net.ReceivingData))
+    Wait 0.01
+    timeout -= 1
+  Wend
+  If timeout = 0 Then Return True
+  Return False
+End
+
+
+Public Sub Searchlyrics(artist As String, song As String)
+  Global.Center(fmain, Me)
+  textartist.text = artist
+  textsong.text = song
+  combourls.Clear
+  CURRENTURLIDX = 0
+  GetAndShow(artist, song)
+End
+
+
+Private Sub GetAndShow(artist As String, song As String)
+
+  Dim googleurl As String
+  'Dim artist As String = "coldplay"
+  'Dim song As String = "charlie broWn"
+  Dim plainsong As String
+
+  Dim snippet As String
+  Dim gresults As String
+  Dim resultlines As New String[]
+  Dim myline As String
+  Dim mystart, myend, mylen As Integer
+
+  Dim blackfound As Boolean = False
+  Dim blackdomain As String
+
+
+  Dim i As Integer
+  Dim urls As New String[]
+
+  'Debug strip("<td width=\"311px\" bgcolor=\"#C9EAFF\"><a href=\" title=\"Lyrics\"><img src=\"ilogo.jpg\" border=\"0\" width=\"311\" height=\"108\" alt=\"Lyrics\"></a></td>", "<a href", "</a>")
+  'Return
+  SEARCHING = True
+  plainsong = song
+  artist = Lower(Replace(artist, " ", "_"))
+  song = Lower(Replace(song, " ", "_"))
+  
+  artist = CGI.Encode(artist)
+  song = CGI.Encode(song)
+  
+  Me.show
+  Wait
+  Me.mouse = Mouse.wait
+  'lyrics wikia returns only a snippet that we  will use for a text search on google :P
+  ' wikiaurl = "http://lyrics.wikia.com/api.php?artist=" & artist & "&song=" & song & "&fmt=text"
+  ' Debug wikiaurl
+  ' snippet = httpget(wikiaurl)
+  ' snippet = artist & " " & CGI.Encode(plainsong) & " " & Left(snippet, InStr(snippet, "[") - 1) 
+  ' snippet = Replace(snippet, "\n", " ")
+  ' 
+  ' If Len(snippet) < 20 Then 'this means that lyrics.wikia didn't found anything
+  '   snippet = artist & " " & CGI.Encode(plainsong)
+  '     Else
+  '   textlabel1.text = snippet
+  '   textlabel1.adjust
+  '   Wait
+  ' Endif
+    
+   snippet = artist & " " & CGI.Encode(plainsong)
+  'snippet = Replace(snippet, " ", "\"+\"") 
+  
+  'snippet = "\"" & "-guitar -chords -tabs " & snippet & "\"" 
+  'snippet = "-guitar -chords -tabs " & snippet &
+  
+
+  'First check lyrics.wikia.com for full text content
+ ' googleurl = "https://www.google.com/search?q=site:lyrics.wikia.com+" & snippet & "+lyrics"
+  'googleurl = "http://www.google.com/search?q=" & snippet & "+lyrics" & "&num=50"
+  'googleurl = "https://duckduckgo.com/html/?q=site:lyrics.wikia.com " & snippet & "+lyrics" & "&num=50"
+  'gresults = httpget(googleurl)
+ ' Debug googleurl
+  'Debug gresults
+  
+
+  snippet = "-guitar -chords -tabs +lyrics " & snippet 
+  snippet = Replace(snippet, " ", "%20") 
+    
+  googleurl = "https://duckduckgo.com/html/?q=" & snippet
+  gresults &= httpget(googleurl, "/tmp/debug")
+  Debug googleurl
+  Try resultlines = Split(gresults, "<", "", True)
+  If Error Then
+    Message.Error(("Ambiguous results"))
+    Me.mouse = Mouse.Normal
+    Return
+  Endif
+  For Each myline In resultlines
+    blackfound = False
+    If myline Like "*href*http://*" Then
+      For Each blackdomain In Split(blackdomains, ";") 'strip out black domains
+        If myline Like "*" & blackdomain & "*" Then
+          blackfound = True
+          ' Debug "blackdomain found: " & blackdomain
+          ' Debug "Into this line: " & myline
+          Break
+        Endif
+      Next 'blackdomain
+      If Not (blackfound) Then
+        mystart = InStr(myline, "http", 0)
+        If mystart = 0 Then Break
+        myend = InStr(myline, "&amp", (mystart + 1)) 
+        If myend = 0 Then
+          myend = InStr(myline, ">", mystart + 1) - 1
+          If myend = 0 Then Break
+        Endif
+        mylen = myend - mystart
+        If mylen < 0 Then Break
+        myline = Mid(myline, mystart, mylen)
+        'ComboUrls.text = myline '&= "\n" & myline
+        myline = CGI.Decode(CGI.Decode(myline))
+        If myline <> PREVLINK Then
+          urls.Add(myline)
+          PREVLINK = myline
+        Endif
+      Endif
+    Endif
+  Next
+  Me.mouse = Mouse.normal
+  'move bad domains to the end and *lyric* to the begin
+  For Each blackdomain In Split(baddomains, ";")
+    For i = 0 To urls.max
+      If urls[i] Like "*lyric*" Then
+        urls.insert(urls.Extract(i), 0)
+      Endif
+      If urls[i] Like "*" & blackdomain & "*" Then
+        urls.Push(urls.Extract(i)[0])
+      Endif
+    Next
+  Next
+  For i = 0 To urls.Max
+    combourls.Add(urls[i])
+  Next
+  SEARCHING = False
+  NextBTN_MouseDown()
+End
+
+
+Public Sub NextBTN_MouseDown()
+    Dim webcontent As String
+    Dim myurl As String
+
+
+    If SEARCHING Then Return
+    Me.mouse = Mouse.wait
+    If combourls.Count = 0 Then Return
+    If CURRENTURLIDX > combourls.count - 1 Then CURRENTURLIDX = 0
+    myurl = combourls[CURRENTURLIDX].Text
+    
+    Object.Lock(combourls)
+    combourls.text = myurl
+    Object.unLock(combourls)
+    
+    webcontent = httpget(myurl)
+    
+    'strip out something
+    webcontent = strip(webcontent, "<head>", "</head>")
+    webcontent = strip(webcontent, "<script", "</script>")
+    webcontent = strip(webcontent, "<noscript", "</noscript>")
+    'webcontent = strip(webcontent, "<a href", "</a>")
+    webcontent = strip(webcontent, "<a ", "</a>")
+    webcontent = strip(webcontent, "<img ", ">")
+    webcontent = strip(webcontent, "<object ", "</object>")
+    webcontent = strip(webcontent, "bgcolor=\"", "\"")
+    'webcontent = strip(webcontent, "<form ", "</form>")
+    
+    'webcontent = Replace(webcontent, "�", " ")
+    Debug myurl
+
+    textlabel1.text = webcontent
+    TextLabel1.adjust
+    panel1.Scroll(0, 0)
+    Me.mouse = Mouse.normal
+    CURRENTURLIDX += 1
+    
+    Object.Lock(textarea1)
+    textarea1.text = textlabel1.text
+    Object.unLock(textarea1)
+End
+
+Private Function strip(content As String, stag As String, etag As String) As String
+  'remove text from stag to etag
+  Dim sstart, eend As Integer
+  Dim rcontent As String
+  Repeat
+    sstart = InStr(content, stag) - 1
+    eend = InStr(content, etag, sstart + 1)
+    rcontent = Left(content, sstart)
+    rcontent &= Right(content, Len(content) - eend - Len(etag) + 1)
+    content = rcontent
+  Until (InStr(content, stag) * InStr(content, etag)) = 0 'strip all
+  Debug
+  Return content
+End
+
+
+Public Sub ComboUrls_Click()  
+  If SEARCHING Then Return
+  CURRENTURLIDX = combourls.Find(combourls.Current.Text)
+  NextBTN_MouseDown()
+End
+
+Public Sub ButtonNewSearch_Click()
+  If SEARCHING Then Return
+  GetAndShow(textartist.text, textsong.text)
+End
+
+Public Sub TextArea1_Change()
+  textlabel1.text = textarea1.text
+  TextLabel1.adjust
+End
+
+Public Sub ButtonZoomIn_Click()
+  Try textlabel1.Font.size += 1
+End
+
+Public Sub ButtonZoomOut_Click()
+  Try textlabel1.Font.size -= 1
+End

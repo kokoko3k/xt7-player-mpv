@@ -1,0 +1,87 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+
+Public Sub Form_Show()
+  'ME.center
+  Global.Center(Fmain, Me)
+  Try UpdateProfileList()
+  CurrentProfilelabel.text = "Current profile: " & Global.CurrentProfile & ".profile"
+End
+
+Public Sub NewBtn_Click()
+  AskName.Text = ("New profile name")
+  AskName.show
+End
+
+Public Sub UpdateProfileList()
+  Dim profilename As String
+  Dim i As Integer
+  ProfilesList.clear
+  For Each profilename In Dir(global.confpath & "/", "*.profile")
+    If Stat(global.confpath & "/" & profilename, True).type = gb.Directory Then
+      ProfilesList.Add(profilename)
+    Endif
+  Next
+  For i = 0 To ProfilesList.count - 1
+    If ProfilesList[i].text = Global.currentprofile & ".profile" Then ProfilesList[i].selected = True
+  Next 'i
+End
+
+Public Sub DeleteBtn_Click()
+Dim profilename As String
+  Try ProfileName = ProfilesList.Current.Text
+  If Not Error Then
+    'IF Message.Question(("Are you sure you want to delete ") & ProfilesList.Current.Text & "?", ("Yes, Delete"), ("Don't delete")) = 1 THEN
+    If MyQuestion.ask(("Are you sure you want to delete ") & ProfilesList.Current.Text & "?", ("Yes, Delete"), ("Don't delete")) = 1 Then
+      RDelete(global.confpath & "/" & ProfilesList.Current.Text)
+      Try UpdateProfileList()
+    Endif
+  Endif
+End
+
+Public Sub RDelete(directory As String)
+  Dim subfile As String
+  For Each subfile In RDir(directory)
+    Try Kill directory & "/" & subfile
+    Try Rmdir directory & "/" & subfile
+  Next
+  For Each subfile In RDir(directory)
+    Try Kill directory & "/" & subfile
+    Try Rmdir directory & "/" & subfile
+  Next
+  Try Rmdir directory
+End
+
+Public Sub SwitchBtn_Click()
+  SwitchProfile()
+End
+
+Public Sub SwitchProfile()
+  Dim profilename As String
+  Try ProfileName = ProfilesList.Current.Text
+  If Not Error Then
+      Global.CurrentProfile = Split(profilename, ".")[0]
+      If MyQuestion.ask(("Do you also want to load ") & ProfilesList.Current.Text & "?", ("Yes, load"), ("Don't load, just switch")) = 1 Then FMain.ReLoadCurrentProfile()
+  Endif
+  CurrentProfilelabel.text = ("Current profile: ") & Global.CurrentProfile & ".profile"
+End
+
+
+Public Sub ProfilesList_DblClick()
+  SwitchProfile()
+End
+
+Public Sub Form_Close()
+
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+
+End
+
+Public Sub Form_Hide()
+
+  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+
+End

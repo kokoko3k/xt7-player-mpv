@@ -1,0 +1,66 @@
+' Gambas module file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas module file
+
+
+Public Sub AddHistory(TheComboBox As ComboBox, Item As String)
+Dim MaxItems As Integer = 15
+Dim i As Integer
+Dim TempList As New String[0]
+  For i = 0 To TheComboBox.List.Count - 1
+    Try TempList.Add(DConv(TheComboBox[i].text))
+  Next 'i
+  TheComboBox.clear
+  TheComboBox.Add(Item, 0)
+  For i = 0 To TempList.count - 1
+    If (item <> TempList[i]) And (i < MaxItems) Then TheComboBox.Add(TempList[i])
+  Next 'i
+End
+
+
+Public Sub LoadHistory(TheComboBox As Combobox, ProfileName As String)
+  Dim Filename As String = ProfileName & ".profile/" & TheComboBox.name
+  Dim ItemList As String[] = Split(file.Load(filename), "\n", "", False)
+  Dim i As Integer
+
+  TheComboBox.Clear
+  For i = 0 To ItemList.count - 1
+    If Not IsDupe(itemlist[i], TheComboBox) Then TheComboBox.Add(itemlist[i])
+  Next 'i
+  If Not IsDupe("", TheComboBox) Then TheComboBox.Add("")
+  Try TheComboBox.text = TheComboBox[0].text
+End
+
+Function IsDupe(item As String, TheComboBox As ComboBox) As Boolean
+  Dim j As Integer
+  For j = 0 To TheComboBox.Count - 1
+    If TheComboBox[j].text = item Then
+      Return True
+    Endif
+  Next 'j
+  Return False
+End
+
+Public Sub SaveHistory(TheComboBox As Combobox, ProfileName As String)
+  'DIM Filename AS String = ProfileName & "." & TheComboBox.name
+  Dim Filename As String = ProfileName & ".profile/" & TheComboBox.name
+  Dim i As Integer
+  Dim outfile As File
+  If Not Exist(file.Dir(filename), True) Then
+    Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(filename)))))
+    Try Mkdir File.Dir(File.dir(File.Dir(File.Dir(filename))))
+    Try Mkdir File.dir(File.Dir(File.Dir(filename)))
+    Try Mkdir File.Dir(File.Dir(filename))
+    Try Mkdir File.Dir(filename)
+  Endif
+  Outfile = Open filename For Write Create
+  Print #Outfile, TheComboBox.text
+  For i = 0 To TheComboBox.Count - 1
+     If (TheComboBox.List[i] <> TheComboBox.text) Then Print #Outfile, TheComboBox.List[i]
+  Next 'i
+  Close #OutFile
+End
+
+
+

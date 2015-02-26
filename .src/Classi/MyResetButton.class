@@ -1,0 +1,37 @@
+' Gambas class file
+
+Private resetbutton As Toolbutton
+
+Public Sub _NEW(parente As Object)
+  resetbutton = New ToolButton(parente) As "resetbutton"
+  resetbutton.text = ""
+  'resetbutton.picture = Picture["icon:/16/clear"].Image.Mirror(True, False).Picture
+  
+  resetbutton.picture = picture["icon:/16/clear"].Image.Mirror(True, False).Picture
+  resetbutton.w = 16
+  resetbutton.h = 16
+End
+
+Property name As String
+  Function name_write(nome As String)
+    resetbutton.name = nome
+  End
+  Function name_read() As String
+    Return resetbutton.name
+  End
+
+Property tag As Variant
+  Function tag_write(dtag As Variant)
+    resetbutton.tag = dtag
+  End
+  Function tag_read() As Variant
+    Return resetbutton.tag
+  End
+
+Public Sub ResetButton_Click()
+  Try Last.previous.value = Last.tag
+  If Error Then
+    If Last.previous Is FloatSpinBox Then Last.tag = Replace(Last.tag, ".", ",")
+    Try Last.previous.value = Last.tag
+  Endif
+End

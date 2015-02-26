@@ -1,0 +1,1884 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,113,85.7143)
+  Tag = "12"
+  Text = ("General options")
+  Icon = Picture["icon:/16/options"]
+  Persistent = True
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { MenuProfile Menu
+    Text = ("Profile")
+    { MenuLoadDefault Menu
+      Text = ("Reload current profile")
+      Picture = Picture["icon:/16/open"]
+    }
+    { MenuSaveDefault Menu
+      Text = ("Save to current profile")
+      Picture = Picture["icon:/16/save"]
+    }
+    { MenuSaveToAll Menu
+      Text = ("Save these settings to all profiles")
+      Picture = Picture["icon:/16/save"]
+    }
+  }
+  { GENERALOPTIONSFRAME Frame
+    MoveScaled(0,0,86,69)
+    Expand = True
+    { VBox1 VBox
+      MoveScaled(1,1,22,67)
+      { Label1 Label
+        MoveScaled(2,1,11,4)
+        Text = ("General Options")
+        Alignment = Align.Justify
+      }
+      { OptionsList ListView
+        MoveScaled(1,5,20,61)
+        Expand = True
+      }
+    }
+    { Tabstrip1 TabStrip
+      MoveScaled(24,1,62,67)
+      Tag = "User options"
+      Expand = True
+      Arrangement = Arrange.Vertical
+      Count = 12
+      Index = 0
+      Text = ("Video")
+      { ScrollView1 ScrollView
+        MoveScaled(3,5,52,44)
+        Tag = "video"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParse10 HBox
+          MoveScaled(0,1,51,4)
+          ToolTip = ("If you zoomed-in a video, this will allow you to pan it with mouse-drag operation.\nWorks in full-screen mode only.")
+          Spacing = True
+          { PanTagCHK CheckBox notifyobj
+            Name = "PanTagCHK"
+            MoveScaled(1,1,49,4)
+            Expand = True
+            Text = ("Allow video panning via mouse-drag")
+          }
+        }
+        { NoParse14 HBox
+          MoveScaled(1,6,51,4)
+          ToolTip = ("If your video card doesn't support brightness, gamma, contrast or hue settings,\nyou may want to try this (slower method) for video equalizer to work properly.\nNote that this does not conflict with configuration you explicitly set in eq2 and hue filters.")
+          Spacing = True
+          { EqCHK CheckBox notifyobj
+            Name = "EqCHK"
+            MoveScaled(1,1,49,4)
+            Expand = True
+            Text = ("Auto add eq2 and hue filters to video chain")
+            Value = CheckBox.True
+          }
+        }
+        { NoParse54 HBox
+          MoveScaled(3,12,48,5)
+          ToolTip = ("Enable the animated video preview\nwhen you drag the seekbar with the mouse.\n\n* Requires more cpu power.\n\n* If you drag with mouse buttons other than left, then no seek is made.")
+          Spacing = True
+          { SeekThumbsCheckbox CheckBox
+            MoveScaled(0,0,49,4)
+            Expand = True
+            Text = ("Live preview when seeking")
+            Value = CheckBox.True
+          }
+        }
+        { NoParse55 HBox
+          MoveScaled(2,18,48,5)
+          Visible = False
+          ToolTip = ("Use some tweaks to reduce cpu use.")
+          Spacing = True
+          Indent = True
+          { SeekThumbsLowFpsCheckbox CheckBox
+            MoveScaled(1,0,49,4)
+            Expand = True
+            Text = ("Reduce preview framerate")
+            Value = CheckBox.True
+          }
+        }
+        { NOPARSEvdpauoverlayboxnew HBox
+          MoveScaled(2,25,45,6)
+          ToolTip = ("vdpau need some codecs to be loaded,\nchecking this will auto add: \nffmpeg12vdpau, ffh264vdpau, ffwmv3vdpau, ffvc1vdpau")
+          { vdpauooverlaycheck CheckBox
+            MoveScaled(1,1,43,4)
+            ToolTip = ("Using vdpau overlay surface may lead to instability problems under some circumstances \nlike heavy cpu load or switching to/from fullscreen.\n\nNOT using vdpau overlay may cause tearing.\n\nIf you experience tearing, try to disable this option, if you experience instability,\ntry to check it.\n\nThis option disable the overlay surface by setting the environment variable:\nVDPAU_NVIDIA_NO_OVERLAY=1")
+            Text = ("Disable VDPAU overlay surface")
+          }
+        }
+      }
+      Index = 1
+      Text = ("Audio")
+      { ScrollView2 ScrollView
+        MoveScaled(4,4,53,44)
+        Tag = "audio"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { Panel3 Panel
+          MoveScaled(0,1,52,21)
+          Arrangement = Arrange.Vertical
+          Spacing = True
+          Margin = True
+          Padding = 8
+          Border = Border.Plain
+          { NoParse8 HBox
+            MoveScaled(0,0,50,4)
+            Spacing = True
+            { ShowVmeterCHK CheckBox
+              MoveScaled(1,0,19,4)
+              Expand = True
+              Text = ("Visualization")
+            }
+            { VBox8 VBox
+              MoveScaled(19,0,3,3)
+              Expand = True
+            }
+            { NoParseVisType ComboBox
+              MoveScaled(23,0,26,4)
+              Expand = True
+              ReadOnly = True
+              List = [("vmeters - Audio meters"), ("DFT - Spectrum analyzer")]
+              Text = ("vmeters - Audio meters")
+            }
+          }
+          { NoParse42 HBox
+            MoveScaled(0,4,50,4)
+            ToolTip = ("If you see meters moving sooner than the audio, raise this value.")
+            Spacing = True
+            Indent = True
+            { NoParseLabel8 Label
+              MoveScaled(2,1,14,3)
+              AutoResize = True
+              Text = ("Audio Latency")
+            }
+            { LatencySpinbox SpinBox
+              MoveScaled(18,0,11,4)
+              MaxValue = 3000
+              Value = 250
+            }
+            { NoParseLabel16 Label
+              MoveScaled(35,1,5,3)
+              Font = Font["Italic"]
+              AutoResize = True
+              Text = ("ms")
+            }
+          }
+          { NoParse40 HBox
+            MoveScaled(0,8,50,4)
+            ToolTip = ("Frames per second")
+            Spacing = True
+            Indent = True
+            { NoParseLabel17 Label
+              MoveScaled(1,1,14,3)
+              AutoResize = True
+              Text = ("Update at")
+            }
+            { fpsspinbox SpinBox
+              MoveScaled(18,0,11,4)
+              MinValue = 5
+              MaxValue = 30
+              Value = 60
+            }
+            { NoParseLabel18 Label
+              MoveScaled(31,0,5,3)
+              Font = Font["Italic"]
+              AutoResize = True
+              Text = ("fps")
+            }
+          }
+          { NoParse43 HBox
+            MoveScaled(0,12,50,4)
+            ToolTip = ("How many samples to get to calculate the average audio level.")
+            Spacing = True
+            Indent = True
+            { NoParseLabel19 Label
+              MoveScaled(1,1,14,3)
+              AutoResize = True
+              Text = ("Rms window size")
+            }
+            { RmsSizeSpinBox SpinBox
+              MoveScaled(18,0,11,4)
+              MinValue = 64
+              MaxValue = 1024
+              Step = 128
+              Value = 512
+            }
+            { NoParseLabel20 Label
+              MoveScaled(31,0,14,3)
+              Font = Font["Italic"]
+              AutoResize = True
+              Text = ("samples")
+            }
+          }
+        }
+        { adevicehbox HBox
+          MoveScaled(1,24,50,4)
+          Spacing = True
+          { audio000device CheckBox
+            MoveScaled(1,0,19,4)
+            Tag = "audio-device"
+            AutoResize = True
+            Text = ("Audio Device")
+          }
+          { NopParseAudioDeviceCombo ComboBox
+            MoveScaled(20,0,28,4)
+            Expand = True
+            Text = ("auto")
+          }
+        }
+      }
+      Index = 2
+      Text = ("Library")
+      { ScrollView6 ScrollView
+        MoveScaled(1,2,56,57)
+        Tag = "library"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        ScrollBar = Scroll.Horizontal
+        { NoParse31 HBox
+          MoveScaled(1,0,51,4)
+          ToolTip = ("Specify what additional file extensions are allowed in playlist and library.\nEx: mov,dts,h264")
+          Spacing = True
+          { Label7 Label
+            MoveScaled(1,0,18,3)
+            AutoResize = True
+            Text = ("Other known extensions")
+          }
+          { KnownExtensions TextBox
+            MoveScaled(23,0,23,4)
+            Expand = True
+          }
+        }
+        { NOPARSEVBox2 VBox
+          MoveScaled(1,5,51,23)
+          ToolTip = ("Directories specified here are recursively added to the playlist\nwhen you commit a playlist update.\nUse add/delete button or drag 'n drop.")
+          Spacing = True
+          { NoParseWatchedLabel Label
+            MoveScaled(0,1,20,3)
+            Font = Font["Bold"]
+            AutoResize = True
+            Text = ("Watched Directories")
+            Alignment = Align.Center
+          }
+          { NoParseWatchedListbox ListBox
+            MoveScaled(2,4,38,12)
+            Drop = True
+            Expand = True
+            Mode = Select.Multiple
+          }
+          { NoParseHbox2 HBox
+            MoveScaled(1,17,50,4)
+            Spacing = True
+            { AddBtn Button
+              MoveScaled(1,0,12,4)
+              Text = ("Add")
+              Picture = Picture["icon:/16/add"]
+            }
+            { DelBtn Button
+              MoveScaled(14,0,12,4)
+              Text = ("Del")
+              Picture = Picture["icon:/16/remove"]
+            }
+            { Panel2 Panel
+              MoveScaled(28,-1,4,5)
+              Expand = True
+            }
+            { AddBtn2 Button
+              MoveScaled(30,0,20,4)
+              Text = ("Sync Now")
+              Picture = Picture["icon:/16/refresh"]
+            }
+          }
+        }
+        { NOPARSEVBox1 VBox
+          MoveScaled(1,29,51,26)
+          ToolTip = ("Directories specified here will excluded\nwhen you commit a playlist update.\nUse add/delete button or drag 'n drop.")
+          Spacing = True
+          { NoParseExcludedLabel2 Label
+            MoveScaled(0,1,20,3)
+            Font = Font["Bold"]
+            AutoResize = True
+            Text = ("Excluded Directories")
+            Alignment = Align.Center
+          }
+          { NoParseExcludedListbox ListBox
+            MoveScaled(2,4,38,9)
+            Drop = True
+            Expand = True
+            Mode = Select.Multiple
+          }
+          { NoParseHbox1 HBox
+            MoveScaled(0,15,50,4)
+            Spacing = True
+            { AddBtn3 Button
+              MoveScaled(1,0,12,4)
+              Text = ("Add")
+              Picture = Picture["icon:/16/add"]
+            }
+            { DelBtn3 Button
+              MoveScaled(14,0,12,4)
+              Text = ("Del")
+              Picture = Picture["icon:/16/remove"]
+            }
+            { Panel1 Panel
+              MoveScaled(26,0,4,5)
+              Expand = True
+            }
+            { AddBtn4 Button
+              MoveScaled(31,0,20,4)
+              Text = ("Exclude Now")
+              Picture = Picture["icon:/16/refresh"]
+            }
+          }
+        }
+        { VBox7 VBox
+          MoveScaled(2,51,50,1)
+        }
+      }
+      Index = 3
+      Text = ("Tweaks")
+      { ScrollView5 ScrollView
+        MoveScaled(1,1,52,44)
+        Tag = "tweaks"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParse2 HBox
+          MoveScaled(0,0,51,4)
+          ToolTip = ("Player nice level.\nThe lower the value, the higher the priority\nthe player will get against other processes.")
+          Spacing = True
+          { NoParseLabel1 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("Xt7 Player nice level")
+          }
+          { NiceLevelSpinBox SpinBox notifyobj
+            Name = "NiceLevelSpinBox"
+            MoveScaled(15,1,11,4)
+            MinValue = -19
+            MaxValue = 19
+          }
+          { NoParseLabel4 Label
+            MoveScaled(28,1,15,3)
+            AutoResize = True
+            Text = ("(The lower, the 'faster')")
+          }
+        }
+        { NoParse27 HBox
+          MoveScaled(1,4,48,4)
+          Spacing = True
+          { CacheCheckbox CheckBox notifyobj
+            Name = "CacheCheckbox"
+            MoveScaled(1,0,3,4)
+            Value = CheckBox.True
+          }
+          { Label3 Label labelcheck
+            Name = "Label3"
+            MoveScaled(6,1,20,3)
+            AutoResize = True
+            Text = ("Local file cache size (KB)")
+          }
+          { CacheSpinBox SpinBox notifyobj
+            Name = "CacheSpinBox"
+            MoveScaled(29,1,11,4)
+            MinValue = 100
+            MaxValue = 1048576
+            Value = 1024
+          }
+        }
+        { NoParse44 HBox
+          MoveScaled(1,9,50,4)
+          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nMplayer option: -cache-min")
+          Spacing = True
+          { CacheMinCheckbox CheckBox notifyobj
+            Name = "CacheMinCheckbox"
+            MoveScaled(1,0,3,4)
+            Value = CheckBox.True
+          }
+          { Label18 Label labelcheck
+            Name = "Label18"
+            MoveScaled(5,1,18,3)
+            AutoResize = True
+            Text = ("Start playback after filling")
+          }
+          { CacheMinSpinboxFile SpinBox notifyobj
+            Name = "CacheMinSpinboxFile"
+            MoveScaled(24,1,8,4)
+            MaxValue = 99
+          }
+          { Label19 Label labelcheck
+            Name = "Label19"
+            MoveScaled(33,0,14,4)
+            AutoResize = True
+            Text = ("% of total cache size")
+          }
+        }
+        { NoParse28 HBox
+          MoveScaled(2,16,48,4)
+          ToolTip = ("Player nice level.\nThe lower the value, the higher the priority\nthe player will get against other processes.")
+          Spacing = True
+          { NoEffectsCheckbox CheckBox
+            MoveScaled(1,0,3,4)
+          }
+          { Label17 Label labelcheck
+            Name = "Label17"
+            MoveScaled(6,1,40,3)
+            ToolTip = ("Use dbus (need dbus-send command) to disable kwin effects\nand avoid glitches in fullscreen mode.")
+            AutoResize = True
+            Text = ("Disable Kde Effects in fullscreen mode")
+          }
+        }
+      }
+      Index = 4
+      Text = ("Audio CD")
+      { ScrollView10 ScrollView
+        MoveScaled(3,1,58,52)
+        Tag = "Audio CD"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParse23 HBox
+          MoveScaled(1,1,48,4)
+          ToolTip = ("Select your CD device (es /dev/dvd, /dev/cdrom, /dev/sr2...).")
+          Spacing = True
+          { NoParseLabel13 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("Audio CD Device")
+          }
+          { CDDADeviceText ComboBox
+            MoveScaled(17,0,25,4)
+            Expand = True
+            Text = ("Please, choose")
+          }
+          { CDDADeviceOpen ToolButton
+            MoveScaled(43,0,4,4)
+            Picture = Picture["icon:/small/open"]
+          }
+        }
+        { NoParse25 HBox
+          MoveScaled(1,7,48,4)
+          Spacing = True
+          { CDDACacheCheckbox CheckBox notifyobj
+            Name = "CDDACacheCheckbox"
+            MoveScaled(1,0,3,4)
+            Value = CheckBox.True
+          }
+          { Label4 Label labelcheck
+            Name = "Label4"
+            MoveScaled(5,1,15,3)
+            AutoResize = True
+            Text = ("CD Cache size (KB)")
+          }
+          { CDDACacheSpinBox SpinBox notifyobj
+            Name = "CDDACacheSpinBox"
+            MoveScaled(26,0,11,4)
+            MinValue = 100
+            MaxValue = 1048576
+            Value = 1024
+          }
+        }
+        { NoParse11 HBox
+          MoveScaled(2,13,48,4)
+          ToolTip = ("Fetch CD Audio information from internet through cddb protocol.\nNote that this may slow down or even hangs the play the very first time.")
+          Spacing = True
+          { CDDBCheckbox CheckBox notifyobj
+            Name = "CDDBCheckbox"
+            MoveScaled(1,0,3,4)
+          }
+          { Label23 Label CDDBCHECK
+            Name = "Label23"
+            MoveScaled(5,1,15,3)
+            AutoResize = True
+            Text = ("Use CDDB")
+          }
+        }
+      }
+      Index = 5
+      Text = ("DVD")
+      { ScrollView7 ScrollView
+        MoveScaled(1,3,57,47)
+        Tag = "dvd"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParse13 HBox
+          MoveScaled(1,1,48,4)
+          ToolTip = ("Select your Dvd device (es /dev/dvd, /dev/cdrom, /dev/sr2...).")
+          Spacing = True
+          { NoParseLabel10 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("DVD Device")
+          }
+          { DVDDeviceText ComboBox
+            MoveScaled(16,0,25,4)
+            Expand = True
+            Text = ("Please, choose")
+          }
+          { DvdDeviceOpen2 ToolButton
+            MoveScaled(43,0,4,4)
+            Picture = Picture["icon:/small/open"]
+          }
+        }
+        { NoParse24 HBox
+          MoveScaled(1,6,48,4)
+          ToolTip = ("Set the cache for DVD playback.\nNote that enabling it may lead to problems.")
+          Spacing = True
+          { DvdCacheCheckbox CheckBox notifyobj
+            Name = "DvdCacheCheckbox"
+            MoveScaled(1,0,3,4)
+          }
+          { Label5 Label labelcheck
+            Name = "Label5"
+            MoveScaled(6,1,15,3)
+            AutoResize = True
+            Text = ("Dvd Cache size (KB)")
+          }
+          { DVDCacheSpinBox SpinBox notifyobj
+            Name = "DVDCacheSpinBox"
+            MoveScaled(24,1,11,4)
+            MinValue = 100
+            MaxValue = 1048576
+            Value = 1024
+          }
+        }
+        { NoParse45 HBox
+          MoveScaled(0,11,50,4)
+          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nMplayer option: -cache-min")
+          Spacing = True
+          { CacheMinCheckbox2 CheckBox notifyobj
+            Name = "CacheMinCheckbox2"
+            MoveScaled(1,0,3,4)
+          }
+          { Label20 Label labelcheck
+            Name = "Label20"
+            MoveScaled(5,1,18,3)
+            AutoResize = True
+            Text = ("Start playback after filling")
+          }
+          { DVDCacheMinSpinBox SpinBox notifyobj
+            Name = "DVDCacheMinSpinBox"
+            MoveScaled(24,1,8,4)
+            MaxValue = 99
+            Value = 1
+          }
+          { Label21 Label labelcheck
+            Name = "Label21"
+            MoveScaled(33,0,14,4)
+            AutoResize = True
+            Text = ("% of total cache size")
+          }
+        }
+      }
+      Index = 6
+      Text = ("Network")
+      { ScrollView4 ScrollView
+        MoveScaled(1,1,58,60)
+        Tag = "network"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParse26 HBox
+          MoveScaled(0,1,48,4)
+          ToolTip = ("Maximum cache size.\nMplayer option: -cache ")
+          AutoResize = True
+          Spacing = True
+          { NetCacheCheckbox CheckBox notifyobj
+            Name = "NetCacheCheckbox"
+            MoveScaled(1,0,3,4)
+            Value = CheckBox.True
+          }
+          { Label6 Label labelcheck
+            Name = "Label6"
+            MoveScaled(5,1,15,3)
+            AutoResize = True
+            Text = ("Net Cache size (KB)")
+          }
+          { NetCacheSpinBox SpinBox notifyobj
+            Name = "NetCacheSpinBox"
+            MoveScaled(28,0,11,4)
+            MinValue = 100
+            MaxValue = 1048576
+            Value = 1024
+          }
+        }
+        { NoParse32 HBox
+          MoveScaled(0,6,50,4)
+          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nMplayer option: -cache-min")
+          AutoResize = True
+          Spacing = True
+          { NetminCacheCheckbox CheckBox notifyobj
+            Name = "NetminCacheCheckbox"
+            MoveScaled(1,0,3,4)
+            Value = CheckBox.True
+          }
+          { Label8 Label labelcheck
+            Name = "Label8"
+            MoveScaled(5,1,18,3)
+            AutoResize = True
+            Text = ("Start playback after filling")
+          }
+          { cacheminspinbox SpinBox notifyobj
+            Name = "cacheminspinbox"
+            MoveScaled(24,1,8,4)
+            MaxValue = 99
+          }
+          { Label9 Label labelcheck
+            Name = "Label9"
+            MoveScaled(33,0,14,4)
+            AutoResize = True
+            Text = ("% of total cache size")
+          }
+        }
+        { NoParse34 HBox
+          MoveScaled(0,11,53,4)
+          ToolTip = ("HINT: For youtube, enable this option and set 0.\n--\n If a seek is to be made to a position within <percentage> of the cache size from the current position, \nMPlayer will wait  for  the cache to be filled to this position rather than performing a stream seek (default: 50).\nMplayer option: -cache-seek-min <percentage>")
+          AutoResize = True
+          Spacing = True
+          { NetseekCacheCheckbox CheckBox notifyobj
+            Name = "NetseekCacheCheckbox"
+            MoveScaled(1,0,3,4)
+            Value = CheckBox.True
+          }
+          { Label11 Label labelcheck
+            Name = "Label11"
+            MoveScaled(5,1,18,3)
+            AutoResize = True
+            Text = ("Minimum seek cache size")
+          }
+          { cacheseekspinbox SpinBox notifyobj
+            Name = "cacheseekspinbox"
+            MoveScaled(25,1,8,4)
+          }
+          { Label12 Label labelcheck
+            Name = "Label12"
+            MoveScaled(34,1,14,4)
+            AutoResize = True
+            Text = ("% of total cache size ")
+          }
+        }
+        { NOPARSESEP6 Separator
+          MoveScaled(5,16,43,1)
+        }
+        { NoParse33 HBox
+          MoveScaled(1,23,50,4)
+          ToolTip = ("When playing youtube videos, \nprefer this format if available.")
+          AutoResize = True
+          Spacing = True
+          { Label10 Label labelcheck
+            Name = "Label10"
+            MoveScaled(1,1,22,3)
+            AutoResize = True
+            Text = ("Preferred youtube resolution")
+          }
+          { Youtubeformat ComboBox
+            MoveScaled(24,0,13,3)
+            ReadOnly = True
+            List = [("360p"), ("480p"), ("720p"), ("1080p")]
+            Text = ("360p")
+          }
+          { PictureBox1 PictureBox
+            MoveScaled(44,0,5,4)
+            Expand = True
+            Picture = Picture["youtubeicon.png"]
+            AutoResize = True
+            Alignment = Align.Right
+          }
+        }
+        { NoParse15 HBox
+          MoveScaled(1,28,50,4)
+          ToolTip = ("When playing youtube videos, \nprefer this format if available.")
+          AutoResize = True
+          Spacing = True
+          { Get3dYT CheckBox
+            MoveScaled(2,0,49,4)
+            ToolTip = ("If available, 3D videos will be displayed instead of 2D ones.\nDisabling this option will completely discard 3D videos.\n\nNOTES:\n It may be necessary to use the stereo3d video filter\nUsing the stereo3d video disables GPU decoding.")
+            Expand = True
+            Text = ("Prefer 3D videos from Youtube")
+          }
+          { PictureBox2 PictureBox
+            MoveScaled(44,0,5,4)
+            Expand = True
+            Picture = Picture["3dglassess.png"]
+            AutoResize = True
+            Alignment = Align.Right
+          }
+        }
+        { NoParse52 HBox
+          MoveScaled(0,34,51,5)
+          ToolTip = ("Seeking on youtube streams may be problematic.\nChecking this will cause mplayer to be restarted at the new position \ninstead of issuing a seek.\nThis may or not work better for you.")
+          AutoResize = True
+          Spacing = True
+          { DoSeekRestartBox CheckBox
+            MoveScaled(0,0,49,4)
+            Expand = True
+            Text = ("Restart youtube stream instead of seeking")
+          }
+        }
+        { NOPARSESEP7 Separator
+          MoveScaled(2,39,45,2)
+        }
+        { NoParse7 HBox
+          MoveScaled(2,40,51,4)
+          ToolTip = ("Skip parsing media tags on network streams: \nuse it to add network media to library/playlist faster.\nThis will apply to the following uries: \nmms:// ; http:// ; http_proxy:// ; rtp:// ; rtsp:// ;\nftp:// ; udp:// ; smb:// ; mpst:// ; unsv://")
+          AutoResize = True
+          Spacing = True
+          { SlowTagsCHK CheckBox
+            MoveScaled(-1,0,49,4)
+            Expand = True
+            Text = ("Skip tags on network streams.")
+            Value = CheckBox.True
+          }
+        }
+        { NoParse53 HBox
+          MoveScaled(2,46,51,5)
+          ToolTip = ("Enable the animated video preview\nwhen you drag the seekbar with the mouse.\n\n* Requires a fast network connection and more cpu power.\n\n* If you drag with mouse buttons other than left, then no seek is made.")
+          AutoResize = True
+          Spacing = True
+          { SeekThumbsYoutubeCheckbox CheckBox
+            MoveScaled(0,0,49,4)
+            Expand = True
+            Text = ("Live preview when seeking")
+          }
+        }
+        { NoParse56 HBox
+          MoveScaled(2,51,48,5)
+          Visible = False
+          ToolTip = ("Use some tweaks to reduce cpu use.")
+          Spacing = True
+          Indent = True
+          { SeekThumbsYoutubeLowFpsCheckbox CheckBox
+            MoveScaled(1,0,49,4)
+            Expand = True
+            Text = ("Reduce preview framerate")
+            Value = CheckBox.True
+          }
+        }
+        { NoParse35 HBox
+          MoveScaled(2,56,50,4)
+          ToolTip = ("Choose how to download network streams\nsuch as youtube video and podcasts.\nkde4 - choose kioclient ; \nkde3 - choose kfmclient ; \nIf you wish to write your own downloader, \nremember that\n%url is the stream to download\n%destdir is the destination directory\n%destfile is the destination file (without the path)\n\nNote then kioclient and kfmclient do not work with youtubeì streams.")
+          AutoResize = True
+          Spacing = True
+          { Label13 Label labelcheck
+            Name = "Label13"
+            MoveScaled(2,1,12,3)
+            AutoResize = True
+            Text = ("Download with")
+          }
+          { DownloaderCombobox ComboBox
+            MoveScaled(14,0,34,4)
+            Expand = True
+            List = [("xterm -e wget %url -O %destdir/%destfile"), ("xterm -e aria2c -c -x 3 -k 10M -s 3 %url -d %destdir -o %destfile"), ("kioclient copy %url %destdir/%destfile"), ("kfmclient copy %url %destdir/%destfile"), ("Write your own: %url=source %destdir=destination dir %destfile=destination file")]
+            Text = ("xterm -e wget %url -O %destdir/%destfile")
+          }
+        }
+        { NOPARSESEP5 Separator
+          MoveScaled(3,61,44,2)
+        }
+      }
+      Index = 7
+      Text = ("DVB-T")
+      { ScrollView11 ScrollView
+        MoveScaled(2,1,56,58)
+        Tag = "dvb-t"
+        ToolTip = ("When playing an MPEG-TS stream, this option lets you specify how  many  bytes  in  the\nstream you want MPlayer to search for the desired audio and video IDs.\nMplayer Option: -tsprobe <byte position>")
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParse36 HBox
+          MoveScaled(0,0,50,4)
+          ToolTip = ("Select your 'scan' executable.\nJust write 'scan' for default.\nscan is needed to scan for new channels")
+          Spacing = True
+          { NoParseLabel14 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("scan executable")
+          }
+          { ScanExeText TextBox
+            MoveScaled(17,1,19,3)
+            Expand = True
+            Text = ("scan")
+          }
+          { ScanExeOpen ToolButton
+            MoveScaled(38,0,4,4)
+            Picture = Picture["icon:/small/open"]
+          }
+        }
+        { NoParse37 HBox
+          MoveScaled(0,4,50,4)
+          ToolTip = ("Select your femon executable.\nJust write 'femon' for default.\nfemon is needed to monitor signal strength.")
+          Spacing = True
+          { NoParseLabel15 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("femon executable")
+          }
+          { FemonExeText TextBox
+            MoveScaled(17,1,19,3)
+            Expand = True
+            Text = ("femon")
+          }
+          { FemonExeOpen ToolButton
+            MoveScaled(38,0,4,4)
+            Picture = Picture["icon:/small/open"]
+          }
+        }
+        { NoParse50 HBox
+          MoveScaled(0,8,50,4)
+          ToolTip = ("Select your dvbsnoop executable.\nJust write 'dvbsnoop' for default.\ndvbsnoop is needed to get EPG data.")
+          Spacing = True
+          { NoParseLabel22 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("dvbsnoop executable")
+          }
+          { dvbsnoopExeText TextBox
+            MoveScaled(17,1,19,3)
+            Expand = True
+            Text = ("dvbsnoop")
+          }
+          { FemonExeOpen2 ToolButton
+            MoveScaled(38,0,4,4)
+            Picture = Picture["icon:/small/open"]
+          }
+        }
+        { NoParse1 HBox
+          MoveScaled(0,12,50,4)
+          ToolTip = ("Temporary recording folder")
+          Spacing = True
+          { NoParseLabel2 Label
+            MoveScaled(1,1,22,3)
+            AutoResize = True
+            Text = ("Temporary recording folder")
+          }
+          { dvbtmpdir TextBox
+            MoveScaled(24,0,19,3)
+            ToolTip = ("Select your femon executable.\nJust write 'femon' for default.")
+            Expand = True
+            Text = ("/tmp/")
+          }
+          { dvbtmpdirbtn ToolButton
+            MoveScaled(45,0,4,4)
+            Picture = Picture["icon:/small/open"]
+          }
+        }
+        { NoParse48 HBox
+          MoveScaled(0,16,50,4)
+          ToolTip = ("Temporary recording folder")
+          Spacing = True
+          { NoParseLabel3 Label
+            MoveScaled(0,1,22,3)
+            AutoResize = True
+            Text = ("Final recording folder")
+          }
+          { dvbfinaldir TextBox
+            MoveScaled(24,0,19,3)
+            ToolTip = ("Select your femon executable.\nJust write 'femon' for default.")
+            Expand = True
+          }
+          { dvbtmpdirbtn2 ToolButton
+            MoveScaled(45,0,4,4)
+            Picture = Picture["icon:/small/open"]
+          }
+        }
+        { NOPARSESEP3 Separator
+          MoveScaled(2,20,48,1)
+        }
+        { NoParse38 HBox
+          MoveScaled(0,21,50,4)
+          ToolTip = ("Maximum cache size.\nMplayer option: -cache ")
+          Spacing = True
+          { dvbtCacheCheckbox CheckBox notifyobj
+            Name = "dvbtCacheCheckbox"
+            MoveScaled(1,0,3,4)
+            Value = CheckBox.True
+          }
+          { Label14 Label labelcheck
+            Name = "Label14"
+            MoveScaled(5,1,23,3)
+            AutoResize = True
+            Text = ("DVB-T Cache size (KB)")
+          }
+          { dvbtCacheSpinBox SpinBox notifyobj
+            Name = "dvbtCacheSpinBox"
+            MoveScaled(34,0,11,4)
+            MinValue = 100
+            MaxValue = 1048576
+            Value = 10240
+          }
+        }
+        { NoParse39 HBox
+          MoveScaled(0,25,50,4)
+          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nMplayer option: -cache-min")
+          Spacing = True
+          { dvbtminCacheCheckbox CheckBox notifyobj
+            Name = "dvbtminCacheCheckbox"
+            MoveScaled(1,0,3,4)
+            Value = CheckBox.True
+          }
+          { Label15 Label labelcheck
+            Name = "Label15"
+            MoveScaled(5,1,18,3)
+            AutoResize = True
+            Text = ("Start playback after filling")
+          }
+          { dvbtcacheminspinbox SpinBox notifyobj
+            Name = "dvbtcacheminspinbox"
+            MoveScaled(24,1,8,4)
+            MaxValue = 99
+          }
+          { Label16 Label labelcheck
+            Name = "Label16"
+            MoveScaled(33,0,14,4)
+            AutoResize = True
+            Text = ("% of total cache size")
+          }
+        }
+        { NOPARSEHbox3 HBox
+          MoveScaled(1,29,48,4)
+          ToolTip = ("It you have more than a dvb card,\nyou can specify one here.\nmplayer option: -dvbin card=#")
+          Spacing = True
+          { LabelCard Label
+            MoveScaled(1,1,8,3)
+            AutoResize = True
+            Text = ("Card #")
+          }
+          { spinboxcard SpinBox
+            MoveScaled(9,0,8,4)
+            MinValue = 1
+            MaxValue = 4
+          }
+        }
+        { NOPARSEHbox4 HBox
+          MoveScaled(1,33,49,4)
+          ToolTip = ("How much seconds to wait for the channel to be tuned.\nmplayer option: -dvbin timeout=#\n")
+          Spacing = True
+          { LabelCard2 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("Tuner Timeout")
+          }
+          { spinboxtimeout SpinBox
+            MoveScaled(14,0,8,4)
+            MinValue = 1
+            MaxValue = 30
+            Value = 10
+          }
+        }
+        { NOPARSEHbox5 HBox
+          MoveScaled(1,37,50,4)
+          ToolTip = ("When playing an MPEG-TS stream, this option lets you specify how  many  bytes  in  the\nstream you want MPlayer to search for the desired audio and video IDs.\nMplayer option:\n-tsprobe <byte position>\n\nThis can speed-up tuning/zapping.")
+          Spacing = True
+          { tsprobechk CheckBox notifyobj
+            Name = "tsprobechk"
+            MoveScaled(1,0,15,4)
+            ToolTip = ("Maximum  amount  of  data  to  probe during the detection phase. In the case of MPEG-TS this value identifies the maximum number of TS packets to scan.\nmpv option: demuxer-lavf-probesize")
+            AutoResize = True
+            Text = ("probesize")
+          }
+          { comboboxtsprobe ComboBox notifyobj
+            Name = "comboboxtsprobe"
+            MoveScaled(18,0,22,3)
+            List = [("64000"), ("128000"), ("256000"), ("512000"), ("1024000"), ("2048000"), ("4096000"), ("8192000")]
+            Text = ("1024000")
+          }
+        }
+        { NoParse51 HBox
+          MoveScaled(0,42,54,4)
+          ToolTip = ("Use mplayer command: dvb_set_channel.\nIt will cut down time needed to tune channels, \nbut you could have troubles with missing or wrong audio,\nIt is an mplayer bug you may want to check here:\nhttp://bugzilla.mplayerhq.hu/show_bug.cgi?id=2070\n--\n0 - The safer choice.\n1 - Let xt7 decide if it is safe or not.\n2 - Could even crash mplayer, depends on its version.")
+          Spacing = True
+          { Label24 Label labelcheck
+            Name = "Label24"
+            MoveScaled(2,0,22,3)
+            AutoResize = True
+            Text = ("Faster channel zapping")
+          }
+          { ComboboxFastZapping ComboBox
+            MoveScaled(20,0,33,3)
+            ReadOnly = True
+            List = [("0 - Never"), ("1 - When audio is not switched"), ("2 - Always")]
+            Text = ("0 - Never")
+          }
+        }
+        { NOPARSESEP4 Separator
+          MoveScaled(3,50,50,1)
+        }
+        { NOPARSESCANBTN Button
+          MoveScaled(1,51,52,5)
+          Text = ("Rescan Channels with simple DVB-T Tuner")
+          Picture = Picture["video-television.png"]
+        }
+      }
+      Index = 8
+      Text = ("Language")
+      { ScrollView8 ScrollView
+        MoveScaled(2,1,50,48)
+        Tag = "language"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParseLabel03 Label
+          MoveScaled(1,1,25,3)
+          Text = ("Preferred Audio languages:")
+        }
+        { NoParse16 HBox
+          MoveScaled(1,4,48,4)
+          ToolTip = ("Add the selected language to the list of preferred languages.\nMplayer Option:\n-alang \"language list\"")
+          Spacing = True
+          { AlangComboBox ComboBox
+            MoveScaled(0,0,24,4)
+            Visible = False
+            Expand = True
+            ReadOnly = True
+            List = [("alb,sq,(Albanian)"), ("ara,ar,(Arabic)"), ("arm,hy,(Armenian)"), ("baq,eu,(Basque)"), ("ben,bn,(Bengali)"), ("bos,bs,(Bosnian)"), ("bre,br,(Breton)"), ("bul,bg,(Bulgarian)"), ("cat,ca,(Catalan)"), ("cze,cs,(Czech)"), ("dan,da,(Danish)"), ("de,ger,deu (german)"), ("ell,el,(Greek)"), ("en,eng (english)"), ("epo,eo,(Esperanto)"), ("es,spa (spanish)"), ("est,et,(Estonian)"), ("fi,fin (finnish)"), ("fr,fre (french)"), ("geo,ka,(Georgian)"), ("glg,gl,(Galician)"), ("heb,he,(Hebrew)"), ("hin,hi,(Hindi)"), ("hrv,hr,(Croatian)"), ("hun,hu,(Hungarian)"), ("ice,is,(Icelandic)"), ("ind,id,(Indonesian)"), ("it,ita (italian)"), ("ja,jpn (japanese)"), ("kaz,kk,(Kazakh)"), ("kor,ko,(Korean)"), ("lav,lv,(Latvian)")].Insert([("lit,lt,(Lithuanian)"), ("ltz,lb,(Luxembourgish)"), ("mac,mk,(Macedonian)"), ("may,ms,(Malay)"), ("nl,dut,nld (dutch,flemish)"), ("no,nor (norwegian)"), ("oci,oc,(Occitan)"), ("per,fa,(Farsi)"), ("pob,pb,(Portuguese-BR)"), ("pol,pl,(Polish)"), ("pt,por (portuguese)"), ("ru,rus (russian)"), ("rum,ro,(Romanian)"), ("scc,sr,(Serbian)"), ("sin,si,(Sinhalese)"), ("slo,sk,(Slovak)"), ("slv,sl,(Slovenian)"), ("sv,swe (swedish)"), ("syr,sy,(Syriac)"), ("tgl,tl,(Tagalog)"), ("tha,th,(Thai)"), ("tur,tr,(Turkish)"), ("ukr,uk,(Ukrainian)"), ("urd,ur,(Urdu)"), ("vie,vi,(Vietnamese)"), ("zh,chi,zho (chinese)")])
+            Text = ("iso-8859-1")
+          }
+          { Button1 Button
+            MoveScaled(26,0,13,4)
+            Text = ("Add")
+            Picture = Picture["icon:/16/add"]
+          }
+          { ToolButton1 ToolButton
+            MoveScaled(36,0,4,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+          { AudioLangList TextBox notifyobj
+            Name = "AudioLangList"
+            MoveScaled(40,0,8,4)
+            Expand = True
+            Text = ("en,eng")
+          }
+        }
+        { NoParseLabel11 Label
+          MoveScaled(1,10,25,3)
+          Text = ("Preferred Subtitle languages:")
+        }
+        { NoParse17 HBox
+          MoveScaled(1,13,48,4)
+          ToolTip = ("Add the selected language to the list of preferred languages.\nMplayer Option:\n-slang \"language list\"\n\nThis option also allows you to search for online subtitles at Opensubtitles.org")
+          Spacing = True
+          { SlangComboBox ComboBox
+            MoveScaled(0,0,24,4)
+            Visible = False
+            Expand = True
+            ReadOnly = True
+            List = [("alb,sq,(Albanian)"), ("ara,ar,(Arabic)"), ("arm,hy,(Armenian)"), ("baq,eu,(Basque)"), ("ben,bn,(Bengali)"), ("bos,bs,(Bosnian)"), ("bre,br,(Breton)"), ("bul,bg,(Bulgarian)"), ("cat,ca,(Catalan)"), ("cze,cs,(Czech)"), ("dan,da,(Danish)"), ("ger,deu,de (german)"), ("ell,el,(Greek)"), ("eng,en (english)"), ("epo,eo,(Esperanto)"), ("spa,esp (spanish)"), ("est,et,(Estonian)"), ("fin,fi (finnish)"), ("fre,fr (french)"), ("geo,ka,(Georgian)"), ("glg,gl,(Galician)"), ("heb,he,(Hebrew)"), ("hin,hi,(Hindi)"), ("hrv,hr,(Croatian)"), ("hun,hu,(Hungarian)"), ("ice,is,(Icelandic)"), ("ind,id,(Indonesian)"), ("ita,it (italian)"), ("jpn,ja (japanese)"), ("kaz,kk,(Kazakh)"), ("kor,ko,(Korean)"), ("lav,lv,(Latvian)")].Insert([("lit,lt,(Lithuanian)"), ("ltz,lb,(Luxembourgish)"), ("mac,mk,(Macedonian)"), ("may,ms,(Malay)"), ("dut,nld,nl (dutch,flemish)"), ("nor,no (norwegian)"), ("oci,oc,(Occitan)"), ("per,fa,(Farsi)"), ("pob,pb,(Portuguese-BR)"), ("pol,pl,(Polish)"), ("por,pt (portuguese)"), ("rus,ru (russian)"), ("rum,ro,(Romanian)"), ("scc,sr,(Serbian)"), ("sin,si,(Sinhalese)"), ("slo,sk,(Slovak)"), ("slv,sl,(Slovenian)"), ("swe,sv (swedish)"), ("syr,sy,(Syriac)"), ("tgl,tl,(Tagalog)"), ("tha,th,(Thai)"), ("tur,tr,(Turkish)"), ("ukr,uk,(Ukrainian)"), ("urd,ur,(Urdu)"), ("vie,vi,(Vietnamese)"), ("chi,zh,zho (chinese)")])
+            Text = ("iso-8859-1")
+          }
+          { Button2 Button
+            MoveScaled(26,0,13,4)
+            Text = ("Add")
+            Picture = Picture["icon:/16/add"]
+          }
+          { ToolButton2 ToolButton
+            MoveScaled(35,0,4,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+          { SubLangList TextBox notifyobj
+            Name = "SubLangList"
+            MoveScaled(39,0,8,4)
+            Expand = True
+            Text = ("en,eng")
+          }
+        }
+      }
+      Index = 9
+      Text = ("Misc")
+      { ScrollView3 ScrollView
+        MoveScaled(4,4,55,55)
+        Tag = "misc"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParse49 HBox
+          MoveScaled(1,0,50,4)
+          ToolTip = ("Select your mplayer executable.\nJust write 'mplayer' for default.")
+          Spacing = True
+          { NoParseLabel21 Label
+            MoveScaled(1,1,20,3)
+            AutoResize = True
+            Text = ("Environment Variables")
+          }
+          { MplayerEnvVars TextBox
+            MoveScaled(21,0,19,3)
+            ToolTip = ("You can override some environment variables here, write them in thre form:\nVARIABLE1=VALUE VARIABLE2=VALUE")
+            Expand = True
+          }
+        }
+        { NoParse9 HBox
+          MoveScaled(1,5,44,4)
+          ToolTip = ("Select your mplayer executable.\nJust write 'mplayer' for default.")
+          Spacing = True
+          { NoParseLabel9 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("mpv executable")
+          }
+          { MplayerExeText TextBox
+            MoveScaled(17,1,19,3)
+            Expand = True
+            Text = ("mpv")
+          }
+          { MplayerExeOpen ToolButton
+            MoveScaled(38,1,4,4)
+            Picture = Picture["icon:/small/open"]
+          }
+        }
+        { NoParse3 HBox
+          MoveScaled(1,10,44,4)
+          ToolTip = ("Command or commands (semicolon separated) which\nwill be executed before a file is played.\nHINT: you can execute multiple commands using \";\" between them.\nHINT: If you don't want Xt7-player to wait for the command(s) to exit, use \"&\" at the end of each one.")
+          Spacing = True
+          { NoParseLabel5 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("Pre Command")
+          }
+          { NoParsePreCommand TextBox
+            MoveScaled(17,1,26,3)
+            Expand = True
+          }
+        }
+        { NoParse4 HBox
+          MoveScaled(1,15,44,4)
+          ToolTip = ("Command or commands (semicolon separated) which\nwill be executed after a file has been played.\nHINT: you can execute multiple commands using \";\" between them.\nHINT: If you don't want Xt7-player to wait for the command(s) to exit, use \"&\" at the end of each one.")
+          Spacing = True
+          { NoParseLabel7 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("Post Command")
+          }
+          { NoParsePostCommand TextBox
+            MoveScaled(17,1,26,3)
+            Expand = True
+          }
+        }
+        { NoParse19 HBox
+          MoveScaled(1,20,44,4)
+          ToolTip = ("Enter the shutdown command \\n (make sure your  have rights to do it)")
+          Spacing = True
+          { NoParseLabel12 Label
+            MoveScaled(1,1,15,3)
+            AutoResize = True
+            Text = ("Shutdown Command")
+          }
+          { NoParseShutDownCommand TextBox
+            MoveScaled(17,1,26,3)
+            ToolTip = ("Enter the shutdown command\n(also make sure your user has rights to do it)")
+            Expand = True
+            Text = ("poweroff")
+          }
+        }
+        { NOPARSESEP2 Separator
+          MoveScaled(1,25,46,1)
+        }
+        { NoParse6 HBox
+          MoveScaled(1,27,44,4)
+          ToolTip = ("Enable/Disbale Tooltips")
+          Spacing = True
+          { ToolTipsCHK CheckBox
+            MoveScaled(1,0,40,4)
+            Expand = True
+            Text = ("Enable ToolTips")
+            Value = CheckBox.True
+          }
+        }
+        { NoParse46 HBox
+          MoveScaled(1,31,44,4)
+          ToolTip = ("Enable this if you want xt7 to be controlled through an mpris2 compliant client.\n")
+          Spacing = True
+          { ToolTipsCHKDBUS CheckBox
+            MoveScaled(0,0,16,4)
+            ToolTip = ("Makes xt7 register itself into dbus.\nThis will export media properties and gives basic options to control the player.")
+            AutoResize = True
+            Text = ("Dbus support")
+          }
+          { Label22 Label
+            MoveScaled(19,0,19,3)
+            Font = Font["Italic"]
+            AutoResize = True
+            Text = ("   (MPRIS 2.1 - Incomplete)")
+            Alignment = Align.Right
+          }
+        }
+        { NoParse47 HBox
+          MoveScaled(1,36,44,4)
+          ToolTip = ("Enable/Disbale Tooltips")
+          Spacing = True
+          { RestorePlayCHK CheckBox
+            MoveScaled(1,0,41,4)
+            ToolTip = ("If you close xt7-player while playing a local file,\nxt7 will start just were you left the next time.")
+            Expand = True
+            Text = ("Start were you left")
+          }
+        }
+        { NoParse18 HBox
+          MoveScaled(1,40,50,4)
+          ToolTip = ("When an audio file is played, the right panel will show\ninformations on the file played, allowing to set covers\nfor your library items.")
+          Spacing = True
+          { CoverCHK2 CheckBox
+            MoveScaled(1,0,41,4)
+            ToolTip = ("When an audio file is played, the right panel will show\ninformations on the file played, allowing to set covers\nfor your library items.")
+            Expand = True
+            Text = ("Use cover manager.")
+            Value = CheckBox.True
+          }
+        }
+        { NoParse20 HBox
+          MoveScaled(1,44,50,4)
+          ToolTip = ("Enable/Disbale the tray icon")
+          Spacing = True
+          { TrayCHK1 CheckBox
+            MoveScaled(1,0,47,4)
+            ToolTip = ("Enable/Disbale the tray icon")
+            Expand = True
+            Text = ("Use Tray icon (xt7-player restart needed)")
+          }
+        }
+        { NOPARSESEP1 Separator
+          MoveScaled(4,48,45,1)
+        }
+        { NoParse12 HBox
+          MoveScaled(1,49,50,4)
+          Spacing = True
+          { SaveOnExitCHK CheckBox
+            MoveScaled(1,0,47,4)
+            Text = ("Save all settings to profile on program exit")
+            Value = CheckBox.True
+          }
+        }
+        { NoParse21 HBox
+          MoveScaled(1,53,50,4)
+          ToolTip = ("Save xt7 position and size on program exit.")
+          Spacing = True
+          { SaveGeometryCHK CheckBox
+            MoveScaled(0,0,49,4)
+            Text = ("Also save xt7 geometry on exit")
+            Value = CheckBox.True
+          }
+        }
+        { NoParse22 HBox
+          MoveScaled(1,57,50,4)
+          ToolTip = ("If your window manager is not kwin\nand you find that form position is not correctly restored,\ntry checking this.")
+          Spacing = True
+          { SaveGeometryCompizCHK CheckBox
+            MoveScaled(0,0,51,4)
+            Text = ("Alternative saving method (compiz/emerald)")
+            Value = CheckBox.True
+          }
+        }
+      }
+      Index = 10
+      Text = ("User Options")
+      { ScrollViewUserOptions ScrollView
+        MoveScaled(1,0,60,62)
+        Tag = "Audio CD"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NOPARSELabel25 Label
+          MoveScaled(1,1,57,3)
+          Text = ("The following options will be appended to mpv command line:")
+        }
+        { NoParseUserOption1 HBox
+          MoveScaled(1,5,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox1 CheckBox notifyobj
+            Name = "UserOptionChackbox1"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox1 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel1 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata1 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { NoParseUserOption2 HBox
+          MoveScaled(-1,9,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox2 CheckBox notifyobj
+            Name = "UserOptionChackbox2"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox2 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel2 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata2 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { NoParseUserOption3 HBox
+          MoveScaled(-1,13,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox3 CheckBox notifyobj
+            Name = "UserOptionChackbox3"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox3 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel3 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata3 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { NoParseUserOption4 HBox
+          MoveScaled(-2,19,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox4 CheckBox notifyobj
+            Name = "UserOptionChackbox4"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox4 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel4 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata4 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { NoParseUserOption5 HBox
+          MoveScaled(-2,23,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox5 CheckBox notifyobj
+            Name = "UserOptionChackbox5"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox5 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel5 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata5 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { NoParseUserOption6 HBox
+          MoveScaled(-1,29,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox6 CheckBox notifyobj
+            Name = "UserOptionChackbox6"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox6 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel6 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata6 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { NoParseUserOption7 HBox
+          MoveScaled(-2,34,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox7 CheckBox notifyobj
+            Name = "UserOptionChackbox7"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox7 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel7 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata7 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { NoParseUserOption8 HBox
+          MoveScaled(-3,39,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox8 CheckBox notifyobj
+            Name = "UserOptionChackbox8"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox8 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel8 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata8 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { NoParseUserOption9 HBox
+          MoveScaled(-1,44,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox9 CheckBox notifyobj
+            Name = "UserOptionChackbox9"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox9 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel9 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata9 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { NoParseUserOption10 HBox
+          MoveScaled(-1,49,57,4)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          Spacing = True
+          { UserOptionChackbox10 CheckBox notifyobj
+            Name = "UserOptionChackbox10"
+            MoveScaled(1,0,3,4)
+          }
+          { ComboBox10 ComboBox
+            MoveScaled(5,0,22,4)
+            Expand = True
+            Text = ("ComboBox1")
+          }
+          { TextLabel10 TextLabel
+            MoveScaled(28,0,4,4)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata10 TextBox
+            MoveScaled(34,0,22,4)
+            Expand = True
+          }
+        }
+        { Panel4 Panel
+          MoveScaled(3,54,51,7)
+          { Label25 Label
+            MoveScaled(0,0,50,6)
+            AutoResize = True
+            Text = ("TODO: Ogni opzione qui deve essere univoca/avere priorità sulle opzioni di base di xt7")
+          }
+        }
+      }
+      Index = 11
+      Text = ("Style")
+      { ScrollView9 ScrollView
+        MoveScaled(2,1,59,61)
+        Tag = "style"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParseStyle4 HBox
+          MoveScaled(1,0,59,4)
+          Spacing = True
+          { Label2 Label
+            MoveScaled(0,0,58,3)
+            Font = Font["Bold,+1"]
+            Expand = True
+            Text = ("* Some Options may require application restart.")
+          }
+        }
+        { NOPARSESEPARATOR5 Separator
+          MoveScaled(0,6,50,0.5714)
+        }
+        { NoParse29 HBox
+          MoveScaled(1,7,50,4)
+          Spacing = True
+          { ShowCoversInListChk CheckBox
+            MoveScaled(1,0,47,4)
+            ToolTip = ("Display cover thumbnails in side lists")
+            Expand = True
+            Text = ("Show covers in listviews")
+          }
+        }
+        { NoParse41 HBox
+          MoveScaled(1,12,50,4)
+          Spacing = True
+          { ShowThumbsCHK CheckBox
+            MoveScaled(0,0,47,4)
+            ToolTip = ("Generate and show video thumbnails to for the side lists, this is made runtime in background and thumbnails will be  cached on disk.")
+            Expand = True
+            Text = ("Show thumbnails for video files")
+          }
+        }
+        { NoParse5 HBox
+          MoveScaled(2,25,50,4)
+          ToolTip = ("Background image for the bottom panel.\nYou can also set this by dragging an image file or from a web page\ninto the bottom panel, just remember to save the profile.")
+          Spacing = True
+          { NoParseLabel6 Label
+            MoveScaled(1,0,14,3)
+            AutoResize = True
+            Text = ("Bottom picture background")
+          }
+          { BottomPanelImage TextBox
+            MoveScaled(24,0,19,3)
+            Expand = True
+          }
+          { OpenImageFile ToolButton
+            MoveScaled(44,0,4,4)
+            Picture = Picture["icon:/small/open"]
+          }
+        }
+        { NoParseStyle3 HBox
+          MoveScaled(2,34,50,4)
+          Spacing = True
+          { FontLabel3 Label
+            MoveScaled(1,1,17,3)
+            AutoResize = True
+            Text = ("Default icon size")
+          }
+          { VBox5 VBox
+            MoveScaled(15,0,3,4)
+            Expand = True
+          }
+          { !IconWidthCombobox ComboBox
+            MoveScaled(35,0,10,3)
+            #Public = True
+            ReadOnly = True
+            List = [("16"), ("24"), ("32"), ("48"), ("64"), ("96"), ("128"), ("160")]
+            Text = ("32")
+          }
+          { BackResetButton4 ToolButton
+            MoveScaled(45,0,4,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+        }
+        { NoParseStyle9 HBox
+          MoveScaled(2,39,50,4)
+          Spacing = True
+          { FontLabel8 Label
+            MoveScaled(1,1,17,3)
+            AutoResize = True
+            Text = ("Albums view icon size")
+          }
+          { VBox6 VBox
+            MoveScaled(21,0,3,4)
+            Expand = True
+          }
+          { !IconWidthAlbums ComboBox
+            MoveScaled(35,0,10,3)
+            #Public = True
+            ReadOnly = True
+            List = [("48"), ("64"), ("96"), ("128"), ("160"), ("224"), ("256")]
+            Text = ("64")
+          }
+          { BackResetButton5 ToolButton
+            MoveScaled(45,0,4,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+        }
+        { NoParse30 HBox
+          MoveScaled(2,44,50,4)
+          Spacing = True
+          { HighlightCHK CheckBox
+            MoveScaled(1,0,48,4)
+            ToolTip = ("Highlight the sideview item which is under the mouse")
+            Expand = True
+            Text = ("Highlight listview items on mouse over")
+          }
+        }
+        { NOPARSESEPARATOR1 Separator
+          MoveScaled(3,48,50,0.5714)
+        }
+        { NoParseStyle1 HBox
+          MoveScaled(2,49,50,4)
+          Spacing = True
+          { FontLabel1 Label
+            MoveScaled(1,1,17,3)
+            AutoResize = True
+            Text = ("Left-side list font and font color:")
+          }
+          { ResetButton1 ToolButton ResetButton
+            Name = "ResetButton1"
+            MoveScaled(19,1,3,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+          { FontString1 TextBox
+            MoveScaled(22,0,19,4)
+            Expand = True
+            Text = ("Default")
+          }
+          { FontChooseBTN1 Button FontChoose
+            Name = "FontChooseBTN1"
+            MoveScaled(41,0,4,4)
+            Picture = Picture["icon:/16/font"]
+          }
+          { ColorChooseBTN1 Button ColorChoose
+            Name = "ColorChooseBTN1"
+            MoveScaled(46,0,4,4)
+            Background = Color.Foreground
+            Picture = Picture["icon:/16/color"]
+          }
+        }
+        { NoParseStyle2 HBox
+          MoveScaled(2,54,50,4)
+          Spacing = True
+          { FontLabel2 Label
+            MoveScaled(2,1,23,3)
+            AutoResize = True
+            Text = ("Left-side list background color:")
+          }
+          { VBox2 VBox
+            MoveScaled(28,1,3,4)
+            Expand = True
+          }
+          { BackResetButton1 ToolButton BackResetButton
+            Name = "BackResetButton1"
+            MoveScaled(41,1,4,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+          { BackColorChooseBTN1 Button ColorChoose
+            Name = "BackColorChooseBTN1"
+            MoveScaled(46,0,4,4)
+            Background = &HFFFFFF&
+            Picture = Picture["icon:/16/color"]
+          }
+        }
+        { NoParseStyle5 HBox
+          MoveScaled(2,59,50,4)
+          Spacing = True
+          { FontLabel4 Label
+            MoveScaled(0,1,30,3)
+            AutoResize = True
+            Text = ("Left-side list alternate background color:")
+          }
+          { VBox3 VBox
+            MoveScaled(33,0,3,4)
+            Expand = True
+          }
+          { BackResetButton2 ToolButton BackResetButton
+            Name = "BackResetButton2"
+            MoveScaled(42,0,4,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+          { BackColorChooseBTN2 Button ColorChoose
+            Name = "BackColorChooseBTN2"
+            MoveScaled(46,0,4,4)
+            Background = &HF5F5F5&
+            Picture = Picture["icon:/16/color"]
+          }
+        }
+        { NOPARSESEPARATOR2 Separator
+          MoveScaled(3,64,50,0.5714)
+        }
+        { NoParseStyle8 HBox
+          MoveScaled(2,65,50,4)
+          Spacing = True
+          { FontLabel7 Label
+            MoveScaled(1,1,17,3)
+            AutoResize = True
+            Text = ("Trayicon panel font and font color:")
+          }
+          { ResetButton4 ToolButton ResetButton
+            Name = "ResetButton4"
+            MoveScaled(19,1,3,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+          { FontString4 TextBox
+            MoveScaled(22,0,19,4)
+            Expand = True
+            Text = ("Default")
+          }
+          { FontChooseBTN4 Button FontChoose
+            Name = "FontChooseBTN4"
+            MoveScaled(41,0,4,4)
+            Font = Font["Bold,-1"]
+            Picture = Picture["icon:/16/font"]
+          }
+          { ColorChooseBTN4 Button ColorChoose
+            Name = "ColorChooseBTN4"
+            MoveScaled(46,0,4,4)
+            Background = &HFFFFFF&
+            Picture = Picture["icon:/16/color"]
+          }
+        }
+        { NoParseStyle7 HBox
+          MoveScaled(2,70,50,4)
+          Spacing = True
+          { FontLabel6 Label
+            MoveScaled(1,1,23,3)
+            AutoResize = True
+            Text = ("TrayIcon panel background color:")
+          }
+          { VBox4 VBox
+            MoveScaled(28,1,3,4)
+            Expand = True
+          }
+          { BackResetButton3 ToolButton BackResetButton
+            Name = "BackResetButton3"
+            MoveScaled(41,1,4,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+          { BackColorChooseBTN3 Button ColorChoose
+            Name = "BackColorChooseBTN3"
+            MoveScaled(46,0,4,4)
+            Background = &H2A2D3C&
+            Picture = Picture["icon:/16/color"]
+          }
+        }
+        { NOPARSESEPARATOR3 Separator
+          MoveScaled(2,75,50,0.5714)
+        }
+        { NoParseStyle6 HBox
+          MoveScaled(2,76,50,4)
+          Spacing = True
+          { FontLabel5 Label
+            MoveScaled(1,1,17,3)
+            AutoResize = True
+            Text = ("Audio panel font and font color:")
+          }
+          { ResetButton2 ToolButton ResetButton
+            Name = "ResetButton2"
+            MoveScaled(19,0,3,4)
+            Picture = Picture["icon:/16/clear"]
+          }
+          { FontString2 TextBox
+            MoveScaled(22,0,19,4)
+            Expand = True
+            Text = ("Default")
+          }
+          { FontChooseBTN2 Button FontChoose
+            Name = "FontChooseBTN2"
+            MoveScaled(41,0,4,4)
+            Font = Font["Bold,+2"]
+            Picture = Picture["icon:/16/font"]
+          }
+          { ColorChooseBTN2 Button ColorChoose
+            Name = "ColorChooseBTN2"
+            MoveScaled(46,0,4,4)
+            Background = &HFFFFFF&
+            Picture = Picture["icon:/16/color"]
+          }
+        }
+      }
+      Index = 0
+    }
+  }
+  { HBox2 HBox
+    MoveScaled(1,70,76,4)
+    Spacing = True
+    { HBox3 HBox
+      MoveScaled(6,0,5,4)
+      Expand = True
+    }
+    { SaveBTN Button
+      MoveScaled(29,0,14,3.7143)
+      ToolTip = ("Save and use new settings")
+      AutoResize = True
+      Text = ("Save")
+      Picture = Picture["icon:/16/save"]
+    }
+    { ApplyBTN Button
+      MoveScaled(44,0,14,4)
+      ToolTip = ("Use new settings without save")
+      AutoResize = True
+      Text = ("Use ")
+      Picture = Picture["icon:/16/redo"]
+    }
+    { OkBTN Button
+      MoveScaled(60,0,14,4)
+      ToolTip = ("Close the window")
+      AutoResize = True
+      Text = ("Close")
+      Picture = Picture["icon:/16/cancel"]
+    }
+  }
+}

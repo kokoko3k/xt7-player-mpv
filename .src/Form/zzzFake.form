@@ -1,0 +1,202 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,106,71)
+  Visible = False
+  Icon = Picture["xt7-player.png"]
+  Picture = Picture["FakeMask.png"]
+  Mask = True
+  Stacking = Window.Below
+  Minimized = True
+  SkipTaskbar = True
+  Opacity = 0
+  { VSplit1 VSplit
+    MoveScaled(4,2,12,9)
+    Expand = True
+  }
+  { ScrollView1 ScrollView
+    MoveScaled(1,3,9,9)
+    Border = False
+  }
+  { PanelNowNext Panel LabelPanel
+    Name = "PanelNowNext"
+    MoveScaled(1,28,106,35)
+    Visible = False
+    Background = &H81B0D6&
+    Foreground = &HFFFFFF&
+    Arrangement = Arrange.Vertical
+    Margin = True
+    Padding = 2
+    { HBox1 Panel LabelPanel
+      Name = "HBox1"
+      MoveScaled(1,0,104,4)
+      Background = &H21175C&
+      Foreground = &HFFFFFF&
+      Arrangement = Arrange.Horizontal
+      Margin = True
+      { ButtonInfoNow2 PictureBox LabelPanel
+        Name = "ButtonInfoNow2"
+        MoveScaled(0,0,5,3)
+        Mouse = Mouse.Pointing
+        Drop = True
+        Picture = Picture["icon:/22/screen"]
+        Alignment = Align.Center
+      }
+      { LabelChannelName TextLabel LabelPanel
+        Name = "LabelChannelName"
+        MoveScaled(11,1,32,2)
+        Font = Font["Bold,+1"]
+        Expand = True
+        Text = ("No channel")
+        Alignment = Align.Left
+        Wrap = False
+      }
+      { ClockLabel TextLabel LabelPanel
+        Name = "ClockLabel"
+        MoveScaled(68,1,19,2)
+        Font = Font["Bold,+1"]
+        Foreground = &HFFFFFF&
+        AutoResize = True
+        Text = ("00/00/0000 00:00:00")
+        Alignment = Align.Right
+      }
+    }
+    { Separator1 Separator
+      MoveScaled(18,4,65,0.5714)
+    }
+    { HBox2 Panel NowPanel
+      Name = "HBox2"
+      MoveScaled(0,4,104,4)
+      Background = &H000670&
+      Foreground = &HFFFFFF&
+      Arrangement = Arrange.Horizontal
+      Margin = True
+      { ButtonInfoNow PictureBox NowPanel
+        Name = "ButtonInfoNow"
+        MoveScaled(0,0,5,3)
+        Mouse = Mouse.Pointing
+        Drop = True
+        Picture = Picture["icon:/22/info"]
+        Alignment = Align.Center
+      }
+      { Label1 TextLabel NowPanel
+        Name = "Label1"
+        MoveScaled(10,0,13,2)
+        Font = Font["Bold,+1"]
+        Mouse = Mouse.Pointing
+        Text = ("NOW")
+        Alignment = Align.Left
+        Wrap = False
+      }
+      { VBox2 VBox NowPanel
+        Name = "VBox2"
+        MoveScaled(24,1,7,1)
+        Mouse = Mouse.Pointing
+      }
+      { LabelNowName TextLabel NowPanel
+        Name = "LabelNowName"
+        MoveScaled(33,1,18,2)
+        Font = Font["Bold,+1"]
+        Mouse = Mouse.Pointing
+        Expand = True
+        Text = ("Not available")
+        Alignment = Align.Left
+        Wrap = False
+      }
+      { PictureBox1 PictureBox buttonepg
+        Name = "PictureBox1"
+        MoveScaled(89,0,4,4)
+        Mouse = Mouse.Pointing
+        Picture = Picture["icon:/22/calendar"]
+      }
+      { LabelNowName2 TextLabel buttonepg
+        Name = "LabelNowName2"
+        MoveScaled(94,1,7,2)
+        Font = Font["Bold,+1"]
+        Mouse = Mouse.Pointing
+        AutoResize = True
+        Text = ("EPG")
+        Alignment = Align.Left
+      }
+    }
+    { LabelNowInfo TextLabel
+      MoveScaled(2,8,93,4)
+      Visible = False
+      Font = Font["Bold"]
+      Background = &H000446&
+      Padding = 8
+      AutoResize = True
+      Alignment = Align.Justify
+    }
+    { HBox3 Panel NextPanel
+      Name = "HBox3"
+      MoveScaled(1,18,104,3)
+      Background = &H000660&
+      Foreground = &HFFFFFF&
+      Arrangement = Arrange.Horizontal
+      Margin = True
+      { ButtonInfoNext PictureBox NextPanel
+        Name = "ButtonInfoNext"
+        MoveScaled(0,0,5,3)
+        Mouse = Mouse.Pointing
+        Picture = Picture["icon:/22/info"]
+        Alignment = Align.Center
+      }
+      { Label3 TextLabel NextPanel
+        Name = "Label3"
+        MoveScaled(9,0,13,2)
+        Font = Font["Bold,Italic,+1"]
+        Mouse = Mouse.Pointing
+        Text = ("NEXT")
+        Alignment = Align.Left
+        Wrap = False
+      }
+      { VBox3 VBox
+        MoveScaled(24,1,7,1)
+      }
+      { LabelNextStart TextLabel NextPanel
+        Name = "LabelNextStart"
+        MoveScaled(33,0,14,2)
+        Visible = False
+        Font = Font["Bold,Italic,+1"]
+        Mouse = Mouse.Pointing
+        AutoResize = True
+        Text = ("13:50")
+        Alignment = Align.Left
+        Wrap = False
+      }
+      { VBox4 VBox
+        MoveScaled(50,1,4,1)
+      }
+      { LabelNextName TextLabel NextPanel
+        Name = "LabelNextName"
+        MoveScaled(70,0,20,2)
+        Font = Font["Bold,Italic,+1"]
+        Mouse = Mouse.Pointing
+        Expand = True
+        Text = ("Not Available")
+        Alignment = Align.Left
+        Wrap = False
+      }
+    }
+    { LabelNextInfo TextLabel
+      MoveScaled(1,21,96,4)
+      Visible = False
+      Font = Font["Bold,Italic"]
+      Background = &H000446&
+      Padding = 8
+      AutoResize = True
+      Alignment = Align.Justify
+    }
+  }
+  { PanelMini Panel
+    MoveScaled(20,2,15,16)
+    Arrangement = Arrange.Fill
+  }
+  { cachingbox MovieBox
+    MoveScaled(56,7,16,16)
+    Background = &H000000&
+    Path = "caching.gif"
+    Playing = True
+  }
+}

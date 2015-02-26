@@ -1,0 +1,1050 @@
+' Gambas module file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas module file
+
+Public ChangedForms As New String[]
+Public UncommonVideoFilters As String 
+Public Videofilter As String
+Public videofiltername As String 
+Public UncommonAudiofilters As String
+Public Audiofilter As String
+Public audiofiltername As String
+Public imgfilters As String
+Public Slowmedia As String 
+Public NonTaggableMedia As String
+Public NetworkURI As String 
+'Please terminate ALLFILTERS with ";"!
+Public ALLFilters As String 
+Public quotes As String 
+Public aboutmessage As String 
+Public Alternatecolor As Integer 
+Public FromChains As Boolean 
+Public LSyncing As Boolean 
+Public LSyncingMessage As String 
+Public AppName As String 
+Public ConfPath As String 
+Public CustomBindKeys As String 
+Public XbindkeysBIN As String 
+Public SocketFile As String 
+Public rowpadding As Integer 
+Public Highlightmore As Integer 
+Public coverHeight As Integer 
+Public initearlyformsdone As Boolean 
+Public initlatelyformsdone As Boolean
+Public RequiredVersion As String 
+Public FirstTimeSettignsLoaded As Boolean 
+Public formaperto As Boolean 
+Public IsNextSelected As Boolean 
+Public TranslateMeFirst As String 
+'Translation is needed if the control string is untranslated and we don't use english as default language
+Public TranslationNeeded As Boolean 
+Public Pre As String 
+Public StartFolder As String 
+Public ScreenshotFolder As String 
+Public CurrentProfile As String 
+Public Historyfile As String
+Public FormW As Integer 
+Public FormH As Integer 
+Public FormX As Integer 
+Public FormY As Integer 
+Public FormMaximized As Boolean = False
+Private SettingsFileName As String 
+Public DelayLoadStates As Timer 
+Public MaxHistory As Integer 'how many played files to remember
+Public YPCacheFile As String 
+
+Public NOsoftvolmessagefile As String
+
+Public UserPlaylistsDir As String
+
+Public pluginmode As Boolean = False 'set various options when is true
+
+Public Sub init()
+  FixFormNames() 'needed with gambas 3.4.1; form names arent set by default!
+  UncommonVideoFilters = "Flash*;*.ts;*.m2v;*.m4v;*.mpeg;*.flv;*.gvi;*.iso;*.fli;*.flv;*.mpg;*.mpv;*.vob;*.viv;*.swf;*.rm;*.rmvb;*.dv;*.3gp;*.qt;*.divx;*.asx;*.ogm;*.ogv;*.oga;*.m4v;*.speex;*.spx;*.wavpack;*.wv;*.trueaudio;*.tta"
+  Videofilter = "*.avi;*.mpg;*.mp4;*.mov;*.mkv;*.asf;*.ogm;*.ogv;*.wmv;"
+  videofiltername = ("Common Video Files")
+  UncommonAudiofilters = "*.wma;*.ram;*.ac3;*.wav;*.aiff;*.aiffc;*.aac;*.8svx;*.pls;*.dts;"
+  Audiofilter = "*.mp3;*.ogg;*.aac;*.flac;*.mpc;*.ac3;"
+  audiofiltername = ("Common Audio Files")
+  imgfilters = ("*.jpg;*.jpeg;*.bmp;*.png;")
+  Slowmedia = "cddb:// cdda:// mms:// http:// http_proxy:// rtp:// rtsp:// ftp:// udp:// smb:// "  'we'll get tag information on user prefs
+  NonTaggableMedia = "tv:// radio:// cdda:// cddb:// mf:// pvr:// dvb:// unsv:// sdp:// mpst:// tivo://"
+  NetworkURI = " mms:// http:// http_proxy:// rtp:// rtsp:// ftp:// udp:// "
+  UserPlaylistsDir = ".playlists"
+  'Please terminate ALLFILTERS with ";"!
+  'ALLFilters  '= Videofilter & ";" & AudioFilter & ";" & UncommonVideoFilters & ";" & UncommonAudiofilters
+  quotes = "\""       'double quotes in strings
+  aboutmessage = "\n" & ("Xt7-Player-mpv version ") & Application.version & (" by Antonio Orefice.\nxt7player@gmail.com\n\nThanks to Benoît Minisini for Gambas.") & "\n\n" & "I92guboj - Spanish translation \n" & "Wackenroader - Brazilian Portuguese translation \n" & "Shimingzhou - simplified Chinese translation\n" & "Jacky Bamière - French translation\n" & "VictorR2007 - Russian Translation\n" & "SymbianFlo - Testing and 'spiritual' support\n" & "NickiNicki - Bug reports\n" & "Eloaders and all the contributors\nat https://launchpad.net/xt7-player \n" 
+  Alternatecolor = &EEEEFF&
+  FromChains = False 'will track if chains form has opened another window
+  LSyncing = False 'is true when library is syncing.
+  LSyncingMessage = ("Syncing Library, please wait...")
+  AppName = "Xt7-Player-mpv"
+  ConfPath = Settings.DefaultDir & "/" & Appname
+  CustomBindKeys = "Xt7BindKeys"
+  XbindkeysBIN = global.confpath & "/" & CustomBindKeys
+  SocketFile = global.confpath & "/.localsocket"
+  rowpadding = 4 'space around every row in library and playlist
+  Highlightmore = 1 'highlighted item font size addition
+  coverHeight = (Desktop.H Div 17)
+  initearlyformsdone = False
+  initlatelyformsdone = False
+  RequiredVersion = "3.3.0"
+  FirstTimeSettignsLoaded = False
+  formaperto = False
+  IsNextSelected = True 'indica se abbiamo finito la playlist.
+  TranslateMeFirst = ("Translate me first")  'act as a control string if the project is translated
+  'Translation is needed if the control string is untranslated and we don't use english as default language
+  TranslationNeeded = ((TranslateMeFirst = "Translate me first") And Not (System.Language Like "en_*"))
+  Pre = "* "
+  StartFolder = User.home  'fixme: allow to choose
+  ScreenshotFolder = settings.defaultdir & "/" & Appname & "/" & ".xt7-screenshots/"
+  YPCacheFile = settings.defaultdir & "/" & Appname & "/" & ".ypcachefile"
+  HistoryFile = settings.defaultdir & "/" & Appname & "/" & ".history.txt"
+  CurrentProfile = ""
+  FormW = 400      'As gambas does not update form dimesions on fullscreen switch
+  FormH = 300      'we have TO DO it manually
+  FormX = 0
+  FormY = 0
+  SettingsFileName = "default"
+  NOsoftvolmessagefile = global.confpath & "/.Nodisplaysoftvolmessage"
+  MaxHistory = 15
+  DelayLoadStates = New Timer As "DelayLoadStates"
+End
+
+
+Public Function proxyfromenv() As String
+
+  If Application.Env["https_proxy"] <> "" Then Return Application.Env["https_proxy"]
+  If Application.Env["http_proxy"] <> "" Then Return Application.Env["http_proxy"]
+  Return ""
+End
+
+Public Function SavedProfileChanged() As Boolean
+  'return if one of the forms has been saved with some exclusions
+  Try ChangedForms.Remove(ChangedForms.Find("FMain"))
+  Try ChangedForms.Remove(ChangedForms.Find("Searchfields"))
+  Return ChangedForms.count > 0
+End
+
+
+Public Sub FixFormNames()
+  Try AFiltersCfg.name = "AFiltersCfg"
+  Try AddUriForm.name = "AddUriForm"
+  Try AllOptions.name = "AllOptions"
+  Try AskName.name = "AskName"
+  Try AudioForm.name = "AudioForm"
+  Try Chains.name = "Chains"
+  Try ChooseAspect.name = "ChooseAspect"
+  Try CountDown.name = "CountDown"
+  Try CoverManager.name = "CoverManager"
+  Try DVBTuner.name = "DVBTuner"
+  Try EpgForm.name = "EpgForm"
+  Try FMain.name = "FMain"
+  Try FsForm.name = "FsForm"
+  Try GeneralOptions.name = "GeneralOptions"
+  Try HotKeyGrab.name = "HotKeyGrab"
+  Try HotKeys.name = "HotKeys"
+  Try LogWindow.name = "LogWindow"
+  Try MyAskName.name = "MyAskName"
+  Try MyQuestion.name = "MyQuestion"
+  Try OpenSubtitesForm.name = "OpenSubtitesForm"
+  Try OverlayTrayTip.name = "OverlayTrayTip"
+  Try ProfileManager.name = "ProfileManager"
+  Try RealtimeForm.name = "RealtimeForm"
+  Try Searchfields.name = "Searchfields"
+  Try ServiceForm.name = "ServiceForm"
+  Try SubAndOsd.name = "SubAndOsd"
+  Try TextDialog.name = "TextDialog"
+  Try TranslationNeeded.name = "TranslationNeeded"
+  Try VFiltersCfg.name = "VFiltersCfg"
+  Try VideoEqualizer.name = "VideoEqualizer"
+  Try XConfigureAudioDriver.name = "XConfigureAudioDriver"
+  Try XConfigureVideoDriver.name = "XConfigureVideoDriver"
+  Try Xt7Egg.name = "Xt7Egg"
+  Try zzzFake.name = "zzzFake"
+End
+
+
+
+Public Function makeN(number As String, digits As Integer) As String
+
+  If Len(number) < digits Then
+    Repeat
+      number = "0" & number
+    Until Len(number) = digits
+  Endif
+  Return number
+
+End
+
+Public Function NeedTreeViewWorkaround() As Boolean
+  Dim UserVersion, UserMajor, UserMinor, RequiredMajor, RequiredMinor, Userminiminor, requiredminiminor As String
+  Dim Required As String = "3.4.0" 'starting from 3.4.0 treeviews autoexpands when have new children.
+  Dim cfruser, cfrrequired As Long
+  UserVersion = System.fullversion
+  RequiredMajor = makeN(Split(Required, ".")[0], 5)
+  RequiredMinor = makeN(Split(Required, ".")[1], 5)
+  RequiredMiniminor = makeN(Split(Required, ".")[2], 5)
+  UserMajor = makeN(Split(UserVersion, ".")[0], 5)
+  UserMinor = makeN(Split(UserVersion, ".")[1], 5)
+  Userminiminor = makeN(Trim(Split(UserVersion, ".")[2]), 5)
+  Try cfruser = UserMajor & UserMinor & Userminiminor
+  If Error Then Return
+  Try cfrrequired = RequiredMajor & RequiredMinor & RequiredMiniminor
+  If Error Then Return
+  If cfruser >= cfrrequired Then Return True
+End
+
+
+Public Function Center(F1 As Form, F2 As Form)
+  'Center F2 in F1
+  F2.x = F1.screenx + (f1.w / 2) - (F2.w / 2)
+  F2.y = F1.screeny + (f1.h / 2) - (F2.h / 2)
+End
+
+Public Sub CenterObj(parent As Object, child As Object)
+  'Center O2 in O1,
+  'O2 is child of O1
+
+  child.x = (parent.x + (parent.w / 2) - (child.w / 2))
+  child.y = (parent.y + (parent.h / 2) - (child.h / 2))
+End
+
+Public Function fixfilename(filename As String) As String
+  'make a filename more bash friendly...
+  Dim out As String
+  Dim cod As Integer
+  Dim i As Integer
+  
+  For i = 1 To Len(filename) 
+    cod = Asc(filename, i)
+    If (cod < 32) Or (cod > 126) Then
+      out &= "_"
+        Else
+      out &= Mid(filename, i, 1) 
+    Endif
+  Next
+  
+  out = Replace(out, "/", "_")
+  out = Replace(out, "&", "_")
+  out = Replace(out, "*", "_")
+  out = Replace(out, "?", "_")
+  out = Replace(out, Chr(92), "_") 'backslash \
+  out = Replace(out, "@", "_")
+  out = Replace(out, "(", "_")
+  out = Replace(out, ")", "_")
+  out = Replace(out, "[", "_")
+  out = Replace(out, "]", "_")
+  Return out
+  
+End
+
+
+Public Function UriPrefix(Uri As String) As String
+
+  If uri Like "*://*" Then
+    'find ":" and return 2 characters more
+    Return Left(URI, InStr(URI, ":") + 2)
+      Else
+    Return ""
+  Endif
+End
+
+
+
+Public Function IsNontaggableMedia(URI As String) As Boolean
+  If (InStr(NonTaggableMedia, Lower(UriPrefix(URI))) > 0) Then
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+
+Public Function IsNetworkURI(URI As String) As Boolean
+  If (InStr(NetworkURI, Lower(UriPrefix(URI))) > 0) Then
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+Public Function IsCddb(URI As String) As Boolean
+    Return (Lower(uri) Like "cddb://*")
+End
+Public Function IsCdda(URI As String) As Boolean
+    Return (Lower(uri) Like "cdda://*")
+End
+Public Function IsCdaudio(URI As String) As Boolean
+    Return (Lower(uri) Like "cdd?://*") Or (Lower(uri) Like "cdd?://") 
+End
+
+Public Sub AddUserExtensions(exts As String)
+  Dim curext As String
+  Dim returnexts As String = ""
+  ALLFilters = Videofilter & ";" & AudioFilter & ";" & UncommonVideoFilters & ";" & UncommonAudiofilters
+  For Each curext In Split(exts, ",", "", True)
+    If Trim(curext) <> "" Then returnexts = returnexts & "*." & Trim(curext) & ";"
+  Next 'curext
+  If Trim(returnexts) <> "" Then
+    ALLFilters = ALLFilters & returnexts
+  Endif
+  Debug allfilters
+End
+
+
+
+Public Function IsMediaFile(filename As String) As Boolean
+'will return true if filename extension is in audiofilter or videofilter OR if the file begins with Flash*
+  Dim fileExt As String = "." & File.Ext(filename)
+  If (File.BaseName(filename) Like "Flash*") Then Return True
+  If (fileext = ".") Then Return False
+  If (InStr(Upper(ALLFilters), Upper(fileExt & ";")) > 0) Then
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+Public Function IsPlaylist(filename As String) As Boolean
+  If ((filename Like "*.pls") Or (filename Like "*.pls\\?*")) Then Return True
+  If ((filename Like "*.m3u") Or (filename Like "*.m3u\\?*")) Then Return True
+  If ((filename Like "*.asx") Or (filename Like "*.asx\\?*")) Then Return True
+  If ((filename Like "*.wax") Or (filename Like "*.wax\\?*")) Then Return True
+  If ((filename Like "*.wvx") Or (filename Like "*.wvx\\?*")) Then Return True
+  If ((filename Like "*.ram") Or (filename Like "*.ram\\?*")) Then Return True
+  If ((filename Like "*.b4s") Or (filename Like "*.b4s\\?*")) Then Return True
+  Return False
+End
+
+
+Public Function IsAudioFile(filename As String) As Boolean
+'will return true if filename extension is in audio one
+  Dim fileExt As String = "." & File.Ext(filename)
+  Dim FilterList As String = UncommonAudiofilters & ";" & Audiofilter
+  If fileext = "." Then Return False
+  If (InStr(Upper(FilterList), Upper(fileExt & ";")) > 0) Then
+    Return True
+      Else
+    Return False
+  Endif
+End
+Public Function IsImgFile(filename As String) As Boolean
+'will return true if filename extension is in audio one
+  Dim fileExt As String = "." & File.Ext(filename)
+  Dim FilterList As String = imgfilters
+  If fileext = "." Then Return False
+  If (InStr(Upper(FilterList), Upper(fileExt & ";")) > 0) Then
+    Return True
+      Else
+    Return False
+  Endif
+End
+Public Function IsVideoFile(filename As String) As Boolean
+'will return true if filename extension is in audiofilter or videofilter
+  Dim fileExt As String = "." & File.Ext(filename)
+  Dim FilterList As String = UncommonVideofilters & ";" & Videofilter
+  If fileext = "." Then Return False
+  If (InStr(Upper(FilterList), Upper(fileExt & ";")) > 0) Then
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+Public Function IsDVBuri(filename As String) As Boolean
+'will return true if filename like dvb//
+ Return Lower(filename) Like "dvb://*"
+End
+
+
+
+
+Public Function NoFileSuffix(Myfilename As String) As String
+  If Myfilename Like "file://*" Then
+    Return Mid(MyfileName, 8)
+      Else
+    Return Myfilename
+  Endif
+End
+
+
+
+Public Function GetTotalFiles(dragdata As String, FromDesktop As Boolean) As Integer
+  Dim droppedfiles As String[]
+  Dim DroppedFile As String
+  Dim total As Integer = 0
+  Dim subtotal As String = 0
+
+  droppedfiles = Split(dragdata, "\n\r", "", True)
+  For Each DroppedFile In Droppedfiles
+    If FromDesktop Then
+      droppedfile = DConv(Global.NoFileSuffix(Global.FormatDrag(droppedfile)))
+        Else
+      droppedfile = Global.NoFileSuffix(Global.FormatDrag(droppedfile))
+    Endif
+    'Shell "sync" Wait
+    ' [GB2:QUOT] Shell "ls -LR1 " & Quote.Shell(DroppedFile) & " |grep \\. |grep -v \\/ |sort -u |wc -l" Wait To subtotal
+    Shell "ls -LR1 " & Shell$(DroppedFile) & " |grep \\. |sort -u |wc -l" Wait To subtotal
+    'Debug "ls -LR1 " & Shell$(DroppedFile) & " |grep \\. |grep -v \\/ |sort -u |wc -l"
+    total = total + CInt(Trim(subtotal))
+  Next
+  Return total
+End
+
+
+
+Public Sub SaveMandatorySettings(Profilename As String) 
+  Dim MySettings As New SettingsClass
+
+  MySettings.Save(Fmain, global.confpath & "/" & Profilename)
+  MySettings.Save(SearchFields, global.confpath & "/" & Profilename)
+  GeneralOptions.SaveWatchDir(global.confpath & "/" & Profilename)
+  GeneralOptions.SaveExcludeDir(global.confpath & "/" & Profilename)
+
+  ComboHistory.AddHistory(FMain.Searchfield, FMain.Searchfield.text)
+  ComboHistory.AddHistory(FMain.SearchfieldPLS, FMain.SearchfieldPLS.text)
+  ComboHistory.AddHistory(FMain.Searchfieldalbums, FMain.Searchfieldalbums.text)
+  ComboHistory.AddHistory(FMain.Searchfielddvb, FMain.Searchfielddvb.text)
+  ComboHistory.AddHistory(FMain.youSearchfield, FMain.youSearchfield.text)
+  ComboHistory.addhistory(Fmain.Urlbox, Fmain.Urlbox.text)
+
+  ComboHistory.SaveHistory(Fmain.Searchfield, Global.confpath & "/" & ProfileName)
+  ComboHistory.SaveHistory(Fmain.SearchfieldPLS, Global.confpath & "/" & ProfileName)
+  ComboHistory.SaveHistory(Fmain.Searchfielddvb, Global.confpath & "/" & ProfileName)
+  ComboHistory.SaveHistory(Fmain.Searchfieldalbums, Global.confpath & "/" & ProfileName)
+  ComboHistory.SaveHistory(Fmain.Urlbox, Global.confpath & "/" & ProfileName)
+  ComboHistory.SaveHistory(Fmain.youSearchfield, Global.confpath & "/" & ProfileName)
+
+  'library and playlist are profile indipendant
+  fmain.MyLibrary.Save(fmain.LibraryGrid, global.confpath)
+  fmain.MyPlaylist.Save(fmain.PlaylistGrid, global.confpath)
+  fmain.MyDVBTList.Save(Fmain.dvbtgrid, global.confpath)
+  Try fmain.mypodcast.SavePods(global.confpath & "/mypods.txt", fmain.PodcastTree)
+
+  Try covermanager.flushUncoveredFile()
+
+  Debug "Mandatory settings saved"
+  Debug
+End
+
+
+
+Public Sub SaveAllSettings(ProfileName As String, Optional WithLibraryAndPls As Boolean = True)
+  Dim MySettings As New SettingsClass
+
+  SaveMandatorySettings(Profilename)
+
+  MySettings.Save(Chains, Global.confpath & "/" & ProfileName)
+  MySettings.Save(XConfigureAudioDriver, Global.confpath & "/" & ProfileName)
+  MySettings.Save(XConfigureVideoDriver, Global.confpath & "/" & ProfileName)
+  MySettings.Save(VFiltersCfg, Global.confpath & "/" & ProfileName)
+  MySettings.Save(AFiltersCfg, Global.confpath & "/" & ProfileName)
+  MySettings.Save(SubAndOsd, Global.confpath & "/" & ProfileName)
+  MySettings.Save(GeneralOptions, Global.confpath & "/" & ProfileName)
+
+  MySettings.Save(VideoEqualizer, Global.ConfPath & "/" & ProfileName)
+  HotKeys.SaveHotKeys(Global.confpath & "/" & ProfileName)
+
+End
+
+
+Public Sub LoadEarlySettings(ProfileName As String)
+  Dim MySettings As New SettingsClass
+  Dim out As String
+  
+  'changed name from Xt7-Player to xt7-player, config transition needed:
+  Shell "mv -f " & Settings.DefaultDir & "/Xt7-Player.conf " & Settings.DefaultDir & "/xt7-player.conf >/dev/null 2>&1" Wait To out
+  MySettings.Load(Fmain, Global.confpath & "/" & ProfileName)
+  MySettings.Load(GeneralOptions, Global.confpath & "/" & ProfileName) '<--- rallenta l'avvio
+  MySettings.Load(Searchfields, Global.confpath & "/" & ProfileName)
+ SettingsFileName = ProfileName
+  MySettings.Load(VideoEqualizer, Global.confpath & "/" & SettingsFileName)
+End
+
+
+
+Public Sub LoadAllSettings(ProfileName As String) 'THIS Is PROBABLY BROKEN
+  Dim MySettings As New SettingsClass
+  Dim out As String
+  'changed name from Xt7-Player to xt7-player, config transition needed:
+    Shell "mv -f " & Settings.DefaultDir & "/Xt7-Player.conf " & Settings.DefaultDir & "/xt7-player.conf >/dev/null 2>&1" Wait To out
+
+  MySettings.Load(Fmain, Global.confpath & "/" & ProfileName)
+  MySettings.Load(GeneralOptions, Global.confpath & "/" & ProfileName)
+  
+  SettingsFileName = ProfileName
+  DelayLoadStates_Timer()
+  AddUserExtensions(GeneralOptions.KnownExtensions.text)
+  MySettings.Load(VideoEqualizer, Global.confpath & "/" & SettingsFileName)
+End
+
+Public Sub ReallyLoadAllSettings()
+  Dim MySettings As New SettingsClass
+  Dim MyForms As New Object[]
+  Dim TheForm As Object
+  Dim WasVisible As Boolean = False
+  Debug "Start at: " & Time
+  Debug
+  Try fmain.mouse = Mouse.wait
+  If (Not global.initearlyformsdone) Then
+    fmain.InitEarlyForms()
+  Endif
+  MyForms.Add(Chains)
+  MyForms.Add(XConfigureAudioDriver)
+  MyForms.Add(XConfigureVideoDriver)
+  MyForms.Add(SubAndOsd)
+  MyForms.Add(GeneralOptions)
+  MyForms.Add(VideoEqualizer) 
+  MyForms.Add(VFiltersCfg)
+  MyForms.Add(AFiltersCfg)
+  For Each TheForm In MyForms
+    WasVisible = TheForm.visible
+    TheForm.hide
+    MySettings.Load(TheForm, Global.confpath & "/" & CurrentProfile) 'was wrongly an outdated settingsfilename
+                                                                     'this bug flawed the reload profile function
+    TheForm.visible = WasVisible
+  Next
+  Try fmain.mouse = Mouse.default
+  Debug "Ends at: " & Time
+  Debug
+End
+
+
+
+
+
+Public Sub DelayLoadStates_Timer()
+  Dim MySettings As New SettingsClass
+  Dim MyForms As New Object[]
+  Dim TheForm As Object
+  Dim WasVisible As Boolean = False
+  
+  Debug "Start at: " & Time
+  Debug
+  Try fmain.mouse = Mouse.wait
+  If Not (fmain.visible Or Fmain.Closing) Then
+    Debug "Waiting..."
+    Debug
+    Return
+  Endif
+  DelayLoadStates.Stop
+  If (Not global.initearlyformsdone) Then
+    fmain.InitEarlyForms()
+  Endif
+  
+  If Not Chains.AlreadyLoaded Then MyForms.Add(Chains)
+  If Not XConfigureAudioDriver.AlreadyLoaded Then MyForms.Add(XConfigureAudioDriver)
+  If Not XConfigureVideoDriver.AlreadyLoaded Then MyForms.Add(XConfigureVideoDriver)
+  If Not SubAndOsd.AlreadyLoaded Then MyForms.Add(SubAndOsd)
+  If Not GeneralOptions.AlreadyLoaded Then MyForms.Add(GeneralOptions)  'viene caricato in allinit_pre, perchè è necessario anche qui? sembra che non carichi le relative impostazioni...
+  'searchfields is an early form... MyForms.Add(SearchFields) 
+  ' If Not VideoEqualizer.AlreadyLoaded Then MyForms.Add(VideoEqualizer) credo serva solo in fase di play, quindi lo faccio lì
+  If Not VFiltersCfg.AlreadyLoaded Then MyForms.Add(VFiltersCfg)
+  If Not AFiltersCfg.AlreadyLoaded Then MyForms.Add(AFiltersCfg)
+Stop
+  For Each TheForm In MyForms
+    WasVisible = TheForm.visible
+    TheForm.hide
+
+    MySettings.Load(TheForm, Global.confpath & "/" & SettingsFileName)
+    TheForm.visible = WasVisible
+  Next
+  FirstTimeSettignsLoaded = True
+  initlatelyformsdone = True
+  Try fmain.mouse = Mouse.default
+  Debug "Ends at: " & Time
+  Debug
+End
+
+
+Public Function FormatDrag(mystring As String) As String
+'will replace %00..%FF occurrences in a string with ascii characters
+'it is useful for dragged text in url/like format
+  Dim Hcode As String
+  Dim Char As String
+  Dim i As Integer = 1
+  Dim ReturnString As String
+  
+  ReturnString = MyString
+  While i <= Len(ReturnString) - 2 'LAST two characters are useless
+    If Mid(ReturnString, i, 1) = "%" Then
+      Hcode = Mid(ReturnString, i + 1, 2)
+      Try char = Chr(Val("&H" & Hcode & "&")) 'fixme, why "TRY" is needed on kubuntu/kde4.1?
+      
+      'If IsAscii(char) Then
+        ReturnString = Replace(ReturnString, "%" & Hcode, char)
+      'Endif
+    Endif
+    i = i + 1
+  Wend
+  
+  'we have a problem with gnome here, it adds "\r" at the end of filename
+  If Trim(returnstring) <> "" Then
+    If Right(returnstring, 1) = "\r" Then
+      returnstring = Left(returnstring, Len(returnstring) - 1)
+      ''Replace(returnstring, "\r", "")
+    Endif
+  Endif
+  Return ReturnString
+End
+
+
+
+
+'/ SaveLoad All -----------------------
+
+
+
+
+
+' VfiltersCfg, AFiltersCfg and GeneralOptions related functions --------------------------------------
+
+Public Sub FilterListFromTab(TheTabStrip As Tabstrip, FilterList As Listbox)
+  'find the current tab caption in the filter list
+  Dim i As Integer = 0
+  Dim UpperTabCaption As String
+  UpperTabCaption = Upper(Replace(TheTabStrip.text, "&", ""))
+    For i = 0 To FilterList.count - 1
+      If (Upper(FilterList.List[i]) = UpperTabCaption) Or (Upper(FilterList.List[i]) = pre & UpperTabCaption) Then
+        FilterList.index = i
+        FilterList.Refresh
+        Break
+      Endif
+    Next 'i
+End
+
+
+
+Public Function RemoveShortcut(Tmpstring As String) As String
+  '&AText -> Atext
+  Return Replace(TmpString, "&", "")
+End
+
+
+Public Function TabIndexByName(TabName As String, TheTabStrip As Tabstrip) As Integer
+Dim i As Integer
+Dim UPTabName As String
+Dim theobject As Object
+      UPTABName = Upper(TabName)
+      If UPTABNAME = "MYEXPAND" Then UPTABName = "EXPAND" 'gb3 workaround
+
+        For i = 0 To TheTabStrip.count - 1
+          If (UPTABName = Upper(RemoveShortCut(TheTabStrip[i].text))) Or (UPTABName = pre & Upper(RemoveShortCut(TheTabStrip[i].text))) Then Return i
+          For Each theobject In TheTabStrip[i].Children
+            If theobject Is Scrollview Then
+              If (Upper(theobject.tag) = upTabName) Then Return i
+                Else
+              If theobject Is Label And theobject.name Like "NOPARSETAB*" Then
+
+                If (Upper(theobject.tag) = upTabName) Then Return i
+              Endif
+            Endif
+          Next 'theobject
+        Next 'i
+      
+      'try to find the tab in a different way too:
+      'TabIndexByName scrollview
+      'for each theobject in TheTabStrip.
+      
+      'return -1 if no tab is found
+      Return -1
+End
+
+
+Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip As Tabstrip, Switchable As Boolean, Optional TheTooltip As String = "", Optional helper As Button)
+  
+  ' TabstripS
+  '     Tabstrip
+  '         MyScrollview
+  '                   AnHbox
+  '                       [if switchable => Checkbox, else Label] - Object - CommentLabel
+  '                   AnHbox
+  '                       [if switchable => Checkbox, else Label] - Object - CommentLabel
+  '                   ...
+  '                   ...  
+  '                   AnHbox
+  '                       [if switchable => Checkbox, else Label] - Object - CommentLabel  
+  '
+  
+  Dim MyScrollView As Object
+  Dim AnHBOX As Object
+  Dim AComboBox As Combobox
+  Dim ACheckBox As CheckBox
+  Dim ATextBox As Textbox
+  Dim ATextLabel As TextLabel
+  Dim AButton As Button
+  Dim ALabel, AComment As Label
+  Dim i As Integer
+  Dim f As Float
+  Dim ASpinBox As SpinBox
+  Dim AFloatSpinBox As FloatSpinBox
+  Dim CurrentParams As String[]
+  Dim MyVslider As VSlider
+  Dim MyReq As StringFileReqClass
+  Dim ResetDefault As Myresetbutton
+  
+  'Find the destination Tab
+  Try TheTabstrip.index = TabIndexByName(TabCaption, TheTabStrip)
+  'Find the Scrollview 
+  For Each MyScrollview In TheTabstrip.Children
+    If MyScrollview Is Scrollview Then Break
+  Next
+
+
+  For Each CurrentParams In TheParameters
+    If Not (CurrentParams[0] = "VSLIDER") Then
+     'Make a subcontainer, child of the scrollview
+      AnHbox = New HBox(myscrollview) As "dynaobj"
+
+      
+      AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
+      AnHBOX.Height = 28
+      AnHBOX.Spacing = 8
+      If TheTooltip <> "" Then AnHbox.Tooltip = TheTooltip
+        Else
+      MyScrollView.Arrangement = Arrange.LeftRight 'With Vslider we must arrange horizontally
+      MyScrollView.spacing = 2
+      AnHbox = New VBox(myscrollview) As "dynaobj"
+      AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
+
+      ' [GB2:FNTW] AnHBOX.Width = FMain.Font.TextWidth("31.25")
+      AnHBOX.Width = FMain.Font.TextWidth("31.25")
+      AnHBOX.Height = 200
+      AnHBOX.Spacing = 8
+    Endif
+
+    'Let's Draw The Label
+    If Not ((CurrentParams[0] = "SWITCH") Or (CurrentParams[0] = "SUBLABEL")) Then
+      If (Not Switchable) Then
+        ALabel = New Label(AnHBox) As "dynaobj"
+        ALabel.name = CurrentParams[CurrentParams.count - 2] & ".Label"
+        ALabel.text = CurrentParams[1]
+        ALabel.AutoResize = True
+        ALabel.font = TheTabStrip.font
+        ALabel.Foreground = Color.TextForeground
+          Else
+        ACheckbox = New Checkbox(AnHBox) As "dynaobj"
+        ACheckbox.Name = CurrentParams[CurrentParams.Count - 2] & ".CheckBox"
+        ACheckbox.text = CurrentParams[1]
+        ' [GB2:FNTW] ACheckBox.width = Acheckbox.Font.TextWidth(Acheckbox.Text) + 32
+        ACheckBox.width = Acheckbox.Font.TextWidth(Acheckbox.Text) + 32
+      Endif
+    Endif
+
+    
+    'Next, we'll parse the Parameter DataType 
+    'Syntax for TheParameters is:["FREE", caption, default, Textbox name, comment]
+    If CurrentParams[0] = "FREE" Then 'Let's Draw a TextBox
+      'AnHBOX.padding = 3
+      ATextBox = New TextBox(AnHBox) As "dynaobj"
+      ATextBox.name = CurrentParams[CurrentParams.count - 2] & ".TextBox"
+      ATextBox.text = CurrentParams[2]
+      ATextBox.expand = True
+      ATextBox.refresh
+
+
+    Else If CurrentParams[0] = "ROSTRING" Then 'Let's Draw a readonly TextBox
+      'AnHBOX.padding = 3
+      ATextBox = New TextBox(AnHBox) As "dynaobj"
+      ATextBox.name = CurrentParams[CurrentParams.count - 2] & ".TextBox"
+      ATextBox.text = CurrentParams[2]
+      ATextBox.ReadOnly = True
+      ATextBox.expand = True
+      ATextBox.refresh
+
+    'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+    Else If CurrentParams[0] = "SUBLABEL" Then 'Let's Draw a Textlabel
+      'AnHBOX.padding = 3
+      Atextlabel = New TextLabel(AnHBOX) As "dynaobj"
+      ATextLabel.Alignment = Align.left
+      AtextLabel.name = CurrentParams[CurrentParams.count - 2] & ".textlabel"
+      ATextLabel.text = CurrentParams[1]
+      'ATextLabel.tag = CurrentParams[2]
+      ' [GB2:FNTW] ATextLabel.w = Atextlabel.Font.TextWidth(CurrentParams[1])
+      ATextLabel.w = Atextlabel.Font.TextWidth(CurrentParams[1])
+      AtextLabel.refresh
+
+    
+    Else If CurrentParams[0] = "CHOOSE" Then       'Let's Draw a ComboBox
+    'Syntax for TheParameters is: ["CHOOSE", Caption, Choice1,...., ChoiceN, CheckBoxName,Comment]
+      AComboBox = New ComboBox(AnHBox) As "dynaobj"
+      AComboBox.refresh
+      AComboBox.name = CurrentParams[CurrentParams.count - 2] & ".ComboBox"
+      'Fill ComboBox items:
+     
+      For i = 2 To CurrentParams.count - 3
+        AComboBox.Add(CurrentParams[i])
+        'Resize(AcomboBox)
+      Next 'i
+      AComboBox.text = CurrentParams[2]
+      AComboBox.expand = True
+
+'AllParams.Add(["VSLIDER", "31", "-12", "0", "12", "Equalizer1", ""])
+'                    0       1     2     3    4        5          6
+
+
+    Else If CurrentParams[0] = "VSLIDER" Then 'Let's Draw a SpinBox
+      'Syntax for TheParameters is: ["VSLIDER", Caption, Min, Default , Max, VsliderName,Comment]
+      
+      ' ResetDefault = NEW myresetButton(AnHBOX)
+      ' ResetDefault.name = CurrentParams[CurrentParams.Count - 2] & ".toolbutton"
+      ' ResetDefault.tag = CurrentParams[3]
+
+      MyVslider = New VSlider(AnHBox) As "dynaobj"
+      MyVslider.Arrangement = Arrange.Vertical
+      MyVslider.Name = CurrentParams[CurrentParams.Count - 2] & ".Vslider"
+      
+      i = CurrentParams[2]
+      MyVslider.MinValue = i
+      i = CurrentParams[4]
+      MyVslider.MaxValue = i
+      i = CurrentParams[3]
+      MyVslider.Value = i
+      MyVslider.Sstep = 1
+      MyVslider.PageStep = 1
+      MyVslider.expand = True
+      AnHBOX.spacing = 0
+
+    Else If CurrentParams[0] = "RANGE" Then 'Let's Draw a SpinBox
+      'Syntax for TheParameters is: ["RANGE", Caption, Min, Default , Max, SpinBoxName,Comment]
+  
+      
+      ASpinBox = New SpinBox(AnHBox) As "dynaobj"
+      ASpinBox.Name = CurrentParams[CurrentParams.Count - 2] & ".SpinBox"
+      i = CurrentParams[2]
+      ASpinBox.MinValue = i
+      i = CurrentParams[4]
+      ASpinBox.MaxValue = i
+      i = CurrentParams[3]
+      ASpinBox.Value = i
+      ASpinBox.expand = True
+  
+      ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
+      ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"
+      ResetDefault.tag = CurrentParams[3]
+    
+    Else If CurrentParams[0] = "SWITCH" Then 'Let's Draw a checkbox
+      'Syntax for TheParameters is: ["SWITCH", Caption, ENABLED|DISABLED, SpinBoxName,Comment]
+      Acheckbox = New CheckBox(AnHbox) As "dynaobj"
+      Acheckbox.name = CurrentParams[CurrentParams.Count - 2] & ".CheckBox"
+      Acheckbox.text = CurrentParams[1]
+      ' [GB2:FNTW] ACheckBox.width = Acheckbox.Font.TextWidth(Acheckbox.Text) + 32
+      ACheckBox.width = Acheckbox.Font.TextWidth(Acheckbox.Text) + 32
+      If CurrentParams[2] = "ENABLED" Then
+        ACheckBox.value = True
+          Else
+        ACheckBox.value = False
+      Endif
+      
+      
+    Else If CurrentParams[0] = "FILEREQ" Then 'Let's Draw a StringFileReq
+      'Syntax for TheParameters is:["FILEREQ", Caption, "FILE"|"DIR", FileReq Name ,comment]
+
+      MyReq = New StringFileReqClass(AnHbox) As "dynaobj"
+      MyReq.name = CurrentParams[CurrentParams.Count - 2] & ".StringFileReqClass"
+      MyReq.FileMode = (CurrentParams[2] = "FILE")
+      'hack: write default path here in case of -dvd-device
+      If CurrentParams[1] Like "*DVD*" Then MyReq.value = "/dev/dvd"
+            
+            
+    Else If CurrentParams[0] = "RANGEFLOAT" Then 'Let's Draw a FloatSpinBox
+        'Syntax for TheParameters is: ["RANGE", Caption, Min, Default , Max, SpinBoxName,Comment]
+
+     
+        
+        AFloatSpinBox = New FloatSpinBox(AnHBox) As ".AFloatSpinBox"
+        AFloatSpinBox.DecimalSeparator = "."
+        AFloatSpinBox.Name = CurrentParams[CurrentParams.Count - 2] & ".FloatSpinBox"
+        f = CurrentParams[2]
+        AFloatSpinBox.MinValue = f
+        f = CurrentParams[4]
+        AFloatSpinBox.MaxValue = f
+        f = CurrentParams[3]
+        AFloatSpinBox.value = f
+        AFloatSpinBox.expand = True
+        ' AFloatSpinBox.Width = 300
+        ' AFloatSpinBox.Background = Color.red
+
+   ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
+        ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"
+        ResetDefault.tag = CurrentParams[3]
+
+
+    Endif
+    
+    
+    If (helper <> Null) Then
+      Abutton = New Button(anHbox)
+      Object.Attach(abutton, helper.window, helper.name)
+      AButton.visible = True
+      abutton.w = helper.w
+      abutton.h = helper.h
+      abutton.picture = helper.Picture
+      abutton.tooltip = helper.Tooltip
+      abutton.text = helper.text
+    Endif
+    
+    'Write the comment
+    If CurrentParams[CurrentParams.Count - 1] <> "" Then
+        AComment = New Label(AnHBox) As "dynaobj"
+        AComment.name = CurrentParams[CurrentParams.count - 2] & ".CommentLabel"
+        AComment.text = CurrentParams[CurrentParams.Count - 1]
+        AComment.AutoResize = True
+        AComment.font = TheTabStrip.font
+        AComment.font.italic = True
+        AComment.Foreground = Color.Lighter(Color.TextForeground)
+    Endif
+      
+  Next
+End
+
+'/ VfiltersCfg and AFiltersCfg related functions --------------------------------------
+
+
+Public Function MouseInside(Obj As Object) As Boolean
+
+  If (Mouse.screenX >= Obj.screenx) And (Mouse.screenX < Obj.screenx + Obj.width) And (Mouse.screeny >= Obj.screeny) And (Mouse.screeny < Obj.screeny + Obj.height) Then
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+
+
+Public Function OneOf(one As String, two As String) As String
+  If one <> "" Then
+    Return one
+      Else
+    Return two
+  Endif
+End
+
+
+Public Sub dynaobj_change()
+  ManageNotifies_Change(Last)
+End
+
+Public Sub ManageNotifies_Change(LastObj As Object)
+  'dynamically created objects are all on group "dynaobj"
+  'that way i can manage their changes
+  'and notify users that it needs to apply new settings
+  Dim goon As Boolean = False
+  If (LastObj Is Checkbox) Or (LastObj Is Spinbox) Or (LastObj Is Floatspinbox) Or (LastObj Is Textbox) Then
+    goon = True
+  Endif
+  If (LastObj Is Label) Or (LastObj Is Slider) Or (LastObj Is Combobox) Then
+    goon = True
+  Endif
+  If Not goon Then Return
+  NotifyChanges(LastObj)
+End
+
+Public Sub ManageNotifies_click(LastObj As Object)
+  Dim goon As Boolean = False
+  If (LastObj Is Checkbox) Or (LastObj Is Combobox) Then
+    goon = True
+  Endif
+  If Not goon Then Return
+  NotifyChanges(LastObj)
+End
+
+
+Public Sub dynaobj_click()
+  ManageNotifies_click(Last)
+End
+
+
+
+Public Sub NotifyChanges(obj As Object)
+  Dim myform As Object
+  myform = Last
+  Repeat
+  If Not (myform Is Form) Then Try myform = myform.parent
+  Until (myform Is Form)
+  If fmain.fullyloaded Then
+    If myform.visible Then
+      RedApplyBtnColor()
+      ' Debug "Cached Options needs to be unvalidated" 'fixmempv se vuoi reimplementare le cachedopts
+    Endif
+  Endif
+End
+
+Public Sub NotifyApplyNeeds()
+  RedApplyBtnColor()
+  ' fixmempv se vuoi reimplementare le cachedopts
+  ' If fmain.cachedopts <> "" Then
+  '   Debug "Cached Options unvalidated"
+  '   Debug
+  '   fmain.cachedopts = ""
+  ' Endif
+End
+
+
+Public Sub ResetApplyBtnColor()
+  Try AFiltersCfg.ApplyBTN.Background = color.Default
+  Try Chains.ApplyBTN.Background = color.Default
+  Try GeneralOptions.ApplyBTN.Background = color.Default
+  Try VFiltersCfg.ApplyBTN.Background = color.Default
+  Try XConfigureAudioDriver.ApplyBTN.Background = color.Default
+  Try XConfigureVideoDriver.ApplyBTN.Background = color.Default  
+  Try SubAndOsd.ApplyBTN.Background = color.default
+End
+
+
+
+Public Sub RedApplyBtnColor()
+  Try AFiltersCfg.ApplyBTN.Background = color.red
+  Try Chains.ApplyBTN.Background = color.red
+  Try GeneralOptions.ApplyBTN.Background = color.red
+  Try VFiltersCfg.ApplyBTN.Background = color.red
+  Try XConfigureAudioDriver.ApplyBTN.Background = color.red
+  Try XConfigureVideoDriver.ApplyBTN.Background = color.red
+  Try SubAndOsd.ApplyBTN.Background = color.red
+End
+
+Public Function MyRowAt(g As Gridview, y As Integer) As Integer
+  'workaround a bug with new gridviews in gb 3.1 which doesn't take header into account :(
+  Dim workaround As Integer = 0
+  If (g.header = GridView.Horizontal) Or (g.header = GridView.both) Then
+    If g.RowAt(g.Font.TextHeight("9") Div 2) <> -1 Then 'means that the bug is still unresolved
+      workaround = g.Columns.Height
+    Endif
+  Endif
+  Return g.RowAt(y - workaround)
+End
+
+Public Function DektopWTotal() As Integer
+  Dim S As Screen
+  Dim VeryLeft As Integer = 99999
+  Dim VeryRight As Integer = -1
+  For Each s In Screens
+    If s.AvailableX < VeryLeft Then VeryLeft = s.AvailableX
+    If s.AvailableX + s.AvailableWidth > VeryRight Then VeryRight = s.AvailableX + s.AvailableWidth
+  Next
+  Return VeryRight - Veryleft
+End
+
+Public Function DektopHTotal() As Integer
+  Dim S As Screen
+  Dim VeryTop As Integer = 99999
+  Dim VeryBottom As Integer = -1
+  For Each s In Screens
+    If s.AvailableY < VeryTop Then VeryTop = s.Availabley
+    If s.AvailableY + s.AvailableHeight > VeryBottom Then VeryBottom = s.AvailableY + s.AvailableHeight
+  Next
+  Return VeryBottom - verytop
+End
+
+Public Sub Which(exe As String) As Boolean
+  Dim exefound As String
+  Shell "which " & exe To exefound
+  If Trim(exefound) = "" Then Return False
+
+  Return True
+End
+

@@ -1,0 +1,86 @@
+' Gambas class file
+
+Export
+Create Static
+
+Public color As Integer = Dialog.color
+Public filter As String[] = Dialog.filter
+Public font As Font = Dialog.font
+Public path As String = Dialog.path
+Public paths As String[] = Dialog.paths
+Public showhidden As Boolean = Dialog.showhidden
+Public title As String = Dialog.title
+'Public autoext As Boolean = Dialog.autoext
+'Public mydate As Date = Dialog.date
+
+Private Sub sync()
+  color = Dialog.color
+  filter = Dialog.filter
+  font = Dialog.font
+  path = Dialog.path
+  paths = Dialog.paths
+  showhidden = Dialog.showhidden
+  title = Dialog.title
+  'autoext = Dialog.autoext
+  'myDate = Dialog.date
+End
+
+Private Sub Getsync()
+  'Try Dialog.date = mydate
+  Try Dialog.font = font
+  Try Dialog.color = color
+  Try Dialog.filter = filter
+  Try Dialog.path = path
+  Try Dialog.paths = paths
+  Try Dialog.showhidden = showhidden
+  Try Dialog.title = title
+'  Try Dialog.autoext = autoext
+End
+
+Public Function SelectColor() As Boolean
+  Dim ret As Boolean
+  Getsync()
+  Try ret = Dialog.SelectColor()
+  If Error Then Try ret = Dialog.SelectColor()
+  If Error Then Try ret = Dialog.SelectColor()
+  sync()
+  Return ret
+End
+Public Function SelectFont() As Boolean
+  Dim ret As Boolean
+  Getsync()
+  Try ret = Dialog.SelectFont()
+  If Error Then Try ret = Dialog.SelectFont()
+  If Error Then Try ret = Dialog.SelectFont()
+  sync()
+  Return ret
+End
+Public Function OpenFile() As Boolean
+  Dim ret As Boolean
+  Getsync()
+  Try ret = Dialog.OpenFile()
+  If Error Then Try ret = Dialog.OpenFile()
+  If Error Then Try ret = Dialog.OpenFile()
+  sync()
+  Return ret
+End
+
+Public Function SelectDate() As Boolean
+  Dim ret As Boolean
+  Getsync()
+  Try ret = Dialog.SelectDate()
+  If Error Then Try ret = Dialog.SelectDate()
+  If Error Then Try ret = Dialog.SelectDate()
+  sync()
+  Return ret
+End
+Public Function SelectDirectory() As Boolean
+  Dim ret As Boolean
+  Getsync()
+  Try ret = Dialog.SelectDirectory()
+  If Error Then Try ret = Dialog.SelectDirectory()
+  If Error Then Try ret = Dialog.SelectDirectory()
+  sync()
+  Return ret
+End
+

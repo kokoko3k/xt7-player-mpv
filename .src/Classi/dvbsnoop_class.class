@@ -1,0 +1,502 @@
+' Gambas class file
+
+Private DvbsnoopExe As String
+Private dvbsnoop As Process 
+Private dvbsnoopcMap As Process
+Private CharsetIn As String = "ISO8859-1"
+Private CharsetOut As String = Desktop.charset
+Private PidBreak As String = "*Service_ID:*"
+Private ServiceBreak As String = "*=======================*"
+
+Private channels As String[]
+
+Private sBuffer As New String[]
+
+Private UtcOffset As Integer
+
+
+Public Struct EventInfo
+  Start_time_date As Date 'try to keep it first to sort by date.
+  ServiceID As String
+  EventID As String
+  ChannelName As String
+  Duration_date As Date
+  Free_Ca_mode As String
+  event_name As String
+  text_char As String
+  category As String
+  icon As String
+End Struct
+
+Public EventDB As New EventInfo[]
+Event GotInfo(MyEventInfo As EventInfo)
+
+Public Sub Init(Dvbsnoop_Exe As String, Channels_conf_file As String)
+
+  Dim LTZ As String
+  Dim LTZdiff As Integer
+
+
+  DvbsnoopExe = Dvbsnoop_Exe ' = "/home/root/Desktop2_kde4/dvbsnoop"
+  channels = Split(File.Load(channels_conf_file), "\n")
+  FillCategories()
+
+  ' get the local system timezone
+  Exec ["date", "+%::z"] To LTZ
+  'recalculate the local system timezone difference to seconds
+  ltzdiff = Val(Mid(LTZ, 2, 2)) * 3600 + Val(Mid(LTZ, 5, 2)) * 60 + Val(Mid(LTZ, 8, 2))
+  If Mid(LTZ, 1, 1) = "-" Then ltzdiff = ltzdiff * -1
+  utcoffset = ltzdiff
+
+
+End
+
+
+Public Sub InitSidChanTable()
+  SidChanTable.clear
+  SidChanTable.Resize(999999)
+  SidChanTable.Fill(":", 0, 999999)
+End
+
+
+
+Public Sub Startit()
+  Dim options As String = " -s sec -nohexdumpbuffer 0x12 |grep --binary-files=text 'Service_ID^|Table_ID^|===^|Event_ID^|Start_time^|Duration^|Free_CA_mode^|Content_nibble_level_^|event_name^|text_char'"
+  Dim options2 As String = " -s sec -nohexdumpbuffer 0x11|grep --binary-files=text -i 'service_id:^|service_name:'"
+  Dim state As Integer = 999
+'  StartitUfficio()
+'  Return
+  
+  
+  'Dim options As String = " -s sec -nohexdumpbuffer 0x12"
+  Try state = dvbsnoop.State
+  If Not Error Then 
+    If State = Process.running Then 
+      Stopit()
+      Wait 0.01
+    Endif
+  Endif
+  options = Replace(options, "^", Chr(92))
+  options2 = Replace(options2, "^", Chr(92))
+  'dvbsnoop = Shell dvbsnoopexe For Input As "dvbsnoop"
+  'dvbsnoop = Shell dvbsnoopexe & " -s sec -nohexdumpbuffer 0x12" For Input As "dvbsnoop"
+  'dvbsnoop = Shell dvbsnoopexe & " -s sec -nohexdumpbuffer 0x12" For Input As "dvbsnoop"
+  InitSidChanTable()
+  dvbsnoopcMap = Shell dvbsnoopexe & options2 For Input As "dvbsnoopcMap"
+  Wait 0.1
+  dvbsnoop = Shell dvbsnoopexe & options For Input As "dvbsnoop"
+
+End
+
+
+Public Sub StartitUfficio()
+  Dim options As String = " |grep 'Service_ID^|Table_ID^|===^|Event_ID^|Start_time^|Duration^|Free_CA_mode^|event_name^|Content_nibble_level_^|text_char'"
+  Dim options2 As String = " |grep -i 'service_id:^|service_name:'"
+  'Dim options As String = " -s sec -nohexdumpbuffer 0x12"
+  InitSidChanTable()
+  options = Replace(options, "^", Chr(92))
+  options2 = Replace(options2, "^", Chr(92))
+  'dvbsnoop = Shell dvbsnoopexe For Input As "dvbsnoop"
+  'dvbsnoop = Shell dvbsnoopexe & " -s sec -nohexdumpbuffer 0x12" For Input As "dvbsnoop"
+  'dvbsnoop = Shell dvbsnoopexe & " -s sec -nohexdumpbuffer 0x12" For Input As "dvbsnoop"
+
+  dvbsnoopcMap = Shell "/root/Desktop2_kde4/dvbsnoop2" & options2 For Input As "dvbsnoopcMap"
+  Wait 0.1
+  dvbsnoop = Shell "/root/Desktop2_kde4/dvbsnoop1" & options For Input As "dvbsnoop"
+
+End
+
+
+
+Public Sub Stopit()
+  Dim pid1 As Integer = -1
+  Dim pid2 As Integer = -1
+  
+  Try pid1 = dvbsnoop.handle
+  Try pid2 = dvbsnoopcMap.handle
+
+  Try dvbsnoop.kill
+  Try dvbsnoopcMap.kill
+
+  Wait 0.01
+
+  pid1 = -1
+  pid2 = -1
+  Try pid1 = dvbsnoop.handle
+  Try pid2 = dvbsnoopcMap.handle
+  
+
+  If pid1 > 0 Then Shell "kill -9 " & pid1
+  If pid2 > 0 Then Shell "kill -9 " & pid2
+
+   InitSidChanTable()
+  
+End
+
+Public Sub dvbsnoop_read()
+  Dim sLine As String
+  Line Input #Last, sLine
+  'Debug sline
+  If SidChanTable.count = 0 Then 
+    Debug "ServiceId <-> Channel still missing, ignoring input"
+    Stop
+    Return 'ignore everything until we have
+  Endif
+  
+  sLine = Conv(sLine, CharsetIn, CharsetOut)
+
+  If sLine Like ServiceBreak Then
+    If sBuffer.count <> 0 Then
+      ParseService(sBuffer)
+      sBuffer.clear
+    Endif
+  Endif
+  sBuffer.Add(sLine)
+End
+
+
+
+Private Sub ParseService(s As String[])
+  Dim i As Integer
+  Dim eMarker As String = "*Event_ID:*"
+  Dim ServiceiD, EventID, Table_ID, ChannelName As String
+  Dim ebuffer As New String[]
+  
+  s.Add("") 'needed by while
+ 
+  'Check if it is the current Transport Stream:
+    
+  
+  'find ServiceID
+    i = 0
+    While Not (s[i] Like PidBreak) 
+      If s[i] Like "*Table_ID*" Then
+        Try Table_ID = Trim(Split(Split(s[i], ":")[1], " ", "", True)[0])
+        If Trim(Table_ID) = "79" Then 
+          Return
+        Endif
+      Endif
+      i = i + 1
+      If i > s.max Then Break
+    Wend
+    Try ServiceID = Trim(Split(Split(s[i], ":")[1], " ", "", True)[0])
+    ' If ServiceID = "3" Then
+    '   Debug
+    ' Endif
+    If Error Then Return
+    Repeat
+      'find The start of the event
+        While (Not (s[i] Like eMarker)) And i <= (s.max - 1)
+          i = i + 1
+        Wend
+        Try EventID = Trim(Split(Split(s[i], ":")[1], " ", "", True)[0])
+        If Error Then Return
+        'Debug "EventID=", EventID
+        i = i + 1
+        If i >= s.max - 1 Then Break
+      'from there, fill the buffer with event information
+        While (Not (s[i] Like eMarker)) And (i <= (s.max - 1))
+          eBuffer.Add(s[i])
+          i = i + 1
+        Wend
+
+        ChannelName = SidChanTable[ServiceID]
+        If ChannelName = ":" Then 
+        'Debug "still missing channel name for service " & ServiceID
+          Return
+        Endif
+        ParseEvent(eBuffer, ChannelName, EventID, ServiceID)
+
+        
+        
+
+    Until i >= s.max
+  
+End
+
+
+Private Function DateFromDvbSnoopDate(dvbsnoopdate As String) As Date
+  Dim yy, mm, dd, h, m, s As Integer
+  Dim tmp As Date
+  If dvbsnoopdate <> "" Then
+    yy = Split(dvbsnoopdate, "-")[0]
+    mm = Split(dvbsnoopdate, "-")[1]
+    dd = Split(Split(dvbsnoopdate, "-")[2], " ")[0]
+    h = Split(Split(dvbsnoopdate, " ")[1], ":")[0]
+    m = Split(dvbsnoopdate, ":")[1]
+    s = Split(dvbsnoopdate, ":")[2]
+  Endif
+  tmp = Date(yy, mm, dd, h, m, s)
+  Return DateAdd(tmp, gb.second, utcoffset) 'timezone conversion
+End
+
+
+Private Sub ParseEvent(e As String[], ChannelName As String, EventID As String, ServiceID As String)
+  Dim i As Integer
+  Dim Start_time, Duration, Free_Ca_mode, event_name, text_char As String
+  Dim h, m, s As Integer
+  Dim Start_time_date As Date
+  Dim Duration_date As Date
+
+  Dim MyEventInfo As New Eventinfo
+  Dim nib, nib1, nib2 As String
+
+  For i = 0 To e.Max
+    Select e[i]
+      Case Like "*Start_time:*"
+        Try Start_time = Trim(Split(Split(e[i], "=", "", True)[1], "(", "", True)[0])
+        If Error Or Trim(Start_time) = "" Then Return
+        Try Start_time_date = DateFromDvbSnoopDate(Start_time)
+        If Error Then Goto DateSplitError
+        If ExistEID(EventID, ChannelName, Start_time_date) Then Return
+      Case Like "*Duration:*"
+        Try Duration = Trim(Split(Split(e[i], "=", "", True)[1], "(", "", True)[0])
+        If Error Or Trim(Duration) = "" Then Return
+      Case Like "*Free_CA_mode:*"
+        Try Free_Ca_mode = Trim(Split(e[i], " ", "", True)[1])
+      Case Like "*event_name:*"
+        Try event_name = Split(e[i], "\"", "", True)[1]
+      Case Like "*Content_nibble_level_1:*"
+        Try nib1 = Trim(Split(e[i], " ", "", True)[1])
+       Case Like "*Content_nibble_level_2:*"
+        Try nib2 = Trim(Split(e[i], " ", "", True)[1])
+      Case Like "*text_char:*"
+        Try text_char = Split(e[i], "\"", "", True)[1]
+    End Select
+  Next 'i
+
+
+  If (nib1 <> "" And nib2 <> "") Then
+    If nib1 <> "0" Then
+      nib = nib1 & nib2
+      GetCategory(nib, ByRef MyEventInfo.category, ByRef MyEventInfo.icon)
+    Endif
+  Endif
+
+ 
+  If Duration <> "" Then
+    Try h = Split(duration, ":")[0]
+      If Error Then Goto DateSplitError
+    Try m = Split(duration, ":")[1]
+      If Error Then Goto DateSplitError
+    Try s = Split(duration, ":")[2]
+      If Error Then Goto DateSplitError
+  Endif
+  Try Duration_date = Date(0, 0, 0, h, m, s)
+  If Error Then
+    If h = 24 Then
+      h = 23
+      m = 59
+      s = 59
+      Try Duration_date = Date(0, 0, 0, h, m, s)
+      Debug "cant determine duration, setting, arbitrary 1h)"
+        Duration_date = Date(0, 0, 0, 1, 0, 0)
+    Endif
+  Endif
+
+ 
+
+  'If Not ExistEID(EventID) Then 
+    MyEventInfo.ServiceID = ServiceID
+    MyEventInfo.EventID = EventID
+    MyEventInfo.ChannelName = ChannelName
+    MyEventInfo.Start_time_date = Start_time_date
+    MyEventInfo.Duration_date = Duration_date
+    MyEventInfo.Free_Ca_mode = Free_Ca_mode
+    MyEventInfo.event_name = event_name
+    MyEventInfo.text_char = text_char
+
+    If EventDB.Find(MyEventInfo) = -1 Then
+      EventDB.Add(MyEventInfo)
+      Raise GotInfo(MyEventinfo)
+    Endif
+    
+  
+  Return
+  '------------------------------------------------------------------
+  DateSplitError:
+    Debug "Error splitting date components or general error on date managment"
+    Return
+End
+
+Public Function ExistEID(EventID As String, ChannelName As String, Start_time_date As Date) As Boolean
+  Dim i As Integer
+  For i = 0 To EventDB.Max
+    If EventDB[i].EventID = EventID Then 
+      If EventDB[i].ChannelName = ChannelName Then 
+        If EventDB[i].Start_time_date = Start_time_date Then Return True
+      Endif
+    Endif
+  Next
+  Return False
+End
+
+
+Private SidChanTable As New String[] ', ":"]
+Private LastSid As String
+
+Public Sub dvbsnoopcMap_read()
+  Dim sLine As String
+  Line Input #Last, sLine
+  'Debug sline
+  sLine = Lower(Conv(sLine, CharsetIn, CharsetOut))
+  If sLine Like "*service_id: *" Then 
+    LastSid = Trim(Split(Split(sLine, ":")[1], " ", "", True)[0])
+    Return
+  Endif
+  If Lower(sLine) Like "*service_name: *" Then 
+    If LastSid <> "" Then
+      Try SidChanTable[LastSid] = Trim(Split(sline, "\"", "", True)[1])
+      Debug "Got channel name for service " & LastSid, SidChanTable[LastSid]
+
+      LastSid = ""
+    Endif
+  Endif
+End
+
+Public EpgCategories As New String[]
+
+Private Sub FillCategories()
+  'User_nibble_1User_nibble_2|CategoryName|iconfile
+  EpgCategories.add("10" & "|" & ("movie/drama") & "|" & "icon.png")
+  EpgCategories.add("11" & "|" & ("detective/thriller") & "|" & "icon.png")
+  EpgCategories.add("12" & "|" & ("adventure/western/war") & "|" & "icon.png")
+  EpgCategories.add("13" & "|" & ("science fiction/fantasy/horror") & "|" & "icon.png")
+  EpgCategories.add("14" & "|" & ("comedy") & "|" & "icon.png")
+  EpgCategories.add("15" & "|" & ("soap/melodrama/folkloric") & "|" & "icon.png")
+  EpgCategories.add("16" & "|" & ("romance") & "|" & "icon.png")
+  EpgCategories.add("17" & "|" & ("serious/classical/religious/historical movie/drama") & "|" & "icon.png")
+  EpgCategories.add("18" & "|" & ("adult movie/drama") & "|" & "icon.png")
+  
+  EpgCategories.add("20" & "|" & ("news/current affairs") & "|" & "icon.png")
+  EpgCategories.add("21" & "|" & ("news/weather report") & "|" & "icon.png")
+  EpgCategories.add("22" & "|" & ("news magazine") & "|" & "icon.png")
+  EpgCategories.add("23" & "|" & ("documentary") & "|" & "icon.png")
+  EpgCategories.add("24" & "|" & ("discussion/interview/debate") & "|" & "icon.png")
+  
+  EpgCategories.add("30" & "|" & ("show/game show") & "|" & "icon.png")
+  EpgCategories.add("31" & "|" & ("game show/quiz/contest") & "|" & "icon.png")
+  EpgCategories.add("32" & "|" & ("variety show") & "|" & "icon.png")
+  EpgCategories.add("33" & "|" & ("talk show") & "|" & "icon.png")
+  
+  EpgCategories.add("40" & "|" & ("sports") & "|" & "icon.png")
+  EpgCategories.add("41" & "|" & ("special events") & "|" & "icon.png")
+  EpgCategories.add("42" & "|" & ("sports magazines") & "|" & "icon.png")
+  EpgCategories.add("43" & "|" & ("football/soccer") & "|" & "icon.png") 
+  EpgCategories.add("44" & "|" & ("tennis/squash") & "|" & "icon.png")
+  EpgCategories.add("45" & "|" & ("team sports") & "|" & "icon.png")
+  EpgCategories.add("46" & "|" & ("athletics") & "|" & "icon.png")
+  EpgCategories.add("47" & "|" & ("motor sport") & "|" & "icon.png")
+  EpgCategories.add("48" & "|" & ("water sport") & "|" & "icon.png")
+  EpgCategories.add("49" & "|" & ("winter sports") & "|" & "icon.png")
+  EpgCategories.add("4A" & "|" & ("equestrian") & "|" & "icon.png")
+  EpgCategories.add("4B" & "|" & ("martial sports") & "|" & "icon.png")
+  
+  EpgCategories.add("50" & "|" & ("children's/youth programmes") & "|" & "icon.png")
+  EpgCategories.add("51" & "|" & ("pre-school children's programmes") & "|" & "icon.png")
+  EpgCategories.add("52" & "|" & ("entertainment programmes for 6 to14") & "|" & "icon.png")
+  EpgCategories.add("53" & "|" & ("entertainment programmes for 10 to 16") & "|" & "icon.png")
+  EpgCategories.add("54" & "|" & ("informational/educational/school programmes") & "|" & "icon.png")
+  EpgCategories.add("55" & "|" & ("cartoons/puppets") & "|" & "icon.png")
+  
+  EpgCategories.add("60" & "|" & ("music/ballet/dance") & "|" & "icon.png")
+  EpgCategories.add("61" & "|" & ("rock/pop") & "|" & "icon.png")
+  EpgCategories.add("62" & "|" & ("serious music/classical music") & "|" & "icon.png")
+  EpgCategories.add("63" & "|" & ("folk/traditional music") & "|" & "icon.png")
+  EpgCategories.add("64" & "|" & ("jazz") & "|" & "icon.png")
+  EpgCategories.add("65" & "|" & ("musical/opera") & "|" & "icon.png")
+  EpgCategories.add("66" & "|" & ("ballet") & "|" & "icon.png")
+  
+  EpgCategories.add("70" & "|" & ("arts/culture") & "|" & "icon.png")
+  EpgCategories.add("71" & "|" & ("performing arts") & "|" & "icon.png")
+  EpgCategories.add("72" & "|" & ("fine arts") & "|" & "icon.png")
+  EpgCategories.add("73" & "|" & ("religion") & "|" & "icon.png")
+  EpgCategories.add("74" & "|" & ("popular culture/traditional arts") & "|" & "icon.png")
+  EpgCategories.add("75" & "|" & ("literature") & "|" & "icon.png")
+  EpgCategories.add("76" & "|" & ("film/cinema") & "|" & "icon.png")
+  EpgCategories.add("77" & "|" & ("experimental film/video") & "|" & "icon.png")
+  EpgCategories.add("78" & "|" & ("broadcasting/press") & "|" & "icon.png")
+  EpgCategories.add("79" & "|" & ("new media") & "|" & "icon.png")
+  EpgCategories.add("7A" & "|" & ("arts/culture magazines") & "|" & "icon.png")
+  EpgCategories.add("7B" & "|" & ("fashion") & "|" & "icon.png")
+  
+  EpgCategories.add("80" & "|" & ("social/political issues/economics") & "|" & "icon.png")
+  EpgCategories.add("81" & "|" & ("magazines/reports/documentary") & "|" & "icon.png")
+  EpgCategories.add("82" & "|" & ("economics/social advisory") & "|" & "icon.png")
+  EpgCategories.add("83" & "|" & ("remarkable people") & "|" & "icon.png")
+  
+  EpgCategories.add("90" & "|" & ("education/science/factual topics") & "|" & "icon.png")
+  EpgCategories.add("91" & "|" & ("nature/animals/environment") & "|" & "icon.png")
+  EpgCategories.add("92" & "|" & ("technology/natural sciences") & "|" & "icon.png")
+  EpgCategories.add("93" & "|" & ("medicine/physiology/psychology") & "|" & "icon.png")
+  EpgCategories.add("94" & "|" & ("foreign countries/expeditions") & "|" & "icon.png")
+  EpgCategories.add("95" & "|" & ("social/spiritual sciences") & "|" & "icon.png")
+  EpgCategories.add("96" & "|" & ("further education") & "|" & "icon.png")
+  EpgCategories.add("97" & "|" & ("languages") & "|" & "icon.png")
+  
+  EpgCategories.add("A0" & "|" & ("leisure hobbies") & "|" & "icon.png")
+  EpgCategories.add("A1" & "|" & ("tourism/travel") & "|" & "icon.png")
+  EpgCategories.add("A2" & "|" & ("handicraft") & "|" & "icon.png")
+  EpgCategories.add("A3" & "|" & ("motoring") & "|" & "icon.png")
+  EpgCategories.add("A4" & "|" & ("fitness and health") & "|" & "icon.png")
+  EpgCategories.add("A5" & "|" & ("cooking") & "|" & "icon.png")
+  EpgCategories.add("A6" & "|" & ("advertisement/shopping") & "|" & "icon.png")
+  EpgCategories.add("A7" & "|" & ("gardening") & "|" & "icon.png")
+
+End
+
+Public Sub GetCategory(nib As String, ByRef category As String, ByRef icon As String) 
+  Dim i As Integer
+  For i = 0 To EpgCategories.Max
+    If EpgCategories[i] Like nib & "*" Then
+      category = Split(EpgCategories[i], "|")[1]
+      icon = Split(EpgCategories[i], "|")[2]
+      Return
+    Endif
+  Next
+  category = ("")
+  icon = ""
+End
+
+
+Public Function WhatsNow(channel As String) As EventInfo
+  Dim myEvent As New EventInfo
+  Dim myNow As Date = Now()
+  Dim myEnd As Date
+  For Each myEvent In EventDB
+    If Lower(myEvent.ChannelName) = channel Then
+      If myEvent.Start_time_date <= myNow Then
+        myEnd = DateAdd(myEvent.Start_time_date, gb.hour, Hour(myEvent.Duration_date))
+        myEnd = DateAdd(myend, gb.Minute, Minute(myEvent.Duration_date))
+        If myEnd >= myNow Then Return myEvent
+      Endif
+    Endif
+  Next
+  Return Null
+End
+
+
+
+Public Function WhatsNext(channel As String) As EventInfo
+  '"Find the event with the lowest start time which is after now."
+  '
+  'this may be inaccurate because if the real next event is yet to be received
+  'the "next after the next" will be returned
+  'However, it may be useful too, so I choose to give that kind of answer.
+  'The caller will need to call me twice after 5 seconds to see if new info are
+  'available
+  Dim myEvent As New EventInfo
+  Dim NextEvent As New EventInfo
+  Dim myNow As Date = Now()
+  Dim myLast As Date = DateAdd(Now, gb.year, 10) 'nobody wanna now what's next ten years from now
+  
+  For Each myEvent In EventDB
+    If Lower(myEvent.ChannelName) = channel Then
+      If (myEvent.Start_time_date > myNow) And (myEvent.Start_time_date < myLast) Then
+        NextEvent = myEvent
+        myLast = myEvent.Start_time_date
+      Endif
+    Endif
+  Next
+  Return nextevent
+End

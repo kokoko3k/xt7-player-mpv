@@ -1,0 +1,473 @@
+' Gambas class file
+
+Public scanprocess As Process
+Public monprocess As Process
+Public ftablefilesource As String = "/root/scripts/mux.napoli.dvbt.txt"
+Public ftablefilesorted As String = ""
+Public freqstoscan As Float = 0
+
+
+Public Sub Form_Open()
+  Global.Center(FMAIN, Me)
+  SelectBox.visible = False
+End
+
+Public Sub Button1_Click()
+  Dim scanexe, femonexe, errmessage, embeddedfile As String = ""
+  Dim cardn As Integer = SpinBox1.value - 1
+  'check if we have "scan" and "femon" utilities
+  headersdone = False
+  pmts.clear
+  lastservice = ""
+  scanexe = GeneralOptions.scanexetext.Text
+  femonexe = GeneralOptions.FemonExeText.Text
+  Shell "which " & Scanexe To scanexe
+  Shell "which " & femonexe To femonexe
+
+  Scanexe = Trim(Scanexe)
+  femonexe = Trim(femonexe)
+
+  If Not (Exist(Trim(scanexe)) And Exist(Trim(femonexe))) Then
+    errmessage = errmessage & "Sorry, cannot find 'scan' and/or 'femon'\n"
+    errmessage = errmessage & "\n"
+    errmessage = errmessage & "Fill scan and femon executables fields\n"
+    errmessage = errmessage & "In: General options -> dvbt window\n"
+    errmessage = errmessage & "and/or install dvb-apps for your distribution:\n"
+    errmessage = errmessage & "Debian/Ubuntu:\n"
+    errmessage = errmessage & "# apt-get install dvb-utils\n"
+    errmessage = errmessage & "# apt-get install dvb-apps\n"
+    errmessage = errmessage & "Or:\n"
+    errmessage = errmessage & "# apt-get install dvb-apps\n"
+    errmessage = errmessage & "Gentoo:\n"
+    errmessage = errmessage & "# emerge linuxtv-dvb-apps\n"
+    errmessage = errmessage & "Fedora:\n"
+    errmessage = errmessage & "# yum install dvb-apps\n"
+    errmessage = errmessage & "Suse:\n"
+    errmessage = errmessage & "# zypper install dvb\n"
+    errmessage = errmessage & "Arch Linux:\n"
+    errmessage = errmessage & "# pacman -S linuxtv-dvb-apps\n"
+    If MyQuestion.Ask(errmessage, "OK", "Choose executables") = 2 Then
+    'IF Message.Error(errmessage, "OK", "Choose executables") = 2 THEN 
+        If (Not global.FirstTimeSettignsLoaded) Then global.DelayLoadStates_Timer
+        GeneralOptions.show
+        GeneralOptions.TabStrip1.index = Global.TabIndexByName(("DVB-T"), GeneralOptions.TabStrip1)
+    Endif
+    Return
+  Endif
+  If Not (ComboBox1.text Like "2 - *") Then 'prepare autoscan
+    embeddedfile = Mid(ComboBox1.text, InStr(ComboBox1.text, " - ") + 3)
+    ftablefilesource = Temp()
+    File.save(ftablefilesource, File.Load(embeddedfile)) 'load the embedded autoscan file and save as a temp file
+  Endif
+  ProgressBar1.value = 0
+  initprogress()
+  Shell "killall " & scanexe Wait
+  Shell "killall " & femonexe Wait
+  Wait 0.5
+  SelectBox.visible = False
+  channelsgrid.clear
+  channelsgrid.Rows.count = 0
+  channelsgrid.columns.count = 1
+  channelfiledata = ""
+  scanprocess = Shell scanexe & " -t 3 -A 1 -vv " & " -a " & cardn & " " & ftablefilesorted & " 2>&1" For Read As "scanprocess"
+  'scanprocess = Shell "cat /root/Desktop2_kde4/out.scan" For Read As "scanprocess"
+  Debug scanexe & " -t 3 -A 1 -vv " & " -a " & cardn & " " & ftablefilesorted & " 1>&2" 
+  Debug
+  monprocess = Shell femonexe & " -a " & cardn & " -H" For Read As "monprocess"
+  Debug femonexe & " -a " & cardn & " -H" 
+  Debug
+  Button1.enabled = False
+  ComboBox1.enabled = False
+  Button5.enabled = True
+  Me.mouse = Mouse.wait
+End
+
+
+Public Sub scanprocess_read()
+  Dim sLine As String
+
+  For Each sLine In scanprocess.Lines
+    If sLine Like "*dumping lists*" Then
+      Debug "Headers Done ***********************"
+      Debug
+      HeadersDone = True
+      Textarea1.Insert(Sline & "\n")
+      Return
+    Endif
+
+    If HeadersDone Then
+      channelfiledata = channelfiledata & sLine & "\n"
+        Else
+      ProcessScanHeaders(sLine)
+    Endif
+    Textarea1.Insert(Sline & "\n")
+  Next 'sline
+End
+
+
+
+Public Sub monprocess_read()
+  Dim sLine As String
+  Dim splitted As String[]
+  Dim signal, snr As Integer
+  Read #Last, sLine, -1024
+  sline = Split(sline, "\n", "", True)[0]
+  If sLine Like "status*" Then
+    sLine = Replace(sLine, "%", "")
+    sLine = Replace(sLine, "signal", "")
+    sLine = Replace(sLine, "snr", "")
+    splitted = Split(sLine, "|", "", True)
+    Try signal = CInt(Trim(splitted[1]))
+    If Error Then Return
+    Try snr = CInt(Trim(splitted[2]))
+    If Error Then Return
+    snrbar.value = snr / 100
+    sigbar.value = signal / 100
+  Endif
+End
+
+Public Sub initprogress()
+  'dato ftablefile, ordinalo e estrai la freq. minima e massima
+  'poi imposta tali valori come minimo e massimo della progressbar
+  Dim tempfile, tempfilepruned As New String[]
+  Dim prunedstring As String = ""
+  Dim myline As Integer
+  Try tempfile = Split(File.Load(ftablefilesource), "\n", "", True).Sort()
+  If Error Then Return
+  Debug "Successfully opened and sorted " & ftablefilesource
+  Debug
+  'remove unuseful lines from the sorted file (eg. comments '#')
+  For myline = 0 To tempfile.count - 1
+    If tempfile[myline] Like "T *" Then
+      tempfilepruned.Add(tempfile[myline])
+      prunedstring = prunedstring & "\n" & tempfile[myline]
+    Endif
+  Next 'myline
+
+  ftablefilesorted = Temp()
+  File.Save(ftablefilesorted, prunedstring)
+  freqstoscan = tempfilepruned.count * 1.2 ' *1.2 = go for more :P
+  'inizializza a zero anche le altre 2 barre
+  sigbar.value = 0
+  snrbar.value = 0
+End
+
+Public channelfiledata As String
+
+Private HeadersDone As Boolean = False
+Private pmts As New Collection
+Private AC3s As New Collection
+Private Audios As New Collection
+Private LastService As String = ""
+Private LastFreq As String = ""
+'PUBLIC SUB scanprocess_error(stderr AS String)
+Public Sub ProcessScanHeaders(stderr As String)
+  'here we get progress information
+  Dim curfreq As String = ""
+  Dim curfreqint As Integer = 0
+  Dim i As Float
+  Dim channels, stderrlines As String[]
+  Dim channelline, channel, stderrline As String = ""
+  Dim textstart As Integer
+  Dim service, pmt, ac3id, audioid As String
+  
+  Debug stderr
+  Debug
+  Try stderrlines = Split(stderr, "\n", "", True)
+
+  For Each stderrline In stderrlines
+    If stderrline Like "*tune to: *" Then  'step progressbar
+      curfreq = Trim(Split(stderrline, ":", "", "")[1])
+      LastFreq = curfreq
+      Try curfreqint = CInt(curfreq)
+      If Not Error Then
+        i = ProgressBar1.value * freqstoscan
+        i = i + 1
+        'DEBUG "currently scanning frequency: " & curfreq
+        If (i / freqstoscan) >= 1 Then
+          ProgressBar1.value = 0.99
+            Else
+          ProgressBar1.value = (i / freqstoscan)
+        Endif
+        'Break
+      Endif
+    Endif
+
+    If stderrline Like "*PMT 0x* for service 0x*" Then 'get pmt to set offsets later
+      pmt = Split(stderrline, " ", "", True)[1]
+      service = Split(stderrline, " ", "", True)[4]
+
+      If Len(service) = 6 And Len(pmt) = 6 Then
+        service = Val("&H" & Right(service, 4)) 'hex to integer to string
+        pmt = Val("&H" & Right(pmt, 4)) 'hex to integer to string
+        pmts[service] = pmt
+        lastservice = service 'use it to find related ac3 audio
+        'Break
+      Endif
+    Endif
+
+    If stderrline Like "*pmt_pid *" Then  'add the channels
+      channels = Split(stderrline, "\n", "", True)
+      For Each channelline In channels
+        If Not (channelline Like "*(null)*") Then
+          textstart = InStr(channelline, "--") + 2
+          channel = Mid(channelline, textstart)
+          channel = Split(channel, "(", "", True)[0]
+          channel = Trim(channel)
+          If Not (channel Like "*pmd_pid*") Then
+            channelsgrid.rows.count = channelsgrid.Rows.count + 1
+            channelsgrid[channelsgrid.rows.count - 1, 0].text = channel
+            channelsgrid.Columns.W = -1
+          Endif
+        Endif
+      Next 'channel
+      'Break
+    Endif
+  
+    If stderrline Like "*AC3*PID*" Then 'store AC3 id somewhere
+      ac3id = Mid(stderrline, InStr(stderrline, "PID") + 4, 6)
+      ac3id = Val("&H" & Right(ac3id, 4)) 'hex to integer to string
+      AC3s[lastservice] = ac3id
+    Endif
+    
+     If stderrline Like "*AUDIO*PID*" Then 'store Audio id somewhere
+      audioid = Mid(stderrline, InStr(stderrline, "PID") + 4, 6)
+      audioid = Val("&H" & Right(audioid, 3)) 'hex to integer to string
+      If audios.Exist(lastfreq & ":" & lastservice) Then 
+        audios[lastfreq & ":" & lastservice] = audios[lastfreq & ":" & lastservice] & "+" & audioid
+          Else
+        audios[lastfreq & ":" & lastservice] = audioid
+      Endif
+    Endif
+    
+  Next ' stderrline
+End
+
+Public Sub scanprocess_kill()
+  ProgressBar1.value = 1
+  sigbar.value = 0
+  snrbar.value = 0
+  Button1.enabled = True
+  ComboBox1.enabled = True
+  Try Shell "kill " & monprocess.handle Wait
+  ParseChannelFile()
+  Button5.enabled = False
+  Me.mouse = Mouse.Normal
+End
+
+
+Public Function addoffset(chline As String) As String
+  Dim serviceid, pmt, field, newline, ac3id As String
+  Dim fields As String[]
+  Dim lastfield As Integer
+
+  'add offsets from PMTs:
+  'Rai HD:626000000:INVERSION_AUTO:BANDWIDTH_8_MHZ:FEC_2_3:FEC_AUTO:QAM_64:TRANSMISSION_MODE_8K:\
+  'GUARD_INTERVAL_1_32: HIERARCHY_NONE:535:545:8595
+    '...becomes:
+  'Rai HD:626000000:INVERSION_AUTO:BANDWIDTH_8_MHZ:FEC_2_3:FEC_AUTO:QAM_64:TRANSMISSION_MODE_8K:\
+  'GUARD_INTERVAL_1_32: HIERARCHY_NONE:525+535:525+545:8595
+  '...where 8595 is the service id and 525 is PMT offset
+
+  'identifica il service id dall 'ultimo campo
+    fields = Split(chline, ":", "", True)
+    lastfield = fields.count - 1
+    serviceid = fields[lastfield]
+  'cerca il corrispondente pmt nella collezione
+    Try pmt = pmts[serviceid]
+  'aggiungilo al penultimo ed al terzultimo campo
+    If Not Error Then
+      'Also inject ac3 pid if one of the fields is "0"
+      ac3id = AC3s[serviceid]
+      If ac3id = Null Then ac3id = "0"
+      If Not Error Then
+        If fields[lastfield - 1] = "0" Then
+          fields[lastfield - 1] = ac3id
+        Endif
+        If fields[lastfield - 2] = "0" Then
+          fields[lastfield - 2] = ac3id
+        Endif
+      Endif
+      fields[lastfield - 1] = pmt & "+" & fields[lastfield - 1]
+      fields[lastfield - 2] = pmt & "+" & fields[lastfield - 2]
+    Endif
+  'ricomponi la stringa e aggiungila a channelfiledata
+  For Each field In fields
+    newline = newline & field & ":"
+  Next 'field
+  'remove last ":"
+  Return Left(newline, Len(newline) - 1)
+End
+
+
+Public Sub ParseChannelFile()
+  Dim channel, name, data As String
+  Dim channels As String[]
+  Dim i, j, maxprogress As Integer
+  Dim serviceid, freq, singleaudio, dualaudio As String
+  
+  channelsgrid.Clear
+  channelsgrid.Columns.count = 2
+  channelsgrid.Rows.count = 0
+  channels = Split(channelfiledata, "\n", "", True).Sort()
+  ProgressBar1.value = 0
+  maxprogress = channels.count
+
+  i = 0
+  For Each channel In channels
+    If channel Like "*:*:*:*:*:*" Then
+      
+      'add double audios
+      freq = Split(channel, ":", "", True)[1]
+      Try serviceid = Split(channel, ":", "", True)[12]
+      If Not Error Then
+        Try dualaudio = audios[freq & ":" & serviceid]
+        If Not Error Then
+          If dualaudio Like "*+*" Then
+            Try singleaudio = Split(channel, ":", "", True)[11]
+            If Not Error Then
+              Debug channel
+              channel = Replace(channel, ":" & singleaudio & ":", ":" & dualaudio & ":")
+              Debug channel
+            Endif
+          Endif
+        Endif
+      Endif
+
+      Try channel = addoffset(channel)
+      Debug channel
+      name = Split(channel, ":", "", True)[0]
+      data = Replace(channel, name & ":", "")
+      channelsgrid.Rows.count = channelsgrid.Rows.count + 1
+      channelsgrid[channelsgrid.Rows.count - 1, 0].text = name
+      channelsgrid[channelsgrid.Rows.count - 1, 1].text = data
+      ProgressBar1.value = i / maxprogress
+      i = i + 1
+    Endif
+  Next 'channel
+
+
+
+  'manage dupes in the grid and replace characters which mplayer doesn't like:
+  For i = 0 To channelsgrid.Rows.count - 1
+    channelsgrid[i, 0].text = Replace(channelsgrid[i, 0].text, "[", "_")
+    channelsgrid[i, 0].text = Replace(channelsgrid[i, 0].text, "]", "_")
+    For j = i + 1 To channelsgrid.Rows.count - 1
+      If channelsgrid[i, 0].text = channelsgrid[j, 0].text Then
+        channelsgrid[j, 0].text = channelsgrid[j, 0].text & " #"
+      Endif
+    Next 'j
+  Next 'i
+
+  channelsgrid.Columns.W = -1
+  If channelsgrid.Rows.count > 0 Then SelectBox.visible = True
+  ProgressBar1.value = 1
+End
+
+Public Sub Button2_Click()
+  Dim i As Integer
+  For i = 0 To channelsgrid.Rows.count - 1
+    channelsgrid.Rows[i].selected = True
+  Next
+End
+
+Public Sub Button3_Click()
+  channelsgrid.rows.unselectall
+End
+
+Public Sub Button5_Click()
+  Try Shell "kill " & monprocess.handle Wait
+  Try Shell "kill " & scanprocess.handle Wait
+  Button1.enabled = True
+  ComboBox1.enabled = True
+  Button5.enabled = False
+End
+
+Public mplayerchannelsfile As String = User.home & "/.config/mpv/channels.conf.ter" 'global.confpath& " / " & " mplayer.channels ""
+Public Sub Button4_Click()
+  Dim i As Integer
+  Dim filedata As String = ""
+  Dim channelname As String = ""
+  Dim channeluri As String = ""
+  Dim mplayerchannelsfilebak As String
+  Dim msg As String = ""
+  Dim displayinfo As Boolean = False
+
+  Me.mouse = mouse.wait
+
+  'clear previous channels:
+    FMain.MyDVBTList.clear(FMain.DVBTGrid)
+    FMain.DVBTGrid_Select()
+
+  For i = 0 To channelsgrid.Rows.count - 1
+    If channelsgrid.Rows[i].Selected Then
+      filedata = filedata & channelsgrid[i, 0].text & ":" & channelsgrid[i, 1].text & "\n"
+      channeluri = "dvb://" & channelsgrid[i, 0].text
+      channelname = channelsgrid[i, 0].text
+      FMain.MyDVBTList.AddFile(FMain.DVBTGrid, channeluri, True, True, channelname)
+    Endif
+  Next 'i
+  FMain.GridRefreshWorkaround(FMain.dvbtgrid)
+  FMain.UpdateSearchResults(FMain.MyDVBTList, FMain.DVBTGrid, True, FMain.Searchfielddvb.text)
+  Fmain.MyDVBTList.Save(Fmain.dvbtgrid, global.confpath)
+  'PRINT filedata
+  mplayerchannelsfilebak = mplayerchannelsfile & ".prext7"
+  'mplayer doesn't support to specify an alternative channels file, so
+  'we backup an existing one and populate it again with our values
+  If (Not Exist(mplayerchannelsfilebak)) Then
+    If Exist(mplayerchannelsfile) Then
+      Try Copy mplayerchannelsfile To mplayerchannelsfilebak
+      If Not Error Then
+        displayinfo = True
+      Endif
+    Endif
+  Endif
+  File.Save(mplayerchannelsfile, filedata)
+  If displayinfo Then
+    msg = msg & "Your old mplayer channels file:\n"
+    msg = msg & mplayerchannelsfile & "\n"
+    msg = msg & "Has been copied as\n"
+    msg = msg & mplayerchannelsfilebak & "\n"
+    msg = msg & "And replaced by the new one.\n"
+    Message.Info(msg, "OK")
+  Endif
+  Me.mouse = mouse.Default
+  Me.close
+End
+
+
+Public Sub ComboBox1_Click()
+  Me.Caption = ("Simple Dvb-T Tuner")
+  Button6.enabled = (ComboBox1.text Like "2 - *")
+   If ComboBox1.text Like "2 - *" Then
+       selecttuning()
+   Endif
+End
+
+Public Sub selecttuning()
+  If Exist("/usr/share/dvb/dvb-t") Then myDialog.Path = "/usr/share/dvb/dvb-t/"
+  myDialog.OpenFile()
+  ftablefilesource = myDialog.Path
+  Me.Caption = "Tuning Data file: " & File.Name(ftablefilesource)
+End
+
+Public Sub Button6_Click()
+  selecttuning()
+End
+
+Public Sub Button7_Click()
+  channelfiledata = ""
+  myDialog.Title = ("Choose a standard channels.conf file to import")
+  If Not (myDialog.OpenFile()) Then
+    Try channelfiledata = File.Load(myDialog.Path)
+    If Error Then
+      MyQuestion.Ask(("Could not read file"), ("Too bad..."))
+      Return
+    Endif
+  Endif
+  headersdone = False
+  pmts.clear
+  lastservice = ""
+  ParseChannelFile()
+End
+

@@ -1,0 +1,143 @@
+' Gambas class file
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+'Thiss class is made by a slider and a valuebox, each change in one of them will influence the other
+Inherits Panel
+
+Private MyValueBox As TextBox
+Private MySlider As Slider
+Private Sender As String = "Unknown"
+
+Public Sub _NEW()
+  Super.Border = Border.none
+  Super.Padding = 0
+  Super.Spacing = 4
+  Super.Arrangement = Arrange.Horizontal
+  MySlider = New Slider(Me) As "MySlider"
+  MySlider.Ignore = False
+  MySlider.Expand = True
+  MyValueBox = New TextBox(Me) As "MyValueBox"
+  MyValueBox.Ignore = False
+  ' [GB2:FNTW] MyValueBox.W = Me.Font.TextWidth("9999") + 8
+  MyValueBox.W = Me.Font.TextWidth("9999") + 8
+  ' [GB2:FNTH] MyValueBox.H = Me.Font.Textheight("9999") + 8
+  MyValueBox.H = Me.Font.TextHeight("9999") + 8
+  MyValueBox.text = "0"
+End
+
+Property Value As Integer
+ Function Value_READ() As Integer
+   Return MyValueBox.Text
+ End
+ Sub Value_WRITE(Value As Integer)
+    MyValueBox.Text = Value
+    If Me.Arrangement = Arrange.Vertical Then
+      MySlider.Value = MySlider.MinValue + MySlider.MaxValue - Value
+        Else
+      MySlider.Value = Value
+    Endif
+ End
+ 
+Property MinValue As Integer
+  Function MinValue_READ() As Integer
+    Return MySlider.MinValue
+  End
+  Sub MinValue_WRITE(MinValue As Integer)
+    Dim TextValue As Integer
+    MySlider.MinValue = MinValue
+    Try TextValue = MyValueBox.text
+    If Not Error Then
+      If TextValue < MinValue Then MyValueBox.Text = MinValue
+    Endif
+  End
+
+ 
+Property MaxValue As Integer
+  Function MaxValue_READ() As Integer
+    Return MySlider.MaxValue
+  End
+  Sub MaxValue_WRITE(MaxValue As Integer)
+    Dim TextValue As Integer
+    MySlider.MaxValue = MaxValue
+    Try TextValue = MyValueBox.text
+    If Not Error Then
+      If TextValue > MaxValue Then MyValueBox.Text = MaxValue
+    Endif
+  End
+
+
+Property Read Text As String
+  Function Text_READ() As String
+    Return MyValueBox.Text
+  End
+  
+
+Property Mark As Boolean
+  Function Mark_READ() As Boolean
+    Return MySlider.Mark
+  End
+  Sub Mark_WRITE(Mark As Boolean)
+    MySlider.Mark = Mark
+  End
+  
+
+Property Sstep As Integer
+ Function Sstep_READ() As Integer
+   Return MySlider.step
+ End
+ Sub Sstep_WRITE(Sstep As Integer)
+   MySlider.Step = Sstep
+ End
+
+Property PageStep As Integer
+ Function PageStep_READ() As Integer
+   Return MySlider.PageStep
+ End
+ Sub PageStep_WRITE(PageStep As Integer)
+   MySlider.PageStep = PageStep
+ End
+  
+Public Sub MySlider_Change()
+  If Not (Sender = "ValueBox") Then
+    Sender = "Slider"
+    If Me.Arrangement = Arrange.Vertical Then
+      MyValueBox.Text = MySlider.MinValue + MySlider.MaxValue - MySlider.Value
+        Else
+      MyValueBox.Text = MySlider.Value
+    Endif
+    Sender = "Unknown"
+    Raise Change()
+  Endif
+
+End
+ 
+Public Sub MyValueBox_Change()
+    Dim TextValue As Integer
+    Try TextValue = MyValueBox.Text
+    If Not Error Then
+      If Not ((Sender = "Slider") Or (MyValueBox.Text = "-")) Then
+        Sender = "ValueBox"
+        If TextValue = "" Then MyValueBox.Text = Me.MinValue
+        If TextValue > Me.MaxValue Then
+          MyValueBox.Text = Me.MaxValue
+          Else If TextValue < Me.MinValue Then
+            MyValueBox.Text = Me.MinValue
+        Endif
+        If Me.Arrangement = Arrange.Vertical Then
+          'MySlider.Value = MySlider.MaxValue - MyValueBox.Value
+          MySlider.Value = MySlider.MinValue + MySlider.MaxValue - MyValueBox.Text
+    
+            Else
+          MySlider.value = TextValue
+        Endif
+        Sender = "Unknown"
+        Raise Change()
+      Endif
+        Else
+      If MyValueBox.text <> "-" Then MyValueBox.text = "0"
+    Endif
+End
+
+
+Event Change()

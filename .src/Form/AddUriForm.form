@@ -1,0 +1,124 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,78,34)
+  Text = ("Add/Play a generic URI")
+  Icon = Picture["icon:/16/earth"]
+  Persistent = True
+  Resizable = False
+  Arrangement = Arrange.Vertical
+  AutoResize = True
+  Spacing = True
+  Margin = True
+  Padding = 8
+  { HBox3 HBox
+    MoveScaled(1,1,62,4)
+    Spacing = True
+    Padding = 2
+    { Label1 Label
+      MoveScaled(1,1,28,3)
+      Text = ("[Optional] Browse for protocols:")
+    }
+    { UriSelComboBox ComboBox
+      MoveScaled(37,1,23,4)
+      ToolTip = ("Click for a list of URI prefixes")
+      Expand = True
+      ReadOnly = True
+      List = [("file://"), ("dvd://"), ("dvdnav://"), ("tv://"), ("radio://"), ("pvr://"), ("dvb://"), ("mf://"), ("cdda://"), ("cddb://"), ("cue://"), ("mms://"), ("http://"), ("http_proxy://"), ("rtp://"), ("rtsp://"), ("ftp://"), ("udp://"), ("unsv://"), ("smb://"), ("sdp://"), ("mpst://"), ("tivo://")]
+      Text = ("ComboBox1")
+      Sorted = True
+    }
+  }
+  { HBox2 HBox
+    MoveScaled(1,6,63,4)
+    Spacing = True
+    Padding = 2
+    { Label2 Label
+      MoveScaled(1,1,28,3)
+      Text = ("Enter a valid URI:")
+    }
+    { UriInsComboBox ComboBox
+      MoveScaled(30,1,27,4)
+      Expand = True
+    }
+    { SelectFile ToolButton
+      MoveScaled(58,0,4,4)
+      Background = Color.Background
+      ToolTip = ("Open a file")
+      Picture = Picture["icon:/medium/open"]
+    }
+  }
+  { HBox4 HBox
+    MoveScaled(1,11,62,4)
+    ToolTip = ("Enter a name for the new playlist/library item, or leave blank for default.")
+    Spacing = True
+    Padding = 2
+    { Label3 Label
+      MoveScaled(1,1,28,3)
+      Text = ("[Optional] Give item a name:")
+    }
+    { TextBox1 TextBox
+      MoveScaled(30,0,29,4)
+      Expand = True
+    }
+  }
+  { Panel2 Panel
+    MoveScaled(1,16,76,6)
+    Arrangement = Arrange.Horizontal
+    Spacing = True
+    Margin = True
+    Padding = 4
+    Border = Border.Sunken
+    { QuickCheckBox CheckBox
+      MoveScaled(2,1.4286,21,4)
+      ToolTip = ("Don't get informations (like ID3 tags) when adding it to your Collection/Playlist.\nYou may prefer this method on slow media such as network streams.\n")
+      Expand = True
+      Text = ("Quick add mode")
+      Value = CheckBox.True
+    }
+    { CollectionCheckbox CheckBox
+      MoveScaled(23,1,23,4)
+      Expand = True
+      Text = ("Add to collection")
+      Value = CheckBox.True
+    }
+    { PlaylistCheckbox CheckBox
+      MoveScaled(46,1,29,4)
+      Expand = True
+      Text = ("Add to playlist")
+      Value = CheckBox.True
+    }
+  }
+  { HBox1 HBox
+    MoveScaled(1,26,62,5)
+    Spacing = True
+    Margin = True
+    Padding = 3
+    { btnPlay Button
+      MoveScaled(2,1,14,4)
+      ToolTip = ("Play the selected URI")
+      AutoResize = True
+      Text = ("Play")
+      Picture = Picture["icon:/16/play"]
+      Default = True
+    }
+    { Panel1 Panel
+      MoveScaled(19,1,4,4)
+      Expand = True
+    }
+    { btnOK Button
+      MoveScaled(30,1,14,4)
+      ToolTip = ("Add the selected URI to Collection and/or Playlist")
+      AutoResize = True
+      Text = ("Add")
+      Picture = Picture["icon:/16/add"]
+    }
+    { btnCancel Button
+      MoveScaled(46,1,14,4)
+      AutoResize = True
+      Text = ("Close")
+      Picture = Picture["icon:/16/cancel"]
+      Cancel = True
+    }
+  }
+}

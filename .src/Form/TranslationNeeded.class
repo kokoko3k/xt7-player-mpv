@@ -1,0 +1,59 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Public Notranslatefile As String = global.confpath & "/.NoTranslateForm"
+
+
+Public Sub Form_Show()
+  'ME.center
+  Global.Center(Fmain, Me)
+  Textarea1.text = "It seems that " & Application.name & " is not yet translated in your language: " & System.Language & ".\n"
+  Textarea1.text = Textarea1.text & "Writing translations is very easy though,\nso if you care to help, you can find more information\n"
+  Textarea1.text = Textarea1.text & "by following the links below.\n"
+  Textarea1.text = Textarea1.text & "\nThank you,\nAntonio Orefice"
+End
+
+
+
+Public Sub Label3_Enter()
+    Me.mouse = Mouse.Pointing
+End
+
+Public Sub Label3_Leave()
+  Me.mouse = Mouse.default
+End
+
+Public Sub Label3_MouseDown()
+  Desktop.Open("https://translations.launchpad.net/xt7-player")
+  Wait 1
+  Desktop.Open("https://code.launchpad.net/~eloaders/+junk/xt7-player-translations")
+End
+
+
+Public Sub Label1_Enter()
+  Me.mouse = Mouse.Pointing
+End
+Public Sub Label2_Enter()
+  Me.mouse = Mouse.Pointing
+End
+
+Public Sub Label1_Leave()
+  Me.mouse = Mouse.default
+End
+Public Sub Label2_Leave()
+  Me.mouse = Mouse.default
+End
+
+Public Sub Label1_MouseDown()
+  Desktop.Open("http://gambasdoc.org/help/howto/translate?show")
+End
+Public Sub Label2_MouseDown()
+  Desktop.Open("http://xt7-player.sourceforge.net/xt7forum/viewtopic.php?f=7&t=6")
+End
+
+Public Sub Button1_Click()
+  If (checkbox1.value = True) Then Shell "touch " & Notranslatefile Wait
+  Me.close
+End

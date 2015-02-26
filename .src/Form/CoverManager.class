@@ -1,0 +1,1349 @@
+' Gambas class file
+
+Public Fetching As Boolean = False
+Public HitCancel As Boolean = False
+Public ForceStop As Boolean = False
+
+
+Public JustFileCover As Boolean = False
+Public MediaFileFullPath As String
+
+
+Public Function waitforhttp(myhttpclient As HttpClient, timeout As Integer) As Boolean
+  'timeout is in millisecs,return true on timeout
+  While (timeout > 0) And ((myhttpclient.status = Net.connecting) Or (myhttpclient.status = Net.ReceivingData))
+    Wait 0.01
+    timeout -= 1
+    If forcestop Then 
+      Return 
+    Endif
+  Wend
+  If timeout = 0 Then Return True
+  Return False
+End
+
+Public Function WebFriendly(keyword As String) As String
+  Keyword = Replace(keyword, ",", "%20")
+  Keyword = Replace(keyword, ";", "%20")
+  Keyword = Replace(keyword, "-", "%20")
+  Keyword = Replace(keyword, "à", "a")
+  Keyword = Replace(keyword, "è", "e")
+  Keyword = Replace(keyword, "é", "e")
+  Keyword = Replace(keyword, "ì", "i")
+  Keyword = Replace(keyword, "ò", "o")
+  Keyword = Replace(keyword, "ù", "u")
+  Return keyword
+End
+
+
+Public Sub GetCoversFromAmazon(query As String)
+  Dim PreRequest As String = ""
+  Dim Keyword As String
+  Dim MYURL As String
+  Dim buffer, Tempfile, myline, ImageUrl, Iwidth, IHeigth As String
+  Dim Splitted, ImagesURL As New String[]
+  Dim Myimage As New Image
+  Dim i As Integer = 0
+  Dim timeout As Integer = 1000 ' centisecs
+  Dim hastimedout As Boolean = True
+
+  'Since August, 15, 2009, amazon requires signed requests.
+  'I did request signing via an external php page
+
+  Keyword = Chr(34) & Replace(query, " ", "%20") & Chr(34)
+  Keyword = WebFriendly(keyword)
+
+  PreRequest = "http://xt7-player.sourceforge.net/xt7forum/hmac.php?keywords=" & Keyword
+  Print PreRequest
+  HttpClient1.url = PreRequest
+  HttpClient1.Async = True
+  HttpClient1.timeout = 10
+  HttpClient1.get
+  
+  hastimedout = waitforhttp(HttpClient1, timeout)
+  If forcestop Then 
+    Return 
+  Endif
+  
+  If ((HttpClient1.status < 0) Or hastimedout) Then
+    Debug "Error: Covermanager: Button1_Click() HTTP ERROR Doing Prerequest to signing proxy"
+    Debug
+    Return
+  Endif
+  If Lof(HttpClient1) Then Read #HttpClient1, buffer, Lof(HttpClient1)
+
+  'MyURL = "http://webservices.amazon.com/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=045ZGZ60B4A7NQEJRMR2&Operation=ItemSearch&SearchIndex=Music&Keywords=" & Keyword & "&ItemPage=1&ResponseGroup=ItemAttributes,Small,Images"
+  MyURL = buffer
+  Try HttpClient1.url = Trim(MYURL)
+  If Error Then 
+    MyQuestion.Ask(("Amazon search: Network error"), ("Ok"))
+    Return
+  Endif
+  HttpClient1.Async = True
+  HttpClient1.timeout = 10
+  timeout = 1000
+  HttpClient1.get
+  hastimedout = waitforhttp(HttpClient1, timeout)
+  If forcestop Then 
+    Return 
+  Endif
+
+  If ((HttpClient1.status < 0) Or hastimedout) Then
+    Debug "Covermanager: HTTP ERROR while contacting Amazon"
+    Return
+  Endif
+
+  If Lof(HttpClient1) Then Read #HttpClient1, buffer, Lof(HttpClient1)
+  Splitted = Split(buffer, "<", "", True)
+  Debug "CoverManaer: Button1_Click(): Check dupes"
+  Debug
+  For Each myline In Splitted
+    If (myline Like "*http://*") And (myline Like "*.jpg") Then
+      ImageUrl = Split(myline, ">")[1]
+      If ImagesURL.Find(ImageUrl) < 0 Then ImagesURL.Add(ImageUrl)
+    Endif
+    Wait 0.001
+    If forcestop Then 
+      Return 
+    Endif
+  Next 'myline
+  Try Shell "rm -R " & global.confpath & "/covertmp/* >/dev/null 2>&1" Wait
+  Try Shell "mkdir -p " & global.confpath & "/covertmp/ >/dev/null 2>&1" Wait
+  'PRINT buffer
+  Debug "CoverManaer: Button1_Click(): Start downloading covers Now"
+  Debug
+  For Each ImageUrl In ImagesURL
+    If (Imageurl Like "http://*") And (Not HitCancel) Then
+      HttpClient1.Async = True
+      HttpClient1.url = ImageUrl
+      HttpClient1.timeout = 10
+      HttpClient1.get
+      timeout = 1000
+      hastimedout = waitforhttp(HttpClient1, timeout)
+      If forcestop Then 
+        Return 
+      Endif
+
+      If ((HttpClient1.status >= 0) And Not (hastimedout)) Then
+        tempfile = global.confpath & "/covertmp/temp" & Rnd(0, 999999) & ".jpg"
+        If Lof(HttpClient1) Then Read #HttpClient1, buffer, Lof(HttpClient1)
+        File.Save(tempfile, buffer)
+        Try MyImage = image.Load(tempfile)
+        If Not Error Then
+          IWidth = Myimage.W
+          IHeigth = MyImage.h
+          MyImage = MyImage.Stretch(32, 32)
+          Try Coverlist.Add(tempfile, IWidth & "x" & IHeigth, MyImage.Picture)
+        Endif
+      Endif
+      i = i + 1
+      Progressbar1.value = i / ImagesURL.count
+    Endif
+    If forcestop Then 
+      Return 
+    Endif
+  Next 'ImageUrl
+  If HitCancel Then Me.close
+End
+
+
+Public Sub GetCoversFromGoogle(query As String)
+  Dim baseurl As String = "http://images.google.com/images?q=${QUERY}&svnum=100&hl=en&lr=&safe=off&sa=G&imgsz=${SIZE}&start=${START}"
+  Dim url As String
+
+  Dim result As String
+  Dim resultlines As String[]
+  Dim myline As String
+  Dim mystart, myend, mylen As Integer
+  Dim imgurls As New String[]
+  Dim imgurl As String
+
+  Dim size As String = "medium" '"icon|small|medium|large|xlarge|xxlarge"
+  Dim timeout As Integer = 1000 ' centisecs
+  Dim hastimedout As Boolean = True
+  Dim tempfile, Iwidth, IHeigth As String
+  Dim Myimage As New Image
+  Dim i As Integer = 0
+  Dim options As String = "&tbs="
+  
+  'query = WebFriendly(query)
+  query = "\"" & Replace(query, " ", "\"+\"") & "\""
+  url = Replace(baseurl, "${QUERY}", query)
+  url = Replace(url, "${SIZE}", size)
+  url = Replace(url, "${START}", "1")
+  
+  
+  'options:
+  'iar:s _ _ _ quadratic pictures only
+  'isz: s _ _ _ small(side length under 400 px)
+  'isz: m _ _ _ medium(side length between 400 And 800 px)
+  'isz: l _ _ _ large(side length over 800 px)
+  'isz: lt, islt: qsvga _ _ _ larger than 400 x300
+  'isz: lt, islt: vga _ _ _ larger than 640 x480
+  'isz: lt, islt: svga _ _ _ larger than 800 x600
+  'isz: lt, islt: xga _ _ _ larger than 1024 x768
+  'isz: ex, iszw: 500, iszh: 500 _ _ _ exact file size(500 x500 In this example)
+  'ift: jpg _ _ _.jpg files only
+  'ift: png _ _ _.png files only
+  'ift: bmp _ _ _.bmp files only
+  'ift: gif _ _ _.gif files only
+  'ift: svg _ _ _.svg files only
+  
+  options &= "iar:s,ift:jpg"
+  url &= options
+  
+  Debug url
+  Debug
+  
+  HttpClient1 = New HttpClient
+  HttpClient1.async = True
+  HttpClient1.UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
+  HttpClient1.timeout = 10
+  HttpClient1.async = True
+  HttpClient1.url = url
+  HttpClient1.Get
+  hastimedout = waitforhttp(HttpClient1, timeout)
+  If forcestop Then 
+    Return 
+  Endif
+  If ((HttpClient1.status < 0) Or hastimedout) Then
+    Message.Error(("Network error"))
+    Return
+  Endif
+  If Lof(HttpClient1) Then Read #HttpClient1, result, Lof(HttpClient1)
+
+  Try resultlines = Split(result, "<", "", True)
+  If Error Then
+    Message.Error(("Ambiguous results"))
+    Return
+  Endif
+  For Each myline In resultlines
+    If myline Like "*href*" Then
+      If myline Like "*.jpg*" Then
+        If myline Like "*http*" Then
+          'the final url begins with http and ends with .jpg
+          mystart = InStr(myline, "http", 0)
+          If mystart = 0 Then Break
+          myend = InStr(myline, ".jpg", (mystart + 1)) + 4
+          If myend = 0 Then Break
+          mylen = myend - mystart
+          If mylen < 0 Then Break
+          imgurls.Add(Mid(myline, mystart, mylen))
+        Endif
+      Endif
+    Endif
+    If forcestop Then 
+      Return 
+    Endif
+  Next
+  
+  If imgurls.count > 0 Then
+    For Each imgurl In imgurls
+      Try HttpClient1.Async = True
+      If Error Then Return
+      HttpClient1.url = imgurl
+      HttpClient1.timeout = 10
+      timeout = 1000
+      tempfile = global.confpath & "/covertmp/temp" & Rnd(0, 999999) & ".jpg"
+      HttpClient1.Get(, tempfile)
+      hastimedout = waitforhttp(HttpClient1, timeout)
+      If forcestop Then 
+        Return 
+      Endif
+      If ((HttpClient1.status >= 0) And Not (hastimedout)) Then
+        Try MyImage = image.Load(tempfile)
+        If Not Error Then 
+          IWidth = Myimage.W
+          IHeigth = MyImage.h
+          IHeigth = MyImage.h
+          MyImage = MyImage.Stretch(32, 32)
+          Try Coverlist.Add(tempfile, IWidth & "x" & IHeigth, MyImage.Picture)
+        Endif
+      Endif
+      i = i + 1
+      Progressbar1.value = i / imgurls.count
+      If HitCancel Then Me.close
+      If forcestop Then Return
+    Next
+    If forcestop Then 
+      Return 
+    Endif
+  Endif
+End
+
+
+
+Public Sub Search()
+
+  Dim timeout As Integer = 10
+
+  If CoverManager.fetching Then
+    'CoverManager.HitCancel = True
+    forcestop = True
+    Repeat
+      Wait 0.1
+      timeout = timeout - 1
+    Until (CoverManager.fetching = False) Or (timeout = 0)
+  Endif
+
+
+  Progressbar1.value = 0
+  Progressbar1.h = 24
+  HitCancel = False
+  forcestop = False
+  Fetching = True
+  'textbox1.enabled = False
+  Me.mouse = Mouse.wait
+  ButtonLoad.enabled = False
+  Coverlist.Clear
+  Coverlist.refresh
+
+  If checkboxamazon.value Then GetCoversFromAmazon(textbox1.text)
+  If checkboxGoogle.value Then GetCoversFromGoogle(textbox1.text)
+  If Coverlist.count = 0 Then Message.Error(("No covers found for:") & "\n" & textbox1.text & "\n" & ("Try to use less strict terms, remove symbols and so on..."), ("Ok"))
+
+  'textbox1.enabled = True
+  Me.mouse = Mouse.default
+  ButtonLoad.enabled = True
+  Fetching = False
+End
+
+Public Sub CoverList_Select()
+
+  Picturebox1.picture = Picture.Load(Coverlist.Current.key)
+  Picturebox1.refresh
+End
+
+Public Sub TextBox1_Activate()
+ search()
+End
+
+Public Sub Form_Open()
+  Global.Center(Fmain, Me)
+  Try hsplit1.Layout = [160, hsplit1.w - 160]
+  CoverManager.Show
+  combobox1.readonly = True
+  combobox1.index = 0
+End
+
+Public CoverCacheList As New ListView(zzzfake)
+
+Public Sub RemoveCoverCache(coverfile As String, Optional RemoveSourceToo As Boolean)
+  Dim cachefile As String = coverfile & "_thumbcache" 'ricava il nome dei file cache
+
+  Shell "rm '" & cachefile & "'" & "*.*" 'rimuovilo dal disco
+  'cercalo in memoria e rimuovilo:
+  If CoverCacheList.Count > 0 Then 
+    CoverCacheList.Movefirst
+    Repeat
+      If CoverCacheList.Item.key Like cachefile & "*" Then
+        Debug "invalidating memory cache: " & CoverCacheList.Item.key
+        CoverCacheList.Item.delete
+        Try CoverCacheList.MoveFirst ' ci si muove all'inizio, perchè dopo la cancellazione
+                                      ' l'item corrente non è più valido, quindi non ha un successivo
+        If Error Then Return
+      Endif
+    Until CoverCacheList.MoveBelow()
+  Endif
+  If RemoveSourceToo Then Try Kill coverfile
+  FMain.RefreshVisibleCovers(FMain.librarygrid)
+  FMain.RefreshVisibleCovers(FMain.playlistgrid)
+End
+
+
+
+
+Public Function coverpicture(coverfile As String, uripath As String, height As Integer, Optional ByRef found As Boolean) As Picture
+Dim cachefile As String = coverfile & "_thumbcache" & height & "." & File.ext(coverfile)
+Dim tmpimage As Image
+Dim defaultcover As Boolean = False
+
+Dim width As Integer
+Dim neww As Integer
+
+  
+' zzzfake.Arrangement = Arrange.Fill
+' Try CoverCacheList.expand = True
+' Try zzzfake.Stacking = Window.above
+' Try zzzfake.mask = False
+' Try zzzfake.opacity = 100
+' Try zzzfake.Move(0, 0)
+' Try zzzfake.show
+
+'Wait '0.0001
+
+  'neww = generaloptions.IconWidthCombobox.text + shadowoffsetpaint 
+  neww = height + (height Div 8)
+  'Return cornice(imgandshadow, neww, neww).Picture
+
+'ResizeShadowTemplate(neww * 2)
+
+'gestisce le thumbnails su disco e la loro cache in memoria
+'non crea di per sè alcuna immagine, al più restituisce delle immagini di default
+'la creazione di eventuali nuove cover va fatta all'esterno
+If FMain.closing Then Return
+found = True
+
+If (global.isvideofile(uripath) And (generaloptions.ShowThumbsChk.value = False)) Then 
+  Return cornice(Stock[CStr(height + shadowoffset) & "/video"].Image, neww)
+Endif
+
+If Exist(coverfile) Then
+  Try Return CoverCacheList[cachefile].picture 'Se esiste l 'immagine in memoria dai l 'immagine in memoria ed esci
+  If Error Then 'Se non esiste l 'immagine in memoria, allora
+    If Exist(cachefile) Then  'Se esiste una cache su disco allora
+      Try CoverCacheList.Add(cachefile, "", cornice(Shadowed(picture.Load(cachefile)), neww)) 'mettila IN memoria **************************************
+      If Not Error Then Return CoverCacheList[cachefile].picture 'ritornala
+        Else 'Altrimenti(non esiste cache su disco)
+      If Exist(coverfile) 'se esiste la cover su disco, ma non la cache
+        tmpimage = image.Load(coverfile)
+        If (tmpimage.w < tmpimage.h) Then
+          width = ((tmpimage.w / tmpimage.h) * height)
+            Else
+          width = height 
+          height = ((tmpimage.h / tmpimage.w) * width) 
+        Endif
+        tmpimage = tmpimage.Stretch(width, height) 'caricala
+        tmpimage.Save(cachefile, 100) 'salvala come cache
+        CoverCacheList.Add(cachefile, "", cornice(Shadowed(picture.Load(cachefile)), neww)) 'mettila IN memoria ****************************************
+        Try Return CoverCacheList[cachefile].picture 'ritornala
+      Endif
+    Endif
+  Endif
+     Else ' IF NOT Exist(coverfile) THEN 'se la cover non esiste, ricava un nuovo coverfile:
+
+  If global.IsNetworkURI(uripath) Then
+    coverfile = "webradio.png"
+    defaultcover = True
+      Else If global.IsVideoFile(uripath) Then
+        coverfile = "videocover.png"
+        defaultcover = True
+      Else 'non è una uri di rete, non è una radio e non c'è alcuna copertina già salvata:
+        found = False
+        coverfile = "emptycover.png"
+        defaultcover = True
+  Endif
+  cachefile = coverfile & "_thumbcache" & CStr(height) & "." & File.ext(coverfile)
+  Try Return CoverCacheList[cachefile].Picture
+  If Error Then 'se non la trovi in memoria,
+    'DEBUG "not found in memory!"
+    tmpimage = image.Load(coverfile).stretch(height + shadowoffset, height + shadowoffset) 'caricala
+  Endif
+  If Not defaultcover Then
+    Try coverCacheList.Add(cachefile, "", cornice(Shadowed(tmpimage.picture), neww)) 'mettila IN memoria ******************************************
+      Else
+    Try coverCacheList.Add(cachefile, "", cornice(tmpimage, neww)) 'mettila IN memoria ******************************************
+  Endif
+  If Error Then Return Null
+  Try Return CoverCacheList[cachefile].Picture 'e restituiscila
+Endif
+End
+
+
+Public Function newcoverpicture(coverfile As String, uripath As String, width As Integer) As Picture
+  Return LookForJpg(uripath)
+End
+
+Public Sub MakeCoverDirs()
+   Try Shell "mkdir -p " & global.confpath & "/covers/ >/dev/null 2>&1" Wait
+End
+
+Private Uncovered As New String[]
+Private UncoveredInitialized As Boolean = False
+Private uncoveredfile As String
+
+Public Sub flushUncoveredFile()
+  Dim tmp, myitem As String
+  For Each myitem In Uncovered
+    tmp &= myitem & "\n"
+  Next
+  If (Uncovered.count > 0 And Len(tmp) > 1) Then
+    file.Save(uncoveredfile, tmp)
+  Endif
+End
+
+
+Private Sub UncoveredInit()
+  uncoveredfile = (global.confpath & "/covers/uncovered.txt") 
+  Try uncovered = Split(file.Load(uncoveredfile), "\n", "", True)
+  UncoveredInitialized = True
+End
+
+
+Public Function IsUncovered(fullpath As String) As Boolean
+  If Not UncoveredInitialized Then UncoveredInit()
+  Return Uncovered.Exist(fullpath) '(file.Name(fullpath))
+End
+
+Public Sub MarkUncovered(fullpath As String)
+  If (Uncovered.Find(fullpath) = -1) Then Uncovered.Add(fullpath) 'Uncovered.Add(file.Name(fullpath))
+End
+
+Public Sub UnMarkUncovered(fullpath As String)
+  Dim i As Integer
+  If Not UncoveredInitialized Then UncoveredInit()
+  Try i = uncovered.Find(fullpath)
+  If (Not Error ) And (i >= 0) Then uncovered.Remove(i, 1)
+End
+
+
+
+'thanks to forth for this snippet:
+'http://whiteislandsoftware.com/forum/index.php?page=topicview&id=applications-and-code%2Fbase64-encode-decode
+Private Const B64Const As String = "=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+Public Sub FromB64(B64Str As String) As String
+  Dim Position As Long
+  Dim dt As Byte
+  Dim B64Decoded, c As String
+  Dim Tkn, p As Integer
+  '
+  Position = 1
+  Tkn = 0
+  Do Until Position > Len(B64Str)
+    Wait
+    c = Mid(B64Str, Position, 1)
+    p = InStr(B64Const, c)
+    If p > 1 Then
+      p = p - 2
+      Inc Tkn
+      Select Case Tkn
+        Case 1
+          dt = (p * &h4)
+        Case 2
+          B64Decoded = B64Decoded & Chr(dt + ((p And &H30&) / &H10&))
+          dt = (p And &HF&) * &H10&
+        Case 3
+          B64Decoded = B64Decoded & Chr(dt + ((p And &H3C&) / 4))
+          dt = (p And &H3&) * &H40&
+        Case 4
+          B64Decoded = B64Decoded & Chr(dt + p)
+      End Select
+      If Tkn = 4 Then Tkn = 0
+  Else    ' Ej skrivbart tecken
+    If p = 1 Then
+      Position = Len(B64Str) + 1
+    End If
+  Endif
+  Inc Position
+  Loop
+  Select Case Tkn
+    Case 1
+      B64Decoded = B64Decoded & Chr(dt)
+  End Select
+  Return B64Decoded
+End
+
+Public Function LookForJpgB64(filename As String, Optional saveto As String = "", Optional ByRef fileerror As Boolean = False) As Boolean
+  Dim mystream As File
+  Dim myjpg As String
+  Dim m1 As String = "METADATA_BLOCK_PICTURE=" ' or "COVERART="
+  Dim jpgstart, jpgend As Long
+  Dim isvalid As Boolean = False
+  Dim tmpfile As String = Temp & ".jpg"
+  Dim tmppic As Picture
+  Dim m1pos As Long
+  Dim jpgendmarker1 As String = Chr(01) & Chr(05)
+  Dim jpgendmarker2 As String = "00"
+
+  If IsUncovered(filename) Then Return False
+
+  myjpg = ""
+  Try mystream = Open filename For Input
+  If Error Then 
+    fileerror = True
+    'Return Null
+    Return False
+  Endif
+
+  'Return False on Error Or If no pattern could be found
+  m1 = "METADATA_BLOCK_PICTURE"
+  Try m1pos = FindAndSeek(mystream, 1024, m1)
+  If Error Then Return False
+  If m1pos = 0 Then 
+      Seek #mystream, 0
+      m1 = "COVERART="
+      Try m1pos = FindAndSeek(mystream, 1024, m1)
+      If Error Then Return False
+      If m1pos = 0 Then Return False
+  Endif
+
+  
+  Wait
+  jpgstart = m1pos + Len(m1)
+
+  'se il file jpg non è valido, reitera questo finchè non è valido
+  While Not isvalid
+    Repeat
+      Try jpgend = FindAndSeek2(mystream, 4096, jpgendmarker1, jpgendmarker2)
+      If Error Then Return
+      Wait
+    Until jpgend > 0
+    Debug "Found a potential jpeg of " & (jpgend - jpgstart - 1) & " bytes for " & filename
+    Debug
+    Wait
+    If (jpgend - jpgstart) > 307200 '307200 Then
+      Debug "jpg is >300KB, probably corrupted, skipping"
+      Debug
+      Return False
+    Endif
+
+    Seek #mystream, jpgstart
+    myjpg = Read #mystream, (jpgend - jpgstart - 1) 
+    myjpg = FromB64(myjpg)
+    'make sure myjpg starts with "FF D8"
+    jpgstart = InStr(myjpg, Chr(255) & Chr(216))
+    Try myjpg = Mid(myjpg, jpgstart, Len(myjpg) - jpgstart)
+    If Error Then Return False
+    file.Save(tmpfile, myjpg)
+    'Try tmppic = picture.Load(tmpfile)
+    Try tmppic = image.Load(tmpfile).picture
+    
+    If Not Error Then 
+      isvalid = True
+      Seek #mystream, jpgstart
+    Endif
+    Wait
+  Wend
+  If isvalid 
+    If saveto <> "" Then Try Copy tmpfile To saveto
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+Public Function FindAndSeek(mystream As File, myblock As Long, mypattern As String) As Long
+  Dim chunk As String
+  Dim mypos As Long
+  Dim mystart As Long = Seek(mystream)
+  Chunk = Read #mystream, myblock
+  mypos = InStr(chunk, mypattern)
+  If mypos > 0 Then 
+    Seek #mystream, mypos + mystart
+    Return mystart + mypos
+      Else
+    Return 0
+  Endif
+End
+
+Public Function FindAndSeek2(mystream As File, myblock As Long, mypattern1 As String, mypattern2 As String) As Long
+  Dim chunk As String
+  Dim mypos As Long
+  Dim mystart As Long = Seek(mystream)
+  Chunk = Read #mystream, myblock
+  mypos = InStr(chunk, mypattern1)
+  If mypos = 0 Then mypos = InStr(chunk, mypattern2)
+  If mypos > 0 Then 
+    Seek #mystream, mypos
+    Return mystart + mypos
+      Else
+    Return 0
+  Endif
+End
+
+Public Function LookForJpg(filename As String, Optional saveto As String = "", Optional ByRef fileerror As Boolean = False) As Boolean
+   Dim mystream As File
+   Dim myjpg As String = ""
+   Dim m1 As String = "image/"
+   Dim isvalid As Boolean = False
+   Dim tmpfile As String = Temp & ".jpg"
+   Dim tmppic As Picture
+   Dim chunk As String
+   Dim m1pos As Long
+   Dim jpgstartmarker As String = Chr(255) & Chr(216) 'FFD8
+   Dim jpgendmarker As String = Chr(255) & Chr(217)   'FFD9
+   Dim jpgstart, jpgend As Long
+   
+  If IsUncovered(filename) Then Return False
+
+  Try mystream = Open filename For Input
+  If Error Then 
+    fileerror = True
+    Return False
+  Endif
+  Wait
+  Try m1pos = FindAndSeek(mystream, 1024, m1)
+  If Error Then Return False
+  If m1pos = 0 Then Return False
+  Wait
+  Try jpgstart = FindAndSeek(mystream, 2048, jpgstartmarker)
+  If Error Then Return False
+  If jpgstart = 0 Then Return False
+  jpgstart = jpgstart - 1
+  Wait
+   'se il file jpg non è valido, reitera questo finchè non è valido
+  While Not isvalid
+    Repeat
+      Try Chunk = Read #mystream, 4096 'look for jpeg end marker in the next 4K
+      If Error Then Return False 'eof...
+      jpgend = InStr(chunk, jpgendmarker)
+      Wait
+    Until jpgend > 0
+    jpgend = Seek(mystream) - 4096 + jpgend + 1
+
+    If jpgend > 0 Then
+      Debug "Found a potential jpeg of " & (jpgend - jpgstart) & " bytes for " & filename
+      Debug
+      If (jpgend - jpgstart) > 307200 '307200 Then
+        Debug "jpg is >300KB, probably corrupted, skipping"
+        Debug
+        'Return Null
+        Return False
+      Endif
+    Endif
+    Wait
+    Seek #mystream, jpgstart
+
+    myjpg = Read #mystream, (jpgend - jpgstart) 
+    file.Save(tmpfile, myjpg)
+    Try tmppic = picture.Load(tmpfile)
+    If Not Error Then 
+      isvalid = True
+      Seek #mystream, jpgstart
+        Else
+      Seek #mystream, jpgend
+    Endif
+    If Eof(mystream) Then
+      Return False
+    Endif
+    Wait
+  Wend
+
+  Close mystream
+  If isvalid 
+    If saveto <> "" Then Try Copy tmpfile To saveto
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+
+Public Function LookForJpgHeuristic(filename As String, Optional saveto As String = "", Optional ByRef fileerror As Boolean = False) As Boolean
+   Dim mystream As File
+   Dim myjpg As String = ""
+   Dim m1 As String
+   Dim isvalid As Boolean = False
+   Dim tmpfile As String = Temp & ".jpg"
+   Dim tmppic As Picture
+   Dim chunk As String
+   Dim m1pos As Long
+   Dim jpgstartmarker As String = Chr(255) & Chr(216) 'FF D8
+   Dim jpgendmarker As String = Chr(255) & Chr(217) 'FF D9
+   Dim jpgstart, jpgend As Long
+   
+  If IsUncovered(filename) Then Return False
+
+  Try mystream = Open filename For Input
+  If Error Then 
+    fileerror = True
+    Return False
+  Endif
+  Wait
+
+  m1 = "JFIF"  
+  Repeat
+    Try m1pos = FindAndSeek(mystream, 10240, m1) 'look into the first 100K
+    If Error Then Return False
+  Until (Seek(mystream) >= 1024000) Or (m1pos > 0) 'read at most 1MB
+  If m1pos = 0 Then Return False
+  
+  
+  Seek #mystream, m1pos - 10 'rewind a little
+
+  Try jpgstart = FindAndSeek(mystream, 2048, jpgstartmarker)
+  If Error Then Return False
+  If jpgstart = 0 Then Return False
+  jpgstart = jpgstart - 1
+  Wait
+   'se il file jpg non è valido, reitera questo finchè non è valido
+  While Not isvalid
+    Repeat
+      Try Chunk = Read #mystream, 4096 'look for jpeg end marker in the next 4K
+      If Error Then Return False 'eof...
+      jpgend = InStr(chunk, jpgendmarker)
+      Wait
+    Until jpgend > 0
+    jpgend = Seek(mystream) - 4096 + jpgend + 1
+
+    If jpgend > 0 Then
+      Debug "Found a potential jpeg of " & (jpgend - jpgstart) & " bytes for " & filename
+      Debug
+      If (jpgend - jpgstart) > 307200 '307200 Then
+        Debug "jpg is >300KB, probably corrupted, skipping"
+        Debug
+        Return False
+      Endif
+    Endif
+    Wait
+    Seek #mystream, jpgstart
+
+    myjpg = Read #mystream, (jpgend - jpgstart) 
+    file.Save(tmpfile, myjpg)
+    Try tmppic = picture.Load(tmpfile)
+    If Not Error Then 
+      isvalid = True
+      Seek #mystream, jpgstart
+        Else
+      Seek #mystream, jpgend
+    Endif
+    If Eof(mystream) Then
+      Return False
+    Endif
+    Wait
+  Wend
+
+  Close mystream
+  If isvalid 
+    If saveto <> "" Then Try Copy tmpfile To saveto
+    Return True
+      Else
+    Return False
+  Endif
+End
+
+Public Sub DeleteThumbsBy(album As String, artist As String, p As String)
+  Dim mycoverfile As String
+  Dim Files As String[]
+  Dim thumb As String
+  Dim coverdir As String
+  mycoverfile = coverfile(artist, album, p)
+  coverdir = file.Dir(mycoverfile)
+  mycoverfile = file.Name(mycoverfile)
+  ' Shell "rm " & Shell(mycoverfile) & "* &>/dev/null" 
+  Files = Dir(coverdir, mycoverfile & "*")
+  If Files.count = 0 Then Return
+  For Each thumb In Files 
+    Try Kill coverdir & "/" & thumb
+  Next 'filename
+End
+
+Public Sub SaveScaled(infile As String, outfile As String, TheWidth As Integer)
+  Dim myimage As Image
+  Dim TheHeight As Integer
+  Dim aspect As Float
+  myimage = image.Load(infile)
+  aspect = myimage.w / myimage.h
+  TheHeight = CInt(TheWidth / aspect)
+  myimage = myimage.Stretch(TheWidth, TheHeight)
+  myimage.Save(outfile, 100)
+End
+
+
+
+Public Sub PictureBox1_DblClick()
+  Dim newfilename As String
+  Dim currentfilename As String
+  Dim ScaleTo As Integer
+  CoverManager.close
+  'stop any previous search
+  HitCancel = True
+  'set new cover
+  newfilename = Coverfile(ArtistText.text, AlbumText.text)
+  
+  Try currentfilename = Coverlist.Current.key
+  If Not Error Then
+    Try Kill newfilename
+    Try ScaleTo = combobox1.Current.Text
+    If Error Then 'non numeric value means we won't scale
+      Try Copy currentfilename To ((newfilename))
+        Else 'scale it
+      SaveScaled(currentfilename, newfilename, ScaleTo)
+    Endif
+  Endif
+  Try RemoveCoverCache(newfilename, False)
+  FMain.CoverRefresh()
+
+  Wait 0.05
+  Try currentfilename = Coverlist.Current.key
+  If Not Error Then
+    Try Kill newfilename
+    Try Copy currentfilename To ((newfilename))
+  Endif
+  Try RemoveCoverCache(newfilename, False)
+  FMain.CoverRefresh(True)
+End
+
+
+Public Sub CoverList_DblClick()
+  PictureBox1_DblClick()
+End
+
+Public Sub ButtonAccept_Click()
+  PictureBox1_DblClick()
+End
+
+Public Sub ButtonCancel_Click()
+  HitCancel = True
+  forcestop = True
+  Me.close
+End
+
+Public Sub ButtonUnset_Click()
+  Dim newfilename As String
+  newfilename = (Coverfile(ArtistText.text, AlbumText.text))
+  'newfilename = SConv(global.confpath& "/covers/" & global.fixfilename(Upper(ArtistText.text)) & "^^^" & global.fixfilename(Upper(AlbumText.text) & ".jpg"))
+  Try RemoveCoverCache(newfilename, True)
+  Picturebox1.picture = Picture.Load("emptycover.png")
+  Picturebox1.refresh
+  FMain.CoverRefresh()
+End
+
+Public Function Coverfile(artist As String, album As String, Optional fullpath As String = "") As String
+  'return the cover file basing on album and artist information OR filename
+  If fullpath = "" Then fullpath = MediaFileFullPath
+  If (Trim(artist) = "" And Trim(album) = "") Then 'use filename instead
+    Return global.confpath & "/covers/" & global.fixfilename(fullpath) & ".jpg"
+      Else
+    Return global.confpath & "/covers/" & global.fixfilename(Upper(Trim(Artist))) & "^^^" & global.fixfilename(Upper(Trim(Album)) & ".jpg")
+  Endif
+End
+
+
+
+Public Sub Prebuffer()
+  Shell "nice -n 19 ls -laR " & global.confpath & "/covers/" & "&>/dev/null"
+End
+
+
+Public Sub ButtonLoad_Click()
+  Dim PrevTitle As String
+  Dim PrevFilter As String[]
+  Dim newfilename As String
+  Dim currentfilename As String
+  Coverlist.clear
+  With Global
+    myDialog.Path = .StartFolder
+    PrevFilter = myDialog.filter
+    Prevtitle = myDialog.title
+    myDialog.Title = ("Load a Jpg cover image")
+    myDialog.filter = ["*.jpg", "jpg files"]
+  End With
+  If myDialog.OpenFile() Then Return
+  myDialog.filter = PrevFilter
+  myDialog.title = PrevTitle
+  
+  Try Shell "mkdir -p " & global.confpath & "/covers/ >/dev/null 2>&1" Wait
+  'newfilename = SConv(global.confpath& "/covers/" & Upper(ArtistText.text) & "^^^" & Upper(AlbumText.text) & ".jpg")
+  newfilename = (Coverfile(ArtistText.text, AlbumText.text))
+  currentfilename = (myDialog.Path)
+  Try Kill newfilename
+  Try Copy currentfilename To newfilename
+  'TRY SHELL "cp " & currentfilename & " " & global.fixfilename(newfilename) & " >/dev/null" WAIT
+  Try Picturebox1.picture = Picture.Load(newfilename)
+  If Error Then
+    Message.Error(("Error while loading the picture"), "Ok")
+  Endif
+  Picturebox1.refresh
+  FMain.CoverRefresh()
+  Try RemoveCoverCache(newfilename, False)
+End
+
+Public Sub Form_KeyPress()
+  If Key.code = Key.escape Then ButtonCancel_Click()
+End
+
+Public Sub Form_Close()
+  ButtonCancel_Click()
+End
+
+Public Sub SetACover(fullpath As String, artist As String, album As String, Optional forcesearch As Boolean = False)
+  Dim tmpmessage As String
+  Dim JustFileCover As Boolean = False 'are we going to set a cover for just this file?
+  Dim tl As New TagLib
+  
+
+  If Upper(FullPath) Like "*.FLAC" Then
+    If (Trim(Artist) = "") And (Trim(Album) = "") Then
+      tl.init(FullPath)
+      Artist = tl.Artist
+      Album = tl.Album
+      tl.tlFree()
+    Endif
+  Endif
+  
+  If (Trim(Artist) = "") And (Trim(Album) = "") Then
+    JustFileCover = True
+    tmpmessage = ("\nso you are going to set a cover for this particular file/stream")
+    Message.Info(("Artist Or Album tag information are required to set a cover") & tmpmessage, ("Ok"))
+  Endif
+  Me.show
+  progressbar1.value = 0
+
+
+    If Not global.IsVideoFile(fullpath) Then
+      If (ArtistText.text & AlbumText.text) <> Trim(Artist) & Trim(Album) Then
+        Try CoverList.Clear
+        'Try FlexSpace.Picture = picture.Load("null.png")
+        Try CoverList.Refresh
+        'Try FlexSpace.refresh
+        ArtistText.text = Trim(Artist)
+        AlbumText.text = Trim(Album)
+        TextBox1.text = ArtistText.text & " " & AlbumText.text
+        'picturebox1.picture = AudioForm.CoverBox.Picture
+        Try Picturebox1.picture = picture.Load(coverfile(artist, album, fullpath))
+        picturebox1.refresh
+        'Me.show
+        Wait 0.1
+        If ((Not Exist(Coverfile(ArtistText.text, AlbumText.text))) And Not JustFileCover) Or forcesearch Then
+          Try search() 'start a fetch
+        Endif
+      Endif
+      JustFileCover = JustFileCover
+      MediaFileFullPath = FullPath
+      'Me.show
+    Endif
+End
+
+
+Private CoversLookerTimer As New Timer As "CoversLookerTimer"
+
+Private QueuedCover As Collection
+Private CoverQueue As New Variant[]
+
+Public Sub CoversLookerTimer_timer()
+ Dim WorkingCover As New Collection
+ Dim artist, album, fullpath As String
+ Dim row, firstR, lastR As Integer
+ Dim column As Integer = 0
+ Dim mygrid As Gridview
+
+
+
+
+
+
+
+
+'will check for embedded covers or covers inside folders.
+
+
+ If CoverQueue.count = 0 Then
+   ' Debug "stopping coverlookertimer"
+   ' Debug
+   CoversLookerTimer.Stop
+   Return
+ Endif
+ If FMain.gridscrolling Then Return
+ If FMain.closing Then Return
+ WorkingCover = CoverQueue.Pop()
+ fullpath = CoverQueue.Pop()
+ mygrid = WorkingCover["mygrid"]
+ artist = WorkingCover["artist"]
+ album = WorkingCover["album"]
+ row = WorkingCover["row"]
+
+ If mygrid.name = "AlbumGridView" Then column = WorkingCover["column"]
+
+
+'If the file isn't found, then mark it into the array
+'and discard the cell; next data event will paint an error icon on it.
+'we do this onto this timer event to make that async and don't block scrolling.
+ If filesnotfound.Find(fullpath) <> -1 Then
+   'mygrid[row, 0].picture = picture["icon:/" & (rowheight -global.rowpadding) & "/error"]
+   Try mygrid[row, column].text = ""
+   Try mygrid[row, column].clear
+   Return
+     Else 'file not (yet?) marked as not found
+   If Not global.IsNetworkURI(fullpath) Then
+     If Not Exist(fullpath) Then
+       Debug "Missing file! " & fullpath
+       Debug
+       FileNotFoundAdd(fullpath)
+        'mygrid[row, 0].picture = picture["icon:/" & (rowheight -global.rowpadding) & "/error"]
+        mygrid[row, column].text = ""
+        mygrid[row, column].clear
+       Return
+     Endif
+   Endif
+ Endif
+
+
+'controlla se la row è visibile:
+ If MyGrid.Rows.count <= 0 Then Return
+ 'FirstR = MyGrid.RowAt(MyGrid.y)
+ 'LastR = MyGrid.RowAt(MyGrid.h)
+ FirstR = global.MyRowAt(MyGrid, MyGrid.y)
+ LastR = global.MyRowAt(MyGrid, MyGrid.h)
+
+
+
+ If LastR = -1 Then LastR = Mygrid.rows.count - 1
+ If firstR = -1 Then firstR = 0
+ If Not ((row >= firstR) And (row <= lastR)) Then Return
+
+
+'se lo è, controlla che ad essa corssiponda lo stesso file.
+  If mygrid.name <> "AlbumGridView" Then
+    If mygrid[row, 19].text <> fullpath Then Return
+  Endif
+ 
+ 'controlla di nuovo che alla row corrisponda lo stesso file
+ If mygrid.name <> "AlbumGridView" Then
+  If mygrid[row, 19].text <> fullpath Then Return
+ Endif
+ 'inserisci immagine
+
+  savepic(fullpath, artist, album, generaloptions.IconWidthCombobox.text, True, mygrid, row, column)
+
+End
+
+Public Sub QueueThumb(MyGrid As Gridview, fullpath As String, artist As String, album As String, row As Integer, Optional rowheight As Integer = 16, Optional column As Integer = 0)
+  QueuedCover = New Collection
+
+  If global.IsVideoFile(fullpath) Then
+    If Not (generaloptions.ShowThumbsCHK.value) Then
+      mygrid.data.Picture = Stock[CStr(rowheight + ShadowOffset) & "/video"]
+      Return  
+    Endif
+
+  Endif
+
+  mygrid.data.Picture = Stock[rowheight & "/clock"]
+  QueuedCover["mygrid"] = MyGrid
+  QueuedCover["artist"] = artist
+  QueuedCover["album"] = album
+  QueuedCover["row"] = row
+  QueuedCover["column"] = column
+  'Debug "pushing " & fullpath
+  CoverQueue.Push(fullpath)
+  CoverQueue.Push(QueuedCover)
+  CoversLookerTimer.delay = 1
+  CoversLookerTimer.start
+End
+
+Public filesnotfound As New String[]
+Public Sub FileNotFoundAdd(path As String)
+  If (filesnotfound.Find(path) = -1) Then filesnotfound.Add(path)
+End
+
+Public Function SavePic(fullpath As String, artist As String, album As String, rowheight As Integer, Optional forcethumbs As Boolean = False, mygrid As Gridview, row As Integer, column As Integer) As Boolean
+  Dim coverfilename As String
+  coverfilename = coverfile(artist, album, fullpath)
+  'controlla se esiste il coverfile su disco
+  'se non esiste, prova a crearlo prima dalla folder.jpg, poi dalle immagini embedded
+  If (Not Exist(coverfilename, True)) Then FolderPictureToCoverCache(file.Dir(fullpath), coverfilename, mygrid, row, column)
+  If (Not Exist(coverfilename, True)) Then EmbeddedToCoverCache(artist, album, fullpath, coverfilename, mygrid, row, column)
+  If Not global.isvideofile(fullpath) Then
+    If (Not Exist(coverfilename, True)) Then MarkUncovered(fullpath) 'non esiste folder.jpg e nemmeno è embedded...
+  Endif
+End
+
+Public Sub FolderPictureToCoverCache(Directory As String, coverfilename As String, mygrid As Gridview, row As Integer, column As Integer)
+  Dim folderpicturefile As String
+  folderpicturefile = FolderPicture(directory)
+  If folderpicturefile <> "" Then
+    Copy Directory & "/" & folderpicturefile To coverfilename
+    Try mygrid[row, column].text = ""
+    Try mygrid[row, column].clear
+  Endif
+End
+
+Public Function FolderPicture(Directory As String) As String  
+  Dim Files As New String[]
+  
+  Files = (Dir(Directory, "*ront*.jpg"))
+  If Files.count > 0 Then Goto FILEFOUND  
+
+  Files = (Dir(Directory, "*FRONT*.jpg")) 
+  If Files.count > 0 Then Goto FILEFOUND  
+
+  Files = (Dir(Directory, "*FRONT*.JPG"))
+  If Files.count > 0 Then Goto FILEFOUND  
+
+  Files.Insert(Dir(Directory, "ront*.JPEG"))
+  If Files.count > 0 Then Goto FILEFOUND
+  
+  Files.Insert(Dir(Directory, "*ront*.PNG"))
+  If Files.count > 0 Then Goto FILEFOUND
+  
+  Files.Insert(Dir(Directory, "*ront*.BMP"))
+  If Files.count > 0 Then Goto FILEFOUND
+  
+  Files.Insert(Dir(Directory, "*.JPG"))
+  If Files.count > 0 Then Goto FILEFOUND
+  
+  Files.Insert(Dir(Directory, "*.JPEG"))
+  If Files.count > 0 Then Goto FILEFOUND
+  
+  Files.Insert(Dir(Directory, "*.PNG"))
+  If Files.count > 0 Then Goto FILEFOUND
+  
+  Files.Insert(Dir(Directory, "*.BMP"))
+
+  FILEFOUND:
+  If Files.count > 0 Then 
+    Return Files[0]
+      Else
+    Return ""
+  Endif
+End
+
+
+
+Public Sub EmbeddedToCoverCache(artist As String, album As String, fullpath As String, coverfilename As String, mygrid As Gridview, row As Integer, column As Integer)
+  Select Case Lower(file.Ext(fullpath))
+    Case "mp3"
+      LookForJpg(fullpath, coverfilename)
+      Try mygrid[row, column].text = ""
+      Try mygrid[row, column].clear
+      Return
+    Case "ogg"
+      If LookForJpgb64(fullpath, coverfilename) Then 
+        Try mygrid[row, column].text = ""
+        Try mygrid[row, column].clea
+        Return
+      Endif
+    Case "flac"
+      If LookForJpg(fullpath, coverfilename) Then 
+        Try mygrid[row, column].text = ""
+        Try mygrid[row, column].clear
+        Return
+      Endif
+    Case "mp4"
+      If LookForJpgHeuristic(fullpath, coverfilename) Then 
+        Try mygrid[row, column].text = ""
+        Try mygrid[row, column].clear
+        Return 'return only when we found an embedded cover into mp4
+      Endif
+    Case "mkv"
+      If LookForJpgHeuristic(fullpath, coverfilename) Then 
+        Try mygrid[row, column].text = ""
+        Try mygrid[row, column].clear
+        Return 'return only when we found an embedded cover into mp4
+      Endif
+  End Select
+  
+  If global.IsVideoFile(fullpath) Then
+    If generaloptions.ShowThumbsCHK.value Then makevideothumb(fullpath, coverfilename, mygrid, row, column)
+  Endif
+End
+
+
+Public ThumbsToBeMade As New String[]
+
+Private runningthumblers As Integer = 0
+Private mplayerthumb As Mplayerclass
+
+
+Private lastthumbpath As String = ""
+Public Sub makevideothumb(fullpath As String, coverfilepath As String, mygrid As Gridview, row As Integer, column As Integer)
+  If fullpath = lastthumbpath Then Return
+  lastthumbpath = fullpath
+
+  While runningthumblers >= 3
+    'Debug runningthumblers
+    Wait 0.05
+  Wend
+  If FMain.closing Then Return
+  If Exist(coverfilepath) Then Return
+  mplayerthumb = New Mplayerclass As "thumbnailer"
+  runningthumblers += 1
+  Debug runningthumblers
+  mplayerthumb.savethumb(fullpath, coverfilepath,,, mygrid, row, column)
+End
+
+
+
+Public Sub thumbnailer_ThumbAvailableFor(fullpath As String, g As Gridview, r As Integer, c As Integer)
+  runningthumblers -= 1
+  Try g[r, c].text = ""
+  Try g[r, c].clear
+   g.refresh
+   Wait
+  'FMain.NewThumbReadyFor(fullpath)
+  
+  Debug runningthumblers
+End
+
+Public Sub thumbnailer_ThumbErrorFor(fullpath As String, g As Gridview, r As Integer, c As Integer)
+  runningthumblers -= 1
+  Try g[r, c].text = ""
+  Try g[r, c].clear
+   g.Refresh
+   Wait
+  MarkUncovered(fullpath)
+
+End
+
+
+Public Function DefaultLibraryIcon(fullpath As String, Optional rowheight As Integer = 16, Optional strictsize As Boolean = False) As Picture
+  'rowheight -= Shadowoffset
+  'strictsize mean we don't want shadows/padding and so on...
+  Dim localrowpadding As Integer
+  If strictsize Then 
+    localrowpadding = 0
+      Else
+    localrowpadding = global.rowpadding
+  Endif    
+    
+  If Global.IsAudioFile(fullpath) Then
+    Return Stock[CStr(rowheight - localrowpadding) & "/audio"]
+  Else If Global.IsVideoFile(fullpath) Then
+    Return Stock[CStr(rowheight - localrowpadding) & "/video"]
+  Else If Global.IsDvbURI(fullpath) Then
+    Return picture["filetypedvb.png"].Image.Stretch(rowheight, rowheight).picture
+  Else If FMain.Youtube.IsYoutubeLink(fullpath) Then
+    Return picture["youtubeicon.png"].Image.Stretch(rowheight, rowheight).picture
+  Else If Global.IsNetworkURI(fullpath) Then
+    Return Stock[rowheight & "/network"]
+  Else
+    Return Stock[rowheight & "/file"]
+  Endif
+
+End
+
+
+
+
+
+Private shadowimg As Image = image.load("shadow.png")
+Public ShadowOffset As Integer 
+Private ShadowOffsetPaint As Integer
+
+Public Function cornice(img As Image, neww As Integer, Optional newh As Integer = -1) As Picture
+  Dim canvas As Image
+  Dim newx, newy As Integer
+  If newh = -1 Then newh = neww
+  canvas = Image.Load("null.png").Stretch(neww, newh)
+  newx = CInt((neww / 2) - (img.w / 2))
+  newy = CInt((newh / 2) - (img.h / 2))
+  Return canvas.DrawImage(img, newx, newy).picture
+End
+
+Public Sub ResizeShadowTemplate(w As Integer, Optional h As Integer = -1)
+  If h = -1 Then h = w
+  shadowimg = image.load("shadow.png")
+  shadowimg = shadowimg.Stretch(w + ShadowOffset, h + ShadowOffset)
+End
+
+Public Function Shadowed(src As Picture) As Image
+  Dim offset As Integer = 0
+  Dim w As Integer = src.w
+  Dim h As Integer = src.h
+  ShadowOffset = ((h - global.rowpadding) Div 8) 
+  ShadowOffsetPaint = (ShadowOffset Div 2)
+  offset = - (w Div 90) 
+  If (((w + shadowoffset) <> shadowimg.w) Or ((h + shadowoffset) <> shadowimg.h)) Then 
+    ResizeShadowTemplate(w, h)
+  Endif
+  Return shadowimg.DrawImage(src.image, shadowoffsetpaint + offset, shadowoffsetpaint + offset)
+End
+
+Public Function keepaspect(img As Image, width As Integer) As Picture
+  Dim aspect As Float = img.w / img.h
+  If aspect >= 1 Then 
+    Return cornice(img.Stretch(width, CInt(width / aspect)), 160, 160)
+      Else
+    Return cornice(img.Stretch(CInt(width * aspect), width), 160, 160)
+  Endif
+End
+
+ 
+
+Public Sub Button1_Click()
+  Try Search()
+End
+
+
+

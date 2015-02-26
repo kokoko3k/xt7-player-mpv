@@ -1,0 +1,56 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Inherits Panel
+
+'PUBLIC DescrLabel AS Label
+Public FileMode As Boolean = True 'false means directory
+Private MyInputBox As TextBox
+Private OpenButton As Button
+
+
+
+Public Sub _NEW()
+  Super.Border = Border.None
+
+  Super.padding = 0
+  Super.spacing = 8
+    
+  'DescrLabel = NEW Label(ME) AS "DescrLabel"
+  'DescrLabel.AutoResize = TRUE
+  
+  MyInputbox = New TextBox(Me) As "MyInputBox"
+  MyInputBox.text = User.home
+  MyInputBox.expand = True
+  
+  
+  OpenButton = New Button(Me) As "OpenButton"
+  OpenButton.picture = Picture["icon:/24/open"]
+  OpenButton.Width = OpenButton.Picture.w + 16
+
+  Super.Arrangement = Arrange.horizontal
+  Super.Expand = True
+
+End
+
+
+Public Sub OpenButton_click()
+  myDialog.path = MyInputBox.text
+  If FileMode Then
+    If myDialog.OpenFile() Then Return
+      Else
+    If myDialog.SelectDirectory() Then Return
+  Endif
+  MyInputBox.text = DConv(myDialog.path)
+End
+
+Property Value As String
+ Function Value_READ() As String
+   Return MyInputBox.text
+   'PRINT MyInputBox.text
+ End
+ Sub Value_WRITE(Value As String)
+   MyInputBox.text = Value
+ End

@@ -1,0 +1,70 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+
+Public Sub Form_Open()
+  Global.Center(Fmain, Me)
+End
+
+Public Sub OkBTN2_Click()
+
+  GeneralOptions.show
+
+End
+
+Public Sub OkBTN4_Click()
+
+  SubAndOsd.Show
+
+End
+
+Public Sub VideoDriverBTN2_Click()
+
+  XConfigureVideoDriver.show
+
+End
+
+Public Sub VideoDriverBTN_Click()
+
+  VFiltersCfg.show
+
+End
+
+Public Sub OkBTN1_Click()
+
+  XConfigureAudioDriver.show
+
+End
+
+Public Sub OkBTN3_Click()
+
+  AFiltersCfg.show
+
+End
+
+Public Sub OkBTN5_Click()
+
+  Chains.show
+
+End
+
+Public Sub OkBTN6_Click()
+
+  HotKeys.show
+
+End
+
+
+Public Sub Form_Close()
+
+  FMain.VideoBox.setfocus()
+
+End
+
+Public Sub Form_Hide()
+
+  FMain.VideoBox.setfocus()
+
+End

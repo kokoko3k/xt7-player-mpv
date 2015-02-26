@@ -1,0 +1,26 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Public Sub Form_Show()
+  Global.Center(Fmain, Me)
+End
+Public Sub OkBtn_Click()
+  Dim profilename As String
+  profilenamebox.text = Replace(profilenamebox.text, ".profile", "")
+  profilenamebox.text = Replace(profilenamebox.text, " ", "_")
+  profilenamebox.text = Replace(profilenamebox.text, ".", "_")
+  profilename = profilenamebox.text & ".profile"
+  If Trim(profilename) <> "" Then
+    Try Mkdir global.confpath & "/" & profilename
+    Try ProfileManager.UpdateProfileList()
+    Try FMain.UpdateProfileList()
+  Endif
+  MyQuestion.ask(("To use new profile, switch to it, then restart xt7"), "Ok", "")
+  Me.Hide
+End
+
+Public Sub CancelBtn_Click()
+  Me.hide
+End

@@ -1,0 +1,793 @@
+' Gambas class file
+
+Public feedsinfo As New Collection 'a collection of feeds
+Public feedinfo As New Collection  'a collection of a feed infos
+
+Public Sub CollapseAll(tree As Treeview)
+  tree.movefirst
+  Repeat
+    Try tree.Item.expanded = False
+  Until tree.movebelow()
+End
+
+Private DoXmlWorkaround As Boolean = False
+Public Sub init_tree(tree As Treeview)
+  DoXmlWorkaround = (System.FullVersion = "3.2.0") Or (System.FullVersion = "3.2.1")
+
+  'Tree.Add("top_rated", ("Top Rated"), picture["youtubeicon.png"])
+ ' Tree.Add("top_favorites", ("Top favourites"), picture["youtubeicon.png"])
+ ' Tree.Add("most_viewed", ("Most viewed"), picture["youtubeicon.png"])
+  Tree.Add("most_popular", ("Most popular"), picture["youtubeicon.png"])
+  'Tree.Add("most_recent", ("Most recent"), picture["youtubeicon.png"])
+  'Tree.Add("most_discussed", ("Most discussed"), picture["youtubeicon.png"])
+  'Tree.Add("most_responded", ("Most responded"), picture["youtubeicon.png"])
+  'Tree.Add("recently_featured", ("Recently featured"), picture["youtubeicon.png"])
+  Tree.Add("custom_search_results", ("Custom search results"), picture["youtubeicon.png"])
+  'Tree.Add("related", ("*Related Videos"), picture["youtubeicon.png"])
+End
+
+Public Sub GetFeed(feed As String, tree As Treeview, Optional resizew As Integer = 0, Optional region As String = "", Optional maxresults As Integer = 25, Optional myappend As Boolean = False)
+   'http://yp.shoutcast.com/sbin/newxml.phtml?genre=Trance
+   'remove all child items
+  Dim AskUrl As String = "http://gdata.youtube.com/feeds/api/standardfeeds/"
+  Debug "region = " & region
+  Debug
+  If Trim(region) <> "" Then askurl = askurl & region & "/"
+  askurl = askurl & feed
+  askurl = askurl & "?&max-results=" & Str(maxresults + 1)
+  If (Not myappend) Then 'delete previous results if not appending
+    Repeat
+      Tree.MoveTo(feed)
+      Tree.MoveChild()
+      Try Tree.Item.Delete
+    Until Error
+  Endif
+  'fill the current thread
+  DownloadAndParse(AskUrl, Tree, feed, resizew, myappend)
+End
+
+Public Sub FeedSearch(searchterm As String, thread As String, tree As Treeview, Optional maxresults As Integer = 20, Optional resizew As Integer = 0, Optional otheropts As String = "", Optional myappend As Boolean = False)
+  ' http://gdata.youtube.com/feeds/api/videos?
+  '   q=skateboarding+dog
+  '   &start-index=21
+  '   &Max-results=10
+  '   &v=2
+  Dim AskUrl As String
+  Dim v As Integer = 1 'api version
+
+  maxresults = maxresults + 1
+
+  Askurl = "http://gdata.youtube.com/feeds/api/videos"
+  Askurl = Askurl & "?q=" & searchterm
+  Askurl = Askurl & "&max-results=" & maxresults
+  Askurl = Askurl & "&v=" & v
+  Askurl = Askurl & Otheropts
+  'clear previous search results
+  If (Not myappend) Then 'delete previous results if not appending
+    Repeat
+      Tree.MoveTo(thread)
+      Tree.MoveChild()
+      Try Tree.Item.Delete
+    Until Error
+  Endif
+  'fill the current thread
+  DownloadAndParse(AskUrl, Tree, thread, resizew, myappend)
+  tree.MoveTo(thread)
+  If Not Global.NeedTreeViewWorkaround() Then 
+    tree.Item.expanded = True
+  Endif
+End
+
+Public Sub GetRelated(sourcefeed As String, tree As Treeview, relatedtotext As String, Optional maxresults As Integer = 20, Optional resizew As Integer = 0, Optional otheropts As String = "", Optional myappend As Boolean = False)
+  ' http://gdata.youtube.com/feeds/api/videos?
+  '   q=skateboarding+dog
+  '   &start-index=21
+  '   &Max-results=10
+  '   &v=2
+  Dim AskUrl As String
+
+  Dim v As Integer = 1 'api version
+  Dim videoid As String
+
+  
+  videoid = getvideoid(sourcefeed)
+  maxresults = maxresults + 1
+  
+  Askurl = "http://gdata.youtube.com/feeds/api/videos/"
+  Askurl = Askurl & videoid
+  Askurl = Askurl & "/related"
+  Askurl = Askurl & "?&max-results=" & maxresults
+  Askurl = Askurl & "&v=" & v
+  Askurl = Askurl & Otheropts
+  'clear previous search results
+  ' If (Not myappend) Then 'delete previous results if not appending
+  '   Repeat
+  '     Tree.MoveTo("related")
+  '     Tree.MoveChild()
+  '     Try Tree.Item.Delete
+  '   Until Error
+  ' Endif
+  'fill the current thread
+  'DownloadAndParse(AskUrl, Tree, "related", resizew, myappend)
+  DownloadAndParse(AskUrl, Tree, sourcefeed, resizew, myappend) 'try to fill the current subthread
+  'tree.MoveTo("related")
+  tree.item.text = "*" & ("More Related to: ") & Left(relatedtotext, InStr(relatedtotext, "\n") - 1)
+  ' If Not Global.NeedTreeViewWorkaround() Then 
+    Tree.Item.Expanded = True
+'   Endif
+End
+
+Private Function HaveToParseNode(MyXmlreader As Xmlreader) As Boolean
+'gambas 3.2.0 misses Xmlreader.Node.IsEmptyElement property, workaround just for that version.
+
+
+  If Not DoXmlWorkaround Then
+    If Not (MyXmlreader.Node.IsEmptyElement) And (MyXmlreader.Node.Attributes.count > 0) Then
+      Return True
+    Endif
+    Return False
+      Else
+    If (MyXmlreader.Node.Attributes.count > 0) And (MyXmlreader.Node.Depth > 0) Then
+      Return True
+    Endif
+    Return False
+  Endif
+End
+
+Static Public Function MidC(s As String, a As String, Optional b As String) As String
+  'return the first occurrence of the string between a and b
+  'if b is omitted then all the string starting from a is returned
+  Dim mmid As String
+  mMid = Mid(s, InStr(s, a) + 1)
+  If b <> "" Then 
+    Return Left(mmid, InStr(mmid, b) - 1)
+      Else
+    Return mMid
+  Endif
+End
+
+
+Public Sub DownloadAndParse(url As String, tree As Treeview, feedname As String, Optional resizew As Integer = 0, Optional myappend As Boolean = False)
+  Dim feed As String[]
+  Dim aline, value, lastlink As String
+  Dim wget As New Wgetclass
+  Dim streaminfo As New Collection
+  If tree.item = Null Then
+    tree.movecurrent
+    If tree.item = Null Then
+      tree.MoveTo(feedname)
+    Endif
+  Endif
+  
+  'Download the feed
+  If myappend Then url = url & "&start-index=" & CStr(tree.Item.Children + 1)
+  url = "'" & url & "'"
+  Debug url
+  feed = Split(wget.DownloadAsync(url), "<", "", True)
+  If feed.count = 0 Then 
+    Message.Error("Could not download the feed")
+    Return
+  Endif
+
+  'Parse the feed, simple way ahead...
+  For Each aLine In feed
+    'stop
+    Select Case aline
+      Case Like "id>http" & "*"
+        'Debug "----------------------------------------"
+        ItemInfoComplete(ByRef streaminfo, ByRef tree, lastlink, feedname)
+      Case Like "published>" & "*"
+        'Debug "Published=" & MidC(aLine, ">", "T")
+        feedinfo.Add(MidC(aLine, ">", "T"), "published")
+
+      Case Like "updated>" & "*"
+        'Debug "Updated=" & MidC(aLine, ">", "T")
+        feedinfo.Add(MidC(aLine, ">", "T"), "updated")
+
+      Case Like "title type='text'>" & "*"
+        'Debug "Title=" & MidC(aLine, ">")
+
+      Case Like "media:title type='plain'>" & "*"
+        'Debug "Title=" & MidC(aLine, ">")
+        value = Replace(MidC(aLine, ">"), "&amp;", "&")
+        streaminfo.Add(value, "title")
+        feedinfo.Add(value, "title")
+
+      Case Like "name>" & "*"
+        feedinfo.Add(MidC(aLine, ">"), "author")
+        
+      Case Like "media:category label='" & "*"
+        'Debug "Category=" & Split(aline, "'")[1]
+        feedinfo.Add(Split(aline, "'")[1], "categorylabel")
+
+      Case Like "media:description type='plain'>" & "*"
+        'Debug "Description=" & MidC(aLine, ">")
+        feedinfo.Add(MidC(aLine, ">"), "media:description")
+
+      Case Like "media:thumbnail url='" & "*"
+        'Debug "Thumb=" & MidC(aLine, "'", "'")
+        If streaminfo["thumb"] = Null Then Try streaminfo.Add(downloadpicture(MidC(aLine, "'", "'"), resizew), "thumb")
+
+      Case Like "yt:duration seconds='" & "*"
+        value = MidC(aline, "'", "'")
+        'Debug "Duration=" & value
+        feedinfo.Add(value, "yt:durationseconds")
+        streaminfo.Add(value, "yt:durationseconds")
+
+      Case Like "media:player url='" & "*"
+        value = MidC(aline, "'", "'")
+        'Debug "Url=" & value
+        streaminfo.Add(MidC(aline, "'", "'"), "linkhref")
+        feedinfo.Add(MidC(aline, "'", "'"), "linkhref")
+        lastlink = value 'remember this to add more infos to feedinfo[lastlink]
+    End Select
+  Next
+  AddMoreResultsItem(tree, feedname, resizew)
+End
+
+Public Sub ItemInfoComplete(ByRef streaminfo As Collection, ByRef tree As TreeView, lastlink As String, feedname As String)
+  If streaminfo.count > 0 Then 
+      addstream(streaminfo, tree, feedname)
+      feedsinfo.Add(feedinfo["title"], lastlink & "." & "title")
+      feedsinfo.Add(feedinfo["categorylabel"], lastlink & "." & "categorylabel")
+      feedsinfo.Add(feedinfo["yt:durationseconds"], lastlink & "." & "yt:durationseconds")
+      'feedsinfo.Add(feedinfo["content"], lastlink & "." & "content")
+      feedsinfo.Add(feedinfo["media:description"], lastlink & "." & "media:description")
+      feedsinfo.Add(feedinfo["published"], lastlink & "." & "published")
+      feedsinfo.Add(feedinfo["updated"], lastlink & "." & "updated")
+      feedsinfo.Add(feedinfo["author"], lastlink & "." & "author")  
+      lastlink = ""
+      feedinfo.Clear
+    Endif
+    streaminfo.Clear
+    Try tree.MoveParent
+    Try tree.Item.expanded = True
+    Try tree.moveback
+End
+
+
+Public Function downloadpicture(uri As String, Optional resizew As Integer = 0) As Picture
+  Dim wget As New Wgetclass
+  Dim tmppicture As Picture
+  Dim picturefile As String
+  Dim aspect As Float
+  picturefile = wget.DownloadAsync(uri, True)
+  Try tmppicture = picture.Load(picturefile)
+  If Error Then tmppicture = picture["null.png"]
+    If resizew <> 0 Then
+      aspect = tmppicture.w / tmppicture.h
+      tmppicture = tmppicture.Image.Stretch(resizew, CInt(resizew / aspect)).picture
+    Endif
+  Try Kill picturefile
+  Return CoverManager.Shadowed(tmppicture).picture
+End
+
+
+Public Sub addstream(streaminfo As Collection, tree As Treeview, feed As String)
+  Dim Mykey, title As String
+  Dim thumb As Picture
+  
+  'we need at least title and link to video to go on...
+    Try mykey = streaminfo["linkhref"]
+      If Error Then Return 'if one of them is missing, just return
+    Try title = streaminfo["title"]
+      If Error Then Return 'if one of them is missing, just return
+      
+    Try thumb = streaminfo["thumb"]
+
+  While tree.Exist(Mykey) 'be sure to avoid duplicate keys
+    mykey = mykey & ":§"
+  Wend
+
+  tree.MoveTo(feed)
+  Try Tree.current.Expanded = True
+  tree.Add(mykey, streaminfo["title"] & "\n" & FormatTime(streaminfo["yt:durationseconds"]), thumb, feed)
+  tree.Refresh
+  Wait 0.01
+
+End
+
+
+
+
+
+Public Sub AddMoreResultsItem(tree As Treeview, feed As String, resizew As Integer)
+  Dim Mykey, tmpkey, parenttext As String
+  Dim thumb As Picture
+  Dim resizeh As Integer
+  resizeh = (resizew * 3) Div 4
+  mykey = "__MORERESULTS__" & CStr(Rnd(0, 9999999999999999999))
+  thumb = picture.Load("MoreResults.png").Image.Stretch(resizew, resizeh).Picture
+  'find parent text
+  Try tmpkey = tree.item.key
+  Try tree.MoveTo(tree.current.key)
+  If Error Then Return
+  tree.moveparent()
+  Try parenttext = tree.Item.text
+  If Error Then parenttext = tree.current.text
+  Try tree.MoveTo(tmpkey)
+  tree.Add(MyKey, (("See more results") & ": " & parenttext), thumb, feed)
+  tree.Refresh
+  Wait 0.01
+End
+
+
+
+Public Sub FormatTime(seconds As String) As String
+    Dim iseconds, hh, mm, ss, restosec As Integer
+    Dim Shh, Smm, Sss As String
+      Try iseconds = Val(seconds)
+      If Error Then iseconds = 0
+      hh = iseconds Div 3600
+      restosec = (iseconds - (hh * 3600))
+      mm = restosec Div 60
+      ss = (restosec - (mm * 60))
+      
+      Sss = ss
+      If Len(Sss) = 1 Then Sss = "0" & Sss
+      Smm = mm
+      If Len(Smm) = 1 Then Smm = "0" & Smm
+      Shh = hh
+      If Len(Shh) = 1 Then Shh = "0" & Shh
+    Return Shh & ":" & Smm & ":" & Sss
+End
+
+
+Public Function getvideoid(url As String) As String
+  Dim videoid As String
+  Dim tmpsplit As String[]
+  If url Like "*youtube*/*?v=*" Then
+    videoid = Split(url, "=", "", True)[1]
+    If videoid Like "*&*" Then videoid = Split(videoid, "&")[0]
+      Else If videoid Like "*&*" Then
+    'cut from v= to EOL or "&"
+        videoid = Mid(url, InStr(url, "v=", InStr(url, "/") + 1) + 2)
+        If InStr(videoid, "&") <> 0 Then videoid = Left(videoid, InStr(videoid, "&") - 1)
+      Else
+        tmpsplit = Split(url, "/", "", True)
+        videoid = tmpsplit[tmpsplit.count - 1]
+        videoid = Split(videoid, "?")[0]
+  Endif
+  Return videoid
+End
+
+Public currentvideoid As String = ""
+
+
+Public Cookiesfile As String = ""
+
+Public Function YoutubeDlInstalled() As Boolean
+  Dim ytdlinstalled As String = ""
+  If Not GeneralOptions.InitDone Then GeneralOptions.Init()
+  Shell "which youtube-dl" To ytdlinstalled
+  'Shell "which " & GeneralOptions.youtubedlexe.text To ytdlinstalled
+   If Trim(ytdlinstalled) = "" Then 
+    Message.error(("youtube-dl seems to be missing. \nInstall it to watch youtube videos."), "Ok")
+    Return False
+  Endif
+  Return True
+End
+
+' Public Function fHeight(fmt As Integer) As Integer
+'   Dim FormatsBySize As New String[]
+'   Dim i As Integer
+'   'resolution,code,container
+'   FormatsBySize.Add("1080,37,mp4")
+'   FormatsBySize.Add("720,22,mp4")
+'   FormatsBySize.Add("720,45,webm")
+'   FormatsBySize.Add("480,35,flv")
+'   FormatsBySize.Add("480,44,webm")
+'   FormatsBySize.Add("360,34,flv")
+'   FormatsBySize.Add("360,18,mp4")
+'   FormatsBySize.Add("360,43,webm")
+'   FormatsBySize.Add("240,5,flv")
+'   FormatsBySize.Add("144,17,mp4")
+'   
+'   For i = 0 To FormatsBySize.Max
+'     If Split(FormatsBySize[i], ",")[1] = fmt Then 
+'       Return Split(FormatsBySize[i], ",")[0]
+'     Endif
+'   Next
+'   Return -1
+' End
+
+
+Private ytdlout As String = Temp(Rnd(0, 1000) & "youtubedl-out")
+
+Public Function GetTitle(sourceurl As String) As String
+    Dim videoid As String
+    Dim title As String
+    videoid = getvideoid(sourceurl)
+    Shell "youtube-dl " & videoid & " -e" To title
+    Return Trim(title)
+End
+
+
+Public Function get_formats(maxR As Integer, Optional threedee As Boolean = False) As String
+  
+  'given a maximum resolution, maxR,
+  'returns a string of formats: a/b/../z
+  'sorted by resolution; "a" is a format with resolution <= MaxR
+  
+  'to get gb code from youtube-dl, use this script:
+  
+  '#!/bin/bash
+  'export IFS=$'\n'
+  'for line in $(cat  /tmp/tmp.txt |grep height|cut -d ":" -f 1,3,4|cut -d "," -f 1,2,4|cut -d \' -f 2,4,7|tr \' ","|tr -d ':'|tr -d " ") ; do
+  '    a=$(echo $line |cut -d "," -f 1)
+  '    b=$(echo $line |cut -d "," -f 2)
+  '    c=$(echo $line |cut -d "," -f 3)
+  '    echo fsorted.add\(\"$c,$a,$b\"\)
+  'done
+  'https://github.com/rg3/youtube-dl/blob/master/youtube_dl/extractor/youtube.py
+  'Then sort it out:
+  '/tmp/yt.sh |sort -V -r
+  
+  Dim fSorted As New String[] 'formats sorted by resolution
+  Dim i, mFormat As String
+  Dim height, code As Integer
+  Dim out As String
+  
+If threedee Then
+  fSorted.Add("720,84,mp4")
+  fSorted.Add("520,85,mp4")
+  fSorted.Add("360,82,mp4")
+  fSorted.Add("240,83,mp4")
+  fSorted.Add("720,102,webm")
+  fSorted.Add("360,101,webm")
+  fSorted.Add("360,100,webm")
+Endif
+  ' fSorted.Add("1080,37,mp4")
+  ' fSorted.Add("360,18,mp4")
+  ' fSorted.Add("1080,46,webm")
+  ' fSorted.Add("720,45,webm")
+  ' fSorted.Add("480,44,webm")
+  ' fSorted.Add("360,43,webm")
+  ' fSorted.Add("480,35,flv")
+  ' fSorted.Add("360,34,flv")
+  ' fSorted.Add("240,5,flv")
+'http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
+  fSorted.Add("3072,38,mp4")
+ ' fSorted.Add("1080,137,mp4")'DASH
+  fSorted.Add("1080,37,mp4")
+ ' fSorted.Add("720,136,mp4")'DASH
+ 
+  fSorted.Add("720,22,mp4")
+  
+ ' fSorted.Add("480,135,mp4")'DASH
+ ' fSorted.Add("360,141,mp4")'DASH
+ ' fSorted.Add("360,140,mp4")'DASH
+ ' fSorted.Add("360,139,mp4")'DASH
+ ' fSorted.Add("360,134,mp4")'DASH
+  
+  fSorted.Add("360,18,mp4")
+ ' fSorted.Add("240,133,mp4")'DASH
+
+ ' fSorted.Add("144,160,mp4")'DASH
+  fSorted.Add("1080,46,webm")
+
+  fSorted.Add("720,45,webm")
+  fSorted.Add("480,44,webm")
+'  fSorted.Add("360,172,webm")'DASH
+ ' fSorted.Add("360,171,webm") 'DASH
+  fSorted.Add("360,43,webm")
+  fSorted.Add("720,120,flv")
+  fSorted.Add("480,35,flv")
+  fSorted.Add("360,34,flv")
+  fSorted.Add("270,6,flv")
+  fSorted.Add("270,13,3gp")
+  fSorted.Add("240,5,flv")
+  fSorted.Add("240,36,3gp")
+  fSorted.Add("144,17,3gp")
+
+
+  For Each i In fsorted
+    height = Split(i, ",", "", True)[0]
+    If height <= maxR Then
+      mFormat = Split(i, ",", "", True)[2]
+      'If mFormat = "mp4" Then
+        code = Split(i, ",", "", True)[1]
+        out &= code & "/"
+      'Endif
+    Endif
+  Next
+  out = Left(out, -1)
+  Return out
+End
+
+
+
+Public Function realvideourl(sourceurl As String, maxformat As String) As String
+  Dim videoid As String
+  Dim fmtcode As Integer
+  Dim fmt As String
+  Dim i As Integer
+  Dim fSorted As New String[] 'formats sorted by container (mp4,webm,flv) then resolution becausewebm and flv gives more seek troubles
+  Dim useless As String
+  Dim fmtresult As String
+  Dim luckyformat As String
+  Dim ytdlprocess As Process
+  Dim ytdloutlines As String[]
+  Dim UrlAndFormats As New Collection
+
+  If Not YoutubeDlInstalled() Then Return
+
+  videoid = getvideoid(sourceurl)
+  currentvideoid = videoid
+  Debug videoid
+
+If GeneralOptions.Get3dYT.value = True Then
+  fSorted.Add("720,84,mp4")
+  fSorted.Add("520,85,mp4")
+  fSorted.Add("360,82,mp4")
+  fSorted.Add("240,83,mp4")
+  fSorted.Add("720,102,webm")
+  fSorted.Add("360,101,webm")
+  fSorted.Add("360,100,webm")
+Endif
+  ' fSorted.Add("1080,37,mp4")
+  ' fSorted.Add("360,18,mp4")
+  ' fSorted.Add("1080,46,webm")
+  ' fSorted.Add("720,45,webm")
+  ' fSorted.Add("480,44,webm")
+  ' fSorted.Add("360,43,webm")
+  ' fSorted.Add("480,35,flv")
+  ' fSorted.Add("360,34,flv")
+  ' fSorted.Add("240,5,flv")
+'http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
+  fSorted.Add("3072,38,mp4")
+ ' fSorted.Add("1080,137,mp4")'DASH
+  fSorted.Add("1080,37,mp4")
+ ' fSorted.Add("720,136,mp4")'DASH
+ 
+  fSorted.Add("720,22,mp4")
+  
+ ' fSorted.Add("480,135,mp4")'DASH
+ ' fSorted.Add("360,141,mp4")'DASH
+ ' fSorted.Add("360,140,mp4")'DASH
+ ' fSorted.Add("360,139,mp4")'DASH
+ ' fSorted.Add("360,134,mp4")'DASH
+  
+  fSorted.Add("360,18,mp4")
+ ' fSorted.Add("240,133,mp4")'DASH
+             '3D
+ ' fSorted.Add("144,160,mp4")'DASH
+  fSorted.Add("1080,46,webm")
+
+  fSorted.Add("720,45,webm")
+  fSorted.Add("480,44,webm")
+'  fSorted.Add("360,172,webm")'DASH
+ ' fSorted.Add("360,171,webm") 'DASH
+  fSorted.Add("360,43,webm")
+  fSorted.Add("720,120,flv")
+  fSorted.Add("480,35,flv")
+  fSorted.Add("360,34,flv")
+  fSorted.Add("270,6,flv")
+  fSorted.Add("270,13,3gp")
+  fSorted.Add("240,5,flv")
+  fSorted.Add("240,36,3gp")
+  fSorted.Add("144,17,3gp")
+
+
+  'strip out any format higher than maxformat and delete previous temp files
+  For i = fsorted.max DownTo 0 
+    If CInt(Split(fsorted[i], ",")[0]) > CInt(Replace(maxformat, "p", "")) Then 
+      useless = fsorted.Extract(i)[0]
+      Debug "dropping " & useless
+    Endif
+  Next
+  
+  Cookiesfile = Temp(Rnd(0, 1000) & "ytcookie")
+  Debug "cookiesfile: " & cookiesfile
+
+  'search for the code of the exact resolution in mp4:
+  For Each fmt In fsorted
+    If (fmt Like Replace(maxformat, "p", "") & ",*,mp4") Then 
+      luckyformat = Split(fmt, ",")[1]
+    Endif
+  Next
+  'the space is intentional to play videoid(s) which begins with a "-"
+  ytdlprocess = Shell "youtube-dl ' " & videoid & "' --get-format --get-url --all-formats --prefer-insecure  --cookies " & Cookiesfile & " >" & ytdlout
+  Debug "youtube-dl ' " & videoid & "' --get-format --get-url --all-formats --prefer-insecure --cookies " & Cookiesfile & " >" & ytdlout
+Debug videoid
+  Repeat
+    Wait 0.02
+  Until ytdlprocess.State <> Process.Running
+
+  Try ytdloutlines = Split(File.Load(ytdlout), "\n", "", True)
+  If Not Error Then 
+    Try Kill ytdlout
+      Else
+    Return
+  Endif
+  
+  If ytdloutlines.count = 0 Then Return
+  For i = 0 To ytdloutlines.max Step 2
+    'Try UrlAndFormats[ytdloutlines[i + 1]] = ytdloutlines[i]
+    Try UrlAndFormats[Split(ytdloutlines[i + 1], " ")[0]] = ytdloutlines[i] 'split(ytdloutlines[i],"")[0]
+  Next
+  
+  'pick up the first (if they exists) mp4 or webm or flv
+  'our array is already sorted that way.
+  For Each fmt In fsorted
+    fmtcode = Split(fmt, ",")[1]
+    Try fmtresult = UrlAndFormats[fmtcode]
+    If Not Error Then
+      If fmtresult Like "*http*" Then
+        Debug fmtresult
+        Return Trim(fmtresult)
+      Endif
+    Endif
+  Next
+  
+  
+  
+End
+
+
+
+
+
+
+Public urlexists As Integer = -1
+
+
+Public Function IsYoutubeLink(url As String) As Boolean
+  'return true if the url is a youtube link that needs to be decoded.
+  Dim needsdecoding As Boolean = True
+ ' Debug url
+  url = Lower(url)
+  needsdecoding = needsdecoding And ((url Like "http://*.youtube.*/*") Or (url Like "https://*.youtube.*/*") Or (url Like "http://*.googlevideo.*/*") Or (url Like "https://*.googlevideo.*/*"))
+  needsdecoding = needsdecoding And (Not (url Like "*t=*"))
+  needsdecoding = needsdecoding And (Not (url Like "*ip=*"))
+  needsdecoding = needsdecoding And (Not (url Like "*fexp=*"))
+  needsdecoding = needsdecoding And (Not (url Like "*expire=*"))
+  needsdecoding = needsdecoding And (Not (url Like "*signature=*"))
+  If needsdecoding Then FMain.needytcookie = True
+  Return needsdecoding
+End
+
+Public Sub Select_NextTreeItem(MyTree As Treeview)
+  Global.IsNextSelected = True
+  MyTree.movecurrent
+  If MyTree.MoveBelow() Then 
+    Global.IsNextSelected = False
+    Try MyTree.MoveFirst()
+  Endif
+    
+  
+  If Not Error Then
+    Try MyTree.Item.selected = True
+  Endif
+  Wait 0.1 'needed for grid select event to fill new mplayer.media_fullpath,maybe tunable
+End
+
+
+Public Sub Select_PrevTreeItem(MyTree As Treeview)
+  MyTree.movecurrent
+    If MyTree.MoveAbove() Then Try MyTree.MoveLast()
+  If Not Error Then
+    Try MyTree.Item.selected = True
+  Endif
+  Wait 0.1 'needed for grid select event to fill new mplayer.media_fullpath,maybe tunable
+End
+
+Public Sub AvailableSubs(VideoId As String) As String[]
+  Dim Url As String = "'http://video.google.com/timedtext?type=list&v=" & VideoId & "'"
+  Dim wget As New Wgetclass
+  Dim Sublist As String
+  Dim sublistarray, outarray As New String[]
+  Dim langcode, linea, trackname, out As String
+  Dim start, sstop As Integer
+  sublist = wget.DownloadAsync(Url)
+  sublist = Replace(sublist, "<track id=", "\n<track id=")
+  sublistarray = Split(sublist, "\n")
+  For Each linea In sublistarray
+    trackname = ""
+    LangCode = ""
+    If linea Like "*lang_code*" Then
+      start = InStr(linea, "lang_code=") + 11
+      sstop = InStr(linea, "\"", start)
+      Try langcode = Mid(linea, start, sstop - start)
+      'If (outarray.Find(langcode) = -1) Then outarray.Add(langcode)
+    Endif
+    If linea Like "*name=*" Then
+      start = InStr(linea, "name=") + 6
+      sstop = InStr(linea, "\"", start)
+      Try trackname = Mid(linea, start, sstop - start)
+    Endif
+    If (Trim(TrackName & LangCode) <> "") Then 
+      out = trackname & ":" & langcode
+      If (outarray.Find(out) = -1) Then outarray.Add(out)
+    Endif
+    Debug out
+
+  Next 'linea
+  Debug
+  Return outarray.Sort()
+End
+
+Public Function GetSub(VideoId As String, trackname As String, langcode As String) As String
+  'Download the subtitle, convert it to srt format and return it as a string
+  'Dim SubUrl As String = "'http://video.google.com/timedtext?hl=" & LangCode & "&lang=" & LangCode & "&v=" & VideoId & "'"
+  Dim Suburl As String
+  Dim wget As New Wgetclass
+  Dim timedText, tmp, linea, start, dur, sstop, out, text As String
+  Dim subarray, startdur As New String[]
+  Dim i As Integer = -1
+  
+  Suburl = "http://video.google.com/timedtext?type=track"
+  Suburl = Suburl & "&name=" & trackname 
+  Suburl = Suburl & "&lang=" & langcode
+  Suburl = Suburl & "&v=" & VideoId 
+  suburl = "'" & suburl & "'"
+  TimedText = wget.DownloadAsync(SubUrl)
+  If Trim(TimedText) = "" Then
+    Debug "Could not download subtitle with LangCode " & Langcode & " for video id " & VideoId
+    Debug
+    Return ""
+  Endif
+  Tmp = TimedText
+  'Convert To srt format:
+  'tmp = Replace(tmp, "</text>", "\n")
+  'tmp = Replace(tmp, "l&amp;", "&")
+  'tmp = CGI.Decode(tmp)
+  tmp = Replace(Tmp, "<text start=", "\n<text start=")
+  tmp = Replace(tmp, "\">", "\"\n")
+  tmp = Replace(tmp, "&amp;#39;", "'")
+  
+  Subarray = Split(tmp, "\n")
+  For Each linea In subarray
+    If i < 1 Then out = "" 'discards all header
+    i = i + 1
+    If linea Like "<text start=\"*" Then
+      'eg: <text start="5212.958" dur="2.292">but they testify to a new awareness.</text>
+      'or: <text start="5212.958">but they testify to a new awareness.</text>
+      startdur = Split(linea, "\"")
+      start = startdur[1]
+      If linea Like "*dur=\"*" Then
+        dur = startdur[3] '
+          Else
+        dur = "2"
+      Endif
+      sstop = start + dur
+      
+      out = out & "\n" & i & "\n"
+      out = out & SubFormatTime(start) & " --> " & SubFormatTime(sstop) & "\n"
+      'PRINT "start" & start & "Dur=" & dur & "stop=" & sstop
+      'convert times
+        Else
+      text = Replace(linea, "</text>", "")
+      text = Replace(text, "&amp;quot;", "\"")
+      If text = "" Then text = "-"
+      out = out & text & "\n"
+    Endif
+  Next 'linea
+  out = Replace(out, "</transcript>", "")
+  Return out
+End
+
+Public Sub SubFormatTime(seconds As String) As String
+    Dim iseconds, hh, mm, ss, restosec As Integer
+    Dim Shh, Smm, Sss As String
+    Dim float As String = "0"
+    Dim integerfloat As String[]
+      integerfloat = Split(seconds, ".")
+      seconds = integerfloat[0]
+      Try float = integerfloat[1]
+      
+      Try iseconds = Val(seconds)
+      If Error Then iseconds = 0
+      hh = iseconds Div 3600
+      restosec = (iseconds - (hh * 3600))
+      mm = restosec Div 60
+      ss = (restosec - (mm * 60))
+      
+      Sss = ss
+      If Len(Sss) = 1 Then Sss = "0" & Sss
+      Smm = mm
+      If Len(Smm) = 1 Then Smm = "0" & Smm
+      Shh = hh
+      If Len(Shh) = 1 Then Shh = "0" & Shh
+    Return Shh & ":" & Smm & ":" & Sss & "," & float
+End

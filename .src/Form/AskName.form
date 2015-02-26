@@ -1,0 +1,25 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,32,11)
+  Text = ("Profile name:")
+  Icon = Picture["icon:/16/properties"]
+  Persistent = True
+  Resizable = False
+  Spacing = True
+  Padding = 4
+  { ProfileNameBox TextBox
+    MoveScaled(1,1,30,4)
+    Text = ("NewProfile")
+  }
+  { CancelBtn Button
+    MoveScaled(1,6,14,4)
+    Text = ("Cancel")
+    Picture = Picture["icon:/16/cancel"]
+  }
+  { OkBtn Button
+    MoveScaled(17,6,14,4)
+    Text = ("Ok")
+    Picture = Picture["icon:/16/ok"]
+  }
+}

@@ -1,0 +1,148 @@
+' Gambas class file
+
+Private opensubs As OpenSubtitlesAPI
+Private XmlFields As New String[]
+Private Columnindex As New Collection
+
+Public Sub Form_Open()
+
+  Dim i As Integer
+  Global.Center(fmain, Me)
+  opensubs = New OpenSubtitlesAPI
+  XmlFields = Split(opensubs.XmlFields, ",")
+  SubsView.Columns.count = XmlFields.count
+  For i = 0 To XmlFields.count - 1
+    SubsView.Columns[i].Text = XmlFields[i]
+    columnindex.Add(i, XmlFields[i])
+    SubsView.Columns[i].Width = -1
+  Next 'i
+  Try TextBox1.text = File.basename(FMain.mplayer.getP("fullpath"))
+  Try ComboBox1.text = GeneralOptions.SubLangList.text
+End
+
+Public Sub mywait(dowait As Boolean)
+  
+  If dowait Then
+    TextBox1.mouse = mouse.wait
+    combobox1.mouse = mouse.wait
+    hbox1.mouse = mouse.wait
+    buttonsearch.enabled = False
+    Me.mouse = mouse.wait
+      Else
+    TextBox1.mouse = mouse.Normal
+    combobox1.mouse = mouse.Normal
+    hbox1.mouse = mouse.normal
+    buttonsearch.enabled = True
+    Me.mouse = mouse.normal
+  Endif
+End
+
+
+Public Sub ButtonSearch_Click()
+  Dim token, field As String
+  Dim mysub As Collection
+  Dim mysubs As Collection[]
+  Dim i As Integer
+  Dim languages As String
+  mywait(True)
+  subsview.clear
+  subsview.Rows.count = 0
+  token = OpenSubs.TokenFromLogIn("", "", "en", opensubs.defaultagent) '"OS Test User Agent")
+  If token = -1 Then 
+    Message.Error(("Token error"), "Ok")
+    Debug "Token error"
+    Debug
+    mywait(False)
+    Return
+  Endif
+  Try languages = Split(combobox1.text, "(")[0]
+  mysubs = opensubs.SearchByQuery(token, languages, TextBox1.text)
+  mysubs.Insert(opensubs.SearchByTag(token, languages, TextBox1.text))
+  If mysubs.count = 0 Then
+    subsview.rows.Count = 2
+    subsview[0, 0].text = ("No results, try with a less restrictive search")
+    subsview[1, 0].text = ("try also to remove file tags.")
+    subsview.Columns[0].Width = -1
+    subsview.refresh
+    mywait(False)
+      subsview.Rows.H = CInt(subsview.Font.TextHeight("Ij|") * 1.5)
+    Return
+  Endif
+
+  For Each mysub In mysubs
+    SubsView.Rows.count += 1
+    i = SubsView.Rows.count - 1
+    For Each field In XmlFields
+      SubsView[i, columnindex[field]].text = mysub[field]
+    Next 'field
+  Next 'mysubs
+  subsview.Rows.H = CInt(subsview.Font.TextHeight("Ij|") * 1.5)
+  If token <> "-1" Then Debug "Logging out: " & opensubs.LogOut(token)
+  SubsView.Columns[0].Width = -1
+  mywait(False)
+  
+
+End
+
+Public Sub TextBox1_KeyPress()
+
+  If (Key.code = Key.enter) Or (Key.code = Key.return) Then ButtonSearch_Click()
+
+End
+
+Public Sub SubsView_ColumnClick(Column As Integer)
+  
+End
+'"SubFileName,SubLanguageID,SubFormat,SubRating,SubDownloadsCnt,SubDownloadLink,SubtitlesLink"
+
+Public Sub SubsView_DblClick()
+  Dim suburl As String
+  Dim subname As String 
+  Dim subfile As String
+  If Not FMain.mplayer.ProcessRunningOvr() Then
+    Message.Error(("Couldn't load the subtitle because\nNo video is playing"), "Ok")
+    Return
+  Endif
+  Try suburl = subsview[subsview.row, columnindex["SubDownloadLink"]].text
+  If Error Then Return
+  If Trim(suburl) = "" Then Return
+  subname = subsview[subsview.row, columnindex["SubFileName"]].text
+  subfile = Temp() & "." & subname
+  If OpenSubs.savesub(suburl, subfile) Then
+    FMain.mplayer.SubtitleAdd(subfile) 'add the subtitle and append it to mplayer.subtitletracks
+    FMain.Displaysub(FMain.mplayer.getP("subtitletracks")[FMain.mplayer.getP("subtitletracks").count - 1])
+  Endif
+End
+
+Public Sub SubsView_Menu()
+  MenuFile.popup
+End
+
+Public Sub MenuDisplaySub_Click()
+  SubsView_DblClick()
+End
+
+Public Sub MenuSaveSub_Click()
+  Dim suburl As String
+  Dim subname As String 
+  Dim subfile As String
+  Dim fileout As String
+  Try suburl = subsview[subsview.row, columnindex["SubDownloadLink"]].text
+  If Error Then Return
+  If Trim(suburl) = "" Then Return
+  subname = subsview[subsview.row, columnindex["SubFileName"]].text
+  subfile = Temp() & "." & subname
+  Dialog.filter = ["*." & file.Ext(subname), "Subtitle file"]
+  Dialog.Title = ("Save the selected subtitle")
+  Dialog.Path = File.Dir(fmain.mplayer.getP("fullpath")) & "/" & subname
+  Dialog.SaveFile()
+  fileout = Dialog.path
+  If Not (OpenSubs.savesub(suburl, fileout)) Then Message.Error(("Sorry, couldn't save the file"), "Ok")
+  Me.mouse = mouse.normal
+End
+
+Public Sub ComboBox1_KeyPress()
+    If (Key.code = Key.enter) Or (Key.code = Key.return) Then ButtonSearch_Click()
+End
+
+

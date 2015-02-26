@@ -1,0 +1,837 @@
+' Gambas class file
+
+ 
+'Public Ts As String = ""
+Public channelinfo As String
+Public items As New String[]
+Public Alternate As Boolean = False
+Public MAXRESULTS As Integer = 1000
+
+Private Function urlencode(strin As String) As String
+        Dim strout As String
+        Dim i As Integer
+        Dim a As Integer
+        For i = 1 To Len(strin)
+                a = Asc(Mid(strin, i, 1))
+                If a < 33 Or a > 126 Then
+                   strout = strout & "%" & Hex$(a, 2)
+                Else
+                   strout = strout & Mid(strin, i, 1)
+                Endif
+        Next
+        Return strout
+End
+
+Public Sub Alternatecolor(myplaylist As GridView)
+ Dim r, c As Integer
+ Alternate = True
+     For r = 0 To myplaylist.Rows.count - 1
+       If Not Alternate Then
+         For c = 0 To MyPlaylist.Columns.count - 1
+           MyPlaylist[r, c].text = MyPlaylist[r, c].text
+           MyPlaylist[r, c].background = Global.Alternatecolor
+         Next 'c
+           Else
+         For c = 0 To MyPlaylist.Columns.count - 1
+           MyPlaylist[r, c].text = MyPlaylist[r, c].text
+           ' [GB2:BCOL] MyPlaylist[r, c].background = MyPlaylist.background
+           MyPlaylist[r, c].background = MyPlaylist.Background
+         Next 'c
+       Endif
+       Alternate = Not (alternate)
+   Next 'r
+
+End
+
+
+Public Function GetGenres(GenresTree As TreeView)
+  'Enum shoucast genres and fill a treeview in the format
+  Dim i As Integer
+  Dim buffer, GenreName, description, numstations, mylink As String
+
+
+  Dim lines As New String[]
+  'DIM AskUrl AS String = "http://yp.shoutcast.com/sbin/newxml.phtml?rss=1"
+  Dim AskUrl As String = "'http://api.shoutcast.com/legacy/genrelist?k=sh17tOUi_ezL61_A&rss=1'"
+  Dim tmpfile As String = Temp()
+  Dim wget As New Wgetclass
+  tmpfile = wget.DownloadAsync(AskUrl, True)
+
+  Shell "grep -i 'title\\|description\\|link' " & tmpfile & "| sed 's/<\\/[^>]*>/&\\n/g'" To buffer
+  buffer = Replace(buffer, "<item>", "<item>\n")
+  
+  
+  'SHELL "grep -i 'title\\|description\\|link' /tmp/xml.xml" TO buffer
+  Lines = Split(buffer, "\n", "", True) '<<-- non ci sono più i \n,
+                              'forse conviene aggiungerli a mano dopo qualsiasi tag del genere "</*>"
+                              'per esempio, t"</title>" diventa "</title>\n"
+                              'nel caso tornassero i "\n", se ne avrebbero allora due di seguito,
+                              'in quel caso basta ignorare i void tramite la funzione "split" di gambas
+  'find where to begin parsing stations (triple in order title,description,link)
+  i = 0
+  GenresTree.clear
+  Repeat
+  
+    For i = i To lines.Count - 3
+      If (lines[i] Like "*<title>*") And (lines[i + 1] Like "<description>*") And (lines[i + 2] Like "<link>*") Then
+        Break
+      Endif
+    Next 'i
+    If i + 2 = lines.count Then Break
+  'begin parsing
+    
+    Genrename = Split(lines[i], ">")[1]
+    Genrename = Split(GenreName, "<")[0]
+    'GenreName = Mid(lines[i], Len("<title>") + 1, Len(lines[i]) - (Len("<title>") + 1) * 2)
+    i = i + 1
+    'description = Mid(lines[i], Len("<description>") + 1, Len(lines[i]) - (Len("<description>") + 1) * 2)
+    Description = Split(lines[i], ">")[1]
+    Description = Split(Description, "<")[0]
+    numstations = Trim(Split(description, ":")[1])
+    i = i + 1
+    myLINK = Mid(lines[i], Len("<link>") + 1, Len(lines[i]) - (Len("<link>") + 1) * 2)
+    i = i + 1
+    'GenresTree.Add(MyLink, GenreName & ts & " - [" & numstations & "]", picture["shoutcast16.png"])
+    Try GenresTree.Add(MyLink, GenreName, stock["small/directory"]) 'picture["shoutcast16.png"])
+    Until (i + 3) >= lines.count
+End
+
+
+Public Function GetStationsFromSearch(SearchTerm As String, ShutResultGrid As Gridview) As Boolean
+  Dim AskUrl As String
+  Dim i As Integer
+  Dim MyError As Boolean
+  SearchTerm = urlencode(searchterm)
+  'AskUrl = "http://yp.shoutcast.com/sbin/newxml.phtml?search='" & SearchTerm & "'" & "&limit=" & MAXRESULTS
+  AskUrl = "'http://api.shoutcast.com/legacy/stationsearch?k=sh17tOUi_ezL61_A&search=" & SearchTerm & "&limit=" & MAXRESULTS & "'"
+  'http://api.shoutcast.com/legacy/stationsearch?k=[Your Dev ID]&search=ambient+beats
+  MyError = DownloadAndParse(AskUrl, Null, ShutResultGrid) = ""
+  For i = 0 To 3
+    Try ShutResultGrid.Columns[0].w = -1
+  Next 'i
+  Return MyError
+End
+
+
+Public Function GetStationsFromGenre(Genre As String, GenresTree As Treeview)
+   'http://yp.shoutcast.com/sbin/newxml.phtml?genre=Trance
+   'remove all child items
+  'DIM AskUrl AS String = "http://yp.shoutcast.com/sbin/newxml.phtml?genre=" & Genre '& "&rss=1"
+  Dim AskUrl As String = "'http://api.shoutcast.com/legacy/genresearch?k=sh17tOUi_ezL61_A&genre=" & Genre & "'"
+  Repeat
+    GenresTree.MoveTo(Genre)
+    GenresTree.MoveChild()
+    Try GenresTree.Item.Delete
+  Until Error
+  DownloadAndParse(AskUrl, GenresTree)
+End
+
+
+Private Function DownloadAndParse(AskUrl As String, Optional GenresTree As Treeview = Null, Optional ShutResultGrid As Gridview = Null) As String
+  Dim buffer As String
+  Dim wget As New Wgetclass
+  'ts = Chr(0)
+  channelinfo = ""
+  'SHELL "wget '" & AskUrl & "' --timeout=4 --tries=3 --output-document=" & tmpfile WAIT
+  'TRY buffer = File.Load(tmpfile)
+  buffer = wget.DownloadAsync(AskUrl)
+  If Error Then Return ""
+   If Trim(buffer) = "" Then Return ""
+    If Error Then Return ""
+     items.clear
+   If (GenresTree <> Null) Then
+      parsechannel(buffer, GenresTree, Null)
+    Else If (ShutResultGrid <> Null) Then
+      ShutResultGrid.enabled = False
+      ShutResultGrid.Columns.count = 4
+      ShutResultGrid.rows.count = MAXRESULTS 'max results to show ?
+      ShutResultGrid.Header = GridView.Horizontal
+      ShutResultGrid.Columns[0].text = ("Name")
+      ShutResultGrid.Columns[1].text = ("Media Type")
+      ShutResultGrid.Columns[2].text = ("BitRate")
+      ShutResultGrid.Columns[3].text = ("Link")
+      parsechannel(buffer, Null, ShutResultGrid)
+      Alternatecolor(ShutResultGrid)
+      ShutResultGrid.enabled = True
+   Endif
+   Return "OK"
+End
+
+Private Function DownloadAndParseOLD(AskUrl As String, Optional GenresTree As Treeview = Null, Optional ShutResultGrid As Gridview = Null) As String
+  Dim buffer As String
+  Dim xml As New Xmldocument
+  Dim node As Xmlnode
+
+
+  Dim tmpfile As String = Temp()
+  Dim wget As New Wgetclass
+  channelinfo = ""
+  'SHELL "wget '" & AskUrl & "' --timeout=4 --tries=3 --output-document=" & tmpfile WAIT
+  'TRY buffer = File.Load(tmpfile)
+  buffer = wget.DownloadAsync(AskUrl)
+  If Error Then Return ""
+   If Trim(buffer) = "" Then Return ""
+   Try xml.FromString(buffer)
+   If Error Then Return ""
+   node = xml.Root
+   items.clear
+   If (GenresTree <> Null) Then
+      parsechannel(node, GenresTree, Null)
+    Else If (ShutResultGrid <> Null) Then
+      ShutResultGrid.enabled = False
+      ShutResultGrid.Columns.count = 4
+      ShutResultGrid.rows.count = MAXRESULTS 'max results to show ?
+      ShutResultGrid.Header = GridView.Horizontal
+      ShutResultGrid.Columns[0].text = ("Name")
+      ShutResultGrid.Columns[1].text = ("Media Type")
+      ShutResultGrid.Columns[2].text = ("BitRate")
+      ShutResultGrid.Columns[3].text = ("Link")
+      parsechannel(node, Null, ShutResultGrid)
+      Alternatecolor(ShutResultGrid)
+      ShutResultGrid.enabled = True
+   Endif
+   Try Kill tmpfile
+   Return "OK"
+End
+
+Static Public Function MidC(s As String, a As String, Optional b As String) As String
+  'return the first occurrence of the string between a and b
+  'if b is omitted then all the string starting from a is returned
+  Dim mmid As String
+  mMid = Mid(s, InStr(s, a) + Len(a))
+  If b <> "" Then 
+    Return Left(mmid, InStr(mmid, b) - 1)
+      Else
+    Return mMid
+  Endif
+End
+
+Private Sub ParseChannel(xmlbuffer As String, Optional GenresTree As Treeview = Null, Optional ShutResultGrid As Gridview = Null)
+  Dim title, br, mt, id, MyLink As String = ""
+  Dim tunein_base As String = ""
+  Dim aline, attrs As String
+  Dim LastRow As Integer = 0
+  Dim feed As String[]
+  Try feed = Split(xmlbuffer, "<", "", True)
+  If feed.count = 0 Then 
+    Message.Error(("Could not parse the feed"))
+    Return
+  Endif
+   'Parse the feed, simple way ahead...
+  For Each aLine In feed
+    Select Case aline
+      Case Like "tunein base=*"
+         tunein_base = MidC(aline, "tunein base=\"", "\"")
+      Case Like "station name=*"
+
+        title = MidC(aline, "name=\"", "\"")
+        mt = MidC(aline, "mt=\"", "\"")
+        id = MidC(aline, "id=\"", "\"")
+        br = MidC(aline, "br=\"", "\"")
+        If ((id <> "") And (title <> "")) Then
+          MyLink = "http://yp.shoutcast.com/" & tunein_base & "?id=" & id
+          If (GenresTree <> Null) Then
+
+            Try GenresTree.add(MyLink, title & " " & " Type: " & mt & " " & " Bitrate: " & br, stock["small/audio"], GenresTree.Current.key)
+              Else
+            If (ShutResultGrid <> Null) Then
+              'ShutResultGrid.Rows.count = ShutResultGrid.Rows.count + 1
+              'LastRow = ShutResultGrid.Rows.count - 1
+              If Lastrow < ShutResultGrid.Rows.count Then
+                ShutResultGrid[LastRow, 0].Picture = picture["filetypeuri.png"]
+                ShutResultGrid[LastRow, 0].text = title
+                ShutResultGrid[LastRow, 1].text = mt
+                ShutResultGrid[LastRow, 2].text = br
+                ShutResultGrid[LastRow, 3].text = MyLink
+                LastRow = LastRow + 1
+              Endif
+            Endif
+          Endif
+        Endif
+        id = ""
+        title = ""        
+        mt = ""
+        br = ""
+        mylink = ""
+    End Select
+  Next 'aline
+  Try ShutResultGrid.rows.count = lastrow
+End
+
+
+
+Private Sub ParseChannelOLD(Rootnode As XmlNode, Optional GenresTree As Treeview = Null, Optional ShutResultGrid As Gridview = Null)
+  'returns podcast title,link,description,icon
+  Dim t, j As Integer
+  Dim title, br, mt, id, MyLink As String = ""
+  Dim channelfound As Boolean = False
+  Dim LastRow As Integer = 0
+  Dim tunein_base As String = ""
+  Dim TuneinAttribute As XmlNode
+  Dim StationAttribute As XmlNode
+  'find channel
+  
+  For t = 0 To Rootnode.Children.Count - 1
+    If Rootnode.Children[t].name = "tunein" Then
+      For Each TuneinAttribute In Rootnode.Children[t].Attributes
+        If TuneinAttribute.name = "base" Then tunein_base = TuneinAttribute.value
+      Next 'TuneinAttribute
+      channelfound = True
+      Break
+    Endif
+  Next 't
+
+  If channelfound Then
+         'find stations
+         For j = j To RootNode.Children.Count - 1
+               If RootNode.Children[j].name = "station" Then
+                   'station found
+                   For Each StationAttribute In Rootnode.Children[j].Attributes
+                     If StationAttribute.name = "name" Then
+                         title = Replace(StationAttribute.value, "&amp;", "&")
+                       Else If StationAttribute.name = "mt" Then
+                         mt = Replace(StationAttribute.value, "&amp;", "&")
+                       Else If StationAttribute.name = "id" Then
+                         id = Replace(StationAttribute.value, "&amp;", "&")
+                       Else If StationAttribute.name = "br" Then
+                         br = Replace(StationAttribute.value, "&amp;", "&")
+                     Endif
+                   Next 'attribute
+                   If ((id <> "") And (title <> "")) Then
+                      MyLink = "http://yp.shoutcast.com/" & tunein_base & "?id=" & id
+                      If (GenresTree <> Null) Then
+                        Try GenresTree.add(MyLink, title & " " & " Type: " & mt & " " & " Bitrate: " & br, picture["filetypeuri.png"], GenresTree.Current.key)
+                          Else
+                        If (ShutResultGrid <> Null) Then
+                          'ShutResultGrid.Rows.count = ShutResultGrid.Rows.count + 1
+                          'LastRow = ShutResultGrid.Rows.count - 1
+                          If Lastrow < ShutResultGrid.Rows.count Then
+                            ShutResultGrid[LastRow, 0].Picture = picture["filetypeuri.png"]
+                            ShutResultGrid[LastRow, 0].text = title
+                            ShutResultGrid[LastRow, 1].text = mt
+                            ShutResultGrid[LastRow, 2].text = br
+                            ShutResultGrid[LastRow, 3].text = MyLink
+                            LastRow = LastRow + 1
+                          Endif
+                        Endif
+                      Endif
+                      id = ""
+                      title = ""
+                   Endif
+              Endif
+        Next 'j
+  Endif
+  Try ShutResultGrid.rows.count = lastrow
+End
+
+
+
+Public Sub Select_NextTreeItem(MyTree As Treeview)
+  MyTree.movecurrent
+  Try MyTree.MoveBelow()
+  If Not Error Then
+    Try MyTree.Item.selected = True
+  Endif
+  Wait 0.1 'needed for grid select event to fill new mplayer.media_fullpath,maybe tunable
+End
+
+Public Sub Select_PrevTreeItem(MyTree As Treeview)
+  MyTree.movecurrent
+  Try MyTree.MoveAbove
+  If Not Error Then
+    Try MyTree.Item.selected = True
+  Endif
+  Wait 0.1 'needed for grid select event to fill new mplayer.media_fullpath,maybe tunable
+End
+
+Public Sub Select_PrevGridItem(mygrid As Gridview)
+  mygrid.rows[mygrid.row].Selected = False
+  If mygrid.row = 0 Then
+    mygrid.row = mygrid.Rows.count - 1
+      Else
+    MyGrid.row = mygrid.row - 1
+  Endif
+  mygrid.rows[mygrid.row].Selected = True
+  Wait 0.1 'needed for grid select event to fill new mplayer.media_fullpath,maybe tunable
+End
+
+Public Sub Select_NextGridItem(mygrid As Gridview)
+  mygrid.rows[mygrid.row].Selected = False
+  If mygrid.row = mygrid.Rows.count - 1 Then
+    mygrid.row = 0
+      Else
+    MyGrid.row = mygrid.row + 1
+  Endif
+  mygrid.rows[mygrid.row].Selected = True
+  Wait 0.1 'needed for grid select event to fill new mplayer.media_fullpath,maybe tunable
+End
+
+Public Sub FillCachedGenres(GenresTree As TreeView)
+  GenresTree.clear
+  GenresTree.Add("24h", "24h", picture["shoutcast16.png"])
+  GenresTree.Add("24hs", "24hs", picture["shoutcast16.png"])
+  GenresTree.Add("4alga", "4alga", picture["shoutcast16.png"])
+  GenresTree.Add("50s", "50s", picture["shoutcast16.png"])
+  GenresTree.Add("60s", "60s", picture["shoutcast16.png"])
+  GenresTree.Add("70s", "70s", picture["shoutcast16.png"])
+  GenresTree.Add("80er", "80er", picture["shoutcast16.png"])
+  GenresTree.Add("80s", "80s", picture["shoutcast16.png"])
+  GenresTree.Add("90s", "90s", picture["shoutcast16.png"])
+  GenresTree.Add("Acid", "Acid", picture["shoutcast16.png"])
+  GenresTree.Add("Adult", "Adult", picture["shoutcast16.png"])
+  GenresTree.Add("Adulto", "Adulto", picture["shoutcast16.png"])
+  GenresTree.Add("African", "African", picture["shoutcast16.png"])
+  GenresTree.Add("Afro", "Afro", picture["shoutcast16.png"])
+  GenresTree.Add("Albanian", "Albanian", picture["shoutcast16.png"])
+  GenresTree.Add("Album", "Album", picture["shoutcast16.png"])
+  GenresTree.Add("All", "All", picture["shoutcast16.png"])
+  GenresTree.Add("Alles", "Alles", picture["shoutcast16.png"])
+  GenresTree.Add("Alsong", "Alsong", picture["shoutcast16.png"])
+  GenresTree.Add("Alt", "Alt", picture["shoutcast16.png"])
+  GenresTree.Add("Alternative", "Alternative", picture["shoutcast16.png"])
+  GenresTree.Add("Ambient", "Ambient", picture["shoutcast16.png"])
+  GenresTree.Add("Americana", "Americana", picture["shoutcast16.png"])
+  GenresTree.Add("Anime", "Anime", picture["shoutcast16.png"])
+  GenresTree.Add("Anos", "Anos", picture["shoutcast16.png"])
+  GenresTree.Add("Aqui", "Aqui", picture["shoutcast16.png"])
+  GenresTree.Add("Arabesk", "Arabesk", picture["shoutcast16.png"])
+  GenresTree.Add("Arabic", "Arabic", picture["shoutcast16.png"])
+  GenresTree.Add("Armenian", "Armenian", picture["shoutcast16.png"])
+  GenresTree.Add("Art", "Art", picture["shoutcast16.png"])
+  GenresTree.Add("Asian", "Asian", picture["shoutcast16.png"])
+  GenresTree.Add("Audio", "Audio", picture["shoutcast16.png"])
+  GenresTree.Add("Auto", "Auto", picture["shoutcast16.png"])
+  GenresTree.Add("Autocity", "Autocity", picture["shoutcast16.png"])
+  GenresTree.Add("Autodj", "Autodj", picture["shoutcast16.png"])
+  GenresTree.Add("Autopilot", "Autopilot", picture["shoutcast16.png"])
+  GenresTree.Add("Backup", "Backup", picture["shoutcast16.png"])
+  GenresTree.Add("Baladas", "Baladas", picture["shoutcast16.png"])
+  GenresTree.Add("Balkan", "Balkan", picture["shoutcast16.png"])
+  GenresTree.Add("Banda", "Banda", picture["shoutcast16.png"])
+  GenresTree.Add("Bangla", "Bangla", picture["shoutcast16.png"])
+  GenresTree.Add("Basque", "Basque", picture["shoutcast16.png"])
+  GenresTree.Add("Beatles", "Beatles", picture["shoutcast16.png"])
+  GenresTree.Add("Best", "Best", picture["shoutcast16.png"])
+  GenresTree.Add("Bible", "Bible", picture["shoutcast16.png"])
+  GenresTree.Add("Big", "Big", picture["shoutcast16.png"])
+  GenresTree.Add("Black", "Black", picture["shoutcast16.png"])
+  GenresTree.Add("Bluegrass", "Bluegrass", picture["shoutcast16.png"])
+  GenresTree.Add("Blues", "Blues", picture["shoutcast16.png"])
+  GenresTree.Add("Bollywood", "Bollywood", picture["shoutcast16.png"])
+  GenresTree.Add("Bossa", "Bossa", picture["shoutcast16.png"])
+  GenresTree.Add("Brasil", "Brasil", picture["shoutcast16.png"])
+  GenresTree.Add("Brazilian", "Brazilian", picture["shoutcast16.png"])
+  GenresTree.Add("Breakbeat", "Breakbeat", picture["shoutcast16.png"])
+  GenresTree.Add("Breakcore", "Breakcore", picture["shoutcast16.png"])
+  GenresTree.Add("Breaks", "Breaks", picture["shoutcast16.png"])
+  GenresTree.Add("C64", "C64", picture["shoutcast16.png"])
+  GenresTree.Add("Cajun", "Cajun", picture["shoutcast16.png"])
+  GenresTree.Add("Campus", "Campus", picture["shoutcast16.png"])
+  GenresTree.Add("Campusradio", "Campusradio", picture["shoutcast16.png"])
+  GenresTree.Add("Canal", "Canal", picture["shoutcast16.png"])
+  GenresTree.Add("Canli", "Canli", picture["shoutcast16.png"])
+  GenresTree.Add("Caribbean", "Caribbean", picture["shoutcast16.png"])
+  GenresTree.Add("Carnaval", "Carnaval", picture["shoutcast16.png"])
+  GenresTree.Add("Cat", "Cat", picture["shoutcast16.png"])
+  GenresTree.Add("Catholic", "Catholic", picture["shoutcast16.png"])
+  GenresTree.Add("Celtic", "Celtic", picture["shoutcast16.png"])
+  GenresTree.Add("Charts", "Charts", picture["shoutcast16.png"])
+  GenresTree.Add("Chill", "Chill", picture["shoutcast16.png"])
+  GenresTree.Add("Chillout", "Chillout", picture["shoutcast16.png"])
+  GenresTree.Add("Chinese", "Chinese", picture["shoutcast16.png"])
+  GenresTree.Add("Chr", "Chr", picture["shoutcast16.png"])
+  GenresTree.Add("Christian", "Christian", picture["shoutcast16.png"])
+  GenresTree.Add("Christmas", "Christmas", picture["shoutcast16.png"])
+  GenresTree.Add("Church", "Church", picture["shoutcast16.png"])
+  GenresTree.Add("Clasic", "Clasic", picture["shoutcast16.png"])
+  GenresTree.Add("Clasica", "Clasica", picture["shoutcast16.png"])
+  GenresTree.Add("Clasicos", "Clasicos", picture["shoutcast16.png"])
+  GenresTree.Add("Classic", "Classic", picture["shoutcast16.png"])
+  GenresTree.Add("Classical", "Classical", picture["shoutcast16.png"])
+  GenresTree.Add("Club", "Club", picture["shoutcast16.png"])
+  GenresTree.Add("College", "College", picture["shoutcast16.png"])
+  GenresTree.Add("Comedy", "Comedy", picture["shoutcast16.png"])
+  GenresTree.Add("Community", "Community", picture["shoutcast16.png"])
+  GenresTree.Add("Compas", "Compas", picture["shoutcast16.png"])
+  GenresTree.Add("Contemporary", "Contemporary", picture["shoutcast16.png"])
+  GenresTree.Add("Contempory", "Contempory", picture["shoutcast16.png"])
+  GenresTree.Add("Cool", "Cool", picture["shoutcast16.png"])
+  GenresTree.Add("Country", "Country", picture["shoutcast16.png"])
+  GenresTree.Add("Cristiana", "Cristiana", picture["shoutcast16.png"])
+  GenresTree.Add("Croatia", "Croatia", picture["shoutcast16.png"])
+  GenresTree.Add("Croatian", "Croatian", picture["shoutcast16.png"])
+  GenresTree.Add("Crossover", "Crossover", picture["shoutcast16.png"])
+  GenresTree.Add("Cultural", "Cultural", picture["shoutcast16.png"])
+  GenresTree.Add("Cumbia", "Cumbia", picture["shoutcast16.png"])
+  GenresTree.Add("Dakwah", "Dakwah", picture["shoutcast16.png"])
+  GenresTree.Add("Damar", "Damar", picture["shoutcast16.png"])
+  GenresTree.Add("Dance", "Dance", picture["shoutcast16.png"])
+  GenresTree.Add("Dancefloor", "Dancefloor", picture["shoutcast16.png"])
+  GenresTree.Add("Dancehall", "Dancehall", picture["shoutcast16.png"])
+  GenresTree.Add("Dark", "Dark", picture["shoutcast16.png"])
+  GenresTree.Add("Death", "Death", picture["shoutcast16.png"])
+  GenresTree.Add("Decades", "Decades", picture["shoutcast16.png"])
+  GenresTree.Add("Deep", "Deep", picture["shoutcast16.png"])
+  GenresTree.Add("Demo", "Demo", picture["shoutcast16.png"])
+  GenresTree.Add("Deportes", "Deportes", picture["shoutcast16.png"])
+  GenresTree.Add("Der", "Der", picture["shoutcast16.png"])
+  GenresTree.Add("Desi", "Desi", picture["shoutcast16.png"])
+  GenresTree.Add("Deutsch", "Deutsch", picture["shoutcast16.png"])
+  GenresTree.Add("Disco", "Disco", picture["shoutcast16.png"])
+  GenresTree.Add("Discofox", "Discofox", picture["shoutcast16.png"])
+  GenresTree.Add("Disney", "Disney", picture["shoutcast16.png"])
+  GenresTree.Add("Dnb", "Dnb", picture["shoutcast16.png"])
+  GenresTree.Add("Domaca", "Domaca", picture["shoutcast16.png"])
+  GenresTree.Add("Downtempo", "Downtempo", picture["shoutcast16.png"])
+  GenresTree.Add("Drum", "Drum", picture["shoutcast16.png"])
+  GenresTree.Add("Dub", "Dub", picture["shoutcast16.png"])
+  GenresTree.Add("Dubstep", "Dubstep", picture["shoutcast16.png"])
+  GenresTree.Add("Dutch", "Dutch", picture["shoutcast16.png"])
+  GenresTree.Add("Easy", "Easy", picture["shoutcast16.png"])
+  GenresTree.Add("Ebm", "Ebm", picture["shoutcast16.png"])
+  GenresTree.Add("Ecl", "Ecl", picture["shoutcast16.png"])
+  GenresTree.Add("Eclectic", "Eclectic", picture["shoutcast16.png"])
+  GenresTree.Add("Education", "Education", picture["shoutcast16.png"])
+  GenresTree.Add("Electro", "Electro", picture["shoutcast16.png"])
+  GenresTree.Add("Electronic", "Electronic", picture["shoutcast16.png"])
+  GenresTree.Add("Electronica", "Electronica", picture["shoutcast16.png"])
+  GenresTree.Add("Elektro", "Elektro", picture["shoutcast16.png"])
+  GenresTree.Add("Eletronic", "Eletronic", picture["shoutcast16.png"])
+  GenresTree.Add("Eletronica", "Eletronica", picture["shoutcast16.png"])
+  GenresTree.Add("Emisora", "Emisora", picture["shoutcast16.png"])
+  GenresTree.Add("Emo", "Emo", picture["shoutcast16.png"])
+  GenresTree.Add("Entretenimiento", "Entretenimiento", picture["shoutcast16.png"])
+  GenresTree.Add("Erotic", "Erotic", picture["shoutcast16.png"])
+  GenresTree.Add("Espa", "Espa", picture["shoutcast16.png"])
+  GenresTree.Add("Espiritual", "Espiritual", picture["shoutcast16.png"])
+  GenresTree.Add("Ethnic", "Ethnic", picture["shoutcast16.png"])
+  GenresTree.Add("Etno", "Etno", picture["shoutcast16.png"])
+  GenresTree.Add("Euro", "Euro", picture["shoutcast16.png"])
+  GenresTree.Add("Eurodance", "Eurodance", picture["shoutcast16.png"])
+  GenresTree.Add("Evang", "Evang", picture["shoutcast16.png"])
+  GenresTree.Add("Everything", "Everything", picture["shoutcast16.png"])
+  GenresTree.Add("Exitos", "Exitos", picture["shoutcast16.png"])
+  GenresTree.Add("Experimental", "Experimental", picture["shoutcast16.png"])
+  GenresTree.Add("Extreme", "Extreme", picture["shoutcast16.png"])
+  GenresTree.Add("Fantasy", "Fantasy", picture["shoutcast16.png"])
+  GenresTree.Add("Filipino", "Filipino", picture["shoutcast16.png"])
+  GenresTree.Add("Film", "Film", picture["shoutcast16.png"])
+  GenresTree.Add("Folk", "Folk", picture["shoutcast16.png"])
+  GenresTree.Add("Folklor", "Folklor", picture["shoutcast16.png"])
+  GenresTree.Add("Forro", "Forro", picture["shoutcast16.png"])
+  GenresTree.Add("Fox", "Fox", picture["shoutcast16.png"])
+  GenresTree.Add("Francais", "Francais", picture["shoutcast16.png"])
+  GenresTree.Add("Free", "Free", picture["shoutcast16.png"])
+  GenresTree.Add("Freeform", "Freeform", picture["shoutcast16.png"])
+  GenresTree.Add("Freestyle", "Freestyle", picture["shoutcast16.png"])
+  GenresTree.Add("French", "French", picture["shoutcast16.png"])
+  GenresTree.Add("Fresh", "Fresh", picture["shoutcast16.png"])
+  GenresTree.Add("Full", "Full", picture["shoutcast16.png"])
+  GenresTree.Add("Funk", "Funk", picture["shoutcast16.png"])
+  GenresTree.Add("Funky", "Funky", picture["shoutcast16.png"])
+  GenresTree.Add("Game", "Game", picture["shoutcast16.png"])
+  GenresTree.Add("Garage", "Garage", picture["shoutcast16.png"])
+  GenresTree.Add("Gay", "Gay", picture["shoutcast16.png"])
+  GenresTree.Add("General", "General", picture["shoutcast16.png"])
+  GenresTree.Add("Generaliste", "Generaliste", picture["shoutcast16.png"])
+  GenresTree.Add("Genre", "Genre", picture["shoutcast16.png"])
+  GenresTree.Add("Genres", "Genres", picture["shoutcast16.png"])
+  GenresTree.Add("German", "German", picture["shoutcast16.png"])
+  GenresTree.Add("Global", "Global", picture["shoutcast16.png"])
+  GenresTree.Add("Goa", "Goa", picture["shoutcast16.png"])
+  GenresTree.Add("Gold", "Gold", picture["shoutcast16.png"])
+  GenresTree.Add("Good", "Good", picture["shoutcast16.png"])
+  GenresTree.Add("Gospel", "Gospel", picture["shoutcast16.png"])
+  GenresTree.Add("Goth", "Goth", picture["shoutcast16.png"])
+  GenresTree.Add("Gothic", "Gothic", picture["shoutcast16.png"])
+  GenresTree.Add("Gra", "Gra", picture["shoutcast16.png"])
+  GenresTree.Add("Greece", "Greece", picture["shoutcast16.png"])
+  GenresTree.Add("Greek", "Greek", picture["shoutcast16.png"])
+  GenresTree.Add("Grunge", "Grunge", picture["shoutcast16.png"])
+  GenresTree.Add("Grupero", "Grupero", picture["shoutcast16.png"])
+  GenresTree.Add("Haiti", "Haiti", picture["shoutcast16.png"])
+  GenresTree.Add("Haitian", "Haitian", picture["shoutcast16.png"])
+  GenresTree.Add("Halk", "Halk", picture["shoutcast16.png"])
+  GenresTree.Add("Ham", "Ham", picture["shoutcast16.png"])
+  GenresTree.Add("Hands", "Hands", picture["shoutcast16.png"])
+  GenresTree.Add("Happy", "Happy", picture["shoutcast16.png"])
+  GenresTree.Add("Hard", "Hard", picture["shoutcast16.png"])
+  GenresTree.Add("Hardcore", "Hardcore", picture["shoutcast16.png"])
+  GenresTree.Add("Hardrock", "Hardrock", picture["shoutcast16.png"])
+  GenresTree.Add("Hardstyle", "Hardstyle", picture["shoutcast16.png"])
+  GenresTree.Add("Hbwa", "Hbwa", picture["shoutcast16.png"])
+  GenresTree.Add("Heavy", "Heavy", picture["shoutcast16.png"])
+  GenresTree.Add("Her", "Her", picture["shoutcast16.png"])
+  GenresTree.Add("Hindi", "Hindi", picture["shoutcast16.png"])
+  GenresTree.Add("Hip", "Hip", picture["shoutcast16.png"])
+  GenresTree.Add("Hiphop", "Hiphop", picture["shoutcast16.png"])
+  GenresTree.Add("Hit", "Hit", picture["shoutcast16.png"])
+  GenresTree.Add("Hits", "Hits", picture["shoutcast16.png"])
+  GenresTree.Add("Holiday", "Holiday", picture["shoutcast16.png"])
+  GenresTree.Add("Hollands", "Hollands", picture["shoutcast16.png"])
+  GenresTree.Add("Hollandse", "Hollandse", picture["shoutcast16.png"])
+  GenresTree.Add("Home", "Home", picture["shoutcast16.png"])
+  GenresTree.Add("Hot", "Hot", picture["shoutcast16.png"])
+  GenresTree.Add("House", "House", picture["shoutcast16.png"])
+  GenresTree.Add("Hrvatska", "Hrvatska", picture["shoutcast16.png"])
+  GenresTree.Add("Http", "Http", picture["shoutcast16.png"])
+  GenresTree.Add("Hungaryan", "Hungaryan", picture["shoutcast16.png"])
+  GenresTree.Add("Idm", "Idm", picture["shoutcast16.png"])
+  GenresTree.Add("Ilahi", "Ilahi", picture["shoutcast16.png"])
+  GenresTree.Add("Independent", "Independent", picture["shoutcast16.png"])
+  GenresTree.Add("Indian", "Indian", picture["shoutcast16.png"])
+  GenresTree.Add("Indie", "Indie", picture["shoutcast16.png"])
+  GenresTree.Add("Indigenous", "Indigenous", picture["shoutcast16.png"])
+  GenresTree.Add("Indonesia", "Indonesia", picture["shoutcast16.png"])
+  GenresTree.Add("Industrial", "Industrial", picture["shoutcast16.png"])
+  GenresTree.Add("Indy", "Indy", picture["shoutcast16.png"])
+  GenresTree.Add("Info", "Info", picture["shoutcast16.png"])
+  GenresTree.Add("Informaci", "Informaci", picture["shoutcast16.png"])
+  GenresTree.Add("Informacion", "Informacion", picture["shoutcast16.png"])
+  GenresTree.Add("Inspirational", "Inspirational", picture["shoutcast16.png"])
+  GenresTree.Add("Instrumental", "Instrumental", picture["shoutcast16.png"])
+  GenresTree.Add("Internacional", "Internacional", picture["shoutcast16.png"])
+  GenresTree.Add("International", "International", picture["shoutcast16.png"])
+  GenresTree.Add("Islam", "Islam", picture["shoutcast16.png"])
+  GenresTree.Add("Italia", "Italia", picture["shoutcast16.png"])
+  GenresTree.Add("Italian", "Italian", picture["shoutcast16.png"])
+  GenresTree.Add("Italiana", "Italiana", picture["shoutcast16.png"])
+  GenresTree.Add("Italo", "Italo", picture["shoutcast16.png"])
+  GenresTree.Add("Italy", "Italy", picture["shoutcast16.png"])
+  GenresTree.Add("Izvorna", "Izvorna", picture["shoutcast16.png"])
+  GenresTree.Add("Jam", "Jam", picture["shoutcast16.png"])
+  GenresTree.Add("Japanese", "Japanese", picture["shoutcast16.png"])
+  GenresTree.Add("Jazz", "Jazz", picture["shoutcast16.png"])
+  GenresTree.Add("Jazzy", "Jazzy", picture["shoutcast16.png"])
+  GenresTree.Add("Jewish", "Jewish", picture["shoutcast16.png"])
+  GenresTree.Add("Jornalismo", "Jornalismo", picture["shoutcast16.png"])
+  GenresTree.Add("Jovem", "Jovem", picture["shoutcast16.png"])
+  GenresTree.Add("Jpop", "Jpop", picture["shoutcast16.png"])
+  GenresTree.Add("Jungle", "Jungle", picture["shoutcast16.png"])
+  GenresTree.Add("Kar", "Kar", picture["shoutcast16.png"])
+  GenresTree.Add("Kids", "Kids", picture["shoutcast16.png"])
+  GenresTree.Add("Kizomba", "Kizomba", picture["shoutcast16.png"])
+  GenresTree.Add("Konpa", "Konpa", picture["shoutcast16.png"])
+  GenresTree.Add("Kpop", "Kpop", picture["shoutcast16.png"])
+  GenresTree.Add("Kurdish", "Kurdish", picture["shoutcast16.png"])
+  GenresTree.Add("Laika", "Laika", picture["shoutcast16.png"])
+  GenresTree.Add("Latin", "Latin", picture["shoutcast16.png"])
+  GenresTree.Add("Latina", "Latina", picture["shoutcast16.png"])
+  GenresTree.Add("Latino", "Latino", picture["shoutcast16.png"])
+  GenresTree.Add("Light", "Light", picture["shoutcast16.png"])
+  GenresTree.Add("Live", "Live", picture["shoutcast16.png"])
+  GenresTree.Add("Local", "Local", picture["shoutcast16.png"])
+  GenresTree.Add("Lokaal", "Lokaal", picture["shoutcast16.png"])
+  GenresTree.Add("Lokale", "Lokale", picture["shoutcast16.png"])
+  GenresTree.Add("Lounge", "Lounge", picture["shoutcast16.png"])
+  GenresTree.Add("Louvor", "Louvor", picture["shoutcast16.png"])
+  GenresTree.Add("Love", "Love", picture["shoutcast16.png"])
+  GenresTree.Add("Main", "Main", picture["shoutcast16.png"])
+  GenresTree.Add("Mainstream", "Mainstream", picture["shoutcast16.png"])
+  GenresTree.Add("Manele", "Manele", picture["shoutcast16.png"])
+  GenresTree.Add("Mdr", "Mdr", picture["shoutcast16.png"])
+  GenresTree.Add("Meditation", "Meditation", picture["shoutcast16.png"])
+  GenresTree.Add("Merengue", "Merengue", picture["shoutcast16.png"])
+  GenresTree.Add("Metal", "Metal", picture["shoutcast16.png"])
+  GenresTree.Add("Mftu", "Mftu", picture["shoutcast16.png"])
+  GenresTree.Add("Minimal", "Minimal", picture["shoutcast16.png"])
+  GenresTree.Add("Mix", "Mix", picture["shoutcast16.png"])
+  GenresTree.Add("Mixed", "Mixed", picture["shoutcast16.png"])
+  GenresTree.Add("Mixes", "Mixes", picture["shoutcast16.png"])
+  GenresTree.Add("Modern", "Modern", picture["shoutcast16.png"])
+  GenresTree.Add("More", "More", picture["shoutcast16.png"])
+  GenresTree.Add("Mpb", "Mpb", picture["shoutcast16.png"])
+  GenresTree.Add("Music", "Music", picture["shoutcast16.png"])
+  GenresTree.Add("Musica", "Musica", picture["shoutcast16.png"])
+  GenresTree.Add("Musical", "Musical", picture["shoutcast16.png"])
+  GenresTree.Add("Musicas", "Musicas", picture["shoutcast16.png"])
+  GenresTree.Add("Musicvictim", "Musicvictim", picture["shoutcast16.png"])
+  GenresTree.Add("Musik", "Musik", picture["shoutcast16.png"])
+  GenresTree.Add("Musique", "Musique", picture["shoutcast16.png"])
+  GenresTree.Add("Muzica", "Muzica", picture["shoutcast16.png"])
+  GenresTree.Add("Muziek", "Muziek", picture["shoutcast16.png"])
+  GenresTree.Add("Muzika", "Muzika", picture["shoutcast16.png"])
+  GenresTree.Add("Muzyka", "Muzyka", picture["shoutcast16.png"])
+  GenresTree.Add("Narodna", "Narodna", picture["shoutcast16.png"])
+  GenresTree.Add("Ned", "Ned", picture["shoutcast16.png"])
+  GenresTree.Add("Nederland", "Nederland", picture["shoutcast16.png"])
+  GenresTree.Add("Nederlands", "Nederlands", picture["shoutcast16.png"])
+  GenresTree.Add("Nederlandstalig", "Nederlandstalig", picture["shoutcast16.png"])
+  GenresTree.Add("Neo", "Neo", picture["shoutcast16.png"])
+  GenresTree.Add("New", "New", picture["shoutcast16.png"])
+  GenresTree.Add("Newage", "Newage", picture["shoutcast16.png"])
+  GenresTree.Add("News", "News", picture["shoutcast16.png"])
+  GenresTree.Add("Nigerian", "Nigerian", picture["shoutcast16.png"])
+  GenresTree.Add("Non", "Non", picture["shoutcast16.png"])
+  GenresTree.Add("Nonstop", "Nonstop", picture["shoutcast16.png"])
+  GenresTree.Add("Not", "Not", picture["shoutcast16.png"])
+  GenresTree.Add("Noticias", "Noticias", picture["shoutcast16.png"])
+  GenresTree.Add("Npr", "Npr", picture["shoutcast16.png"])
+  GenresTree.Add("Old", "Old", picture["shoutcast16.png"])
+  GenresTree.Add("Oldies", "Oldies", picture["shoutcast16.png"])
+  GenresTree.Add("Oldskool", "Oldskool", picture["shoutcast16.png"])
+  GenresTree.Add("Only", "Only", picture["shoutcast16.png"])
+  GenresTree.Add("Open", "Open", picture["shoutcast16.png"])
+  GenresTree.Add("Opera", "Opera", picture["shoutcast16.png"])
+  GenresTree.Add("Orthodox", "Orthodox", picture["shoutcast16.png"])
+  GenresTree.Add("Other", "Other", picture["shoutcast16.png"])
+  GenresTree.Add("Paranormal", "Paranormal", picture["shoutcast16.png"])
+  GenresTree.Add("Party", "Party", picture["shoutcast16.png"])
+  GenresTree.Add("Persian", "Persian", picture["shoutcast16.png"])
+  GenresTree.Add("Piano", "Piano", picture["shoutcast16.png"])
+  GenresTree.Add("Pilot", "Pilot", picture["shoutcast16.png"])
+  GenresTree.Add("Pinoy", "Pinoy", picture["shoutcast16.png"])
+  GenresTree.Add("Piraat", "Piraat", picture["shoutcast16.png"])
+  GenresTree.Add("Piraten", "Piraten", picture["shoutcast16.png"])
+  GenresTree.Add("Piratenhits", "Piratenhits", picture["shoutcast16.png"])
+  GenresTree.Add("Playlist", "Playlist", picture["shoutcast16.png"])
+  GenresTree.Add("Police", "Police", picture["shoutcast16.png"])
+  GenresTree.Add("Political", "Political", picture["shoutcast16.png"])
+  GenresTree.Add("Polka", "Polka", picture["shoutcast16.png"])
+  GenresTree.Add("Polska", "Polska", picture["shoutcast16.png"])
+  GenresTree.Add("Polskie", "Polskie", picture["shoutcast16.png"])
+  GenresTree.Add("Pop", "Pop", picture["shoutcast16.png"])
+  GenresTree.Add("Popular", "Popular", picture["shoutcast16.png"])
+  GenresTree.Add("Populara", "Populara", picture["shoutcast16.png"])
+  GenresTree.Add("Por", "Por", picture["shoutcast16.png"])
+  GenresTree.Add("Portuguese", "Portuguese", picture["shoutcast16.png"])
+  GenresTree.Add("Post", "Post", picture["shoutcast16.png"])
+  GenresTree.Add("Power", "Power", picture["shoutcast16.png"])
+  GenresTree.Add("Praise", "Praise", picture["shoutcast16.png"])
+  GenresTree.Add("Prog", "Prog", picture["shoutcast16.png"])
+  GenresTree.Add("Progressive", "Progressive", picture["shoutcast16.png"])
+  GenresTree.Add("Psy", "Psy", picture["shoutcast16.png"])
+  GenresTree.Add("Psychedelic", "Psychedelic", picture["shoutcast16.png"])
+  GenresTree.Add("Psytrance", "Psytrance", picture["shoutcast16.png"])
+  GenresTree.Add("Public", "Public", picture["shoutcast16.png"])
+  GenresTree.Add("Punjabi", "Punjabi", picture["shoutcast16.png"])
+  GenresTree.Add("Punk", "Punk", picture["shoutcast16.png"])
+  GenresTree.Add("Pure", "Pure", picture["shoutcast16.png"])
+  GenresTree.Add("Quality", "Quality", picture["shoutcast16.png"])
+  GenresTree.Add("R&amp;b", "R&amp;b", picture["shoutcast16.png"])
+  GenresTree.Add("Radio", "Radio", picture["shoutcast16.png"])
+  GenresTree.Add("Radyo", "Radyo", picture["shoutcast16.png"])
+  GenresTree.Add("Railroad", "Railroad", picture["shoutcast16.png"])
+  GenresTree.Add("Random", "Random", picture["shoutcast16.png"])
+  GenresTree.Add("Rap", "Rap", picture["shoutcast16.png"])
+  GenresTree.Add("Reggae", "Reggae", picture["shoutcast16.png"])
+  GenresTree.Add("Reggaeton", "Reggaeton", picture["shoutcast16.png"])
+  GenresTree.Add("Regional", "Regional", picture["shoutcast16.png"])
+  GenresTree.Add("Relax", "Relax", picture["shoutcast16.png"])
+  GenresTree.Add("Religion", "Religion", picture["shoutcast16.png"])
+  GenresTree.Add("Religiosa", "Religiosa", picture["shoutcast16.png"])
+  GenresTree.Add("Religioso", "Religioso", picture["shoutcast16.png"])
+  GenresTree.Add("Religious", "Religious", picture["shoutcast16.png"])
+  GenresTree.Add("Retro", "Retro", picture["shoutcast16.png"])
+  GenresTree.Add("Risale", "Risale", picture["shoutcast16.png"])
+  GenresTree.Add("Rnb", "Rnb", picture["shoutcast16.png"])
+  GenresTree.Add("Rock", "Rock", picture["shoutcast16.png"])
+  GenresTree.Add("Rom", "Rom", picture["shoutcast16.png"])
+  GenresTree.Add("Romaneasca", "Romaneasca", picture["shoutcast16.png"])
+  GenresTree.Add("Romania", "Romania", picture["shoutcast16.png"])
+  GenresTree.Add("Romanian", "Romanian", picture["shoutcast16.png"])
+  GenresTree.Add("Romantic", "Romantic", picture["shoutcast16.png"])
+  GenresTree.Add("Romantica", "Romantica", picture["shoutcast16.png"])
+  GenresTree.Add("Roots", "Roots", picture["shoutcast16.png"])
+  GenresTree.Add("Russian", "Russian", picture["shoutcast16.png"])
+  GenresTree.Add("Salsa", "Salsa", picture["shoutcast16.png"])
+  GenresTree.Add("Samba", "Samba", picture["shoutcast16.png"])
+  GenresTree.Add("Scanner", "Scanner", picture["shoutcast16.png"])
+  GenresTree.Add("Schlager", "Schlager", picture["shoutcast16.png"])
+  GenresTree.Add("Sega", "Sega", picture["shoutcast16.png"])
+  GenresTree.Add("Sertanejo", "Sertanejo", picture["shoutcast16.png"])
+  GenresTree.Add("Shqip", "Shqip", picture["shoutcast16.png"])
+  GenresTree.Add("Sinhala", "Sinhala", picture["shoutcast16.png"])
+  GenresTree.Add("Sizin", "Sizin", picture["shoutcast16.png"])
+  GenresTree.Add("Ska", "Ska", picture["shoutcast16.png"])
+  GenresTree.Add("Slow", "Slow", picture["shoutcast16.png"])
+  GenresTree.Add("Smooth", "Smooth", picture["shoutcast16.png"])
+  GenresTree.Add("Soca", "Soca", picture["shoutcast16.png"])
+  GenresTree.Add("Soft", "Soft", picture["shoutcast16.png"])
+  GenresTree.Add("Solo", "Solo", picture["shoutcast16.png"])
+  GenresTree.Add("Soul", "Soul", picture["shoutcast16.png"])
+  GenresTree.Add("Sound", "Sound", picture["shoutcast16.png"])
+  GenresTree.Add("Soundtrack", "Soundtrack", picture["shoutcast16.png"])
+  GenresTree.Add("Soundtracks", "Soundtracks", picture["shoutcast16.png"])
+  GenresTree.Add("Southern", "Southern", picture["shoutcast16.png"])
+  GenresTree.Add("Spain", "Spain", picture["shoutcast16.png"])
+  GenresTree.Add("Spanish", "Spanish", picture["shoutcast16.png"])
+  GenresTree.Add("Speech", "Speech", picture["shoutcast16.png"])
+  GenresTree.Add("Spiritual", "Spiritual", picture["shoutcast16.png"])
+  GenresTree.Add("Sport", "Sport", picture["shoutcast16.png"])
+  GenresTree.Add("Sports", "Sports", picture["shoutcast16.png"])
+  GenresTree.Add("Sri", "Sri", picture["shoutcast16.png"])
+  GenresTree.Add("Stream", "Stream", picture["shoutcast16.png"])
+  GenresTree.Add("Streaming", "Streaming", picture["shoutcast16.png"])
+  GenresTree.Add("Student", "Student", picture["shoutcast16.png"])
+  GenresTree.Add("Studio", "Studio", picture["shoutcast16.png"])
+  GenresTree.Add("Super", "Super", picture["shoutcast16.png"])
+  GenresTree.Add("Swing", "Swing", picture["shoutcast16.png"])
+  GenresTree.Add("Talk", "Talk", picture["shoutcast16.png"])
+  GenresTree.Add("Tamil", "Tamil", picture["shoutcast16.png"])
+  GenresTree.Add("Tango", "Tango", picture["shoutcast16.png"])
+  GenresTree.Add("Tasavvuf", "Tasavvuf", picture["shoutcast16.png"])
+  GenresTree.Add("Tech", "Tech", picture["shoutcast16.png"])
+  GenresTree.Add("Techno", "Techno", picture["shoutcast16.png"])
+  GenresTree.Add("Tejano", "Tejano", picture["shoutcast16.png"])
+  GenresTree.Add("Tekno", "Tekno", picture["shoutcast16.png"])
+  GenresTree.Add("Telugu", "Telugu", picture["shoutcast16.png"])
+  GenresTree.Add("Thai", "Thai", picture["shoutcast16.png"])
+  GenresTree.Add("The", "The", picture["shoutcast16.png"])
+  GenresTree.Add("Themes", "Themes", picture["shoutcast16.png"])
+  GenresTree.Add("Toate", "Toate", picture["shoutcast16.png"])
+  GenresTree.Add("Toca", "Toca", picture["shoutcast16.png"])
+  GenresTree.Add("Toda", "Toda", picture["shoutcast16.png"])
+  GenresTree.Add("Todays", "Todays", picture["shoutcast16.png"])
+  GenresTree.Add("Todo", "Todo", picture["shoutcast16.png"])
+  GenresTree.Add("Todos", "Todos", picture["shoutcast16.png"])
+  GenresTree.Add("Top", "Top", picture["shoutcast16.png"])
+  GenresTree.Add("Top40", "Top40", picture["shoutcast16.png"])
+  GenresTree.Add("Tori", "Tori", picture["shoutcast16.png"])
+  GenresTree.Add("Tous", "Tous", picture["shoutcast16.png"])
+  GenresTree.Add("Traditional", "Traditional", picture["shoutcast16.png"])
+  GenresTree.Add("Trance", "Trance", picture["shoutcast16.png"])
+  GenresTree.Add("Tribal", "Tribal", picture["shoutcast16.png"])
+  GenresTree.Add("Triple", "Triple", picture["shoutcast16.png"])
+  GenresTree.Add("Tropical", "Tropical", picture["shoutcast16.png"])
+  GenresTree.Add("Turk", "Turk", picture["shoutcast16.png"])
+  GenresTree.Add("Turkce", "Turkce", picture["shoutcast16.png"])
+  GenresTree.Add("Turkish", "Turkish", picture["shoutcast16.png"])
+  GenresTree.Add("Ugandan", "Ugandan", picture["shoutcast16.png"])
+  GenresTree.Add("Underground", "Underground", picture["shoutcast16.png"])
+  GenresTree.Add("University", "University", picture["shoutcast16.png"])
+  GenresTree.Add("Unsigned", "Unsigned", picture["shoutcast16.png"])
+  GenresTree.Add("Urban", "Urban", picture["shoutcast16.png"])
+  GenresTree.Add("Uzivo", "Uzivo", picture["shoutcast16.png"])
+  GenresTree.Add("Vallenato", "Vallenato", picture["shoutcast16.png"])
+  GenresTree.Add("Van", "Van", picture["shoutcast16.png"])
+  GenresTree.Add("Vari", "Vari", picture["shoutcast16.png"])
+  GenresTree.Add("Variada", "Variada", picture["shoutcast16.png"])
+  GenresTree.Add("Variadas", "Variadas", picture["shoutcast16.png"])
+  GenresTree.Add("Variado", "Variado", picture["shoutcast16.png"])
+  GenresTree.Add("Varied", "Varied", picture["shoutcast16.png"])
+  GenresTree.Add("Variety", "Variety", picture["shoutcast16.png"])
+  GenresTree.Add("Varios", "Varios", picture["shoutcast16.png"])
+  GenresTree.Add("Various", "Various", picture["shoutcast16.png"])
+  GenresTree.Add("Video", "Video", picture["shoutcast16.png"])
+  GenresTree.Add("Vocal", "Vocal", picture["shoutcast16.png"])
+  GenresTree.Add("Voice", "Voice", picture["shoutcast16.png"])
+  GenresTree.Add("Volksmusik", "Volksmusik", picture["shoutcast16.png"])
+  GenresTree.Add("Voor", "Voor", picture["shoutcast16.png"])
+  GenresTree.Add("Wat", "Wat", picture["shoutcast16.png"])
+  GenresTree.Add("Weather", "Weather", picture["shoutcast16.png"])
+  GenresTree.Add("Web", "Web", picture["shoutcast16.png"])
+  GenresTree.Add("Western", "Western", picture["shoutcast16.png"])
+  GenresTree.Add("Whatever", "Whatever", picture["shoutcast16.png"])
+  GenresTree.Add("Wir", "Wir", picture["shoutcast16.png"])
+  GenresTree.Add("Word", "Word", picture["shoutcast16.png"])
+  GenresTree.Add("World", "World", picture["shoutcast16.png"])
+  GenresTree.Add("Wusf", "Wusf", picture["shoutcast16.png"])
+  GenresTree.Add("Www", "Www", picture["shoutcast16.png"])
+  GenresTree.Add("Yabanci", "Yabanci", picture["shoutcast16.png"])
+  GenresTree.Add("Your", "Your", picture["shoutcast16.png"])
+  GenresTree.Add("Zabavna", "Zabavna", picture["shoutcast16.png"])
+  GenresTree.Add("Zouk", "Zouk", picture["shoutcast16.png"])
+End
+
+

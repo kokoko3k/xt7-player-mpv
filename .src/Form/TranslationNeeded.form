@@ -1,0 +1,55 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,58,42)
+  Text = ("Translation needed!")
+  Icon = Picture["icon:/16/help"]
+  Stacking = Window.Above
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  Padding = 8
+  { TextArea1 TextArea
+    MoveScaled(1,1,40,11)
+    Expand = True
+    Text = ("TextArea1")
+    ReadOnly = True
+  }
+  { Label2 Label
+    MoveScaled(1,23,47,4)
+    Font = Font["Underline"]
+    Foreground = &H002FFF&
+    AutoResize = True
+    Text = ("Translation thread on Xt7-Player Boards")
+  }
+  { Label1 Label
+    MoveScaled(1,27,47,4)
+    Font = Font["Underline"]
+    Foreground = &H002FFF&
+    AutoResize = True
+    Text = ("How to translate a gambas project")
+  }
+  { Label3 Label
+    MoveScaled(1,31,47,3)
+    Font = Font["Underline"]
+    Foreground = &H002FFF&
+    AutoResize = True
+    Text = ("Another way to quickly translate xt7, thanks to eloaders")
+  }
+  { HBox1 HBox
+    MoveScaled(1,35,53,4)
+    Spacing = True
+    Padding = 4
+    { CheckBox1 CheckBox
+      MoveScaled(1,1,23,4)
+      Expand = True
+      Text = ("Don't show this anymore")
+    }
+    { Button1 Button
+      MoveScaled(39,1,13,4)
+      AutoResize = True
+      Text = ("Ok")
+      Picture = Picture["icon:/16/ok"]
+    }
+  }
+}

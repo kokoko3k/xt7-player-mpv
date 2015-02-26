@@ -1,0 +1,59 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,36,22)
+  Visible = False
+  Icon = Picture["icon:/16/question"]
+  Persistent = True
+  Resizable = False
+  Stacking = Window.Above
+  SkipTaskbar = True
+  Arrangement = Arrange.Vertical
+  Margin = True
+  Padding = 8
+  { HBox1 Panel
+    MoveScaled(1,1,31,5)
+    Arrangement = Arrange.Horizontal
+    AutoResize = True
+    Padding = 4
+    { MyIcon PictureBox
+      MoveScaled(2,1,6,6)
+      Picture = Picture["icon:/32/question"]
+      Alignment = Align.Center
+    }
+    { QuestionLabel Label
+      MoveScaled(9,1,6,6)
+      AutoResize = True
+      Text = ("Label1")
+      Alignment = Align.Left
+    }
+  }
+  { CheckBox1 CheckBox
+    MoveScaled(1,11,30,3)
+    Visible = False
+    Text = ("CheckBox1")
+  }
+  { ButtonContainer HBox
+    MoveScaled(0,16,33,6)
+    AutoResize = True
+    Spacing = True
+    { VBox1 VBox
+      MoveScaled(0,0,3,4)
+      Expand = True
+    }
+    { Button1 Button
+      MoveScaled(2,1,13,4)
+      AutoResize = True
+      Text = ("Button1")
+    }
+    { Button2 Button
+      MoveScaled(16,1,14,4)
+      AutoResize = True
+      Text = ("Button2")
+    }
+    { VBox2 VBox
+      MoveScaled(30,1,3,4)
+      Expand = True
+    }
+  }
+}

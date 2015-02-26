@@ -1,0 +1,67 @@
+' Gambas class file
+
+Public answer As String = " "
+Private MessageAlreadyShown As Boolean = False
+
+
+Public Function Ask(TheQuestionString As String, Optional defaultvalue As String = "--1", Optional cancel As Boolean = True) As String
+  CancelBtn.enabled = cancel
+  If Not MessageAlreadyShown Then
+    If defaultvalue <> "--1" Then 
+      ProfileNameBox.text = defaultvalue
+        Else
+      ProfileNameBox.text = ""
+    Endif
+    MessageAlreadyShown = True
+    answer = " "
+    Me.caption = TheQuestionString
+    Me.x = Mouse.screenx - (Me.w Div 2)
+    Me.y = Mouse.screeny - Me.h - 90
+    Me.showmodal()
+    Repeat
+      Wait 0.1
+    Until answer <> " "
+    MyQuestion.close
+    MyQuestion.hide
+    MessageAlreadyShown = False
+    Return answer
+      Else
+    Return " "
+ Endif
+End
+
+Public Sub OkBtn_Click()
+  answer = ProfileNameBox.text
+  Me.hide
+End
+
+Public Sub CancelBtn_Click()
+  Me.hide
+  answer = ""
+End
+
+Public Sub MyQuestion_Close()
+  Me.hide
+  answer = ""
+End
+
+Public Sub Form_Hide()
+  Me.SkipTaskbar = False
+End
+
+Public Sub Form_Show()
+    Me.SkipTaskbar = True
+    ProfileNameBox.SetFocus()
+End
+
+Public Sub ProfileNameBox_KeyPress()
+
+  If (Key.code = Key.enter) Or (Key.code = Key.Return) Then OkBtn_Click()
+
+End
+
+Public Sub Form_Close()
+
+  OkBtn_Click()
+
+End

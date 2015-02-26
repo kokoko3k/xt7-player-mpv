@@ -1,0 +1,91 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,90,82)
+  Visible = False
+  Text = ("Heurylics")
+  Icon = Picture["icon:/22/microphone"]
+  Arrangement = Arrange.Vertical
+  Margin = True
+  { Panel2 HBox
+    MoveScaled(0,5,86,3)
+    AutoResize = True
+    { NextBTN Button
+      MoveScaled(0,0,9,4)
+      AutoResize = True
+      Text = ("Next")
+      Picture = Picture["icon:/22/next"]
+      Border = False
+    }
+    { Separator3 Separator
+      MoveScaled(11,0,2,4)
+    }
+    { ComboUrls ComboBox
+      MoveScaled(13,0,57,4)
+      Expand = True
+    }
+    { ButtonZoomOut Button
+      MoveScaled(72,0,4,3.1429)
+      Picture = Picture["icon:/22/zoom-out"]
+      Border = False
+    }
+    { ButtonZoomIn Button
+      MoveScaled(79,0,4,3.1429)
+      Picture = Picture["icon:/22/zoom-in"]
+      Border = False
+    }
+  }
+  { Panel1 ScrollView
+    MoveScaled(4,10,80,31)
+    Background = Color.TextBackground
+    Expand = True
+    { TextLabel1 TextLabel
+      MoveScaled(2,1,45,48)
+      Expand = True
+      Text = ("Please wait...")
+    }
+  }
+  { TextArea1 TextArea
+    MoveScaled(4,43,80,34)
+    Visible = False
+    Expand = True
+    Text = ("TextArea1")
+  }
+  { Panel3 HBox
+    MoveScaled(1,77,86,3)
+    AutoResize = True
+    { Label1 Label
+      MoveScaled(0,0,5,4)
+      AutoResize = True
+      Text = ("Artist")
+    }
+    { textartist TextArea
+      MoveScaled(15,0,17,4)
+      Expand = True
+      ScrollBar = Scroll.None
+    }
+    { Separator1 Separator
+      MoveScaled(34,0,2,4)
+    }
+    { Label2 Label
+      MoveScaled(38,0,4,4)
+      AutoResize = True
+      Text = ("Title")
+    }
+    { textsong TextArea
+      MoveScaled(43,0,25,4)
+      Expand = True
+      ScrollBar = Scroll.None
+    }
+    { Separator2 Separator
+      MoveScaled(70,-1,1,4)
+    }
+    { ButtonNewSearch Button
+      MoveScaled(73,0,14,4)
+      AutoResize = True
+      Text = ("New search")
+      Picture = Picture["icon:/22/find"]
+      Border = False
+    }
+  }
+}

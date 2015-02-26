@@ -1,0 +1,635 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+Export
+
+Public Const lastprofilefile As String = "lastprofile"
+
+'Parent property of the objects under those containers will be saved in the profile file
+Public ParentContainers As String[] = ["VideoFiltersBox", "AudioFiltersBox", "VideoChainBox", "AudioChainBox", "DriversPanel"] ', "MainToolBar"]
+'Public ParentContainers As String[] = ["VideoFiltersBox", "AudioFiltersBox", "VideoChainBox", "AudioChainBox", "DriversPanel", "MainToolBar"]
+
+'Those objects values aren't saved 
+'PUBLIC ExcludedValues AS String[] = ["Statusbar1", "SaveVolumeSlider", "SeekBar", "TagPanel"]
+Public ExcludedValues As String[] = ["thumblebox", "NumberBox", "View", "Statusbar1", "SeekBar", "TagPanel", "DriverDescription", "DescriptionArea", "FilterTextBox", "NOPARSETABLIBRARY", "NOPARSETABPLAYLIST", "NOPARSETABDVD", "NOPARSETABFLASH", "NOPARSETABSHOUTCAST", "NOPARSETABPODCAST", "NOPARSETABPROFILES", "NOPARSETABMEDIAINFO", "YOUVIDEOINFO", "SCROLLVIEWYT", "SIDEPANELYOUTUBE", "CACHEBAR", "NOSAVEVBOX2", "NOSAVEVBOX3", "NOSAVEHBOX10", "AUDIOCHAINBOX", "AUDIOFILTERSBOX", "VIDEOCHAINBOX", "VIDEOFILTERSBOX", "PLAYLISTSELINFOBOX", "PLAYLISTSELINFO", "LIBRARYSELINFO"]
+
+Public Function ReadedConfFile(FileName As String) As String[]
+  
+  Dim ConfFile As File
+  Dim FileInMemory As String
+  Dim Splitted As New String[]
+  
+  If Exist(FileName) Then
+    ConfFile = Open FileName For Read
+    Read #ConfFile, FileInMemory, - Stat(FileName).size
+    Close #ConfFile
+    Splitted = Split(FileInMemory, "\n")
+    Return Splitted
+  Else
+    splitted.Add("")
+    Return splitted
+  Endif
+End
+
+
+
+
+
+Private Sub Reparent(TheObject As Object, TheParentName As String, TheForm As Object)
+  'Will reparent an object basing on the new parent name searched in TheForm
+  'if TheObject is a container, no reparent operation is done.
+  'Tf TheParent is the same, it is necessary to "Parent out" the object
+  '   And then reparent it into its original container, otherwise the gambas reparent
+  '   function does nothing.
+  '   We do this Through HiddenBox
+  
+  Dim ParentObj As Object
+  Dim HiddenBox As Form
+  
+  For Each ParentObj In TheForm.controls
+    If ParentObj.name = TheParentName Then
+      If Not (TheObject Is Container) Then
+        If ParentObj.name = TheObject.parent.name Then
+          HiddenBox = New Form
+          TheObject.reparent(hiddenbox)
+        Endif
+        TheObject.Reparent(ParentObj)
+        'Try HiddenBox.Delete 'is an hack to not to delete the object, but it is actually faster.
+        'Debug "Reparenting " & TheObject.name & " into " & ParentObj.name  'Debug
+        Break
+      Endif
+    Endif
+  Next
+End
+
+
+
+
+
+Private Sub Reconfigure(theObject As Object, TheSettings As String[], TheForm As Object)
+  'Will parse String[] and try to reconfigure the object
+  
+  Dim MyProperty, MyValue As String
+  Dim Setting As String
+  Dim layout As Integer[]
+ 
+  
+  For Each Setting In TheSettings
+    Try MyProperty = Split(Setting, "=")[0]
+    'TRY MyValue = Split(Setting, "=")[1]
+    Try myvalue = Replace(setting, MyProperty & "=", "")
+    If Setting Like ".*" Then
+      ' If MyProperty = ".parent.name" Then
+      '    If (Upper(TheObject.parent.name) <> Upper(MyProperty)) Then Reparent(TheObject, MyValue, TheForm)
+      If MyProperty = ".Value" Then
+        'IF MyValue <> "" THEN TheObject.value = MyValue
+        If (MyValue <> TheObject.value) Then TheObject.value = MyValue
+        'TheObject.value = MyValue
+        
+      'Else If ((MyProperty = ".text") And Not ((theobject Is CheckBox) Or (theobject Is Button) Or (theobject Is Textarea) Or (theobject Is Togglebutton))) Then
+      Else If (MyProperty = ".text") Then
+        If Not ((theobject Is CheckBox) Or (theobject Is Button) Or (theobject Is Textarea) Or (theobject Is Togglebutton)) Or (theobject.name Like "Custom*") Then
+          If (theobject.text <> MyValue) Then
+            Try TheObject.text = MyValue
+          Endif
+        Endif
+        
+      Else If MyProperty = ".visible" Then
+        If (theobject.visible <> MyValue) Then
+          If Not (theobject Is Fileview) Then Try TheObject.visible = MyValue
+        Endif
+        
+      Else If MyProperty = ".left" Then
+        If (theobject.left <> MyValue) Then
+          Try TheObject.left = MyValue
+        Endif
+        
+      Else If MyProperty = ".top" Then
+        If (TheObject.top <> MyValue) Then
+          Try TheObject.top = MyValue
+        Endif
+        
+      Else If MyProperty = ".width" Then
+        If (TheObject.width <> MyValue) Then
+          Try TheObject.width = MyValue
+        Endif
+        
+      Else If MyProperty = ".height" Then
+        If (TheObject.height <> MyValue) Then
+          Try TheObject.height = MyValue
+        Endif
+        
+      Else If MyProperty = ".layout" Then
+        Try layout = Split(myvalue, ",", "", True)
+        If Not Error Then 
+          Try TheObject.layout = layout
+        Endif
+        
+      Else If MyProperty = ".index" Then
+        If (TheObject.index <> MyValue) Then
+          Try TheObject.index = MyValue
+        Endif
+        
+      Else If MyProperty = ".font.name" Then
+        If (TheObject.Font.name <> MyValue) Then TheObject.Font.name = MyValue
+        
+      Else If MyProperty = ".font.size" Then
+        If (MyValue <> TheObject.Font.size) Then TheObject.Font.size = MyValue
+        
+      Else If MyProperty = ".font.bold" Then
+        If (MyValue <> TheObject.Font.bold) Then TheObject.Font.bold = MyValue
+        
+      Else If MyProperty = ".font.italic" Then
+        If (MyValue <> TheObject.Font.italic) Then TheObject.Font.italic = MyValue
+        
+      Else If MyProperty = ".background" Then
+        If (MyValue <> TheObject.background) Then TheObject.background = MyValue
+        
+      Else If MyProperty = ".Foreground" Then
+        If (MyValue <> TheObject.Foreground) Then TheObject.Foreground = MyValue
+        
+      Else If MyProperty = ".tag" Then
+        If (MyValue <> TheObject.tag) Then TheObject.tag = MyValue
+        
+      Else If MyProperty = ".ShowDetailed" Then
+        If (MyValue <> TheObject.ShowDetailed) Then TheObject.ShowDetailed = MyValue
+      Else If MyProperty = ".Dir" Then
+        If (MyValue <> TheObject.Dir) Then TheObject.Dir = MyValue
+      Else If MyProperty = ".filter" Then
+        If (MyValue <> TheObject.filter) Then TheObject.filter = MyValue
+      Else If MyProperty = ".Orientation" Then
+        If (MyValue <> TheObject.orientation) Then TheObject.orientation = MyValue
+
+      Endif
+    Endif
+  Next
+  
+End
+
+Private Sub OldStyle_SetObject(TheForm As Object, SubSettings As String[])
+  'Will Read a String array,
+  'will try to find a matching object in the form
+  'will try to set his properties accordingly
+  
+  Dim obj As Object
+  Dim SourceObjName As String
+  'Debug subsettings[0]
+  'DIM Found AS Boolean = FALSE
+  SourceObjName = SubSettings[0] 'first record is the object name
+  'let's find a matching object in the form
+  For Each obj In TheForm.controls
+    If Upper(obj.name) = Upper(SourceObjName) Then
+      Reconfigure(obj, subsettings, TheForm)
+      
+      'PRINT "***" & obj.name
+      'PRINT "*** *** ***" & TheForm.controls[obj.name].name
+      Break
+    Endif
+  Next
+  
+End
+
+Private Sub SetObject(TheForm As Object, SubSettings As String[])
+  'Will Read a String array,
+  'will try to find a matching object in the form
+  'will try to set his properties accordingly
+  
+  If Trim(SubSettings[0]) <> "" Then
+    If Not (TheForm.controls[SubSettings[0]] = Null) Then
+      Reconfigure(TheForm.controls[SubSettings[0]], subsettings, TheForm)
+    Else
+      OldStyle_SetObject(TheForm, SubSettings)
+    Endif
+  Endif
+  
+End
+
+
+Private Sub NextObjectDefinition(Settings As String[]) As String[]
+  'will parse the entire setting file and return a subset containing
+  'the first object definition found.
+  'it will also delete it from the source.
+  
+  Dim TmpOut As New String[]
+  
+  TmpOut.Add(Settings.Extract(0, 1)[0]) 'First store the Object Name
+  
+  ' IF Trim(TmpOut[TmpOut.count - 1]) = "DriverDescription" THEN
+  '   PRINT "stop"
+  ' ENDIF
+  If Settings.count > 0 Then
+    While (Settings[0] Like ".*") 'as long as a property is found
+      TmpOut.Add(Settings.Extract(0, 1)[0]) 'Next, store the Object Properties
+    Wend
+    
+    'Hack: remove problematic lines:
+    While (Settings[0] Like " *") 'as long as a problematic line is found
+      'PRINT "Deleting " & Settings[0]
+      Settings.Delete(0, 1)
+    Wend
+  Endif
+  'PRINT "NextObjectDefinition " & TmpOut[0]
+  Return TmpOut
+  
+End
+
+Public Sub oldLoad(TheForm As Object, FileName As String)
+  'will read Settings from filename and apply them until
+  'the end of settings
+  
+  Dim Settings As String[]
+  Dim SubSettings As String[]
+  
+  FileName = Filename & ".profile/" & TheForm.name
+  'PRINT "Debug: SettingsClass: Save: Filename= " & Filename
+  Settings = ReadedConfFile(Filename)
+  ' IF FMain.mplayer.ProcessRunningOvr() THEN 
+  '   WAIT 0.1
+  '   PRINT "SettingsClass: Load() Waiting..."
+  ' ENDIF
+  Repeat
+    SubSettings = NextObjectDefinition(Settings)
+    If SubSettings.count > 0 Then SetObject(TheForm, Subsettings)
+  Until Settings.count <= 1
+  If Lower(TheForm.name) = "fmain" Then LoadLeftSideTabsVisibility(FileName)
+  'pzt  
+  SubAndOsd.OSDFontString.TEXT = SubAndOsd.OSDFontString.Font.name
+  
+End
+
+Public Sub Load(TheForm As Object, Filename As String)
+  
+  Dim myobj As Object
+  Dim theSettings, SubSettings As String[]
+  
+  'Filename is the form setting file
+  '/home/user/.config/gambas/Xt7-Player/default.profile/FMain
+  FileName = Filename & ".profile/" & TheForm.name
+  
+  'Load it into an array, line by line, eg:
+  ' MainToolBar
+  ' .visible = T
+  ' ShowVolBtn2
+  ' .parent.name = MainToolBar
+  ' .text =
+  ' .visible = T
+  ' .Value =
+  theSettings = ReadedConfFile(Filename)
+  
+  For Each myobj In TheForm.controls
+    ' If Lower(myobj.name) Like "*vdpauooverlaycheck*" Then
+    '   Stop
+    ' Endif
+    'If we find the object definition in the settings file:
+    If theSettings.Find(myobj.name) <> -1 Then
+      'then we load it's properties:
+      'extract name and properties from Settings array and pass them to reconfigure sub
+      ' If myobj.name Like "*extrastereo*" Then
+      '   Debug
+      ' Endif
+      Subsettings = NameAndProperties(myobj.name, thesettings)
+      Try Reconfigure(myobj, Subsettings, TheForm)
+    Endif 
+  Next
+  
+  'check if there is something that needs to be reparented
+  If TheForm.tag = "reparents" Then
+    Debug "Timer = " & Timer
+    Debug
+    ReparentAndSort(Theform, thesettings)
+    Debug "Timer = " & Timer
+    Debug
+  Endif
+  
+  If Upper(theform.name) <> "GENERALOPTIONS" Then
+    Try TheForm.AlreadyLoaded = True
+  Endif
+  If Lower(TheForm.name) = "fmain" Then LoadLeftSideTabsVisibility(FileName)
+End
+
+Public Sub ReparentAndSort(TheForm As Object, settings As String[])
+  Dim i, j As Integer
+
+  Dim objname, parentname As String
+  Dim tmpobject As Object
+
+  For i = 0 To settings.count - 1
+    If settings[i] Like "*.parent.name=*" Then 
+      'find the object name
+      j = i
+      While (j > 0) And (settings[j] Like ".*")
+        j = j - 1
+      Wend
+      objname = settings[j]
+      parentname = Split(settings[i], "=")[1]
+      For Each tmpobject In TheForm.controls
+        If tmpobject.name = objname Then reparent(tmpobject, parentname, TheForm)
+      Next
+    Endif
+  Next
+End
+
+Public Function NameAndProperties(objname As String, settings As String[]) As String[]
+  'will parse the entire setting file and return a subset containing
+  'the object definition and its properties
+  
+  Dim i As Integer
+  Dim subsettings As New String[]
+  
+  i = settings.Find(objname)
+  subsettings.Add(settings[i])
+  i = i + 1
+  While (settings[i] Like ".*") And (i < settings.count - 1) 'while we find another definition and not eof
+    subsettings.Add(settings[i])
+    i = i + 1
+  Wend
+  Return subsettings
+  
+End
+
+Private Function match(Astring As String, SomeStrings As String[]) As Boolean
+  
+  Dim thestring As String
+  
+  For Each thestring In SomeStrings
+    If Upper(Astring) = Upper(theString) Then Return True
+  Next
+  Return False
+  
+End
+
+Private Function IsSafeToReparent(TheObject As Object) As Boolean
+  
+  Dim Safe As Boolean = False
+  Dim Myparent As String
+  Dim tmp As String
+  
+  For Each MyParent In ParentContainers
+    Try tmp = Upper(TheObject.parent.name)
+    If Upper(myparent) = tmp Then
+      Safe = True
+      Break
+    Endif
+  Next
+  
+  Return Safe
+  
+End
+
+Public Sub WriteLastProfile(confpath As String, currentprofile As String)
+  
+  Dim myfile As File
+  Dim myfilename As String = confpath & "/" & lastprofilefile
+  
+  myfile = Open myfilename For Write Create
+  Print #myfile, currentprofile
+  Close #myfile
+  
+End
+
+Public Sub SaveLeftSideTabsVisibility(ProfilePath As String)
+  
+  Dim myfile As File
+  Dim myfilename As String = ProfilePath & ".TabsVisibility.new"
+  Dim i As Integer
+  
+  myfile = Open myfilename For Write Create
+  For i = 0 To FMain.LeftSideTabs.count - 1
+    Print #myfile, FMain.LeftSideTabs[i].visible
+  Next 'i
+  Close #myfile
+  Try Kill ProfilePath & ".TabsVisibility"
+  
+End
+
+Public Sub LoadLeftSideTabsVisibility(ProfilePath As String)
+  
+  Dim myfile As File
+  Dim myfilename As String = ProfilePath & ".TabsVisibility.new"
+  Dim i As Integer
+  Dim tmp As String
+  
+  If Exist(myfilename) Then
+    myfile = Open myfilename For Read
+    For i = 0 To FMain.LeftSideTabs.count - 1
+      Try Line Input #myfile, tmp
+      If Upper(tmp) = "FALSE" Then
+        FMain.LeftSideTabs[i].visible = False
+      Else
+        FMain.LeftSideTabs[i].visible = True
+      Endif
+      'TRY LINE INPUT #myfile, tmp
+    Next 'i
+    Close #myfile
+    FMain.LeftSideTabs.refresh
+  Endif
+  
+End
+
+Public Function GetLastProfile(confpath As String) As String
+  
+  Dim myfile As File
+  Dim currentprofile As String = "Factory_Defaults"
+  Dim myfilename As String = confpath & "/" & lastprofilefile
+  
+  Try myfile = Open myfilename For Read
+  Try Line Input #myfile, currentprofile
+  Try Close #myfile
+  Return currentprofile
+  
+End
+
+Public Sub SaveCachefile(mytype As String, cachesize As String, mincache As String, seekcache As String)
+  Dim cachesizefile As String = global.confpath & "/" & global.CurrentProfile & ".profile/" & "cachesize."
+  Dim cachetextfile As String = ""
+    
+  If (cachesize = "0") Then 
+    cachetextfile = " -nocache "
+      Else
+    If (cachesize <> "") Then cachetextfile = " -cache " & cachesize & " "
+  Endif
+    
+    If mincache <> "" Then cachetextfile = cachetextfile & " -cache-min " & mincache & " "
+    If seekcache <> "" Then cachetextfile = cachetextfile & " -cache-seek-min " & seekcache & " "
+    Try file.Save(cachesizefile & mytype, cachetextfile)
+End    
+
+Public Sub SaveCachefiles()
+  'save cache size in text files to retrieve it fast on 'boot'
+  Dim cachesize, mincache, seekcache As String
+  
+
+  With GeneralOptions
+    
+  'file
+    cachesize = ""
+    mincache = ""
+    seekcache = ""
+    If .CacheCheckbox.value Then cachesize = .CacheSpinBox.value
+    SaveCachefile("file", cachesize, mincache, seekcache)
+
+  'network
+    cachesize = ""
+    mincache = ""
+    seekcache = ""
+      If .NetCacheCheckbox.value Then cachesize = .NetCacheSpinBox.value
+      If .NetminCacheCheckbox.value Then mincache = GeneralOptions.cacheminspinbox.value
+      If .NetseekCacheCheckbox.value Then seekcache = GeneralOptions.cacheseekspinbox.value
+    SaveCachefile("network", cachesize, mincache, seekcache)
+  'dvb
+    cachesize = ""
+    mincache = ""
+    seekcache = ""
+      If .dvbtCacheCheckbox.value Then cachesize = .dvbtCacheSpinBox.value
+      If .dvbtminCacheCheckbox.value Then mincache = GeneralOptions.dvbtcacheminspinbox.value
+    SaveCachefile("dvb", cachesize, mincache, seekcache)
+  'dvd
+    cachesize = ""
+    mincache = ""
+    seekcache = ""
+    If .DvdCacheCheckbox.Value Then cachesize = .DVDCacheSpinBox.value
+    SaveCachefile("dvd", cachesize, mincache, seekcache)
+  'dvdnav
+    cachesize = ""
+    mincache = ""
+    seekcache = ""
+    If .DvdCacheCheckbox.Value Then cachesize = "0" 'dvdnav wont work with a cache
+    SaveCachefile("dvdnav", cachesize, mincache, seekcache)
+  'cdda
+    cachesize = ""
+    mincache = ""
+    seekcache = ""
+     If .CDDACacheCheckbox.Value Then 
+      cachesize = .CDDACacheSpinBox.Value
+      mincache = "0"
+     Endif
+    SaveCachefile("cdda", cachesize, mincache, seekcache)
+  End With
+End
+
+
+
+Public Sub Save(TheForm As Object, FileName As String)
+  Dim ContentOld As String = ""
+  Dim ContentNew As String = ""
+  Dim ConfFile As File
+  Dim TheObject As Object
+  Dim MyValue As String = 0
+  Dim SaveColor As Boolean = False
+  Dim i As Integer
+  Dim layout As String
+  Dim objvalid As Boolean = False
+  Dim TheFormIsAlreadyLoaded As Boolean = True
+
+  'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
+  'Debug "Cached options unvalidated"
+  If TheForm.name = "#1" Then 
+    Message.Error("Not going to save a form named #1 \nPlease Report the issue to the developer. \nThanks.")
+  Endif
+  FMain.mouse = Mouse.wait
+  Try TheFormIsAlreadyLoaded = Theform.Alreadyloaded
+  If (Not TheFormIsAlreadyLoaded) Then Goto returnlabel 'why save a form that hasn't been even loaded?
+  'FMain.GetOptionsFromGui()
+  FileName = Filename & ".profile/" & TheForm.name
+  If Not Exist(file.Dir(filename), True) Then
+    Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(filename)))))
+    Try Mkdir File.Dir(File.dir(File.Dir(File.Dir(filename))))
+    Try Mkdir File.dir(File.Dir(File.Dir(filename)))
+    Try Mkdir File.Dir(File.Dir(filename))
+    Try Mkdir File.Dir(filename)
+  Endif
+  
+  Try ContentOld = File.Load(Filename) 'store the previous content to compare later with the new one
+  ConfFile = Open FileName For Write Create
+  
+  If Lower(TheForm.name) = "fmain" Then
+    SaveLeftSideTabsVisibility(FileName)
+      Else If Lower(TheForm.name) = "generaloptions" Then
+        SaveCachefiles()
+  Endif
+  
+  For Each TheObject In TheForm.controls
+    Try objvalid = (theobject.name <> "")
+    If Error Then Goto returnlabel
+    If (Not (Object.Type(TheObject) = "Menu")) And (Not Match(TheObject.name, ExcludedValues)) And (Not (theobject Is Separator)) Then
+      'Don't descend in floatspinbox,Vslider and StringFileReq classes
+      If Not ((Object.Type(TheObject.parent) = "FloatSpinBox") Or (Object.Type(TheObject.parent) = "VSlider") Or (Object.Type(TheObject.parent) = "StringFileReqClass")) Then
+        Try Print #ConfFile, TheObject.name
+
+        If IsSafeToReparent(TheObject) Then Print #ConfFile, ".parent.name=" & TheObject.parent.name
+        If Not ((TheObject Is TabStrip) Or (TheObject Is Label) Or (TheObject Is Button) Or (TheObject Is ToggleButton) Or (TheObject Is Checkbox)) Then
+          'IF NOT (TheObject IS TabStrip) OR (TheObject IS Label) THEN 
+          If Not (TheObject.name Like "*SearchField*") Then
+            Try Print #ConfFile, ".text=" & TheObject.text
+          Endif
+        Endif
+        
+        If (theobject.name Like "custom*") Then
+           Try Print #ConfFile, ".text=" & TheObject.text
+        Endif
+        
+        If ((Lower(TheObject.name) Like "*fontstring*") Or (Lower(TheObject.name) Like "*fontchoose*btn*")) Then
+          Try Print #ConfFile, ".font.name=" & TheObject.Font.name
+          Try Print #ConfFile, ".font.size=" & TheObject.Font.size
+          Try Print #ConfFile, ".font.bold=" & TheObject.Font.bold
+          Try Print #ConfFile, ".font.italic=" & TheObject.Font.italic
+        Endif
+        
+        SaveColor = (SaveColor Or (TheobJect Is ColorButton))
+        SaveColor = (SaveColor Or (Lower(TheobJect.name) Like "*colorchoose*"))
+        If SaveColor Then
+          'PRINT theobject.name
+          Try Print #ConfFile, ".background=" & TheObject.background
+          Try Print #ConfFile, ".Foreground=" & TheObject.Foreground
+        Endif
+        SaveColor = False
+        
+        If (TheObject Is SidePanel) Then
+          Try Print #ConfFile, ".width=" & TheObject.width
+        Else If TheObject Is Hsplit Then
+          For i = 0 To TheObject.Layout.count - 1
+            layout = layout & TheObject.Layout[i] & ","
+          Next
+          Print #ConfFile, ".layout=" & layout
+
+          Try Print #ConfFile, ".tag=" & TheObject.tag
+        Else If TheObject Is Tabstrip Then
+          Try Print #ConfFile, ".index=" & TheObject.index
+        Endif
+        
+        If (TheObject Is Fileview) Then
+          ' Try Print #ConfFile, ".ShowDetailed=" & TheObject.ShowDetailed
+          Try Print #ConfFile, ".Dir=" & TheObject.Dir
+          Try Print #ConfFile, ".Filter=" & TheObject.Filter
+        Endif
+        
+        If (TheObject Is Tabstrip) Then
+          Try Print #ConfFile, ".Orientation=" & TheObject.Orientation
+        Endif
+        
+        
+        'gb3 bug with scrollviews visibility?
+        If Not (TheObject Is ScrollView) Then Try Print #ConfFile, ".visible=" & TheObject.visible
+        
+        
+        'IF (NOT Match(TheObject.name, ExcludedValues)) THEN
+        'Here we must convert point back in commas, because
+        'gambas will autoconvert commas in points in float->string conversions.
+        Try MyValue = TheObject.value
+        If Not Error Then
+          MyValue = Replace(MyValue, ".", ",")
+          Try Print #ConfFile, ".Value=" & MyValue
+        Endif
+        'ENDIF
+      Endif
+    Endif
+  Next
+  Close #ConfFile
+
+  FMain.mouse = Mouse.Default
+
+  Returnlabel:
+  Return
+
+End

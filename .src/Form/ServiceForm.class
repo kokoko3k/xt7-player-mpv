@@ -1,0 +1,29 @@
+' Gambas class file
+
+'Copyright (C) 2007, 2008 Antonio Orefice
+' Gambas class file
+
+Public Sub Button1_Click()
+  PrintLang(Fmain)
+End
+
+
+Private Sub PrintLang(TheForm As Form)
+  Dim theobject As Object
+  Dim tooltip As String = ""
+  For Each TheObject In TheForm.controls
+    Print TheObject.name
+    Try tooltip = TheObject.tooltip
+    If Error Then tooltip = ""
+    If tooltip <> "" Then
+      Try Print ".tooltip = " & tooltip
+    Endif
+    If (theobject Is Label) Or (theobject Is Button) Or (theobject Is Checkbox) Then
+      Try Print ".text=" & TheObject.text
+    Endif
+    If (theobject Is Button) Then
+      If TheObject.tag <> "" Then Print ".tag=" & TheObject.tag
+    Endif
+  Next
+End
+

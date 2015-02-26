@@ -1,0 +1,225 @@
+' Gambas class file
+
+Public artist As String
+Public album As String
+Public song As String
+Public filename As String
+Public Timestr As String
+Public MouseOnOverlayTraytip As Boolean = False
+
+' Public Sub Redraw(tip As String, x As Integer, y As Integer)
+'   UpdateInfos()
+'   If y + Me.h > desktop.h Then y = desktop.h - Me.h
+'   x = x - (Me.w Div 2) + FMain.trayicon1.w
+'   If x < 0 Then x = 0
+'   Me.Move(x, y)
+'   Me.stacking = Me.Above
+' End
+
+Public Sub Redraw(tip As String, x As Integer, y As Integer)
+  Dim DesktopH As Integer = Global.DektopHTotal()
+  Dim DesktopW As Integer = Global.DektopWTotal()
+  UpdateInfos()
+  If y + Me.h > Desktoph Then y = Desktoph - Me.h
+  If x + Me.w + 8 > Desktopw Then x = Desktopw - Me.w - 8
+  Me.Move(x, y)
+  Me.stacking = Me.Above
+End
+
+Public Sub UpdateScreenshot()
+    If Not (FMain.mplayer.getP("audioonly") Or FMain.mplayer.paused()) Then
+      panel1.Arrangement = Arrange.None
+      picturebox1.picture = FMain.mplayer.get_screenshot(True)
+      Try picturebox1.h = picturebox1.w / (FMain.mplayer.getP("video-params/dw") / FMain.mplayer.getP("video-params/dh"))
+  Endif
+  
+End
+
+
+Public Sub Form_Show()
+  Me.mask = True
+  ArrangeButtons()
+  picturebox1.w = panel1.w
+  UpdateScreenshot()
+  Global.CenterObj(panel1, picturebox1)
+  picturebox1.x = 0
+  UpdateInfos()
+  timer1.start
+End
+
+Private Sub ArrangeButtons()
+ Dim ButtonWovr, ButtonHovr, PaddingOvr As Integer
+ Dim TheObject As Object
+
+ Dim cX As Integer = 4
+ Dim NumButtonsCPL As Integer = 0
+ 'fix bottom panel for high sized fonts
+ '---------------------------------------------------------------------------
+  ButtonWovr = 16
+  ButtonHovr = 16 
+  PaddingOvr = 2
+  
+  For Each theobject In hbox1.Children
+    If theobject.visible Then
+      theobject.w = ButtonWovr
+      theobject.h = ButtonHovr
+      theobject.x = cX 
+      theobject.y = 0
+      cX = theobject.x + theobject.w + PaddingOvr
+      NumButtonsCPL += 1
+    Endif
+  Next
+  'NumButtonsCPL -= 1
+  hbox1.w = (ButtonWovr + PaddingOvr) * NumButtonsCPL + 4
+  'hbox1.h = ButtonHovr 
+  '---------------------------------------------------------------------------
+End
+
+
+Public Sub Form_hide()
+  timer1.stop
+End
+
+Public Sub Timer1_Timer()
+  UpdateInfos()
+End
+
+
+Public Sub UpdateInfos()
+  Dim fullpath As String = FMain.mplayer.getP("fullpath")
+    If Not (FMain.mplayer.Paused()) Then
+      'If Not (btnplaypause.picture = Picture["icon:/16/pause"]) Then btnplaypause.picture = Picture["icon:/16/pause"]
+      If Not (btnplaypause.picture = Picture["media-playback-pause.png"]) Then btnplaypause.picture = Picture["media-playback-start.png"]
+        Else
+      'If Not (btnplaypause.picture = Picture["icon:/16/play"]) Then btnplaypause.picture = Picture["icon:/16/play"]
+      If Not (btnplaypause.picture = Picture["media-playback-start.png"]) Then btnplaypause.picture = Picture["media-playback-pause.png"]
+    Endif
+    
+
+    filename = File.BaseName(fullpath) & "." & File.Ext(fullpath)
+    If FMain.mplayer.getP("audioonly") Then
+      artist = FMain.mplayer.getP("artist")
+      album = FMain.mplayer.getP("album")
+      song = FMain.mplayer.getP("title")
+      If song = "" Then song = FMain.PropertiesGrid[7, 1].text
+      If Not FMain.mplayer.paused() Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("length")
+      If Trim(artist) = "" Then artist = "Unknown Artist"
+      If Trim(album) = "" Then album = "Unknown Album"
+      If Trim(song) = "" Then song = "Unknown song"
+      If Global.IsCdda(fullpath) Then filename = fullpath
+
+        
+      
+      If Trim(filename) = "" Then filename = "No file is playing"
+
+      picturebox1.picture = AudioForm.CoverBox.Picture
+      panel1.Arrangement = Arrange.fill
+      Global.CenterObj(panel1, picturebox1)
+
+      label1.text = artist & "\n" & album & "\n" & song & "\n" & filename & "\n" & timestr
+        Else
+      If Not FMain.mplayer.paused() Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("length")
+      If Trim(filename) = "" Then filename = ("No file is playing")
+      label1.text = filename & "\n" & timestr
+    Endif
+    
+    
+    labelshadow.text = label1.text
+    labelshadow.w = label1.w
+    labelshadow.h = label1.h
+    labelshadow.x = label1.x - 1
+    labelshadow.y = label1.y + 1
+    labelshadow.Raise
+    label1.raise
+    pinbutton.raise
+End
+
+
+
+Public Sub Form_Leave()
+  If pinbutton.value = False Then
+    MouseOnOverlayTraytip = False
+    OverlayTrayTip.hide
+  Endif
+  pinbutton.hide
+  Me.Stacking = Me.normal
+End
+
+Public Sub Form_Enter()
+  MouseOnOverlayTraytip = True
+  pinbutton.show
+  Me.Stacking = Me.Above
+  FMain.TimerHideTray.stop
+End
+
+Public Sub btnprev_MouseDown()
+  FMain.ButtonPrev_click()
+End
+
+Public Sub btnplaypause_MouseDown()
+  FMain.ButtonPlay_click()
+End
+
+Public Sub btnstop_MouseDown()
+  FMain.ButtonStop_click()
+End
+
+Public Sub btnnext_MouseDown()
+  FMain.SelectNext(False, FMain.GetActivePlayQueue())
+End
+
+Public Sub Form_MouseWheel()
+    If mouse.delta > 0 Then
+      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+        Else
+      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+    Endif
+End
+
+Public Sub PictureBox1_MouseWheel()
+    If mouse.delta > 0 Then
+      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+        Else
+      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+    Endif
+End
+
+Public Sub Label1_MouseWheel()
+      If mouse.delta > 0 Then
+      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+        Else
+      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+    Endif
+End
+
+Public Sub HBox1_MouseWheel()
+      If mouse.delta > 0 Then
+      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+        Else
+      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+    Endif
+End
+
+
+' Public Sub Label1_MouseDrag()
+'   Me.Move(Me.screenx + (mouse.x - mouse.StartX), Me.screeny + (mouse.y - mouse.Starty))
+' End
+
+Public Sub Label1_MouseMove()
+  If mouse.left Then
+    Me.Move(Me.screenx + (mouse.x - mouse.StartX), Me.screeny + (mouse.y - mouse.Starty))
+  Endif
+End
+
+Public Sub pinbutton_MouseWheel()
+  If (mouse.delta > 0) Then 
+    Me.Opacity = Me.Opacity + 10
+      Else
+    Me.Opacity = Me.Opacity - 10
+  Endif
+If Me.opacity = 0 Then Me.opacity = 10
+End
+
+Public Sub PictureBox1_MouseDown()
+  FMain.show
+End

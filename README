@@ -1,9 +1,7 @@
-Xt7-Player is an open source gui to mplayer.
+Xt7-Player (now xt7-player-mpv) is an open source gui to mpv.
 
-While there are plenty out there, it's hard to find one which gives access 
-to all mplayer options.
-This is what Xt7-Player aims to be, an (in)complete graphical interface 
-to mplayer, focused on usability.
+Xt7-Player-mpv aims to be an (in)complete graphical interface 
+to mpc, focused on usability.
 
 It also provides extra features like youtube and shoutcast integration, dvbt, 
 media tagging, library and playlist managment and a lot more.
@@ -18,7 +16,7 @@ Mandatory requirements:
 -----------------------------
   * Gambas 3 (usually the very latest version)
   * Qt4
-  * mplayer
+  * mpv
 
 
 
@@ -42,10 +40,10 @@ Compiling it:
 -----------------------------
 After you installed gambas 3, just checkout and compile xt7 that way:
 
-# git clone https://github.com/kokoko3k/xt7-player.git
-# cd xt7-player/
+# git clone https://github.com/kokoko3k/xt7-player-mpv.git
+# cd xt7-player-mpv/
 # /path/to/gambas/binaries/gbc3 -e -a -g -t -p -m
 # /path/to/gambas/binaries/gba3
-# ./xt7-player.gambas
+# ./xt7-player-mpv.gambas
 
 

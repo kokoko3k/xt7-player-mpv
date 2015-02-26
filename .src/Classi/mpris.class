@@ -1,0 +1,213 @@
+' Gambas class file
+
+' 
+
+Inherits DBusObject
+
+Create Static
+
+
+''org.freedesktop.Dbus.Introspectable-------------------------------------------------------------------------------------------------------------
+' 
+' Public Function org_freedesktop_Dbus_Introspectable_Introspect() As String
+'   Return "NULL"
+' End
+' 
+' ''org.freedesktop.Dbus.Properties-----------------------------------------------------------------------------------------------------------------
+' Public Function org_freedesktop_Dbus_Properties_Get(Myinterface As String, MyProperty As String) As String
+'   Return "NULL"
+' End
+' Public Function org_freedesktop_Dbus_Properties_Set(Myinterface As String, MyProperty As String) As String
+'   Return "NULL"
+' End
+' Public Function org_freedesktop_Dbus_Properties_GetAll(Myinterface As String, MyProperty As String) As String[]
+'   Return "NULL"
+' End
+
+
+''ORG.MPRIS.MEDIAPLAYER2-----------------------------------------------------------------------------------------------------------------
+Property Read org_mpris_MediaPlayer2_CanQuit As Boolean
+Property Read org_mpris_MediaPlayer2_CanRaise As Boolean
+Property Read org_mpris_MediaPlayer2_HasTrackList As Boolean
+Property Read org_mpris_MediaPlayer2_Identity As String
+Property Read org_mpris_MediaPlayer2_DesktopEntry As String 'opzionale
+Property Read org_mpris_MediaPlayer2_SupportedUriSchemes As String[]
+Property Read org_mpris_MediaPlayer2_SupportedMimeTypes As String[]
+ 
+Function org_mpris_MediaPlayer2_CanQuit_Read() As Boolean
+  Return True
+End
+
+Function org_mpris_MediaPlayer2_CanRaise_Read() As Boolean
+  Return True
+End
+
+Function org_mpris_MediaPlayer2_HasTrackList_Read() As Boolean
+  Return True
+End
+
+Function org_mpris_MediaPlayer2_Identity_Read() As String
+  Return "Xt7-player"
+End
+ 
+Function org_mpris_MediaPlayer2_DesktopEntry_Read() As String
+  Return "xt7-player"
+End
+
+Function org_mpris_MediaPlayer2_SupportedUriSchemes_Read() As String[]
+  Return ["file", "http"]
+End
+ 
+Function org_mpris_MediaPlayer2_SupportedMimeTypes_Read() As String[]
+  Return ["application/ogg", "application/x-ogg", "application/x-ogm-audio", "audio/aac", "audio/mp4", "audio/mpeg", "audio/mpegurl", "audio/ogg", "audio/vnd.rn-realaudio", "audio/vorbis", "audio/x-flac", "audio/x-mp3", "audio/x-mpeg", "audio/x-mpegurl", "audio/x-ms-wma", "audio/x-musepack", "audio/x-oggflac", "audio/x-pn-realaudio", "audio/x-scpls", "audio/x-speex", "audio/x-vorbis", "audio/x-vorbis+ogg", "audio/x-wav", "video/x-ms-asf", "x-content/audio-player"]
+End
+
+Public Function org_mpris_MediaPlayer2_Raise() 
+  FMain.raise
+End
+
+ Public Function org_mpris_MediaPlayer2_Quit()
+    'we cannot just quit the application, because it would unregister
+    'dbus before we exit this kifunction, leading to a runtime error
+    'so use a timer to program a delayed quit.
+    FMain.TimerQuit.start
+ End
+
+''ORG.MPRIS.MEDIAPLAYER2.PLAYER-----------------------------------------------------------------------------------------------------------------
+Property Read org_mpris_MediaPlayer2_Player_PlaybackStatus As String
+Property org_mpris_MediaPlayer2_Player_LoopStatus As String
+Property org_mpris_MediaPlayer2_Player_Rate As Float
+Property org_mpris_MediaPlayer2_Player_Shuffle As Boolean
+Property Read org_mpris_MediaPlayer2_Player_Metadata As String[] 'controllare bene il tipo di dato
+Property org_mpris_MediaPlayer2_Player_Volume As Float
+Property Read org_mpris_MediaPlayer2_Player_Position As Long
+Property Read org_mpris_MediaPlayer2_Player_MinimumRate As Float
+Property Read org_mpris_MediaPlayer2_Player_MaximumRate As Float
+Property Read org_mpris_MediaPlayer2_Player_CanGoNext As Boolean
+Property Read org_mpris_MediaPlayer2_Player_CanGoPrevious As Boolean
+Property Read org_mpris_MediaPlayer2_Player_CanPlay As Boolean
+Property Read org_mpris_MediaPlayer2_Player_CanPause As Boolean
+Property Read org_mpris_MediaPlayer2_Player_CanSeek As Boolean
+Property Read org_mpris_MediaPlayer2_Player_CanControl As Boolean
+
+
+Function org_mpris_MediaPlayer2_Player_PlayBackStatus_Read() As String
+End
+
+Function org_mpris_MediaPlayer2_Player_LoopStatus_Read() As String
+  If FMain.TogglePls.value Then 
+    Return "Playlist"
+      Else
+    Return "None"
+  Endif
+End
+
+Function org_mpris_MediaPlayer2_Player_LoopStatus_Write(p As String)
+  FMain.TogglePls.value = (p = "Playlist")
+End
+
+Function org_mpris_MediaPlayer2_Player_Rate_Read() As Float
+End
+
+Function org_mpris_MediaPlayer2_Player_Rate_Write(p As Float) 
+End
+
+Function org_mpris_MediaPlayer2_Player_Shuffle_Read() As Boolean
+  Return FMain.ShufflePls.value
+End
+
+Function org_mpris_MediaPlayer2_Player_Shuffle_Write(p As Boolean) 
+  FMain.ShufflePls.value = p
+End
+
+Function org_mpris_MediaPlayer2_Player_Metadata_Read() As String[]
+End
+
+Function org_mpris_MediaPlayer2_Player_Volume_Read() As Float
+   Return (FMain.SaveVolumeSlider.value * (100 Div FMain.SaveVolumeSlider.MaxValue))
+End
+
+Function org_mpris_MediaPlayer2_Player_Volume_Write(p As Float)
+  If p <= 0 Then
+    FMain.SaveVolumeSlider.value = 0
+      Else
+    FMain.SaveVolumeSlider.value = p * FMain.SaveVolumeSlider.MaxValue
+  Endif
+End
+
+Function org_mpris_MediaPlayer2_Player_Position_Read() As Long
+End
+
+Function org_mpris_MediaPlayer2_Player_Position_Write() As Long
+End
+
+Function org_mpris_MediaPlayer2_Player_MinimumRate_Read() As Float
+End
+
+Function org_mpris_MediaPlayer2_Player_MaximumRate_Read() As Float
+End
+
+Function org_mpris_MediaPlayer2_Player_CanGoNext_Read() As Boolean
+End
+
+Function org_mpris_MediaPlayer2_Player_CanGoPrevious_Read() As Boolean
+End
+
+Function org_mpris_MediaPlayer2_Player_CanPlay_Read() As Boolean
+End
+
+Function org_mpris_MediaPlayer2_Player_CanPause_Read() As Boolean
+End
+
+Function org_mpris_MediaPlayer2_Player_CanSeek_Read() As Boolean
+End
+
+Function org_mpris_MediaPlayer2_Player_CanControl_Read() As Boolean
+End
+
+
+
+Public Function org_mpris_MediaPlayer2_Player_Next()
+  FMain.SelectNext(False, FMain.GetActivePlayQueue())
+End
+
+Public Function org_mpris_MediaPlayer2_Player_Previous()
+  FMain.ButtonPrev_click()
+End
+
+Public Function org_mpris_MediaPlayer2_Player_Pause()
+  If Not (FMain.mplayer.ProcessRunningOvr()) Then Return
+
+    If FMain.mplayer.Paused() Then 
+      Debug "Already paused!"
+      Debug
+        Else
+      FMain.ButtonPlay_click()
+  Endif
+End
+
+Public Function org_mpris_MediaPlayer2_Player_PlayPause()
+   FMain.ButtonPlay_click()
+End
+
+Public Function org_mpris_MediaPlayer2_Player_Stop()
+  FMain.buttonstop_click()
+End
+
+Public Function org_mpris_MediaPlayer2_Player_Play()
+  If (FMain.mplayer.ProcessRunningOvr()) And (Not FMain.mplayer.paused()) Then Return 
+  FMain.ButtonPlay_click()
+End
+
+Public Function org_mpris_MediaPlayer2_Player_Seek(p As Long)
+  FMain.mplayer.do_seek_by(p Div 1000000)
+End
+
+Public Function org_mpris_MediaPlayer2_Player_SetPosition(o As Long, p As Long)
+  Debug "Uninmplemented"
+  Debug
+End
+
+Public Function org_mpris_MediaPlayer2_Player_OpenUri(p As String)
+  FMain.Play(p)
+End

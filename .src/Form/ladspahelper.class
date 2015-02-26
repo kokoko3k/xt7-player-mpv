@@ -1,0 +1,222 @@
+' Gambas class file
+
+
+Public LADSPA_FILE As String = ""
+Public LADSPA_LABEL As String = ""
+
+Public Sub ButtonBox1_click()
+  If myDialog.Path = "" Then myDialog.path = Env["LADSPA_PATH"]
+  If myDialog.Path = "" Then myDialog.path = "/usr/lib/ladspa/"
+  myDialog.filter = ["*.so;", "Ladspa plugins"]
+  If myDialog.OpenFile() Then Return
+  LADSPA_FILE = myDialog.Path
+  Last.text = LADSPA_FILE
+  GetLabels()
+  ComboLabel_Activate()
+End
+
+Public Sub GetLabels()
+  Dim label As String
+  Dim pout As String
+  Shell "analyseplugin -l " & LADSPA_FILE To pout
+  ComboLabel.clear
+  For Each label In Split(pout, "\n")
+    Try ComboLabel.Add(Split(label, " ")[0])
+  Next 'label
+  Try LADSPA_LABEL = ComboLabel[0].text
+End
+
+
+
+Public PCONTROLS As New String[] 'name£min£max£default
+
+Public Sub ComboLabel_Activate()
+Dim pout As String
+Dim lcontrol As String
+Dim controlname, minrange, maxrange, dvalue As String
+Shell "LC_ALL=C analyseplugin " & LADSPA_FILE & " " & LADSPA_LABEL & " |grep 'input, control'" To pout
+'Debug pout
+PCONTROLS.Clear
+For Each lcontrol In Split(pout, "\n", "", True)
+  Try controlname = Split(lcontrol, "\"")[1]
+  If ( Error Or controlname = "") Then Goto exiterror
+    Try minrange = Split(Split(lcontrol, ",")[2], " ", "", True)[0]
+    If Trim(minrange) = "toggled" Then
+      minrange = 0
+      maxrange = 1
+      dvalue = "unknown"
+      Goto storevalues
+    Endif
+    
+    If Error Then Goto exiterror
+    Try maxrange = Split(Split(lcontrol, ",")[2], " ", "", True)[2]
+    If Error Then Goto exiterror
+    Try dvalue = Split(Split(lcontrol, ",")[3], " ")[2]
+    If Error Then dvalue = "Unknown"
+    
+    StoreValues:
+    'Debug "name "; controlname; " min "; minrange; " max "; maxrange; " default "; dvalue
+    PCONTROLS.Add(controlname & "£" & minrange & "£" & maxrange & "£" & dvalue)
+Next 'lcontrol
+  DrawPlugin()
+  Return
+  exiterror:
+    Debug "Error analyzing plugin, exit."
+    PCONTROLS.clear
+    cleardraw()  
+End
+
+Public Sub cleardraw()
+  Dim myobj As Object
+  For Each myobj In panel1.Children
+    Try myobj.delete
+  Next
+End
+
+Public myinput As Floatspinbox
+
+Public Sub DrawPlugin()
+  Dim pcontrol As String
+  Dim myhbox As Hbox
+  Dim mylabel1 As Label
+  Dim mylabel2 As Label
+  'Dim myinput As Textbox
+  'Dim myinput As FloatSpinBox
+  Dim maxw, m As Integer
+  Dim mmin, mmax As String
+  cleardraw()  
+  
+  For Each pcontrol In PCONTROLS
+    m = fmain.Font.Textwidth(Split(pcontrol, "£", "", True)[0])
+    If m > maxw Then maxw = m
+  Next
+  For Each pcontrol In PCONTROLS
+    myhbox = New HBox(panel1)
+    myhbox.h = CInt(myhbox.Font.TextHeight("|") * 2)
+    myhbox.spacing = True
+    mylabel1 = New Label(myhbox)
+    'myinput = New Textbox(myhbox)
+    myinput = New FloatSpinBox(myhbox) As "paramwidget"
+    mylabel2 = New Label(myhbox)
+    mmin = Split(pcontrol, "£", "", True)[1]
+    mmax = Split(pcontrol, "£", "", True)[2]
+    Try myinput.MaxValue = CFloat(mmax)
+    Try myinput.MinValue = CFloat(mmin)
+    mylabel1.text = Split(pcontrol, "£", "", True)[0] 
+    mylabel2.text = "[" & mmin & ".."
+    mylabel2.text &= mmax & "]"
+    Repeat 
+      mylabel2.text &= " "
+    Until fmain.Font.Textwidth(mylabel2.Text) >= fmain.Font.Textwidth("[200000..200000]")
+    mylabel2.text &= Chr(9) 
+    mylabel2.text &= "Default: " & Split(pcontrol, "£", "", True)[3] 
+    'myinput.text = Split(Split(pcontrol, "£", "", True)[3], "*", "", True)[0] 
+    Try myinput.value = CFloat(Split(Split(pcontrol, "£", "", True)[3], "*", "", True)[0])
+    If Error Then Try myinput.value = CFloat(mmin)
+    mylabel1.w = maxw
+    mylabel2.expand = True
+    myinput.w = 100
+    myhbox.w = panel1.w 'myinput.w + mylabel1.w + myinput.w + mylabel2.w
+
+  Next
+  
+
+End
+
+
+
+Public Sub paramwidget_Change()
+  If LOADING Then Return
+  applytimer.stop
+  applytimer.start
+End
+
+Public LOADING As Boolean = True
+
+Public Sub ComboLabel_Click()
+  Try LADSPA_LABEL = ComboLabel.Text
+  ComboLabel_Activate()
+End
+
+Public parentcontainer As Object
+Public Sub Button1_Click()
+  Dim myhbox As Hbox
+  Dim myobj As Object
+  Dim outstr As String
+  For Each myhbox In panel1.Children
+    For Each myobj In myhbox.Children
+      If myobj Is Floatspinbox Then
+        outstr &= myobj.value & ","
+      Endif
+    Next
+  Next
+  'TextBox1.text = "ladspa=" & LADSPA_FILE & ":" & "\"" & LADSPA_LABEL & "\"" & ":" & Left(outstr, Len(outstr) - 1)
+  TextBox1.text = "ladspa=" & "'" & LADSPA_FILE & "'" & ":" & LADSPA_LABEL & ":[" & Left(outstr, Len(outstr) - 1) & "]"
+End
+
+Public Sub CopyBTN_Click()
+   If parentcontainer <> Null Then
+    Button1_Click()
+    parentcontainer.text = TextBox1.text
+   Endif
+   Me.close
+End
+
+Public Sub Button2_Click()
+  Dim s As String = TextBox1.text
+  Dim lpath, llabel As String
+  Dim lparams As New String[]
+  Dim myhbox As Hbox
+  Dim myobj As Object
+  Dim i As Integer = 0
+
+  Try lpath = Split(Split(Mid(s, InStr(s, "'")), ":")[0], "'")[1] 'Split(Mid(s, InStr(s, "=") + 1), ":")[0]
+  If Error Then Goto errorquit
+  Try llabel = Split(s, ":")[1]
+  If Error Then Goto errorquit
+  Try lparams = Split(Left(Split(s, "[")[1], -1), ",") 'Split(Mid(s, InStr(s, llabel & ":") + 1), ":")
+  If Error Then Goto errorquit
+  'lparams.Remove(0)
+  
+  LADSPA_FILE = lpath
+  ButtonBox1.text = lpath
+  LADSPA_LABEL = llabel
+  GetLabels()
+  ComboLabel.text = llabel
+  ComboLabel_Activate()
+  
+  For Each myhbox In panel1.Children
+   For Each myobj In myhbox.Children
+     If myobj Is Floatspinbox Then
+       Try myobj.value = CFloat(lparams[i])
+       i += 1
+     Endif
+   Next 'myobj
+  Next 'myhbox
+  
+  errorquit:
+  Return
+End
+
+Public Sub TestBTN_Click()
+ Dim prevfilter As String
+ If parentcontainer <> Null Then
+   prevfilter = parentcontainer.text
+   Button1_Click()
+   parentcontainer.text = TextBox1.text
+   AFiltersCfg.ApplyBTN_Click() 
+   'Wait 1
+   parentcontainer.text = prevfilter 'restore the previous value
+ Endif
+End
+
+Public Sub CloseBTN_Click()
+  Me.close
+End
+
+
+
+Public Sub applytimer_Timer()
+  TestBTN_Click()
+  Last.stop
+End

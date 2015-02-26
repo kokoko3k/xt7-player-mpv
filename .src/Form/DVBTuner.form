@@ -1,0 +1,154 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,83,71)
+  Text = ("Simple Dvb-T Tuner")
+  Icon = Picture["GeneralDVBT.png"]
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { HBox2 HBox
+    MoveScaled(1,3,81,4)
+    { LabelFrequencies Label
+      MoveScaled(0,1,17,3)
+      AutoResize = True
+      Text = ("Tuning Data")
+    }
+    { ComboBox1 ComboBox
+      MoveScaled(19,0,29,4)
+      Expand = True
+      ReadOnly = True
+      List = [("0 - DVBT_Autoscan_(Fast)"), ("1 - DVBT_Autoscan_Extensive_(Slow)"), ("2 - Initial Tuning data file")]
+      Text = ("0 - DVBT_Autoscan_(Fast)")
+    }
+    { Button6 Button
+      MoveScaled(48,0,4,4)
+      Enabled = False
+      Picture = Picture["icon:/16/open"]
+    }
+    { VBox1 VBox
+      MoveScaled(53,0,4,4)
+    }
+    { Button7 Button
+      MoveScaled(57,0,12,4)
+      ToolTip = ("Import an external channels.conf")
+      AutoResize = True
+      Text = ("Import")
+      Picture = Picture["icon:/16/open"]
+    }
+    { Button1 Button
+      MoveScaled(69,0,12,4)
+      AutoResize = True
+      Text = ("Start")
+      Picture = Picture["icon:/16/find"]
+    }
+  }
+  { SelectBox2 HBox
+    MoveScaled(1,8,82,4)
+    Spacing = True
+    Padding = 2
+    { LabelCardN Label
+      MoveScaled(0,0,17,3)
+      Text = ("Card #")
+    }
+    { SpinBox1 SpinBox
+      MoveScaled(19,0,10,4)
+      MinValue = 1
+      MaxValue = 4
+    }
+    { VBox2 VBox
+      MoveScaled(53,-1,4,4)
+      Expand = True
+    }
+    { Button5 Button
+      MoveScaled(58,0,21,4)
+      Enabled = False
+      AutoResize = True
+      Text = ("Stop")
+      Picture = Picture["icon:/16/cancel"]
+    }
+  }
+  { Panel1 Panel
+    MoveScaled(2,13,78,8)
+    Background = Color.TextBackground
+    Expand = True
+    Arrangement = Arrange.Fill
+    Border = Border.Plain
+    { channelsgrid GridView
+      MoveScaled(9,1,42,5)
+      Expand = True
+      Mode = Select.Multiple
+      Grid = False
+    }
+  }
+  { SelectBox HBox
+    MoveScaled(0,22,82,4)
+    Spacing = True
+    Padding = 2
+    { Button2 Button
+      MoveScaled(1,0,17,4)
+      Expand = True
+      AutoResize = True
+      Text = ("Select All")
+      Picture = Picture["icon:/16/wizard"]
+    }
+    { Button3 Button
+      MoveScaled(20,0,17,4)
+      Expand = True
+      AutoResize = True
+      Text = ("Select none")
+      Picture = Picture["icon:/16/clear"]
+    }
+    { Button4 Button
+      MoveScaled(39,0,17,4)
+      Expand = True
+      AutoResize = True
+      Text = ("Use Selected")
+      Picture = Picture["icon:/16/add"]
+    }
+  }
+  { HBox1 HBox
+    MoveScaled(0,27,82,4)
+    Spacing = True
+    Padding = 2
+    { Label2 Label
+      MoveScaled(0,0,7,3)
+      AutoResize = True
+      Text = ("Progress")
+    }
+    { ProgressBar1 ProgressBar
+      MoveScaled(7,0,18,4)
+      Expand = True
+    }
+    { Label3 Label
+      MoveScaled(26,0,9,3)
+      AutoResize = True
+      Text = ("Signal")
+    }
+    { sigbar ProgressBar
+      MoveScaled(32,0,18,4)
+      Expand = True
+    }
+    { Label4 Label
+      MoveScaled(51,0,7,3)
+      AutoResize = True
+      Text = ("SnR")
+    }
+    { snrbar ProgressBar
+      MoveScaled(57,0,18,4)
+      Expand = True
+    }
+  }
+  { Expander1 Expander
+    MoveScaled(-2,31,81,38)
+    Arrangement = Arrange.Fill
+    Margin = True
+    Text = ("Verbose Log")
+    Hidden = True
+    { TextArea1 TextArea
+      MoveScaled(10,14,57,18)
+      Font = Font["Monospace"]
+      Expand = True
+    }
+  }
+}

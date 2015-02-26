@@ -1,0 +1,228 @@
+' Gambas class file
+
+Public bars As New Object[]
+Public latency As Integer = 300
+Public MaxH As Integer
+Private frband As Integer[] = [31, 62, 125, 250, 500, 1000, 1900, 4000, 8000] ', 16000]
+Private timer1 As Timer
+Private barsdone As Boolean = False
+Private channels As Integer
+Private samplesperchannel As Integer
+Private buffer As New Integer[][]
+Private mparent As Object
+Private exportfile As String
+Private pfps As Integer
+Private spacingg As Integer
+Private hfile As File
+Private bufsize As Integer 
+Private longsize As Integer = SizeOf(gb.long)
+Private scaledspacing As Integer
+Private gvis As String
+
+Public Sub init(pparent As Object, platency As Integer, Maxheight As Integer, pexportfile As String, pspacingg As Integer, fps As Integer, Optional vis As String = "vmeters")
+  If vis = "" Then vis = "vmeters"
+  If bars.count > 0 Then Try stopp()
+  latency = platency
+  MaxH = MaxHeight
+  Debug maxh
+  mparent = pparent
+  exportfile = pexportfile
+  spacingg = pspacingg
+  pfps = fps
+  Try hFile = Open exportfile For Input
+  If Error Then Return
+  Try channels = Read #hfile As Integer
+  Try bufsize = Read #hfile As Integer
+  Try SamplesPerChannel = (bufsize Div channels) Div 2
+  If Error Then Return
+  Select Case Lower(vis)
+    Case "dft"
+      scaledspacing = spacingg Div frband.count
+    Case "vmeters"
+      scaledspacing = spacingg Div channels
+  End Select
+  gvis = Lower(vis)
+  
+  Try Object.Detach(timer1)
+  Debug "Made new meters timer"
+  Debug
+  timer1 = New Timer As "timer1"
+  timer1.delay = 1000 Div fps
+  Debug "meters initialized at " & fps & " fps"
+  Debug
+End
+
+
+Public Function ChangeFps(fps As Integer)
+    timer1.delay = 1000 Div fps
+End
+
+Public Sub Timer1_Timer()
+  Dim sync As Integer
+  Dim samples As New Short[]
+  If FMain.mplayer.getP("paused") Then Return
+  Try hFile = Open exportfile For Input
+  If Error Then Return
+  hFile.ByteOrder = gb.LittleEndian
+  Try sync = Read #hfile As Long
+  If Error Then Return
+  samples.resize((Lof(hfile) Div 2) - longsize)
+  Try samples.Read(hfile)
+  If Error Then Return
+  buffer.Add(samples, 0)
+  If buffer.Length >= (latency Div Timer1.Delay) Then 'let the user set the latency
+    updatebars(buffer[buffer.count - 1])
+    buffer.Remove(buffer.Length - 1)
+  Endif
+End
+
+Public Sub Stopp()
+  Dim bar As Object
+  Try timer1.stop
+  buffer.clear
+  For Each bar In bars
+    bar.delete
+  Next 'bar
+  bars.Resize(0)
+  buffer.Resize(0)
+  barsdone = False
+  Debug "meters timer stopped"
+  Debug
+End
+
+Public Sub Startt()
+  Try timer1.start
+End
+
+'Private PREVAVG As Integer = 0
+Private Sub updatebars(ByRef samples As Integer[])
+  'prepare n progressbars an n channels
+  'and refer to them using an array of objects
+  Dim i, c, s, total, start, sstop, avg As Integer 
+  Dim fft As Float
+  Dim bar As Picturebox
+  Dim widt As Integer
+  Dim numbars As Integer 
+  Dim o As Float 
+
+  If Not barsdone Then
+    Select Case Lower(gvis)
+      Case "vmeters" 
+        numbars = channels
+      Case "dft"
+        numbars = frband.count
+    End Select
+    
+    widt = CInt((mparent.w / numbars) - scaledspacing)
+    For i = 1 To numbars
+      bar = New Picturebox(mparent) As "mbar" ' & i
+      bar.alignment = Align.Bottom
+      bar.Picture = Picture.Load("meterpt.png").Image.Stretch(Widt, maxh).Picture
+      bar.stretch = False
+      'bar.Background = Color.black
+      bar.ignore = True
+      bar.h = 0
+      bar.w = Widt ' - (channels * spacingg) 'Widthh
+      bar.x = (i - 1) * (Widt + scaledspacing)
+      bars.Add(bar)
+    Next
+    barsdone = True
+  Endif
+
+
+  Select Case Lower(gvis)
+    Case "vmeters" 
+      'for every channel,make an average
+      'of sampled values and assign them to the
+      'respective bar
+      For c = 1 To channels
+        total = 0
+        start = (c * SamplesPerChannel) - SamplesPerChannel 
+        sstop = start + SamplesPerChannel
+        For s = start To (sstop - 1)
+          Try total = total + Abs(samples[s])
+        Next
+         Try avg = (total Div SamplesPerChannel) 
+         'try avg = (CInt(total / SamplesPerChannel) + PREVAVG) Div 2
+         'PREVAVG = avg
+         bars[c - 1].h = (avg * maxh) Div 15000 
+         bars[c - 1].y = maxh - bars[c - 1].h '
+      Next
+    Case "dft"
+      o = 2 * Pi / (0 - (SamplesPerChannel / 3))
+      For i = 0 To bars.count - 1
+        'fft = goertzelFilter(samples, frband[i], 0, (SamplesPerChannel Div 2)) / 1000000000
+        fft = getpower(frband[i], samples, 0, (SamplesPerChannel Div 3), (timer1.delay / 1000), o) * (i * (i / (bars.count / 2)) + 1) '/ 10000
+        fft = (Log2(fft + 0.00000001) * 10) - 100 
+        bars[i].h = Abs(CInt((fft * maxh) / 110))
+        bars[i].y = maxh - bars[i].h 
+      Next
+
+  End Select
+End
+
+Public Sub mbar_mousedown()
+  nextvis()
+End
+
+Public Sub nextvis() 
+  stopp()
+  Select Case gvis
+    Case "vmeters"
+      init(mparent, latency, maxh, exportfile, spacingg, pfps, "dft")
+    Case "dft"
+      init(mparent, latency, maxh, exportfile, spacingg, pfps, "vmeters")
+  End Select
+  Startt()
+End
+
+Public Sub switchvis(vis As String)
+  stopp()
+  init(mparent, latency, maxh, exportfile, spacingg, pfps, vis)
+  Startt()
+End
+
+
+Public Function getpower(f As Float, signal As Short[], start As Integer, sstop As Integer, scale As Float, o As Float) As Float
+  Dim i As Integer
+  Dim realw, imagw, d1, d2, y, resultr, resulti As Float
+  Dim n As Integer
+  Dim coso As Float
+  Dim q As Float = 0.25
+  scale = scale * q
+  coso = Cos(o)
+  For i = start To sstop - 1
+    Try signal[i] *= (0.54 - 0.46 * Coso)
+    If Error Then Return
+  Next
+
+  realw = 2 * Cos(o * scale * f) 
+  imagw = Sin(o * scale * f)
+
+  For n = start To sstop - 1
+    y = signal[n] + realw * d1 - d2
+    d2 = d1
+    d1 = y
+  Next
+  resultr = 0.5 * realw * d1 - d2
+  resulti = imagw * d1
+  Return Sqr((resultr * resultr) + (resulti * resulti))
+End
+
+
+ Public Function goertzelFilter(samples As Short[], freq As Float, start As Integer, sStop As Integer) As Float
+  Dim s_prev As Float = 0.0
+  Dim s_prev2 As Float = 0.0
+  Dim coeff, normalizedfreq, power, s As Float
+  Dim i As Integer
+  normalizedfreq = freq / 44100 'SAMPLEFREQUENCY;
+  coeff = 2 * Cos(2 * Pi * normalizedfreq)
+  For i = start To sstop - 1
+   Try s = samples[i] + coeff * s_prev - s_prev2
+   If Error Then Return
+   s_prev2 = s_prev
+   s_prev = s
+  Next
+  power = s_prev2 * s_prev2 + s_prev * s_prev - coeff * s_prev * s_prev2
+  Return power
+ End
