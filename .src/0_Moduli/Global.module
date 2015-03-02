@@ -545,7 +545,7 @@ Public Sub DelayLoadStates_Timer()
   ' If Not VideoEqualizer.AlreadyLoaded Then MyForms.Add(VideoEqualizer) credo serva solo in fase di play, quindi lo faccio lì
   If Not VFiltersCfg.AlreadyLoaded Then MyForms.Add(VFiltersCfg)
   If Not AFiltersCfg.AlreadyLoaded Then MyForms.Add(AFiltersCfg)
-Stop
+
   For Each TheForm In MyForms
     WasVisible = TheForm.visible
     TheForm.hide

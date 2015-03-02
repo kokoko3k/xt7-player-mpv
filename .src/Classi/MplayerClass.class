@@ -398,7 +398,7 @@ End
 Private Function set_options() As String
   Dim name, data, out As String
   For Each data In mpvoptions
-    If data <> Chr(8) Then 'chr is used instead of null because the collection doesn't keep null values
+    If data <> Chr(8) Then 'chr(8) is used instead of null because the collection doesn't keep null values
       out &= "--" & Trim(mpvoptions.Key) & "=" & data & " " 'trim is needed because we use white spaces to have multiple options with the same name
       Debug "Add option:", mpvoptions.Key, "=", data
         Else
@@ -515,11 +515,11 @@ Public Function do_play(filename As String, Optional string_options As String = 
     Return 'fixmempv
   Endif
   If ProcessRunningOvr() Then do_stop()
-  
+
   'set_option("quiet", "yes")
   set_option("input-file", SetUpInputPipe())
   set_option("msg-color", "no")
-  set_option("term-status-msg", "")
+  set_option("term-status-msg", "\"\"")
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)
   Debug commandline, commandline
@@ -2028,7 +2028,7 @@ Private Sub do_apply_restart(new_opts As Collection)
     do_play(fullpath,, restart = True)
   Endif
 
-  'waitplayback(500)
+  waitplayback(500)
 
   'Restore properties changed runtime before the restart
   'more tries are needed because mpv needs to initialize
@@ -2036,16 +2036,19 @@ Private Sub do_apply_restart(new_opts As Collection)
   'so check if the answer is different from "(unavailable")
   'and don't spend too much time anyway waiting for the property.
     For Each properties_changed_runtime
+      Debug "Try to restore Property:", name, data
       timerA = Timer()
       Repeat
-        Debug "Restore Property:", name, data
         name = properties_changed_runtime.key
         data = properties_changed_runtime[name]
         set_property_mpv(name, data, False)
         Wait 0.01
         newdata = get_property_mpv(name)
-      Until (newdata <> "(unavailable)") Or ((Timer() - TimerA) > 1) 'dont spend more than one second per property
-      Debug name, newdata
+      Until (newdata <> "(unavailable)") Or ((Timer() - TimerA) > 10) 'dont spend more than one second per property
+      'is it possible that newdata is available but still with an unset value, wo, just to be sure, restore it one more time.
+      Wait 0.01
+      set_property_mpv(name, data, False)
+      Debug "Restore property:", name, newdata, data
     Next
 
   restarting = False

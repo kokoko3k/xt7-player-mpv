@@ -296,6 +296,9 @@ Geometry=[517,165,564,770]
 [DebugWindow/HBox]
 Geometry=[0,0,301,301]
 
+[DebugWindow/HBox(Last.Parent).Next]
+Geometry=[709,152,267,712]
+
 [DebugWindow/Hbox]
 Geometry=[0,0,301,301]
 
@@ -345,13 +348,19 @@ Geometry=[0,0,344,731]
 Geometry=[0,0,344,344]
 
 [DebugWindow/Last]
-Geometry=[52,0,267,712]
+Geometry=[681,124,267,712]
 
 [DebugWindow/Last.List]
 Geometry=[99,474,210,210]
 
+[DebugWindow/Last.Parent]
+Geometry=[695,138,267,712]
+
 [DebugWindow/Last.Parent.Children]
 Geometry=[1280,0,210,210]
+
+[DebugWindow/Last.parent.parent]
+Geometry=[0,-3,210,210]
 
 [DebugWindow/Last.selection]
 Geometry=[47,-3,210,210]
@@ -437,6 +446,9 @@ Geometry=[0,0,301,301]
 [DebugWindow/MyQuestion]
 Geometry=[-4,-3,210,210]
 
+[DebugWindow/MyScrollView.Children]
+Geometry=[1280,-3,210,210]
+
 [DebugWindow/MyXmlreader.Node]
 Geometry=[1280,0,210,210]
 
@@ -490,6 +502,9 @@ Geometry=[0,0,1014,714]
 
 [DebugWindow/PTableFile]
 Geometry=[0,0,975,310]
+
+[DebugWindow/Panel]
+Geometry=[0,-3,210,210]
 
 [DebugWindow/Panel(VSplit(fsform.Children[1]).Children[1]).Children]
 Geometry=[1350,70,427,781]
@@ -731,6 +746,15 @@ Geometry=[0,0,301,301]
 [DebugWindow/TabStrip1]
 Geometry=[0,0,344,344]
 
+[DebugWindow/TabStrip_filters_audio]
+Geometry=[1280,-3,210,210]
+
+[DebugWindow/TabStrip_filters_audio.Children]
+Geometry=[1280,-3,695,210]
+
+[DebugWindow/TabStrip_filters_audio.Children[0]]
+Geometry=[638,182,389,836]
+
 [DebugWindow/Table]
 Geometry=[1280,0,587,461]
 
@@ -900,6 +924,9 @@ Geometry=[1280,-3,210,210]
 [DebugWindow/aMp.GetScreenShot(True)]
 Geometry=[1280,0,210,210]
 
+[DebugWindow/aTabstrip]
+Geometry=[1280,-3,493,791]
+
 [DebugWindow/abutton]
 Geometry=[1280,0,210,210]
 
@@ -1014,8 +1041,14 @@ Geometry=[-4,-3,210,210]
 [DebugWindow/buttonopen]
 Geometry=[1280,0,248,458]
 
+[DebugWindow/cBox]
+Geometry=[1280,671,394,844]
+
 [DebugWindow/cachebar]
 Geometry=[713,494,470,633]
+
+[DebugWindow/chain_items]
+Geometry=[0,-3,210,327]
 
 [DebugWindow/changed_opts]
 Geometry=[25,150,618,366]
@@ -1128,6 +1161,9 @@ Geometry=[1294,14,486,587]
 
 [DebugWindow/fileview1.selection]
 Geometry=[267,583,210,210]
+
+[DebugWindow/filters]
+Geometry=[0,-3,210,210]
 
 [DebugWindow/findouts]
 Geometry=[0,0,344,344]
@@ -1266,6 +1302,12 @@ Geometry=[0,0,344,344]
 
 [DebugWindow/istart]
 Geometry=[1280,160,210,210]
+
+[DebugWindow/item_container]
+Geometry=[1280,-3,263,814]
+
+[DebugWindow/item_container.Children]
+Geometry=[1294,11,263,814]
 
 [DebugWindow/items]
 Geometry=[-309,307,1235,412]
@@ -1889,15 +1931,14 @@ SearchComment=True
 SearchString=True
 
 [OpenFile]
-File[1]=".src/Classi/MplayerClass.class:393.18"
-File[2]=".src/Classi/SettingsClass.class:21.2"
+File[1]=".src/Classi/MplayerClass.class:520.31"
+File[2]=".src/Classi/SettingsClass.class:530.52"
 File[3]=".src/Form/VideoEqualizer.form"
 File[4]=".src/Form/VideoEqualizer.class:34.13"
-Active=5
 File[5]=".src/Form/FMain.form"
 File[6]="CHANGELOG_GIT:1133.42"
 File[7]=".src/Classi/IceCastClass.class:18.76"
-File[8]=".src/0_Moduli/Global.module:294.3"
+File[8]=".src/0_Moduli/Global.module:121.11"
 File[9]=".src/Form/AudioForm.class:18.2"
 File[10]=".src/Form/XConfigureVideoDriver.form"
 File[11]=".src/Form/XConfigureAudioDriver.form"
@@ -1905,13 +1946,14 @@ File[12]=".src/Form/XConfigureVideoDriver.class:139.17"
 File[13]=".src/Form/XConfigureAudioDriver.class:171.0"
 File[14]=".src/Form/AudioForm.form"
 File[15]=".src/Form/GeneralOptions.form"
-File[16]=".src/Form/FMain.class:9428.21"
+File[16]=".src/Form/FMain.class:5320.42"
 File[17]=".src/Form/GeneralOptions.class:356.13"
-File[18]=".src/Form/AFiltersCfg.class:302.0"
+File[18]=".src/Form/AFiltersCfg.class:394.0"
 File[19]=".src/Form/Chains.form"
-File[20]=".src/Form/Chains.class:239.3"
+File[20]=".src/Form/Chains.class:149.51"
 File[21]=".src/Form/AddUriForm.form"
 File[22]=".src/Form/AFiltersCfg.form"
+Active=23
 File[23]=".src/Form/AllOptions.form"
 File[24]=".src/Form/AskName.form"
 File[25]=".src/Form/AudioConvert.form"
@@ -1939,7 +1981,7 @@ File[46]=".src/Form/SubAndOsd.class:309.0"
 File[47]=".src/Form/TextDialog.form"
 File[48]=".src/Form/TranslationNeeded.form"
 File[49]=".src/Form/VFiltersCfg.form"
-File[50]=".src/Form/VFiltersCfg.class:283.23"
+File[50]=".src/Form/VFiltersCfg.class:189.0"
 File[51]=".src/Form/Xt7Egg.form"
 File[52]=".src/Form/zzzFake.form"
 File[53]=".src/Classi/StartClass.class:21.2"
@@ -1961,7 +2003,7 @@ File[68]=".src/Form/AudioConvert.class:20.24"
 File[69]=".src/Classi/mpris.class:197.72"
 File[70]=".src/Form/zzzFake.class:10.17"
 File[71]=".src/Form/LogWindow.class:55.40"
-File[72]="00_note:88.3"
+File[72]="00_note:41.23"
 File[73]=".src/Classi/WgetClass.class:25.0"
 File[74]=".src/Form/OverlayTrayTip.class:202.0"
 File[75]=".src/Form/FormLyrics.class:165.0"
@@ -1978,7 +2020,10 @@ File[85]=".src/Form/ladspahelper.class:171.0"
 File[86]=".src/Classi/FloatSpinBox.class:167.0"
 File[87]="AA_ToDo:617.21"
 File[88]=".src/0_Moduli/MyDialog.class:53.45"
-Count=88
+File[89]=".src/Form/NewChains.class:10.46"
+Fold[89]=[247,344,361,473,511,575,583,620,633,665,717,732,736,749,754,782,808,813]
+File[90]=".src/Form/NewChains.form"
+Count=90
 
 [Watches]
 Count=4
