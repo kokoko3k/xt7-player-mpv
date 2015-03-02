@@ -61,7 +61,7 @@ Public UserPlaylistsDir As String
 Public pluginmode As Boolean = False 'set various options when is true
 
 Public Sub init()
-  FixFormNames() 'needed with gambas 3.4.1; form names arent set by default!
+  'FixFormNames() 'needed with gambas 3.4.1; form names arent set by default!
   UncommonVideoFilters = "Flash*;*.ts;*.m2v;*.m4v;*.mpeg;*.flv;*.gvi;*.iso;*.fli;*.flv;*.mpg;*.mpv;*.vob;*.viv;*.swf;*.rm;*.rmvb;*.dv;*.3gp;*.qt;*.divx;*.asx;*.ogm;*.ogv;*.oga;*.m4v;*.speex;*.spx;*.wavpack;*.wv;*.trueaudio;*.tta"
   Videofilter = "*.avi;*.mpg;*.mp4;*.mov;*.mkv;*.asf;*.ogm;*.ogv;*.wmv;"
   videofiltername = ("Common Video Files")
@@ -130,42 +130,41 @@ Public Function SavedProfileChanged() As Boolean
 End
 
 
-Public Sub FixFormNames()
-  Try AFiltersCfg.name = "AFiltersCfg"
-  Try AddUriForm.name = "AddUriForm"
-  Try AllOptions.name = "AllOptions"
-  Try AskName.name = "AskName"
-  Try AudioForm.name = "AudioForm"
-  Try Chains.name = "Chains"
-  Try ChooseAspect.name = "ChooseAspect"
-  Try CountDown.name = "CountDown"
-  Try CoverManager.name = "CoverManager"
-  Try DVBTuner.name = "DVBTuner"
-  Try EpgForm.name = "EpgForm"
-  Try FMain.name = "FMain"
-  Try FsForm.name = "FsForm"
-  Try GeneralOptions.name = "GeneralOptions"
-  Try HotKeyGrab.name = "HotKeyGrab"
-  Try HotKeys.name = "HotKeys"
-  Try LogWindow.name = "LogWindow"
-  Try MyAskName.name = "MyAskName"
-  Try MyQuestion.name = "MyQuestion"
-  Try OpenSubtitesForm.name = "OpenSubtitesForm"
-  Try OverlayTrayTip.name = "OverlayTrayTip"
-  Try ProfileManager.name = "ProfileManager"
-  Try RealtimeForm.name = "RealtimeForm"
-  Try Searchfields.name = "Searchfields"
-  Try ServiceForm.name = "ServiceForm"
-  Try SubAndOsd.name = "SubAndOsd"
-  Try TextDialog.name = "TextDialog"
-  Try TranslationNeeded.name = "TranslationNeeded"
-  Try VFiltersCfg.name = "VFiltersCfg"
-  Try VideoEqualizer.name = "VideoEqualizer"
-  Try XConfigureAudioDriver.name = "XConfigureAudioDriver"
-  Try XConfigureVideoDriver.name = "XConfigureVideoDriver"
-  Try Xt7Egg.name = "Xt7Egg"
-  Try zzzFake.name = "zzzFake"
-End
+' Public Sub FixFormNames()
+'   Try AFiltersCfg.name = "AFiltersCfg"
+'   Try AddUriForm.name = "AddUriForm"
+'   Try AskName.name = "AskName"
+'   Try AudioForm.name = "AudioForm"
+'   Try Chains.name = "Chains"
+'   Try ChooseAspect.name = "ChooseAspect"
+'   Try CountDown.name = "CountDown"
+'   Try CoverManager.name = "CoverManager"
+'   Try DVBTuner.name = "DVBTuner"
+'   Try EpgForm.name = "EpgForm"
+'   Try FMain.name = "FMain"
+'   Try FsForm.name = "FsForm"
+'   Try GeneralOptions.name = "GeneralOptions"
+'   Try HotKeyGrab.name = "HotKeyGrab"
+'   Try HotKeys.name = "HotKeys"
+'   Try LogWindow.name = "LogWindow"
+'   Try MyAskName.name = "MyAskName"
+'   Try MyQuestion.name = "MyQuestion"
+'   Try OpenSubtitesForm.name = "OpenSubtitesForm"
+'   Try OverlayTrayTip.name = "OverlayTrayTip"
+'   Try ProfileManager.name = "ProfileManager"
+'   Try RealtimeForm.name = "RealtimeForm"
+'   Try Searchfields.name = "Searchfields"
+'   Try ServiceForm.name = "ServiceForm"
+'   Try SubAndOsd.name = "SubAndOsd"
+'   Try TextDialog.name = "TextDialog"
+'   Try TranslationNeeded.name = "TranslationNeeded"
+'   Try VFiltersCfg.name = "VFiltersCfg"
+'   Try VideoEqualizer.name = "VideoEqualizer"
+'   Try XConfigureAudioDriver.name = "XConfigureAudioDriver"
+'   Try XConfigureVideoDriver.name = "XConfigureVideoDriver"
+'   Try Xt7Egg.name = "Xt7Egg"
+'   Try zzzFake.name = "zzzFake"
+' End
 
 
 

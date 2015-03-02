@@ -6,6 +6,42 @@
   Icon = Picture["xt7-player.png"]
   Persistent = True
   Arrangement = Arrange.Vertical
+  { alloptionsmenu Menu
+    Text = ("alloptionsmenu")
+    Visible = False
+    { GeneralOptionsmenupopup Menu
+      Text = ("General Options")
+      Picture = Picture["icon:/medium/tools"]
+    }
+    { ChainsMenuPopup Menu
+      Text = ("Chains")
+      Picture = Picture["icon:/medium/connect"]
+    }
+    { VideoFiltersMenuPopup Menu
+      Text = ("Video Filters")
+      Picture = Picture["icon:/medium/video"]
+    }
+    { VideoDriversMenuPopup Menu
+      Text = ("Video Drivers")
+      Picture = Picture["icon:/medium/video"]
+    }
+    { AudioFiltersMenuPopup Menu
+      Text = ("Audio Filters")
+      Picture = Picture["icon:/medium/audio"]
+    }
+    { AudioDriversMenuPopup Menu
+      Text = ("Audio Drivers")
+      Picture = Picture["icon:/medium/audio"]
+    }
+    { SubsAndOsdMenuPopup Menu
+      Text = ("Subs and OSD")
+      Picture = Picture["icon:/medium/font"]
+    }
+    { HotKeysMenuPopup Menu
+      Text = ("HotKeys")
+      Picture = Picture["icon:/medium/keyboard"]
+    }
+  }
   { TopMenu Menu
     Text = ("TopMenu")
     Visible = False
@@ -317,7 +353,7 @@
         Text = ("General Options")
         Picture = Picture["icon:/16/options"]
       }
-      { HotkeysMenu Menu
+      { HotkeysMenu2 Menu
         Text = ("HotKeys")
         Picture = Picture["HotKeysSmall.png"]
       }
@@ -679,17 +715,19 @@
       AutoResize = True
       Picture = Picture["pipe.png"]
     }
-    { ConfigureBTN ToolButton DynaGuiToolbar
+    { ConfigureBTN MenuButton DynaGuiToolbar
       Name = "ConfigureBTN"
-      MoveScaled(28,0,4.5714,4.5714)
+      MoveScaled(28,0,7,5)
       Font = Font["1"]
       ToolTip = ("Configuration toolbox")
       AutoResize = True
       Picture = Picture["icon:/22/tools"]
+      Border = False
+      Menu = "alloptionsmenu"
     }
     { TagEditorBtn ToolButton DynaGuiToolbar
       Name = "TagEditorBtn"
-      MoveScaled(33,0,4.5714,4.5714)
+      MoveScaled(40,0,4.5714,4.5714)
       Enabled = False
       Font = Font["1"]
       ToolTip = ("Show/Hide AudioTag editor")
@@ -697,13 +735,13 @@
       Picture = Picture["icon:/22/edit"]
     }
     { FlexSpace PictureBox
-      MoveScaled(38,0,7,4)
+      MoveScaled(45,0,7,4)
       Font = Font["1"]
       Expand = True
     }
     { ShowAudioEq ToolButton DynaGuiToolbar
       Name = "ShowAudioEq"
-      MoveScaled(46,0,4.5714,4.5714)
+      MoveScaled(51,0,4.5714,4.5714)
       Font = Font["1"]
       ToolTip = ("Video Equalizer")
       AutoResize = True
@@ -711,7 +749,7 @@
     }
     { ShowVideoEq ToolButton DynaGuiToolbar
       Name = "ShowVideoEq"
-      MoveScaled(51,0,4.5714,4.5714)
+      MoveScaled(56,0,4.5714,4.5714)
       Font = Font["1"]
       ToolTip = ("Video Equalizer")
       AutoResize = True
@@ -1706,7 +1744,6 @@
       }
       { TagPanel Panel
         MoveScaled(27,3,30,45)
-        Background = Color.ButtonBackground
         Expand = True
         Arrangement = Arrange.Vertical
         Spacing = True

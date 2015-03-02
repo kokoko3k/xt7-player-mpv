@@ -278,6 +278,7 @@ End
 Public Sub DynaGuiToolbar_Click()
 
   Dim ButtonName As String
+  Stop
   If MenuToolBarLocked.checked Then
     Try ButtonName = Last.name
     If (Not Error ) Then
@@ -289,9 +290,9 @@ Public Sub DynaGuiToolbar_Click()
         Case "ConfigureChainsBTN"
           If (Not global.initearlyformsdone) Then InitEarlyForms()
           ConfigureChainsBTN_Click()
-        Case "ConfigureBTN"
-          If (Not global.initearlyformsdone) Then InitEarlyForms()
-          ConfigureBTN_Click()
+        ' Case "ConfigureBTN"
+        '   If (Not global.initearlyformsdone) Then InitEarlyForms()
+        '   ConfigureBTN_Click()
         Case "RealtimeBTN"
           If (Not global.initearlyformsdone) Then InitEarlyForms()
           Global.Center(fmain, realtimeform)
@@ -990,7 +991,6 @@ Public Sub SetStyle_later()
   
   SetSubControlsStyles(AddUriForm)
   SetSubControlsStyles(AfiltersCfg)
-  SetSubControlsStyles(AllOptions)
   SetSubControlsStyles(AskName)
   SetSubControlsStyles(Chains)
   SetSubControlsStyles(CountDown)
@@ -1321,7 +1321,6 @@ Public Sub Form_Close()
   
   Try AFiltersCfg.hide
   Try AddUriForm.hide
-  Try AllOptions.hide
   Try AskName.hide
   Try AudioForm.hide
   Try Chains.hide
@@ -1418,7 +1417,6 @@ Public Sub Form_Close()
   
   Try AFiltersCfg.close
   Try AddUriForm.close
-  Try AllOptions.close
   Try AskName.close
   Try AudioForm.close
   Try Chains.close
@@ -5103,11 +5101,6 @@ End
 
 '-----------------------------------
 
-Public Sub ConfigureBTN_click()
-  
-  AllOptions.show
-  
-End
 
 Public Sub ConfigureChainsBTN_click()
   
@@ -11192,3 +11185,45 @@ Public Sub bDown_Click()
   mplayer.mpv_command(["discnav", "down"])
 End
 
+
+
+Public Sub GeneralOptionsmenupopup_Click()
+  Me.mouse = Mouse.Wait
+  GeneralOptions.show
+  Me.mouse = Mouse.Default
+End
+Public Sub ChainsMenuPopup_Click()
+  Me.mouse = Mouse.Wait
+  Chains.show
+  Me.mouse = Mouse.Default
+End
+Public Sub VideoFiltersMenuPopup_Click()
+  Me.mouse = Mouse.Wait
+  VFiltersCfg.show
+  Me.mouse = Mouse.Default
+End
+Public Sub VideoDriversMenuPopup_Click()
+  Me.mouse = Mouse.Wait
+  XConfigureVideoDriver.show
+  Me.mouse = Mouse.Default
+End
+Public Sub AudioFiltersMenuPopup_Click()
+  Me.mouse = Mouse.Wait
+  AFiltersCfg.show
+  Me.mouse = Mouse.Default
+End
+Public Sub AudioDriversMenuPopup_Click()
+  Me.mouse = Mouse.Wait
+  XConfigureAudioDriver.show
+  Me.mouse = Mouse.Default
+End
+Public Sub SubsAndOsdMenuPopup_Click()
+  Me.mouse = Mouse.Wait
+  SubAndOsd.show
+  Me.mouse = Mouse.Default
+End
+Public Sub HotKeysMenuPopup_Click()
+  Me.mouse = Mouse.Wait
+  HotKeys.show
+  Me.mouse = Mouse.Default
+End
