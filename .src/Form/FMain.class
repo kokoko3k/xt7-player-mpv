@@ -6919,9 +6919,8 @@ Public Sub EditTagModeSwitch1_Click()
     TagEditMode = EditTagModeSwitch1.Checked
     If TagEditMode Then
       ShowAudioPanel(False)
-      HBox4.background = Color.lighter(Color.Lighter((Hbox4.Parent.background)))
-      ' [GB2:FCOL] HBox4.foreground = Color.black
-      HBox4.Foreground = Color.black
+      HBox4.background = Color.textbackground
+      HBox4.Foreground = Color.TextForeground
       Rightsidepanel.background = rightsidepanel.Parent.Background
       BottomVbox.Reparent(zzzfake)
       tagpanel.Reparent(Rightsidepanel)
