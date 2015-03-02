@@ -131,7 +131,78 @@ Dim outline As String
 End
 
 
-Public Function AddVideoDriver(AlreadyParsedDrivers As String, DriverName As String) As String
+
+Public Function parse_driver(driver_name As String, aTabstrip As Tabstrip) As String
+  Dim obj, child, container_obj As Object
+  Dim tab_index_old As Integer = aTabstrip.index
+  Dim outline As String
+  
+  If Lower(driver_name) Like "custom*" Then
+    Return TextBox5cv.text
+  Endif
+
+  aTabstrip.index = 0
+  While Lower(aTabstrip.Caption) <> driver_name
+    Try aTabstrip.index += 1
+    If Error Then
+      Debug "Could not find the right tab :( "
+      Return ""
+    Endif
+  Wend
+
+  If aTabstrip.Children[0] Is Scrollview Then 
+    container_obj = aTabstrip.Children[0]
+      Else
+    container_obj = aTabstrip
+  Endif
+  
+  For Each obj In container_obj.children
+    If Upper(obj.name) Like Upper(driver_name) & "*" Then
+      For Each child In obj.Children
+        'IF child.name LIKE "*Chk" THEN 
+        If object.type(child) = "CheckBox" Then
+          If child.value Then
+              outline = outline & child.tag
+                If (child.next <> Null) Then
+                  If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
+                    If (object.type(child.next) = "ComboBox") Then
+                      Try outline = outline & Split(child.NEXT.text, " ")[0]
+                        Else
+                      Try outline = outline & child.NEXT.text
+                      If Error Then Debug "an error occurred, please report this message and what you're doing"
+                    Endif
+                  Endif
+                Endif
+                outline = outline & ":"
+          Endif
+        Endif
+      Next
+    Endif
+
+  Next
+  
+  
+  aTabstrip.index = tab_index_old
+  If Right(outline) = ":" Then outline = Left(outline, -1)
+  If Right(outline) = "" Then 
+    Return driver_name
+      Else
+    Return driver_name & "=" & outline 
+  Endif
+
+End
+
+
+
+
+
+
+
+
+
+
+
+Public Function AddDriver(AlreadyParsedDrivers As String, DriverName As String, driverform As Object) As String
   Dim MyDriverName As String = ""
   Dim VoCmdLine As String = ""
 
@@ -139,11 +210,11 @@ Public Function AddVideoDriver(AlreadyParsedDrivers As String, DriverName As Str
   
   MyDriverName = Trim(Upper(Replace(DriverName, "&", "")))
   If mydrivername = "CUSTOM" Then
-    TextBox5.text = TextBox5.text & ","
-    VoCmdline = VoCmdline & TextBox5.text
-    TextBox5.text = Left(TextBox5.text, Len(TextBox5.Text) - 1)
+    TextBox5cv.text = TextBox5cv.text & ","
+    VoCmdline = VoCmdline & TextBox5cv.text
+    TextBox5cv.text = Left(TextBox5cv.text, Len(TextBox5cv.Text) - 1)
       Else
-    ParsedOptions = ParseOptions(Me, MyDriverName & "ParseMe")
+    ParsedOptions = ParseOptions(driverform, MyDriverName & "ParseMe")
     If Trim(ParsedOptions) <> "" Then     'ie The selected driver has some option configured
       VoCmdline = Vocmdline & Lower(MyDriverName) & ":" & ParsedOptions & ","
         Else
@@ -154,14 +225,14 @@ Public Function AddVideoDriver(AlreadyParsedDrivers As String, DriverName As Str
 End
 
 
-Public Function ParsedVideoDriver() As String
+Public Function ParsedVideoDriver(driverform As Object) As String
   Dim driver As Object
   Dim ParsedVoCmdLine As String = ""
   For Each driver In DriversPanel.children
     If Object.Type(driver) = "CheckBox" Then
       If driver.enabled Then
         If driver.value Then
-          ParsedVoCmdLine = AddVideoDriver(ParsedVoCmdLine, driver.text)
+          ParsedVoCmdLine = AddDriver(ParsedVoCmdLine, driver.text, driverform)
         Endif
       Endif
     Endif
@@ -264,15 +335,15 @@ End
 
 Public Sub xvScrollview_Arrange()
 
-  Shell "xvinfo -short | grep -i adaptor" To textboxadaptors.text
-  textboxadaptors.text = ("Adaptors list:\n---------------------------------\n") & textboxadaptors.text
+  Shell "xvinfo -short | grep -i adaptor" To TextBoxAdaptorsxv.text
+  TextBoxAdaptorsxv.text = ("Adaptors list:\n---------------------------------\n") & TextBoxAdaptorsxv.text
 
 End
 
-Public Sub CheckBox2_Click()
-  If Last.value Then checkbox3.value = False
+Public Sub CheckBox2gl_Click()
+  If Last.value Then CheckBox3gl.value = False
 End
 
-Public Sub CheckBox3_Click()
-  If Last.value Then checkbox2.value = False
+Public Sub CheckBox3gl_Click()
+  If Last.value Then CheckBox2gl.value = False
 End

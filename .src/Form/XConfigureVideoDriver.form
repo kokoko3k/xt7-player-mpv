@@ -30,11 +30,11 @@
     { VSplit1 VSplit
       MoveScaled(16,0,59,56)
       { ConfigureTabs TabStrip
-        MoveScaled(2,6,56,36)
+        MoveScaled(3,6,56,36)
         Expand = True
         Arrangement = Arrange.Vertical
         Padding = 4
-        Count = 5
+        Count = 7
         Index = 0
         Text = ("Xv")
         { xvScrollview ScrollView
@@ -45,19 +45,19 @@
           { XvParseMeHbox4 HBox
             MoveScaled(0,1,45,6)
             Padding = 6
-            { XVPortChk2 CheckBox
+            { PortChk2XV CheckBox
               MoveScaled(1,1,15,4)
               #Translate = False
               Tag = "adaptor="
               Text = "Adaptor"
             }
-            { SpinBox10 SpinBox notifyobj
-              Name = "SpinBox10"
+            { SpinBox10Xv SpinBox notifyobj
+              Name = "SpinBox10Xv"
               MoveScaled(18,1,9,4)
               MaxValue = 999
             }
           }
-          { TextBoxAdaptors TextArea
+          { TextBoxAdaptorsxv TextArea
             MoveScaled(0,9,44,15)
             Text = ("TextBox8")
             ReadOnly = True
@@ -66,22 +66,22 @@
         Index = 1
         Text = ("opengl")
         { GLScrollView ScrollView
-          MoveScaled(2,3,47,35)
+          MoveScaled(2,-2,47,35)
           Expand = True
           Arrangement = Arrange.Vertical
           Spacing = True
           Padding = 4
           Border = False
-          { openglParseMeHBox10 HBox
+          { ParseMeHBox10 HBox
             MoveScaled(0,0,45,6)
             Padding = 8
-            { CheckBox3 CheckBox
+            { CheckBox3gl CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "scale="
               Text = "scale"
             }
-            { ComboBox1 ComboBox
+            { ComboBox1gl ComboBox
               MoveScaled(19,1,24,4)
               #Translate = False
               Expand = True
@@ -93,7 +93,7 @@
           { openglParseMeHBox2 HBox
             MoveScaled(0,7,45,6)
             Padding = 8
-            { CheckBox2 CheckBox
+            { CheckBox2gl CheckBox
               MoveScaled(1,1,20,4)
               #Translate = False
               Tag = "scale=spline36:scale-down=mitchell:dither-depth=auto:fbo-format=rgba16:fancy-downscaling:sigmoid-upscaling"
@@ -103,7 +103,7 @@
           { openglParseMeHBox3 HBox
             MoveScaled(0,13,45,6)
             Padding = 8
-            { CheckBox6 CheckBox
+            { CheckBox6gl CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "glfinish"
@@ -113,7 +113,7 @@
           { openglParseMeHBox11 HBox
             MoveScaled(0,20,45,6)
             Padding = 8
-            { CheckBox4 CheckBox
+            { CheckBox4gl CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "smoothmotion"
@@ -129,13 +129,13 @@
           { openglParseMeHBox1 HBox
             MoveScaled(0,26,45,6)
             Padding = 8
-            { CheckBox5 CheckBox
+            { CheckBox5gl CheckBox
               MoveScaled(1,1,24,4)
               #Translate = False
               Tag = "smoothmotion-threshold="
               Text = "smoothmotion-threshold"
             }
-            { ComboBox2 ComboBox
+            { ComboBox2gl ComboBox
               MoveScaled(29,1,15,4)
               #Translate = False
               Expand = True
@@ -154,13 +154,13 @@
           { vdpauParseMeHBox1 HBox
             MoveScaled(0,2,45,6)
             Padding = 8
-            { CheckBox21 CheckBox
+            { CheckBox21vdpau CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "sharpen="
               Text = "sharpen"
             }
-            { ComboBox6 ComboBox
+            { ComboBox6vdpau ComboBox
               MoveScaled(19,1,24,4)
               #Translate = False
               Expand = True
@@ -172,13 +172,13 @@
           { vdpauParseMeHBox2 HBox
             MoveScaled(0,8,45,6)
             Padding = 8
-            { CheckBox22 CheckBox
+            { CheckBox22vdpau CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "denoise="
               Text = "denoise"
             }
-            { ComboBox7 ComboBox
+            { ComboBox7vdpau ComboBox
               MoveScaled(19,1,24,4)
               #Translate = False
               Expand = True
@@ -190,14 +190,14 @@
           { vdpauParseMeHBox3 HBox
             MoveScaled(0,14,45,6)
             Padding = 8
-            { CheckBox23 CheckBox
+            { CheckBox23vdpau CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "deint="
               AutoResize = True
               Text = "deint"
             }
-            { ComboBox8 ComboBox
+            { ComboBox8vdpau ComboBox
               MoveScaled(19,1,24,4)
               #Translate = False
               Expand = True
@@ -209,7 +209,7 @@
           { vdpauParseMeHBox4 HBox
             MoveScaled(0,21,45,5)
             Padding = 8
-            { CheckBox24 CheckBox
+            { CheckBox24vdpau CheckBox
               MoveScaled(1,0,18,4)
               #Translate = False
               Tag = "chroma-deint"
@@ -220,7 +220,7 @@
           { vdpauParseMeHBox5 HBox
             MoveScaled(0,27,45,5)
             Padding = 8
-            { CheckBox25 CheckBox
+            { CheckBox25vdpau CheckBox
               MoveScaled(1,0,18,4)
               #Translate = False
               Tag = "pullup"
@@ -230,13 +230,13 @@
           { vdpauParseMeHBox7 HBox
             MoveScaled(0,33,45,6)
             Padding = 8
-            { CheckBox27 CheckBox
+            { CheckBox27vdpau CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "hqscaling="
               Text = "hqscaling"
             }
-            { ComboBox10 ComboBox
+            { ComboBox10vdpau ComboBox
               MoveScaled(19,1,24,4)
               #Translate = False
               Expand = True
@@ -248,12 +248,12 @@
           { vdpauParseMeHBox9 HBox
             MoveScaled(1,40,45,6)
             Padding = 8
-            { CheckBox29 CheckBox
+            { CheckBox29vdpau CheckBox
               MoveScaled(1,1,18,4)
               AutoResize = True
               Text = ("Additional options")
             }
-            { TextBox6 TextBox
+            { TextBox6vdpau TextBox
               MoveScaled(22,1,22,4)
               Mouse = Mouse.Blank
               Expand = True
@@ -262,7 +262,7 @@
         }
         Index = 3
         Text = ("vaapi")
-        { VdPauScrollView2 ScrollView
+        { VaapiScrollview ScrollView
           MoveScaled(-1,0,57,35)
           Expand = True
           Arrangement = Arrange.Vertical
@@ -270,13 +270,13 @@
           { vaapiParseMeHBox16 HBox
             MoveScaled(1,1,45,6)
             Padding = 8
-            { CheckBox36 CheckBox
+            { CheckBox36vaapi CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "scaling="
               Text = "scaling"
             }
-            { ComboBox15 ComboBox
+            { ComboBox15vaapi ComboBox
               MoveScaled(19,1,24,4)
               Expand = True
               ReadOnly = True
@@ -287,13 +287,13 @@
           { vaapiParseMeHBox12 HBox
             MoveScaled(1,8,45,6)
             Padding = 8
-            { CheckBox32 CheckBox
+            { CheckBox32vaapi CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "deint="
               Text = "deint"
             }
-            { ComboBox13 ComboBox
+            { ComboBox13vaapi ComboBox
               MoveScaled(19,1,24,4)
               #Translate = False
               Expand = True
@@ -305,7 +305,7 @@
           { vaapiParseMeHBox14 HBox
             MoveScaled(1,15,45,6)
             Padding = 8
-            { CheckBox1 CheckBox
+            { CheckBox1vaapi CheckBox
               MoveScaled(1,1,17,4)
               #Translate = False
               Tag = "scaled-osd"
@@ -314,19 +314,28 @@
           }
         }
         Index = 4
-        Text = ("Custom")
-        { Label5 Label
-          MoveScaled(2,1,36,4)
-          Text = (" Custom Driver(s) options, \"-vo \" is implicit.")
-        }
-        { HBox2 HBox
-          MoveScaled(1,6,48,6)
-          Padding = 6
-          { TextBox5 TextBox
-            MoveScaled(1,1,48,4)
-            Expand = True
+        Text = ("Custom video")
+        { CustomVideoScrollview ScrollView
+          MoveScaled(1,1,49,25)
+          Expand = True
+          Border = False
+          { Label5 Label
+            MoveScaled(1,0,36,4)
+            Text = (" Custom Driver(s) options, \"-vo \" is implicit.")
+          }
+          { HBox2 HBox
+            MoveScaled(0,5,48,6)
+            Padding = 6
+            { TextBox5cv TextBox
+              MoveScaled(1,1,48,4)
+              Expand = True
+            }
           }
         }
+        Index = 5
+        Text = ("x11")
+        Index = 6
+        Text = ("null")
         Index = 0
       }
       { DriverDescription TextArea
@@ -396,7 +405,7 @@
           Name = "CustomBTN"
           MoveScaled(1,38,11,4)
           Tag = "\tWrite Your own driver options;\n\tEg: Xv:port=306,GL:yuv=3:kscale=3\n\n\n"
-          Text = ("Custom")
+          Text = ("Custom video")
         }
       }
     }

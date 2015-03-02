@@ -101,6 +101,69 @@ Public Sub AudioDriverList_MouseDown()
   AudioDriverList_Click()
 End
 
+Public Function parse_driver(driver_name As String, aTabstrip As Tabstrip) As String
+  Dim obj, child, container_obj As Object
+  Dim tab_index_old As Integer = aTabstrip.index
+  Dim outline As String
+  
+  If Lower(driver_name) Like "custom*" Then
+    Return TextBox5customaudio.text
+  Endif
+
+  aTabstrip.index = 0
+  While Lower(aTabstrip.Caption) <> driver_name
+    Try aTabstrip.index += 1
+    If Error Then
+      Debug "Could not find the right tab :( "
+      Return ""
+    Endif
+  Wend
+
+  If aTabstrip.Children[0] Is Scrollview Then 
+    container_obj = aTabstrip.Children[0]
+      Else
+    container_obj = aTabstrip
+  Endif
+  
+  For Each obj In container_obj.Children
+    If Upper(obj.name) Like Upper(driver_name) & "*" Then
+      For Each child In obj.Children
+        'IF child.name LIKE "*Chk" THEN 
+        If object.type(child) = "CheckBox" Then
+          If child.value Then
+              outline = outline & child.tag
+                If (child.next <> Null) Then
+                  If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
+                    If child.NEXT.text Like "*" & gb.tab & "*" Then
+                      outline = outline & Split(child.NEXT.text, gb.tab)[0]
+                        Else
+                      outline = outline & child.NEXT.text
+                    Endif
+                  Endif
+                Endif
+                outline = outline & ":"
+          Endif
+        Endif
+      Next
+    Endif
+  Next
+
+  aTabstrip.index = tab_index_old
+  If Right(outline) = ":" Then outline = Left(outline, -1)
+  If Right(outline) = "" Then 
+    Return driver_name
+      Else
+    Return driver_name & "=" & outline 
+  Endif
+
+End
+
+
+
+
+
+
+
 Public Function ParseOptions(TheContainer As Object, TheOptionKeyword As String) As String
 'This function will parse a gui and return a commandline.
 'The function will parse the objects that:
@@ -112,6 +175,7 @@ Public Function ParseOptions(TheContainer As Object, TheOptionKeyword As String)
 
 Dim obj, child As Object
 Dim outline As String = ""
+Dim t0 As Float = Timer()
   For Each obj In TheContainer.controls
     If Upper(obj.name) Like Upper(TheOptionKeyword) & "*" Then
       For Each child In obj.Children
@@ -134,6 +198,7 @@ Dim outline As String = ""
       Next
     Endif
   Next
+Debug Timer() - t0
   If outline Like "*:" Then outline = Left(outline, Len(outline) - 1)
   Return outline
 End
@@ -153,17 +218,17 @@ End
 
 Public Sub PcmFileOpen_Click()
     If Dialog.SaveFile() Then Return
-    textbox8.text = "\"" & myDialog.Path & "\""
+    TextBox8pcm.text = "\"" & myDialog.Path & "\""
 End
 
-Public Function ParsedAudioDriver() As String
+Public Function ParsedAudioDriver(driverform As Object) As String
   Dim driver As Object
   Dim ParsedAoCmdLine As String = ""
   For Each driver In DriversPanel.children
     If Object.Type(driver) = "CheckBox" Then
       If driver.enabled Then
         If driver.value Then
-          ParsedAoCmdLine = AddAudioDriver(ParsedAoCmdLine, driver.text)
+          ParsedAoCmdLine = AddDriver(ParsedAoCmdLine, driver.text, driverform)
         Endif
       Endif
     Endif
@@ -178,19 +243,18 @@ End
 
 
 
-Public Function AddAudioDriver(AlreadyParsedDrivers As String, DriverName As String) As String
+Public Function AddDriver(AlreadyParsedDrivers As String, DriverName As String, driverform As Object) As String
   Dim MyDriverName As String = ""
   Dim AoCmdLine As String = ""
-
   Dim ParsedOptions As String = ""
   
   MyDriverName = Trim(Upper(Replace(DriverName, "&", "")))
   If mydrivername = "CUSTOM" Then
-    TextBox5.text = TextBox5.text & ","
-    AoCmdline = AoCmdline & TextBox5.text
-    TextBox5.text = Left(TextBox5.text, Len(TextBox5.Text) - 1)
+    TextBox5customaudio.text = TextBox5customaudio.text & ","
+    AoCmdline = AoCmdline & TextBox5customaudio.text
+    TextBox5customaudio.text = Left(TextBox5customaudio.text, Len(TextBox5customaudio.Text) - 1)
       Else
-    ParsedOptions = ParseOptions(Me, MyDriverName & "ParseMe")
+    ParsedOptions = ParseOptions(DriverForm, MyDriverName & "ParseMe")
     If Trim(ParsedOptions) <> "" Then     'ie The selected driver has some option configured
       AoCmdline = Aocmdline & Lower(MyDriverName) & ":" & ParsedOptions & ","
         Else

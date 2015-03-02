@@ -34,7 +34,7 @@
         MoveScaled(1,1,59,38)
         Expand = True
         Arrangement = Arrange.Vertical
-        Count = 5
+        Count = 6
         Index = 0
         Text = ("Alsa")
         { AlsaParseMeHbox1 HBox
@@ -66,7 +66,7 @@
             Tag = "mixer-index="
             Text = "mixer-index"
           }
-          { SpinBox1 SpinBox
+          { SpinBox1Alsa SpinBox
             MoveScaled(34,1,9,4)
             MaxValue = 10
           }
@@ -76,13 +76,13 @@
         { JackParseMeHBox8 HBox
           MoveScaled(1,1,45,6)
           Padding = 8
-          { CheckBox18 CheckBox
+          { CheckBox18jack CheckBox
             MoveScaled(1,2,17,4)
             #Translate = False
             Tag = "port="
             Text = "Port"
           }
-          { TextBox3 TextBox
+          { TextBox3jack TextBox
             MoveScaled(19,1,22,4)
             #Translate = False
           }
@@ -90,13 +90,13 @@
         { JackParseMeHBox1 HBox
           MoveScaled(1,7,45,6)
           Padding = 8
-          { CheckBox1 CheckBox
+          { CheckBox1jack CheckBox
             MoveScaled(1,2,17,4)
             #Translate = False
             Tag = "name="
             Text = "Name"
           }
-          { TextBox4 TextBox
+          { TextBox4jack TextBox
             MoveScaled(19,1,22,4)
             #Translate = False
             Text = "mpv"
@@ -105,14 +105,14 @@
         Index = 2
         Text = ("Pulse")
         { PulseParseMeHbox1 VBox
-          MoveScaled(2,3,45,13)
+          MoveScaled(2,2,45,13)
           Padding = 10
-          { PulseDriverChk2 CheckBox
+          { PulseDriverChk2pulse CheckBox
             MoveScaled(1,1,29,4)
             #Translate = False
             Text = "host:output sink"
           }
-          { TextBox6 TextBox
+          { TextBox6Alsapulse TextBox
             MoveScaled(1,6,41,4)
           }
         }
@@ -120,13 +120,13 @@
           MoveScaled(1,17,46,6)
           AutoResize = True
           Padding = 6
-          { AlsaDeviceChk3 CheckBox
+          { AlsaDeviceChk3pulse CheckBox
             MoveScaled(1,1,18,4)
             #Translate = False
             Tag = "buffer="
             Text = "buffer"
           }
-          { ComboBox1 ComboBox
+          { ComboBox1pulse ComboBox
             MoveScaled(21,1,24,4)
             #Translate = False
             List = ["native", "100", "250", "500", "750", "1000", "1250", "1500", "1750", "2000"]
@@ -137,13 +137,13 @@
           MoveScaled(1,24,46,6)
           AutoResize = True
           Padding = 6
-          { AlsaDeviceChk4 CheckBox
+          { AlsaDeviceChk4pulse CheckBox
             MoveScaled(1,1,18,4)
             #Translate = False
             Tag = "latency-hacks="
             Text = "latency-hacks"
           }
-          { ComboBox2 ComboBox
+          { ComboBox2pulse ComboBox
             MoveScaled(21,1,24,4)
             #Translate = False
             ReadOnly = True
@@ -157,7 +157,7 @@
           MoveScaled(1,2,45,5)
           Tag = "noestimate"
           Padding = 8
-          { CheckBox3 CheckBox
+          { CheckBox3pcm CheckBox
             MoveScaled(1,1,18,4)
             Tag = "nowaveheader"
             Text = ("NoWaveHeader")
@@ -167,7 +167,7 @@
           MoveScaled(1,8,45,6)
           Tag = "noestimate"
           Padding = 8
-          { CheckBox4 CheckBox
+          { CheckBox4pcm CheckBox
             MoveScaled(1,1,18,4)
             Tag = "append"
             Text = ("append")
@@ -176,12 +176,12 @@
         { PcmParseMeHBox2 HBox
           MoveScaled(1,15,45,6)
           Padding = 8
-          { CheckBox2 CheckBox
+          { CheckBox2pcm CheckBox
             MoveScaled(1,0,17,4)
             Tag = "file="
             Text = ("File")
           }
-          { TextBox8 TextBox
+          { TextBox8pcm TextBox
             MoveScaled(20,0,19,4)
             Expand = True
           }
@@ -191,7 +191,7 @@
           }
         }
         Index = 4
-        Text = ("Custom")
+        Text = ("Custom audio")
         { Label5 Label
           MoveScaled(2,1,36,4)
           Text = (" Custom Driver(s) options, \"-ao \" is implicit.")
@@ -200,11 +200,13 @@
           MoveScaled(1,6,55,5)
           Margin = True
           Padding = 6
-          { TextBox5 TextBox
+          { TextBox5customaudio TextBox
             MoveScaled(1,1,48,4)
             Expand = True
           }
         }
+        Index = 5
+        Text = ("null")
         Index = 0
       }
       { DriverDescription TextArea
@@ -265,7 +267,7 @@
           Name = "CustomBTN"
           MoveScaled(1,27,11,4)
           Tag = "\tWrite Your own driver options;\n\tEg: osd,alsa:noblock:device=hw=0.3,jack\n\n"
-          Text = ("Custom")
+          Text = ("Custom audio")
         }
       }
     }

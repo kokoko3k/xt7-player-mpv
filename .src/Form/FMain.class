@@ -991,7 +991,7 @@ Public Sub SetStyle_later()
   SetSubControlsStyles(AddUriForm)
   SetSubControlsStyles(AfiltersCfg)
   SetSubControlsStyles(AskName)
-  SetSubControlsStyles(Chains)
+  SetSubControlsStyles(NewChains)
   SetSubControlsStyles(CountDown)
   SetSubControlsStyles(CoverManager)
   SetSubControlsStyles(HotkeyGrab)
@@ -999,8 +999,8 @@ Public Sub SetStyle_later()
   SetSubControlsStyles(SearchFields)
   SetSubControlsStyles(TextDialog)
   SetSubControlsStyles(VfiltersCfg)
-  SetSubControlsStyles(XConfigureAudioDriver)
-  SetSubControlsStyles(XConfigureVideoDriver)
+  ' SetSubControlsStyles(XConfigureAudioDriver)
+  ' SetSubControlsStyles(XConfigureVideoDriver)
   
   covermanager.ResizeShadowTemplate(generaloptions.IconWidthCombobox.text)
   
@@ -1322,7 +1322,7 @@ Public Sub Form_Close()
   Try AddUriForm.hide
   Try AskName.hide
   Try AudioForm.hide
-  Try Chains.hide
+  Try NewChains.hide
   Try ChooseAspect.hide
   Try CountDown.hide
   Try CoverManager.hide
@@ -1344,8 +1344,8 @@ Public Sub Form_Close()
   Try TranslationNeeded.hide
   Try VFiltersCfg.hide
   Try VideoEqualizer.hide
-  Try XConfigureAudioDriver.hide
-  Try XConfigureVideoDriver.hide
+  ' Try XConfigureAudioDriver.hide
+  ' Try XConfigureVideoDriver.hide
   Try Xt7Egg.hide
   Try zzzFake.hide
   Try realtimeform.hide
@@ -1418,7 +1418,7 @@ Public Sub Form_Close()
   Try AddUriForm.close
   Try AskName.close
   Try AudioForm.close
-  Try Chains.close
+  Try NewChains.close
   Try ChooseAspect.close
   Try CountDown.close
   Try CoverManager.close
@@ -1440,8 +1440,8 @@ Public Sub Form_Close()
   Try TranslationNeeded.close
   Try VFiltersCfg.close
   Try VideoEqualizer.close
-  Try XConfigureAudioDriver.close
-  Try XConfigureVideoDriver.close
+  ' Try XConfigureAudioDriver.close
+  ' Try XConfigureVideoDriver.close
   Try Xt7Egg.close
   Try realtimeform.close
   Try DBus.Session.Unregister(mpris)
@@ -2389,14 +2389,16 @@ Private Sub user_options() As Collection
   Dim name As String
   
   'initialize uninitialized forms and load settings
-  XConfigureVideoDriver.FirstLoadIfNeeded()
-  XConfigureAudioDriver.FirstLoadIfNeeded()  
+  ' XConfigureVideoDriver.FirstLoadIfNeeded()
+  ' XConfigureAudioDriver.FirstLoadIfNeeded()  
   generaloptions.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
-  Chains.FirstLoadIfNeeded()
+  NewChains.FirstLoadIfNeeded()
 
-  opts["vo"] = XConfigureVideoDriver.ParsedVideoDriver()
-  opts["ao"] = XConfigureAudioDriver.ParsedAudioDriver()
+  opts["vo"] = NewChains.parse_drivers(False) 'XConfigureVideoDriver.ParsedVideoDriver()
+  opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
+
+  
 
   For Each opt In generaloptions.Parse()
     If opt.data = "" Then opt.data = Chr(8)
@@ -2408,8 +2410,9 @@ Private Sub user_options() As Collection
   For Each opt In SubAndOsd.ParseSubGui()
     opts[opt.name] = opt.data
   Next
-  opts["vf-add"] = Chains.ParsedChain("video")
-  opts["af-add"] = Chains.ParsedChain("audio")
+  opts["vf-add"] = NewChains.parse_filters(False)
+  opts["af-add"] = NewChains.parse_filters(True)
+  
   
   opt.data = GeneralOptions.AudioLangList.text
   If Trim(opt.data) <> "" Then opts["alang"] = opt.data
@@ -4316,23 +4319,21 @@ Public Sub timerscroll_timer()
 End
 
 Public Sub MenuVideoAudioChains_Click()
-  
   If (Not global.initearlyformsdone) Then InitEarlyForms()
-  Chains.show
-  
+  NewChains.show
 End
 
 Public Sub MenuVideoDriver_Click()
   
   If (Not global.initearlyformsdone) Then InitEarlyForms()
-  XConfigureVideoDriver.Show
+  NewChains.show_video_drivers()
   
 End
 
 Public Sub MenuAudioDriver_Click()
   
   If (Not global.initearlyformsdone) Then InitEarlyForms()
-  XConfigureAudioDriver.show
+  NewChains.show_audio_drivers()
   
 End
 
@@ -4395,14 +4396,14 @@ End
 Public Sub MenuConfigureVideoFilters_Click()
   
   If (Not global.initearlyformsdone) Then InitEarlyForms()
-  VFiltersCfg.show
+  NewChains.show_video_filters()
   
 End
 
 Public Sub MenuConfigureAudioFilters_Click()
   
   If (Not global.initearlyformsdone) Then InitEarlyForms()
-  AFiltersCfg.show
+  NewChains.show_audio_filters()
   
 End
 
@@ -6752,14 +6753,12 @@ Public Sub ShowVideoEq_Click()
 End
 
 Public Sub ShowAudioEq_Click()
-
-  If (Not AFiltersCfg.visible) Then
-    AFiltersCfg.show
-    AFiltersCfg.ShowFilterConfiguration("equalizer")
-  Else
-    AFiltersCfg.hide
-  Endif
-  
+  If NewChains.visible Then
+    NewChains.hide
+      Else
+    NewChains.show_audio_filters()                
+    NewChains.show_audio_filter("equalizer")
+  Endif  
 End
 
 Public Sub MenuHomepage_Click()
@@ -10404,6 +10403,7 @@ Public Sub PictureBox1_MouseMove()
 End
 
 Public Sub VideoAreaGroup_MouseMove()
+
    videobox.SetFocus()  
    outerbox.mouse = Mouse.default
    videobox.mouse = Mouse.default
@@ -11197,27 +11197,27 @@ Public Sub GeneralOptionsmenupopup_Click()
 End
 Public Sub ChainsMenuPopup_Click()
   Me.mouse = Mouse.Wait
-  Chains.show
+  NewChains.show
   Me.mouse = Mouse.Default
 End
 Public Sub VideoFiltersMenuPopup_Click()
   Me.mouse = Mouse.Wait
-  VFiltersCfg.show
+  NewChains.show_video_filters()
   Me.mouse = Mouse.Default
 End
 Public Sub VideoDriversMenuPopup_Click()
   Me.mouse = Mouse.Wait
-  XConfigureVideoDriver.show
+  NewChains.show_video_drivers()
   Me.mouse = Mouse.Default
 End
 Public Sub AudioFiltersMenuPopup_Click()
   Me.mouse = Mouse.Wait
-  AFiltersCfg.show
+  NewChains.show_audio_filters()
   Me.mouse = Mouse.Default
 End
 Public Sub AudioDriversMenuPopup_Click()
   Me.mouse = Mouse.Wait
-  XConfigureAudioDriver.show
+    NewChains.show_audio_drivers()
   Me.mouse = Mouse.Default
 End
 Public Sub SubsAndOsdMenuPopup_Click()

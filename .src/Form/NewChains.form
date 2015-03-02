@@ -3,6 +3,7 @@
 { Form Form
   MoveScaled(0,0,102,80)
   Icon = Picture["icon:/small/connect"]
+  Persistent = True
   Arrangement = Arrange.Vertical
   Spacing = True
   Margin = True
@@ -290,15 +291,6 @@
       Background = Color.TextBackground
       Arrangement = Arrange.Vertical
     }
-    { TabStrip_drivers_video TabStrip
-      MoveScaled(30,0,56,47)
-      #Translate = False
-      Expand = True
-      TextFont = Font["-2"]
-      Index = 0
-      Text = "tabstrip1"
-      Index = 0
-    }
     Index = 3
     Text = ("Audio Drivers")
     Picture = Picture["icon:/small/audio"]
@@ -306,15 +298,6 @@
       MoveScaled(0,0,30,50)
       Background = Color.TextBackground
       Arrangement = Arrange.Vertical
-    }
-    { TabStrip_drivers_audio TabStrip
-      MoveScaled(31,1,56,47)
-      #Translate = False
-      Expand = True
-      TextFont = Font["-2"]
-      Index = 0
-      Text = "tabstrip1"
-      Index = 0
     }
     Index = 0
   }

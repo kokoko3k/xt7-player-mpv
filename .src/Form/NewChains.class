@@ -63,25 +63,27 @@ End
 Private Sub Init_drivers_audio()
   Dim drivers_audio_list As New String[]
   Dim driver As String
-  drivers_audio_list = ["alsa", "pulse", "jacl", "pcm", "custom", "null"]
+  drivers_audio_list = ["alsa", "pulse", "jack", "pcm", "custom audio", "null"]
   For Each driver In drivers_audio_list
     draw_list_item(drivers_audio_container, driver)
   Next
-  drivers_audio_container.tag = TabStrip_drivers_audio
-  fill_tabstrip(TabStrip_drivers_audio, drivers_audio_container)
-  'draw_drivers_audio_cfg()
+  tabstrip1.index = tabs.Find("drivers_audio")
+
+  XConfigureAudioDriver.ConfigureTabs.reparent(tabstrip1)
+  
+  drivers_audio_container.tag = XConfigureAudioDriver.ConfigureTabs
 End
 
 Private Sub Init_drivers_video()
   Dim drivers_video_list As New String[]
   Dim driver As String
-  drivers_video_list = ["opengl", "xv", "vdpau", "vaapi", "x11", "custom", "null"]
+  drivers_video_list = ["opengl", "xv", "vdpau", "vaapi", "x11", "custom video", "null"]
   For Each driver In drivers_video_list
     draw_list_item(drivers_video_container, driver)
   Next
-  drivers_video_container.tag = TabStrip_drivers_video
-  fill_tabstrip(TabStrip_drivers_video, drivers_video_container)
-  'draw_drivers_video_cfg()
+  tabstrip1.index = tabs.Find("drivers_video")
+  XConfigureVideoDriver.ConfigureTabs.reparent(tabstrip1)  
+  drivers_video_container.tag = XConfigureVideoDriver.ConfigureTabs
 End
 
 
@@ -110,7 +112,7 @@ Dim t As Integer
 
     'a checkbox to enable/disable the item
     filter_checkbox = New CheckBox(filter_box) As "filter_checkbox"
-      filter_checkbox.name = item_name & "_checkbox"
+      filter_checkbox.name = item_name & "_checkbox_" & item_container.name
       filter_checkbox.text = Null
       filter_checkbox.autoresize = True
       t = filter_checkbox.w
@@ -137,19 +139,33 @@ End
 
 
 Private Sub ReDraw_Ordered(item_container As Scrollview, chain_items As String[])
-  Dim i As Integer
+  Dim i, j As Integer
   Dim f_name As String
   Dim f_obj As Object
-
+  Dim childrens As New Object[]
+  
+  For i = 0 To item_container.Children.count - 1
+    childrens.add(item_container.Children[i])
+  Next 'i
   
   For i = item_container.Children.count - 1 DownTo 0
     If item_container.Children[i] Is Hbox Then item_container.Children[i].reparent(Me)
   Next 'i
   
-  For Each f_name In chain_items
-    f_obj = Me.Controls[f_name]
-    f_obj.reparent(item_container)
+  ' For Each f_name In chain_items
+  '   f_obj = Me.Controls[f_name]
+  '   f_obj.reparent(item_container)
+  ' Next
+  For i = 0 To chain_items.max
+    For j = 0 To childrens.Max
+      If childrens[j].name = chain_items[i] Then
+         childrens[j].reparent(item_container)
+         childrens.Delete(j)
+         Break
+      Endif
+    Next
   Next
+
 
 End
 
@@ -199,15 +215,15 @@ End
 
 
 Public Sub filter_label_MouseDown()
-  highlight_item(Last)
+  select_item(Last)
 End
 
 Public Sub filter_checkbox_Click()
-    highlight_item(Last)
+    select_item(Last)
 End
 
 
-Private Sub highlight_item(item As Object)
+Private Sub select_item(item As Object)
   Dim bro As Object
   For Each bro In item.parent.parent.Children
     If bro Is HBox Then
@@ -220,24 +236,41 @@ Private Sub highlight_item(item As Object)
   Select_tabstrip_item(item.parent.name, item.parent.parent.tag)
 End
 
+Public Sub show_audio_filter(filter_name As String)
+  Select_tabstrip_item(filter_name, tabstrip_filters_audio)
+End
 
+Public Sub show_video_filter(filter_name As String)
+  Select_tabstrip_item(filter_name, tabstrip_filters_video)
+End
 
 
 Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
+  Dim item_tab As Integer = -1
   Dim i As Integer
-  Try aTabstrip.index = aTabstrip.Tag.Find(Lower(item_name))
+  Try item_tab = aTabstrip.Tag.Find(Lower(item_name))
+  If item_tab >= 0 Then 
+    aTabstrip.index = item_tab
+      Else
+    For i = 0 To aTabstrip.count - 1
+      aTabstrip.index = i
+      If Lower(aTabstrip.caption) = item_name Then Return
+    Next
+  Endif
+  
 End
 
 
 Public Sub Form_Show()
-  Init()
+  global.Center(fmain, Me)
 End
 
 Public Sub Init()
-  Init_filters_audio()
-  Init_filters_video()
   Init_drivers_audio()
   Init_drivers_video()
+  Init_filters_audio()
+  Init_filters_video()
+  tabstrip1.index = 0
   initdone = True
 End
 
@@ -471,6 +504,42 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
 End
 
+Private Function parse_video_filter_custom() As String
+'will parse the filter which the user can freely configure.
+  Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
+                              'in the tab, it is created in the fillfilters function
+  Dim PanelObject As Object 'the Hbox which contains a single parameter
+                            'it is created by DrawFiltersGui function
+  Dim SubObject As Object
+  Dim customfilter As String = ""
+  
+  For Each MyScrollview In Tabstrip1.Children
+    For Each PanelObject In MyScrollView.Children
+      If PanelObject.name Like "*HBox" Then
+        For Each SubObject In PanelObject.Children
+          If Not (SubObject Is Label) Then
+            If (SubObject Is Checkbox) Then
+              If subobject.value = True Then
+                If subobject.next Is Textbox Then
+                  If Trim(subobject.NEXT.text) <> "" Then
+                    If customfilter = "" Then
+                      customfilter = customfilter & subobject.NEXT.text
+                        Else
+                      customfilter = customfilter & "," & subobject.NEXT.text
+                    Endif
+                  Endif
+                Endif
+              Endif
+            Endif
+          Endif
+        Next
+      Endif
+    Next
+  Next
+  Return customfilter
+End
+
+
 Private Function parse_audio_filter_custom() As String
 'will parse the filter which the user can freely configure.
   Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
@@ -507,6 +576,68 @@ Private Function parse_audio_filter_custom() As String
   Return customfilter
 End
 
+Private Function Parse_video_filter(Filtername As String) As String
+  'will parse the tabstrip at filtername index and output
+  'a commandline to add a filter in mplayer
+  Dim ParsedFilter As String = Lower(FilterName)
+  Dim TmpString As String = ""
+  Dim MyScrollView As Object   'the scrollview present in every tab, parent of all the controls in the tab
+  Dim PanelObject As Object 'the Hbox which contains a single parameter it Is Created by DrawFiltersGui
+  Dim SubObject As Object
+  Dim aTabstrip As Tabstrip = TabStrip_filters_video
+  Dim parse As Boolean = True
+
+  'Find the ParsedFilter Tab and activate it:
+  aTabstrip.index = Global.TabIndexByName(ParsedFilter, aTabstrip)
+  If Parsedfilter Like "customvideo*" Then
+    Return Parse_video_filter_Custom()
+      Else
+    'Discend the Tab objects,parse them and build the commandline
+    'hierarchy is:
+    'Tabstrip -> scrollviews -> Panels -> ParameterObjects
+    For Each MyScrollview In aTabstrip.Children
+      For Each PanelObject In MyScrollView.Children
+        If PanelObject.name Like "*HBox" Then
+          For Each SubObject In PanelObject.Children
+            If Not (SubObject Is Label) Then
+              If Not ((SubObject Is Checkbox) Or (subobject.name Like "NOPARSE*")) Then
+                parse = True
+                  Else
+                parse = SubObject.value '(is a checkbox,parse only if it is checked)
+              Endif
+              If SubObject.text <> "" Then
+                If parse Then TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0] & ":")
+                  Else
+                If parse Then TmpString = global.RemoveShortcut(TmpString & ":")
+              Endif
+            Endif
+          Next
+        Endif
+      Next
+    Next
+    TmpString = Left(Tmpstring, Len(TmpString) - 1)
+    ' If ParsedFilter Like "pp*" Then 
+    '   ParsedFilter = "pp"
+    '     Else If (Lower(ParsedFilter) = "myexpand") Then 'gbr3 workaround
+    '       parsedfilter = "expand"                       'gbr3 workaround
+    ' Endif
+  '   If parsedfilter = "stereo3d" Then
+  '     Debug "Adding scale filter after stereo3d filter to avoid problems"
+  '     Return ParsedFilter & "=" & TmpString & ",scale"
+  '       Else
+  '     Return ParsedFilter & "=" & TmpString
+  '   Endif
+  ' Endif
+    
+    
+    If tmpstring <> "" Then
+      Return ParsedFilter & "=" & TmpString
+        Else
+      Return ParsedFilter
+    Endif
+
+  Endif
+End
 
 
 Private Function Parse_audio_filter(Filtername As String) As String
@@ -523,8 +654,7 @@ Private Function Parse_audio_filter(Filtername As String) As String
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
   If ParsedFilter = "equalizer" Then
-    'Return ParseEq()                          'fixme newchains
-    Return ""
+    Return ParseEq()
   Else If Parsedfilter Like "customaudio*" Then
 
     Return parse_audio_filter_custom()
@@ -574,11 +704,51 @@ Private Function Parse_audio_filter(Filtername As String) As String
 End
 
 Public Sub ApplyBTN_Click()
-  Dim audio As Boolean = True
-  Debug parse_filters(audio = True)
-  
-
+  Fmain.apply
+  ' Dim audio As Boolean = True
+  ' ' Debug parse_filters(audio = True)
+  ' ' Debug parse_filters(audio = False)
+  ' Debug parse_drivers(audio = True)
+  ' Debug parse_drivers(audio = False)
 End
+
+Public Sub oldparse_drivers(audio As Boolean) As String
+  If audio Then 
+    Return XConfigureAudioDriver.ParsedAudioDriver(Me)
+      Else
+    Return XConfigureVideoDriver.ParsedVideoDriver(Me)  
+  Endif
+End
+
+Public Function parse_drivers(audio As Boolean) As String
+  Dim item_box As Hbox
+  Dim cBox As Checkbox 
+  Dim item_name As String
+  Dim drivers As String
+  Dim item_container As Object
+  If audio Then 
+    item_container = drivers_audio_container
+      Else
+    item_container = drivers_video_container
+  Endif
+  
+  For Each item_box In item_container.children
+    item_name = item_box.name
+    cBox = Me.Controls[item_name & "_checkbox_" & item_container.name]  
+    If cBox.value = True Then
+      If audio Then 
+        drivers &= XconfigureAudioDriver.parse_driver(item_name, item_container.tag) & ","
+          Else
+        drivers &= XconfigureVideoDriver.parse_driver(item_name, item_container.tag) & ","
+      Endif
+    Endif
+  Next
+  If Right(drivers) = "," Then drivers = Left(drivers, "-1")
+  Return drivers
+  
+End
+
+
 
 
 Public Function parse_filters(audio As Boolean) As String
@@ -588,17 +758,21 @@ Public Function parse_filters(audio As Boolean) As String
   Dim filters As String
   Dim filters_container As Scrollview
   
-  If audio Then filters_container = filters_audio_container
+  If audio Then 
+    filters_container = filters_audio_container
+      Else
+    filters_container = filters_video_container
+  Endif
 
   For Each item_box In filters_container.children
     
     item_name = item_box.name
-    cBox = Me.Controls[item_name & "_checkbox"]
+    cBox = Me.Controls[item_name & "_checkbox_" & filters_container.name]
     If cBox.value = True Then
       If audio Then 
         filters &= Parse_audio_filter(item_name) & ","
           Else
-        filters &= Parse_audio_filter(item_name) & "," 'fixme newchains; is video_filter
+        filters &= Parse_video_filter(item_name) & "," 
       Endif
     Endif
   Next
@@ -776,9 +950,15 @@ Public Sub SaveBTN_Click()
     drivers_video_order.text &= item.name & Chr(8)
   Next
   savecurrent()
-
 End
 
+
+Public Sub FirstLoadIfNeeded()
+  If Not (alreadyloaded) Then 
+    Alreadyloaded = True
+    MenuLoadDefault_Click()
+  Endif
+End
 
 Public Sub MenuLoadDefault_Click()
   Dim MySettings As New SettingsClass
@@ -831,15 +1011,44 @@ End
 
 
 
-
-
-
-
-
 '--End Save and load functions-----------------------------------
+'Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "drivers_audio"] '<
+
+Public Sub show_audio_drivers()
+  Me.Show
+  tabstrip1.index = tabs.Find("drivers_audio")
+End
+Public Sub show_video_drivers()
+  Me.Show
+  tabstrip1.index = tabs.Find("drivers_video")
+End
+Public Sub show_audio_filters()
+  Me.Show
+  tabstrip1.index = tabs.Find("filters_audio")
+End
+Public Sub show_video_filters()
+  Me.Show
+  tabstrip1.index = tabs.Find("filters_video")
+End
 
 
 
 
 
+Public Sub OkBTN_Click()
 
+  Me.hide
+
+End
+
+Public Sub Form_Open()
+  If Not AlreadyLoaded Then
+    If Not initdone Then 
+      Init()
+      initdone = True
+    Endif
+    MenuLoadDefault_Click()
+    Alreadyloaded = True
+  Endif
+  Global.Center(Fmain, Me)
+End

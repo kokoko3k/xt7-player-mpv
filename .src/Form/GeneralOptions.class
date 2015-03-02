@@ -250,34 +250,34 @@ End
 
 
 
-Public Sub OptionsList_Select()
-  ItemSelection()
-End
+' Public Sub OptionsList_Select()
+'   ItemSelection()
+' End
 
 
-Public Sub OptionsList_Click()
-  ItemSelection()
-End
+' Public Sub OptionsList_Click()
+'   ItemSelection()
+' End
 
-Private Sub ItemSelection()
-
-  Dim caption As String
-
-  If OptionsList.Current.Key = "Chains" Then
-    Chains.show
-  Else If OptionsList.Current.key = "Subtitles" Then
-    SubAndOsd.show
-  Else If OptionsList.Current.key = "Video drivers" Then
-    XConfigureVideoDriver.show
-  Else If OptionsList.Current.key = "Audio drivers" Then
-    XConfigureAudioDriver.show
-  Else
-  'Fire up the tab relative TO the item list by its name:
-      Caption = OptionsList.Current.text
-      TabStrip1.index = Global.TabIndexByName(Caption, Tabstrip1)
-  Endif
-
-End
+' Private Sub ItemSelection()
+' 
+'   Dim caption As String
+' 
+'   If OptionsList.Current.Key = "Chains" Then
+'     Chains.show
+'   Else If OptionsList.Current.key = "Subtitles" Then
+'     SubAndOsd.show
+'   Else If OptionsList.Current.key = "Video drivers" Then
+'     NewChains.show_video_drivers()
+'   Else If OptionsList.Current.key = "Audio drivers" Then
+'     XConfigureAudioDriver.show
+'   Else
+'   'Fire up the tab relative TO the item list by its name:
+'       Caption = OptionsList.Current.text
+'       TabStrip1.index = Global.TabIndexByName(Caption, Tabstrip1)
+'   Endif
+' 
+' End
 
 
 Public Struct mpvOption

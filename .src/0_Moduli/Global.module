@@ -19,7 +19,6 @@ Public ALLFilters As String
 Public quotes As String 
 Public aboutmessage As String 
 Public Alternatecolor As Integer 
-Public FromChains As Boolean 
 Public LSyncing As Boolean 
 Public LSyncingMessage As String 
 Public AppName As String 
@@ -78,7 +77,6 @@ Public Sub init()
   quotes = "\""       'double quotes in strings
   aboutmessage = "\n" & ("Xt7-Player-mpv version ") & Application.version & (" by Antonio Orefice.\nxt7player@gmail.com\n\nThanks to Benoît Minisini for Gambas.") & "\n\n" & "I92guboj - Spanish translation \n" & "Wackenroader - Brazilian Portuguese translation \n" & "Shimingzhou - simplified Chinese translation\n" & "Jacky Bamière - French translation\n" & "VictorR2007 - Russian Translation\n" & "SymbianFlo - Testing and 'spiritual' support\n" & "NickiNicki - Bug reports\n" & "Eloaders and all the contributors\nat https://launchpad.net/xt7-player \n" 
   Alternatecolor = &EEEEFF&
-  FromChains = False 'will track if chains form has opened another window
   LSyncing = False 'is true when library is syncing.
   LSyncingMessage = ("Syncing Library, please wait...")
   AppName = "Xt7-Player-mpv"
@@ -437,11 +435,12 @@ Public Sub SaveAllSettings(ProfileName As String, Optional WithLibraryAndPls As 
 
   SaveMandatorySettings(Profilename)
 
-  MySettings.Save(Chains, Global.confpath & "/" & ProfileName)
-  MySettings.Save(XConfigureAudioDriver, Global.confpath & "/" & ProfileName)
-  MySettings.Save(XConfigureVideoDriver, Global.confpath & "/" & ProfileName)
-  MySettings.Save(VFiltersCfg, Global.confpath & "/" & ProfileName)
-  MySettings.Save(AFiltersCfg, Global.confpath & "/" & ProfileName)
+  'MySettings.Save(Chains, Global.confpath & "/" & ProfileName)
+  ' MySettings.Save(XConfigureAudioDriver, Global.confpath & "/" & ProfileName)
+  ' MySettings.Save(XConfigureVideoDriver, Global.confpath & "/" & ProfileName)
+  MySettings.Save(NewChains, Global.confpath & "/" & ProfileName)
+ ' MySettings.Save(VFiltersCfg, Global.confpath & "/" & ProfileName)
+ ' MySettings.Save(AFiltersCfg, Global.confpath & "/" & ProfileName)
   MySettings.Save(SubAndOsd, Global.confpath & "/" & ProfileName)
   MySettings.Save(GeneralOptions, Global.confpath & "/" & ProfileName)
 
@@ -492,9 +491,10 @@ Public Sub ReallyLoadAllSettings()
   If (Not global.initearlyformsdone) Then
     fmain.InitEarlyForms()
   Endif
-  MyForms.Add(Chains)
-  MyForms.Add(XConfigureAudioDriver)
-  MyForms.Add(XConfigureVideoDriver)
+  MyForms.Add(NewChains)
+  ' MyForms.Add(XConfigureAudioDriver)
+  ' MyForms.Add(XConfigureVideoDriver)
+  
   MyForms.Add(SubAndOsd)
   MyForms.Add(GeneralOptions)
   MyForms.Add(VideoEqualizer) 
@@ -535,9 +535,9 @@ Public Sub DelayLoadStates_Timer()
     fmain.InitEarlyForms()
   Endif
   
-  If Not Chains.AlreadyLoaded Then MyForms.Add(Chains)
-  If Not XConfigureAudioDriver.AlreadyLoaded Then MyForms.Add(XConfigureAudioDriver)
-  If Not XConfigureVideoDriver.AlreadyLoaded Then MyForms.Add(XConfigureVideoDriver)
+  If Not NewChains.AlreadyLoaded Then MyForms.Add(NewChains)
+  ' If Not XConfigureAudioDriver.AlreadyLoaded Then MyForms.Add(XConfigureAudioDriver)
+  ' If Not XConfigureVideoDriver.AlreadyLoaded Then MyForms.Add(XConfigureVideoDriver)
   If Not SubAndOsd.AlreadyLoaded Then MyForms.Add(SubAndOsd)
   If Not GeneralOptions.AlreadyLoaded Then MyForms.Add(GeneralOptions)  'viene caricato in allinit_pre, perchè è necessario anche qui? sembra che non carichi le relative impostazioni...
   'searchfields is an early form... MyForms.Add(SearchFields) 
@@ -986,11 +986,11 @@ End
 
 Public Sub ResetApplyBtnColor()
   Try AFiltersCfg.ApplyBTN.Background = color.Default
-  Try Chains.ApplyBTN.Background = color.Default
+  Try NewChains.ApplyBTN.Background = color.Default
   Try GeneralOptions.ApplyBTN.Background = color.Default
   Try VFiltersCfg.ApplyBTN.Background = color.Default
-  Try XConfigureAudioDriver.ApplyBTN.Background = color.Default
-  Try XConfigureVideoDriver.ApplyBTN.Background = color.Default  
+  ' Try XConfigureAudioDriver.ApplyBTN.Background = color.Default
+  ' Try XConfigureVideoDriver.ApplyBTN.Background = color.Default  
   Try SubAndOsd.ApplyBTN.Background = color.default
 End
 
@@ -998,11 +998,11 @@ End
 
 Public Sub RedApplyBtnColor()
   Try AFiltersCfg.ApplyBTN.Background = color.red
-  Try Chains.ApplyBTN.Background = color.red
+  Try NewChains.ApplyBTN.Background = color.red
   Try GeneralOptions.ApplyBTN.Background = color.red
   Try VFiltersCfg.ApplyBTN.Background = color.red
-  Try XConfigureAudioDriver.ApplyBTN.Background = color.red
-  Try XConfigureVideoDriver.ApplyBTN.Background = color.red
+  ' Try XConfigureAudioDriver.ApplyBTN.Background = color.red
+  ' Try XConfigureVideoDriver.ApplyBTN.Background = color.red
   Try SubAndOsd.ApplyBTN.Background = color.red
 End
 

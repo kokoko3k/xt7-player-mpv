@@ -43,7 +43,6 @@ Public Sub Videofilterobj_Click()
          VFiltersCfg.ShowFilterConfiguration(workaroundgb3)
          Me.hide
    Endif
-   global.FromChains = True
 End
 
 Public Sub Audiofilterobj_MouseDrag()
@@ -101,20 +100,11 @@ Public Sub Form_Open()
 End
 
 Public Sub VideoDriverBTN_Click()
-  XConfigureVideoDriver.show
-  Me.hide
-  global.FromChains = True
+  NewChains.show_video_drivers()
 End
 
 Public Sub AudioDriverBTN_Click()
-  XConfigureAudioDriver.show
-  Me.hide
-  global.FromChains = True
-End
-
-Public Sub Button1_Click()
-Stop
-  Debug ParsedChain("audio")
+  NewChains.show_audio_drivers()
 End
 
 Public Sub Form_Close()

@@ -278,6 +278,7 @@ Public Sub Load(TheForm As Object, Filename As String)
   theSettings = ReadedConfFile(Filename)
   
   For Each myobj In TheForm.controls
+    'If myobj.name = "CheckBox2gl" Then Stop
     ' If Lower(myobj.name) Like "*vdpauooverlaycheck*" Then
     '   Stop
     ' Endif
