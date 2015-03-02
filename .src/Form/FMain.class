@@ -2437,20 +2437,24 @@ Private Sub file_options(fullpath As String) As Collection
     opts["ytdl"] = "no"
   Endif
 
-  'for dvd menus, we rely entirely on mpv input until we found a better way to interact with it
-  If Lower(fullpath) Like "dvd://menu*" Then
-    discbox1.visible = True
-    discbox2.visible = True
-    discbox3.visible = True
-    opts["input-cursor"] = "yes"
-    opts["input-vo-keyboard"] = "yes"
-  Else
-    discbox1.visible = False
-    discbox2.visible = False
-    discbox3.visible = False
-    opts["input-cursor"] = "no"
-    opts["input-vo-keyboard"] = "no"
-  Endif 
+  Select Case Lower(fullpath)
+    Case Like "dvb://*"
+      'maybe a bug somewhere in mpv, but without this, cache seek wont work for dvb.
+      opts["hr-seek"] = "yes"
+    Case Like "dvd://menu*"
+      'for dvd menus, we rely entirely on mpv input until we found a better way to interact with it
+      discbox1.visible = True
+      discbox2.visible = True
+      discbox3.visible = True
+      opts["input-cursor"] = "yes"
+      opts["input-vo-keyboard"] = "yes"
+    Case Else
+      discbox1.visible = False
+      discbox2.visible = False
+      discbox3.visible = False
+      opts["input-cursor"] = "no"
+      opts["input-vo-keyboard"] = "no"
+  End Select
 
   generaloptions.FirstLoadIfNeeded()
   If GeneralOptions.ShowVmeterCHK.value Then
