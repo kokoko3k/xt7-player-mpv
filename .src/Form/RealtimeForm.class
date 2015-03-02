@@ -92,7 +92,7 @@ End
 
 
 Public Sub FrameDropCHK_Click()
-  If FrameDropCHK.value Then 
+     If FrameDropCHK.value Then 
     Try FrameDropCombobox_Click()
       Else
     If FMain.FullyLoaded Then FMain.mplayer.set_property_mpv("framedrop", "no", True)
@@ -115,3 +115,15 @@ Public Sub Form_Show()
 
 End
 
+
+Public Sub DeinterlaceChk_Click()
+    If FMain.FullyLoaded Then
+      If FMain.mplayer.ProcessRunningOvr() Then
+        If DeinterlaceChk.value Then 
+          FMain.mplayer.set_property_mpv("deinterlace", "yes", True)
+            Else
+          FMain.mplayer.set_property_mpv("deinterlace", "no", True)
+        Endif
+      Endif
+  Endif
+End

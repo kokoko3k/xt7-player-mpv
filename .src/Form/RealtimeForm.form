@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,62,39)
+  MoveScaled(0,0,62,47)
   Text = ("Realtime Controls")
   Icon = Picture["icon:/16/clock"]
   Stacking = Window.Above
@@ -192,8 +192,20 @@
       MinValue = -100
     }
   }
+  { AlignmentHBox1 HBox
+    MoveScaled(1,29,61,4.1429)
+    ToolTip = ("Mplayer option:\n-ass-force-style Alignment=<align>")
+    Spacing = True
+    Margin = True
+    Padding = 2
+    { DeinterlaceChk CheckBox
+      MoveScaled(1,0,29,4)
+      AutoResize = True
+      Text = ("Deinterlace")
+    }
+  }
   { AlignmentHBox2 HBox
-    MoveScaled(1,30,61,4.1429)
+    MoveScaled(1,35,61,4.1429)
     ToolTip = ("Mplayer option:\n-ass-force-style Alignment=<align>")
     Spacing = True
     Margin = True
@@ -212,6 +224,6 @@
     }
   }
   { Separator1 Separator
-    MoveScaled(12,33,40,2)
+    MoveScaled(11,43,40,2)
   }
 }

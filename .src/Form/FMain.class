@@ -278,7 +278,6 @@ End
 Public Sub DynaGuiToolbar_Click()
 
   Dim ButtonName As String
-  Stop
   If MenuToolBarLocked.checked Then
     Try ButtonName = Last.name
     If (Not Error ) Then
