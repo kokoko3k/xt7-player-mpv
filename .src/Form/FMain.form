@@ -707,14 +707,6 @@
       AutoResize = True
       Picture = Picture["icon:/22/network"]
     }
-    { ConfigureChainsBTN ToolButton DynaGuiToolbar
-      Name = "ConfigureChainsBTN"
-      MoveScaled(22,0,4.5714,4.5714)
-      Font = Font["1"]
-      ToolTip = ("Show/hide chains window")
-      AutoResize = True
-      Picture = Picture["pipe.png"]
-    }
     { ConfigureBTN MenuButton DynaGuiToolbar
       Name = "ConfigureBTN"
       MoveScaled(28,0,7,5)
@@ -722,6 +714,7 @@
       ToolTip = ("Configuration toolbox")
       AutoResize = True
       Picture = Picture["icon:/22/tools"]
+      Arrow = False
       Border = False
       Menu = "alloptionsmenu"
     }

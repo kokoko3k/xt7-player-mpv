@@ -287,9 +287,9 @@ Public Sub DynaGuiToolbar_Click()
           ShowVolBtn2_Click()
         Case "OpenNetworkBTN"
           OpenNetworkBTN_Click()
-        Case "ConfigureChainsBTN"
-          If (Not global.initearlyformsdone) Then InitEarlyForms()
-          ConfigureChainsBTN_Click()
+        ' Case "ConfigureChainsBTN"
+        '   If (Not global.initearlyformsdone) Then InitEarlyForms()
+        '   ConfigureChainsBTN_Click()
         ' Case "ConfigureBTN"
         '   If (Not global.initearlyformsdone) Then InitEarlyForms()
         '   ConfigureBTN_Click()
@@ -5102,11 +5102,11 @@ End
 '-----------------------------------
 
 
-Public Sub ConfigureChainsBTN_click()
-  
-  Chains.show
-  
-End
+' Public Sub ConfigureChainsBTN_click()
+'   
+'   Chains.show
+'   
+' End
 
 '-----------------------------------
 Public Sub PlayListGrid_DblClick()
