@@ -585,8 +585,9 @@ Private Function Parse_video_filter(Filtername As String) As String
   Dim PanelObject As Object 'the Hbox which contains a single parameter it Is Created by DrawFiltersGui
   Dim SubObject As Object
   Dim aTabstrip As Tabstrip = TabStrip_filters_video
+  Dim i As Integer
   Dim parse As Boolean = True
-
+  i = aTabstrip.index
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = Global.TabIndexByName(ParsedFilter, aTabstrip)
   If Parsedfilter Like "customvideo*" Then
@@ -629,7 +630,7 @@ Private Function Parse_video_filter(Filtername As String) As String
   '   Endif
   ' Endif
     
-    
+    aTabstrip.index = i
     If tmpstring <> "" Then
       Return ParsedFilter & "=" & TmpString
         Else
@@ -649,7 +650,9 @@ Private Function Parse_audio_filter(Filtername As String) As String
   Dim PanelObject As Object 'the Hbox which contains a single parameter it is created by DrawFiltersGui function
   Dim SubObject As Object
   Dim aTabstrip As Tabstrip = TabStrip_filters_audio
+  Dim i As Integer
   Dim parse As Boolean = True
+  i = aTabstrip.index
 
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
@@ -693,7 +696,7 @@ Private Function Parse_audio_filter(Filtername As String) As String
     If (Right(tmpstring) = ":") Then
       TmpString = Left(Tmpstring, - 1)
     Endif
-
+    aTabstrip.index = i
     If tmpstring <> "" Then
       Return ParsedFilter & "=" & TmpString
         Else
@@ -704,21 +707,12 @@ Private Function Parse_audio_filter(Filtername As String) As String
 End
 
 Public Sub ApplyBTN_Click()
+  OkToChangeToCustom = False
   Fmain.apply
-  ' Dim audio As Boolean = True
-  ' ' Debug parse_filters(audio = True)
-  ' ' Debug parse_filters(audio = False)
-  ' Debug parse_drivers(audio = True)
-  ' Debug parse_drivers(audio = False)
+  OkToChangeToCustom = True
 End
 
-Public Sub oldparse_drivers(audio As Boolean) As String
-  If audio Then 
-    Return XConfigureAudioDriver.ParsedAudioDriver(Me)
-      Else
-    Return XConfigureVideoDriver.ParsedVideoDriver(Me)  
-  Endif
-End
+
 
 Public Function parse_drivers(audio As Boolean) As String
   Dim item_box As Hbox
@@ -793,8 +787,9 @@ End
 Public NewEq As String
 
 Private Function ParseEq() As String
+
   'Force an update of neweq
-      SlidersFreq_Change()
+  SlidersFreq_Change()
   Return neweq
 End
 
@@ -830,8 +825,8 @@ Public Sub SlidersFreq_Change()
   Next 'slider
   params = Left$(params, Len(params) - 1)
   NewEq = "equalizer=" & params
-   Try FMain.mplayer.send("pausing_keep af_cmdline equalizer " & params)
-   If Lower(PresetsCombobox.text) = "custom" Then SaveCustomEqSettings(params)
+  Try FMain.mplayer.send("pausing_keep af_cmdline equalizer " & params)
+  If Lower(PresetsCombobox.text) = "custom" Then SaveCustomEqSettings(params)
 End
 
 Private presetting As Boolean = False

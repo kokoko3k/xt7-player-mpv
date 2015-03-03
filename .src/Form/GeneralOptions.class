@@ -1126,3 +1126,19 @@ Public Sub ScrollViewUserOptions_Arrange()
     Endif
   Next
 End
+
+Public Sub OptionsList_Click()
+Debug
+  ItemSelection()
+End
+
+Private Sub ItemSelection()
+  Dim caption As String
+  'Fire up the tab relative TO the item list by its name:
+  Caption = OptionsList.Current.text
+  TabStrip1.index = Global.TabIndexByName(Caption, Tabstrip1)
+End
+
+Public Sub OptionsList_Select()
+  ItemSelection()
+End

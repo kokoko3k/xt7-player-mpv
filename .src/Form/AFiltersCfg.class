@@ -472,7 +472,7 @@ Public Sub SlidersFreq_Change()
   Next 'slider
   params = Left$(params, Len(params) - 1)
   NewEq = "equalizer=" & params
-   Try FMain.mplayer.send("pausing_keep af_cmdline equalizer " & params)
+   ' Try FMain.mplayer.send("pausing_keep af_cmdline equalizer " & params)
    If Lower(PresetsCombobox.text) = "custom" Then SaveCustomEqSettings(params)
 End
 

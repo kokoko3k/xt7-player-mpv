@@ -1933,7 +1933,6 @@ Public Sub do_apply(new_opts As Collection)
   Dim af_new As String = ""
   Dim vf_new As String = ""
 
-
   'see if we need a restart
   'make a list of changed options
   changed_opts = what_changes(mpvoptions, new_opts)
@@ -1986,8 +1985,6 @@ Next
   If Left(vf_new) = "," Then vf_new = Right(vf_new, -1)
   If af_new = "|(removed)|" Then af_new = ""
   If vf_new = "|(removed)|" Then vf_new = ""
-  
-  
   
 
   'If af_new <> "-1" Then 
