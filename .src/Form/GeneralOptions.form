@@ -79,30 +79,18 @@
           }
         }
         { NoParse54 HBox
-          MoveScaled(3,12,48,5)
+          MoveScaled(1,12,48,4)
           ToolTip = ("Enable the animated video preview\nwhen you drag the seekbar with the mouse.\n\n* Requires more cpu power.\n\n* If you drag with mouse buttons other than left, then no seek is made.")
           Spacing = True
           { SeekThumbsCheckbox CheckBox
-            MoveScaled(0,0,49,4)
+            MoveScaled(1,0,49,4)
             Expand = True
             Text = ("Live preview when seeking")
             Value = CheckBox.True
           }
         }
-        { NoParse55 HBox
-          MoveScaled(2,18,48,5)
-          Visible = False
-          ToolTip = ("Use some tweaks to reduce cpu use.")
-          Spacing = True
-          Indent = True
-          { SeekThumbsLowFpsCheckbox CheckBox
-            MoveScaled(1,0,49,4)
-            Expand = True
-            Text = ("skip some frames from preview")
-          }
-        }
         { NOPARSEvdpauoverlayboxnew HBox
-          MoveScaled(2,25,45,6)
+          MoveScaled(2,25,45,4)
           ToolTip = ("vdpau need some codecs to be loaded,\nchecking this will auto add: \nffmpeg12vdpau, ffh264vdpau, ffwmv3vdpau, ffvc1vdpau")
           { vdpauooverlaycheck CheckBox
             MoveScaled(1,1,43,4)

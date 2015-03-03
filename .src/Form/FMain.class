@@ -10647,7 +10647,6 @@ Public mthumbler As Mplayerclass
 Public Sub ActivateThumbler()
 'fixmempv stub
   Dim opts As String = "-noconfig all -noautosub -nosub -osdlevel 0 -nocache -nosound -zoom -loop 0 -speed 0.5"
-  Dim LQ As Boolean = False 
   Dim fullpath As String
 
   If Not mplayer.ProcessRunningOvr() Then Return
@@ -10682,13 +10681,6 @@ Public Sub ActivateThumbler()
   mthumbler.set_option("wid", thumblevideo.handle)
   mthumbler.set_option("vo", "xv,x11") 'mpv has issues when using opengl over opengl (no pip with opengl :( )
   
-  If mplayer.getP("fullpath") Like "*ttp://*youtube*" Then
-    LQ = (generaloptions.SeekThumbsYoutubeLowFpsCheckbox.value And generaloptions.SeekThumbsLowFpsCheckbox.value)
-      Else
-    LQ = generaloptions.SeekThumbsLowFpsCheckbox.value
-  Endif
-
-  If LQ Then mthumbler.set_option("vd-lavc-skipframe", "bidir")
 
   mthumbler.do_play(fullpath)
   While Not mthumbler.ProcessRunningOvr()
