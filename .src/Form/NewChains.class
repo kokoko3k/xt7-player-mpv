@@ -947,7 +947,6 @@ End
 
 
 Public Sub FirstLoadIfNeeded()
-Stop
   If Not (alreadyloaded) Then 
     Alreadyloaded = True
     MenuLoadDefault_Click()
@@ -1026,13 +1025,8 @@ Public Sub show_video_filters()
 End
 
 
-
-
-
 Public Sub OkBTN_Click()
-
   Me.hide
-
 End
 
 Public Sub Form_Open()
@@ -1049,6 +1043,5 @@ End
 
 
 Public Sub Form_Show()
-Stop
   Form_Open()
 End
