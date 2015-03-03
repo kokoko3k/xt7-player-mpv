@@ -685,6 +685,7 @@
       Picture = Picture["icon:/22/menu"]
       Border = False
       Menu = "TopMenu"
+      MenuOnly = True
     }
     { Separator6 Separator
       MoveScaled(10,0,2,4)
@@ -714,9 +715,9 @@
       ToolTip = ("Configuration toolbox")
       AutoResize = True
       Picture = Picture["icon:/22/tools"]
-      Arrow = False
       Border = False
       Menu = "alloptionsmenu"
+      MenuOnly = True
     }
     { TagEditorBtn ToolButton DynaGuiToolbar
       Name = "TagEditorBtn"
@@ -758,7 +759,7 @@
     }
     { SwitchSubBtn MenuButton DynaGuiToolbar
       Name = "SwitchSubBtn"
-      MoveScaled(67,0,4.5714,4.5714)
+      MoveScaled(66,0,7,5)
       Font = Font["1"]
       ToolTip = ("Switch subtitle track")
       AutoResize = True

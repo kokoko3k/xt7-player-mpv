@@ -971,8 +971,6 @@ Public Sub MenuLoadDefault_Click()
     ReDraw_Ordered(drivers_video_container, Split(drivers_video_order.text, Chr(8), "", True))
   Endif
 
-
-  Stop
   AlreadyLoaded = True
   
   'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
