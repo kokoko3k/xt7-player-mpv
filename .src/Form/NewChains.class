@@ -261,9 +261,7 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
 End
 
 
-Public Sub Form_Show()
-  global.Center(fmain, Me)
-End
+
 
 Public Sub Init()
   Init_drivers_audio()
@@ -949,6 +947,7 @@ End
 
 
 Public Sub FirstLoadIfNeeded()
+Stop
   If Not (alreadyloaded) Then 
     Alreadyloaded = True
     MenuLoadDefault_Click()
@@ -974,7 +973,7 @@ Public Sub MenuLoadDefault_Click()
   Endif
 
 
-  
+  Stop
   AlreadyLoaded = True
   
   'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
@@ -1037,13 +1036,19 @@ Public Sub OkBTN_Click()
 End
 
 Public Sub Form_Open()
+  If Not initdone Then 
+    Init()
+    initdone = True
+  Endif
   If Not AlreadyLoaded Then
-    If Not initdone Then 
-      Init()
-      initdone = True
-    Endif
     MenuLoadDefault_Click()
     Alreadyloaded = True
   Endif
   Global.Center(Fmain, Me)
+End
+
+
+Public Sub Form_Show()
+Stop
+  Form_Open()
 End

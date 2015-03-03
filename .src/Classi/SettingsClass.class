@@ -304,6 +304,7 @@ Public Sub Load(TheForm As Object, Filename As String)
   Endif
   
   If Upper(theform.name) <> "GENERALOPTIONS" Then
+    Debug theform.name
     Try TheForm.AlreadyLoaded = True
   Endif
   If Lower(TheForm.name) = "fmain" Then LoadLeftSideTabsVisibility(FileName)
