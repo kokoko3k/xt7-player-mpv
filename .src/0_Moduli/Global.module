@@ -432,8 +432,14 @@ End
 
 Public Sub SaveAllSettings(ProfileName As String, Optional WithLibraryAndPls As Boolean = True)
   Dim MySettings As New SettingsClass
-
+Stop
   SaveMandatorySettings(Profilename)
+
+  NewChains.FirstLoadIfNeeded()
+  SubAndOsd.FirstLoadIfNeeded()
+  GeneralOptions.FirstLoadIfNeeded()
+  VideoEqualizer.FirstLoadIfNeeded()
+  HotKeys.FirstLoadIfNeeded()
 
   MySettings.Save(NewChains, Global.confpath & "/" & ProfileName)
   MySettings.Save(SubAndOsd, Global.confpath & "/" & ProfileName)
@@ -523,20 +529,20 @@ Public Sub save_mpv_profile(ProfileName As String)
       profile_data &= profile_file[i] & "\n"
     Next
 
-
   'new profile data
     profile_data &= profile_head & "\n"
     opts = fmain.user_options()
     For Each data In opts
       If data <> Chr(8) Then
-        profile_data &= opts.key & "=" & "\"" & data & "\"" & "\n"
+        If Left(data) <> "\"" And Right(data) <> "\"" Then data = "\"" & data & "\""
+        profile_data &= opts.key & "=" & data & "\n"
           Else
-      profile_data &= opts.key & "\n"
+        profile_data &= opts.key & "\n"
       Endif
     Next
     profile_data &= "volume=" & fmain.Initialvolume() & "\n"
     profile_data &= "\n"
-    
+
   File.Save(profile_file_name, profile_data)
 
 End

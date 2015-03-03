@@ -2394,26 +2394,33 @@ Public Sub user_options() As Collection
   ' XConfigureAudioDriver.FirstLoadIfNeeded()  
   generaloptions.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
-  NewChains.FirstLoadIfNeeded()
+  'NewChains.FirstLoadIfNeeded()
 
-  opts["vo"] = NewChains.parse_drivers(False) 'XConfigureVideoDriver.ParsedVideoDriver()
-  opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
+  If NewChains.initdone Then 'parse the chain if it is already initialized
+    opts["vo"] = NewChains.parse_drivers(False) 'XConfigureVideoDriver.ParsedVideoDriver()
+    opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
 
-  For Each opt In generaloptions.Parse()
-    If opt.data = "" Then opt.data = Chr(8)
-    While opts.Exist(opt.name)
-      opt.name = " " & opt.name 'to have multiple options with the same name
-    Wend
-    opts[opt.name] = opt.data
-  Next
-  
+    For Each opt In generaloptions.Parse()
+      If opt.data = "" Then opt.data = Chr(8)
+      While opts.Exist(opt.name)
+        opt.name = " " & opt.name 'to have multiple options with the same name
+      Wend
+      opts[opt.name] = opt.data
+    Next
+
+    opts["vf-add"] = NewChains.parse_filters(False)
+    opts["af-add"] = NewChains.parse_filters(True)
+
+      Else 'use the cached options instead.
+
+    opts["profile"] = "xt7." & global.CurrentProfile
+
+  Endif
+
 
   For Each opt In SubAndOsd.ParseSubGui()
     opts[opt.name] = opt.data
   Next
-  opts["vf-add"] = NewChains.parse_filters(False)
-  opts["af-add"] = NewChains.parse_filters(True)
-  
 
   opt.data = GeneralOptions.AudioLangList.text
   If Trim(opt.data) <> "" Then opts["alang"] = opt.data
