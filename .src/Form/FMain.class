@@ -2390,13 +2390,16 @@ Public Sub user_options() As Collection
   Dim name As String
   
   'initialize uninitialized forms and load settings
-  ' XConfigureVideoDriver.FirstLoadIfNeeded()
-  ' XConfigureAudioDriver.FirstLoadIfNeeded()  
   generaloptions.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
-  'NewChains.FirstLoadIfNeeded()
 
-  If NewChains.initdone Then 'parse the chain if it is already initialized
+  'if exist an mpv cached profile and we haven't initializaed newchains yet, use the cache:
+  'newchains seems the only settings that can be cached.
+  If global.exist_mpv_profile(global.CurrentProfile) And (Not NewChains.initdone) Then 
+    opts["profile"] = "xt7." & global.CurrentProfile
+      Else
+    'parse the chain if we have not a cache
+    NewChains.FirstLoadIfNeeded()
     opts["vo"] = NewChains.parse_drivers(False) 'XConfigureVideoDriver.ParsedVideoDriver()
     opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
 
@@ -2410,10 +2413,6 @@ Public Sub user_options() As Collection
 
     opts["vf-add"] = NewChains.parse_filters(False)
     opts["af-add"] = NewChains.parse_filters(True)
-
-      Else 'use the cached options instead.
-
-    opts["profile"] = "xt7." & global.CurrentProfile
 
   Endif
 

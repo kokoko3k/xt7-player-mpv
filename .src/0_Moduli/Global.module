@@ -451,6 +451,21 @@ Public Sub SaveAllSettings(ProfileName As String, Optional WithLibraryAndPls As 
 End
 
 
+Public Function exist_mpv_profile(profilename As String) As Boolean
+  Dim profile_dir As String = global.confpath & "/mpv_config/"
+  Dim profile_file_name As String = profile_dir & "config"
+  Dim profile_file As New String[]
+  Dim profile_head As String
+
+  If Not Exist(profile_file_name) Then Return False
+  profile_file = Split(File.Load(profile_file_name), "\n", "", False, True)
+  profile_head = "[xt7." & profilename & "]"
+
+  Return (profile_file.Find(profile_head) >= 0)
+
+End
+
+
 Public Sub save_mpv_profile(ProfileName As String)
   'save mpv options in a profile format compatible with mpv
  Dim opts As New Collection

@@ -946,8 +946,8 @@ End
 
 Public Sub FirstLoadIfNeeded()
   If Not (alreadyloaded) Then 
-    Alreadyloaded = True
     MenuLoadDefault_Click()
+    Alreadyloaded = True
   Endif
 End
 
