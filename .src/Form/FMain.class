@@ -315,6 +315,8 @@ Public Sub DynaGuiToolbar_Click()
           FullScreenBtn_click()
         Case "TagEditorBtn"
           TagEditorBtn_click()
+        Case "ConfigureBTN"
+          alloptionsmenu.popup
       End Select
     Endif
   Endif
@@ -11220,4 +11222,8 @@ Public Sub HotKeysMenuPopup_Click()
   Me.mouse = Mouse.Wait
   HotKeys.show
   Me.mouse = Mouse.Default
+End
+
+Public Sub ButtonmenuNEWBTN_click()
+  topmenu.popup
 End
