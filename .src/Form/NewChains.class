@@ -716,7 +716,6 @@ Public Function parse_drivers(audio As Boolean) As String
   Dim drivers As String
   Dim item_container As Object
   Dim video_driver_overridden As String = ""
-Stop
   If audio Then 
     item_container = drivers_audio_container
       Else

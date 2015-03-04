@@ -2389,7 +2389,8 @@ Public Sub user_options() As Collection
   'user options configured through gui
   Dim opts As New Collection
   Dim opt As Mpvoption
-  Dim name As String
+  Dim name, data As String
+  
   
   'initialize uninitialized forms and load settings
   generaloptions.FirstLoadIfNeeded()
@@ -2398,7 +2399,9 @@ Public Sub user_options() As Collection
   'if exist an mpv cached profile and we haven't initializaed newchains yet, use the cache:
   'newchains seems the only settings that can be cached.
   If global.exist_mpv_profile(global.CurrentProfile) And (Not NewChains.initdone) Then 
-    opts["profile"] = "xt7." & global.CurrentProfile
+    'opts["profile"] = "xt7." & global.CurrentProfile
+    Debug "Found a cached mpv profile, using it"
+    opts = global.get_mpv_profile(global.currentprofile)
       Else
     'parse the chain if we have not a cache
     NewChains.FirstLoadIfNeeded()

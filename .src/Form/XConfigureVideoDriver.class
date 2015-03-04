@@ -150,37 +150,37 @@ Public Function parse_driver(driver_name As String, aTabstrip As Tabstrip) As St
     Endif
   Wend
 
-  If aTabstrip.Children[0] Is Scrollview Then 
-    container_obj = aTabstrip.Children[0]
-      Else
-    container_obj = aTabstrip
-  Endif
+  If aTabstrip.Children.count > 0 Then
+    If aTabstrip.Children[0] Is Scrollview Then 
+      container_obj = aTabstrip.Children[0]
+        Else
+      container_obj = aTabstrip
+    Endif
   
-  For Each obj In container_obj.children
-    If Upper(obj.name) Like Upper(driver_name) & "*" Then
-      For Each child In obj.Children
-        'IF child.name LIKE "*Chk" THEN 
-        If object.type(child) = "CheckBox" Then
-          If child.value Then
-              outline = outline & child.tag
-                If (child.next <> Null) Then
-                  If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
-                    If (object.type(child.next) = "ComboBox") Then
-                      Try outline = outline & Split(child.NEXT.text, " ")[0]
-                        Else
-                      Try outline = outline & child.NEXT.text
-                      If Error Then Debug "an error occurred, please report this message and what you're doing"
+    For Each obj In container_obj.children
+      If Upper(obj.name) Like Upper(driver_name) & "*" Then
+        For Each child In obj.Children
+          'IF child.name LIKE "*Chk" THEN 
+          If object.type(child) = "CheckBox" Then
+            If child.value Then
+                outline = outline & child.tag
+                  If (child.next <> Null) Then
+                    If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
+                      If (object.type(child.next) = "ComboBox") Then
+                        Try outline = outline & Split(child.NEXT.text, " ")[0]
+                          Else
+                        Try outline = outline & child.NEXT.text
+                        If Error Then Debug "an error occurred, please report this message and what you're doing"
+                      Endif
                     Endif
                   Endif
-                Endif
-                outline = outline & ":"
+                  outline = outline & ":"
+            Endif
           Endif
-        Endif
-      Next
-    Endif
-
-  Next
-  
+        Next
+      Endif
+    Next
+  Endif
   
   aTabstrip.index = tab_index_old
   If Right(outline) = ":" Then outline = Left(outline, -1)

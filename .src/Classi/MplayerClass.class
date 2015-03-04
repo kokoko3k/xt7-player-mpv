@@ -1886,6 +1886,14 @@ Private Function merge_collections(c1 As Collection, c2 As Collection) As Collec
 End
 
 
+Private Function deQuote(S As String) As String
+  If Left(S) = "\"" And Right(S) = "\"" Then
+    Return Right(Left(s, -1), -1)
+  Endif
+  Return s
+End
+
+
 
 Private Function what_changes(oldc As Collection, newc As Collection) As Collection
   Dim out As New Collection
@@ -1894,9 +1902,9 @@ Private Function what_changes(oldc As Collection, newc As Collection) As Collect
   'built from changed key values, removed keys,added keys
   
   For Each data In newc
-    k = newc.key
+    k = Trim(newc.key)
     If oldc.Exist(k) Then
-      If oldc[k] <> newc[k] Then 
+      If deQuote(oldc[k]) <> deQuote(newc[k]) Then 
         Debug "old option changed", k, oldc[k], newc[k]
         out[k] = newc[k]
       Endif
@@ -1909,7 +1917,7 @@ Private Function what_changes(oldc As Collection, newc As Collection) As Collect
   Next
 
   For Each data In oldc
-    k = oldc.key
+    k = Trim(oldc.key)
     If Not (newc.Exist(k)) Then
        Debug "old option removed", k, oldc[k]
        out[k] = "|(removed)|"
