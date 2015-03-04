@@ -279,9 +279,9 @@ Public Sub Load(TheForm As Object, Filename As String)
   
   For Each myobj In TheForm.controls
     'If myobj.name = "CheckBox2gl" Then Stop
-    ' If Lower(myobj.name) Like "*vdpauooverlaycheck*" Then
-    '   Stop
-    ' Endif
+     ' If Lower(myobj.name) Like "*fontstring2*" Then
+     '   Stop
+     ' Endif
     'If we find the object definition in the settings file:
     If theSettings.Find(myobj.name) <> -1 Then
       'then we load it's properties:
