@@ -9426,27 +9426,22 @@ End
     Endif
     hsplit1.Layout = prevlayout
   Endif
-  
+
+  'prevent glitches near the hsplit border
   If Not fsform.fullscreen Then 
-    'those comments are for an old workaround with missing picture
-    'i don't know if it is still neded by mpv
-    ' xy = videobox.x
-    ' Wait
-    ' videobox.x = 20
-    ' Wait
-    ' videobox.x = xy
-    ' Wait
-    
+    xy = videobox.x
+    Wait
+    videobox.x = 20
+    Wait
+    videobox.x = xy
+    Wait
     Hsplit1_MyRefresh  
-    
-    'those comments are for an old workaround with missing picture
-    'i don't know if it is still neded by mpv
-    '   Else
-    ' xy = videobox.y
-    ' videobox.y = 20
-    ' Wait
-    ' videobox.y = xy
-    ' Wait
+      Else
+    xy = videobox.y
+    videobox.y = 20
+    Wait
+    videobox.y = xy
+    Wait
   Endif
 
 End
