@@ -48,7 +48,7 @@
       Index = 0
       Text = ("Video")
       { ScrollView1 ScrollView
-        MoveScaled(3,5,52,44)
+        MoveScaled(3,8,52,44)
         Tag = "video"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -62,6 +62,7 @@
           { PanTagCHK CheckBox notifyobj
             Name = "PanTagCHK"
             MoveScaled(1,1,49,4)
+            Enabled = False
             Expand = True
             Text = ("Allow video panning via mouse-drag")
           }
@@ -72,7 +73,8 @@
           Spacing = True
           { EqCHK CheckBox notifyobj
             Name = "EqCHK"
-            MoveScaled(1,1,49,4)
+            MoveScaled(1,1,43,4)
+            Enabled = False
             Expand = True
             Text = ("Auto add eq2 and hue filters to video chain")
             Value = CheckBox.True
@@ -89,11 +91,31 @@
             Value = CheckBox.True
           }
         }
+        { NOPARSE_Separator1 Separator
+          MoveScaled(1,17,47,2)
+        }
+        { NOPARSE_Label26 Label
+          MoveScaled(3,19,19,4)
+          ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anithing but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
+          AutoResize = True
+          Text = ("Hardware decoding:")
+        }
+        { NOPARSE_HwdecCombobox ComboBox
+          MoveScaled(2,24,42,4)
+          #Translate = False
+          ToolTip = "Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anithing but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding"
+          ReadOnly = True
+          List = ["0 - no (allows all video filters)", "1 - auto + opengl (allows gamma adjustments)", "2 - vdpau + vdpau (allows full equalization)", "3 - vdpau + opengl (allows only gamma adjustments)", "4 - vaapi + vaapi (allows equalization but gamma)", "5 - vaapi + opengl (allows only gamma adjustments)", "6 - vaapi-copy (allows all video filters - Intel only)"]
+          Text = "0 - disabled (allow all video processing filters)"
+        }
+        { NOPARSE_Separator2 Separator
+          MoveScaled(1,29,47,1)
+        }
         { NOPARSEvdpauoverlayboxnew HBox
-          MoveScaled(2,25,45,4)
+          MoveScaled(2,34,45,4)
           ToolTip = ("vdpau need some codecs to be loaded,\nchecking this will auto add: \nffmpeg12vdpau, ffh264vdpau, ffwmv3vdpau, ffvc1vdpau")
           { vdpauooverlaycheck CheckBox
-            MoveScaled(1,1,43,4)
+            MoveScaled(2,1,38,3)
             ToolTip = ("Using vdpau overlay surface may lead to instability problems under some circumstances \nlike heavy cpu load or switching to/from fullscreen.\n\nNOT using vdpau overlay may cause tearing.\n\nIf you experience tearing, try to disable this option, if you experience instability,\ntry to check it.\n\nThis option disable the overlay surface by setting the environment variable:\nVDPAU_NVIDIA_NO_OVERLAY=1")
             Text = ("Disable VDPAU overlay surface")
           }

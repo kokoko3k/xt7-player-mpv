@@ -257,7 +257,6 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
       If Lower(aTabstrip.caption) = item_name Then Return
     Next
   Endif
-  
 End
 
 
@@ -716,10 +715,20 @@ Public Function parse_drivers(audio As Boolean) As String
   Dim item_name As String
   Dim drivers As String
   Dim item_container As Object
+  Dim video_driver_overridden As String = ""
+Stop
   If audio Then 
     item_container = drivers_audio_container
       Else
     item_container = drivers_video_container
+  Endif
+  
+  If Not audio Then 'search for any override in generaloptions (like hwdec macro)
+    Try video_driver_overridden = GeneralOptions.video_driver_overridden() 
+    If video_driver_overridden <> "" Then
+        drivers &= XconfigureVideoDriver.parse_driver(video_driver_overridden, item_container.tag) & ","
+        Goto returnlabel
+    Endif
   Endif
   
   For Each item_box In item_container.children
@@ -733,6 +742,8 @@ Public Function parse_drivers(audio As Boolean) As String
       Endif
     Endif
   Next
+  
+  ReturnLabel:
   If Right(drivers) = "," Then drivers = Left(drivers, "-1")
   Return drivers
   
@@ -1040,4 +1051,8 @@ End
 
 Public Sub Form_Show()
   Form_Open()
+  While Not FMain.FullyLoaded
+    Wait 0.1
+  Wend
+  GeneralOptions.EnableDisable_video_drivers_panels()
 End

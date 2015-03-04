@@ -98,9 +98,9 @@ Private Sub DrawFiltersGui()
   AllParams.Clear
 
 
-    AllParams.Add(["CHOOSE", ("Hardware decoding"), "no", "auto", "vdpau", "vaapi", "vaapi-copy", "hwdec", ""])
-    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Specify the hardware video decoding API that should be used if possible.\nWhether hardware decoding is actually done depends on the video  codec.\nIf hardware decoding is not possible, mpv will fall back on software decoding.  \n mpv option: hwdec"))
-    AllParams.Clear
+    ' AllParams.Add(["CHOOSE", ("Hardware decoding"), "no", "auto", "vdpau", "vaapi", "vaapi-copy", "hwdec", ""])
+    ' Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Specify the hardware video decoding API that should be used if possible.\nWhether hardware decoding is actually done depends on the video  codec.\nIf hardware decoding is not possible, mpv will fall back on software decoding.  \n mpv option: hwdec"))
+    ' AllParams.Clear
 
 
   '-channels <number> (also see -af channels) 
@@ -306,7 +306,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Dim lparamposend As Integer = 0
   Dim lopts As Integer = 0
   Dim s, e As Integer
-  Dim tmpstr As String
+  Dim tmpstr, hwdec_choice As String
   Dim myopts As New MpvOption[]
 
   Previndex = Tabstrip1.index
@@ -338,9 +338,14 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
       Next
     Next
   Next 'i
-    Tabstrip1.index = PrevIndex
-    
-        
+  Tabstrip1.index = PrevIndex
+
+  'hardware decoding macro
+  Try hwdec_choice = Split(NOPARSE_HwdecCombobox.text, " ")[0]
+  If Not Error Then
+    myopts.Add(newopt("hwdec", Split(NOPARSE_HwdecCombobox.text, " ", "", True)[2]))
+  Endif
+
   'dvb-in and tsprobe:
   myopts.Add(newopt("dvbin-card", spinboxcard.value))
   alloptions = alloptions & " -dvbin card=" & spinboxcard.value
@@ -350,7 +355,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
      myopts.Add(newopt("demuxer-lavf-probesize", comboboxtsprobe.text))
   Endif
   Return myopts.Insert(parse_custom_options())
-  
+
 End
 
 Public Sub ApplyBTN_Click()
@@ -1128,3 +1133,32 @@ Public Sub ScrollView1_MouseDown()
   
 
 End
+
+Public Sub NOPARSE_HwdecCombobox_Click()
+  EnableDisable_video_drivers_panels()
+End
+
+
+Public Function Video_driver_overridden() As String
+  If InStr(NOPARSE_HwdecCombobox.text, " + ") <= 0 Then Return ""
+  'else
+  Return Split((Split(NOPARSE_HwdecCombobox.text, "+")[1]), " ", "", True)[0]
+End
+
+
+Public Sub EnableDisable_video_drivers_panels()
+  'if the user overrides video drivers through hwdec combobox,
+  'reflect that in the gui
+  If Not fmain.fullyloaded Then Return
+  NewChains.firstloadifneeded()
+  If Video_driver_overridden() <> "" Then 
+    Try NewChains.drivers_video_container.enabled = False
+    Debug "NewChains.drivers_video_container.enabled", NewChains.drivers_video_container.enabled
+    'Try XConfigureVideoDriver.ConfigureTabs.enabled = False
+      Else
+    Try NewChains.drivers_video_container.enabled = True
+    'Try XConfigureVideoDriver.ConfigureTabs.enabled = True
+  Endif
+End
+
+
