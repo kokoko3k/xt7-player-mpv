@@ -2425,7 +2425,7 @@ Public Sub user_options() As Collection
   For Each opt In SubAndOsd.ParseSubGui()
     opts[opt.name] = opt.data
   Next
-  Stop
+
   opt.data = GeneralOptions.AudioLangList.text
   If Trim(opt.data) <> "" Then opts["alang"] = opt.data
   
@@ -4599,7 +4599,7 @@ Public Sub Show_runtime_infos()
   Next
   
   
-  mplayer.ShowText(msg, 1000)
+  mplayer.ShowText(msg, 4000)
   
   'mplayer.ShowText("ciao \\n ${time-pos} ", 1000)
   'Debug "HA!"

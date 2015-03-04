@@ -61,7 +61,7 @@ Public Function ParseSubGui() As MpvOption[]
 
   'Set ass style; ass style will be used to override media embedded ass styles for ass subtitles
   'Set --sub-text-* options too; that will be used for non ass subtitles.
-Stop
+
     If FontStyleCHK.value Then 
       AssForceStyle = AssForceStyle & FontName
       AssForceStyle = AssForceStyle & ",FontSize=" & CStr(FontString.Font.Size)
