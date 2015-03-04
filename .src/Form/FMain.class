@@ -2391,7 +2391,7 @@ Public Sub user_options() As Collection
   Dim opt As Mpvoption
   Dim name, data As String
   
-  
+
   'initialize uninitialized forms and load settings
   generaloptions.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
@@ -2425,7 +2425,7 @@ Public Sub user_options() As Collection
   For Each opt In SubAndOsd.ParseSubGui()
     opts[opt.name] = opt.data
   Next
-
+  Stop
   opt.data = GeneralOptions.AudioLangList.text
   If Trim(opt.data) <> "" Then opts["alang"] = opt.data
   
@@ -4538,6 +4538,78 @@ End
 
 'HotKeys Handling *******************************************
 
+
+Public Sub Show_runtime_infos()
+  Dim info As String = "a\nb\nc\n"
+  Dim prop As New Collection
+  Dim msg As String
+  Dim name, data As String
+
+  prop["Filepath"] = "path"
+  prop["---"] = " "
+  
+  prop["cache size (KB)"] = "cache-size"
+  prop["cache fill state (%)"] = "cache"
+  prop["UnSeekable"] = "partially-seekable"
+  prop["dropped frames"] = "drop-frame-count"
+  prop["dropped frames by vo"] = "vo-drop-frame-count"
+  prop["----"] = " "
+  
+  prop["Hardware decoding"] = "hwdec"
+  prop["Hardware decoding detected"] = "detected-hwdec"
+  prop["-----"] = " "
+  
+  prop["video driver"] = "current-vo"
+  prop["Video filters"] = "vf"
+  prop["-----"] = " "
+  
+  prop["video codec"] = "video-codec"
+  prop["video bitrate (packet)"] = "packet-video-bitrate"
+  prop["Video width"] = "width"
+  prop["Video height"] = "height"
+  prop["Video fps"] = "estimated-vf-fps"
+  prop["-----"] = " "
+
+  prop["audio driver"] = "current-ao"
+  prop["audio filters"] = "af"  
+  'prop["Audio device in use"] = "audio-out-detected-device"
+  prop["------"] = " "
+  
+  prop["audio codec"] = "audio-codec"
+  prop["audio bitrate (packet)"] = "packet-audio-bitrate"
+  prop["audio channels"] = "audio-channels"
+  prop["-.----"] = " "
+  
+  
+
+  
+  
+
+  
+  For Each prop
+    name = prop.Key
+    data = prop[name]
+    
+    If name Like "*---*" Then
+      msg &= "\\n"
+        Else
+      msg &= name & "=" & "${" & data & "}"
+      msg &= "\\n"
+    Endif
+  Next
+  
+  
+  mplayer.ShowText(msg, 1000)
+  
+  'mplayer.ShowText("ciao \\n ${time-pos} ", 1000)
+  'Debug "HA!"
+'echo show_text \"linea1 \\n   time=\${time-pos}           \\n  linea 3\" >/tmp/input
+End
+
+
+
+
+
 Public Sub HotKeyToMplayer(HotKey As String)
 
   'will send the action to the running mplayer
@@ -4546,6 +4618,9 @@ Public Sub HotKeyToMplayer(HotKey As String)
   Dim Action As String 
 
   Action = Lower(HotKeys.ActionRelatedTo(Hotkey))
+  
+  Debug Action
+  
   If Action Like "seek*" Then
     If global.IsImgFile(mplayer.getP("fullpath")) Then
       If action Like "seek +*" Then
@@ -4556,8 +4631,8 @@ Public Sub HotKeyToMplayer(HotKey As String)
     Endif
   Endif    
   Select Case Action
-      ' Case Like "*Seek *"
-      ' SeekOrSeekAndRestart(Action)
+    Case "show runtime infos"
+      Show_runtime_infos()
     Case "switch fullscreen"
       FullScreenBtn_Click()
     Case "zoom +0.05"

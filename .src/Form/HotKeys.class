@@ -139,10 +139,12 @@ Private Sub FillGridHeaders()
   HotKeysGrid.Rows[85].text = "osd"
   HotKeysGrid.Rows[86].text = "screenshot"
   HotKeysGrid.Rows[87].text = "quit"
+  HotKeysGrid.Rows[88].text = " "
+  HotKeysGrid.Rows[89].text = "show runtime infos"
 
 
 
-  For r = 88 To HotKeysGrid.Rows.count - 1
+  For r = 90 To HotKeysGrid.Rows.count - 1
     HotKeysGrid.Rows[r].text = " "
   Next 'r
   
@@ -258,7 +260,7 @@ Private Sub DefaultFill()
   HotKeysGrid[85, 0].text = "Mouse=0 Wheel=NONE Key=o"
   HotKeysGrid[85, 1].text = "Mouse=2 Wheel=NONE Key="
   HotKeysGrid[87, 0].text = "Mouse=0 Wheel=NONE Key=esc"
-      
+  HotKeysGrid[89, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=backspace"
 End
 
 
