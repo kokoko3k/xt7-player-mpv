@@ -11253,6 +11253,14 @@ Public Sub bDown_Click()
   mplayer.mpv_command(["discnav", "down"])
 End
 
+Private Sub hide_on_fs(f As Form)
+  'attempt to fix a problem with newchains window not appearing
+  'when called from fullscreen
+  If fsform.FullScreen Then
+    f.Hide
+    Wait 0.1
+  Endif
+End
 
 
 Public Sub GeneralOptionsmenupopup_Click()
@@ -11262,36 +11270,43 @@ Public Sub GeneralOptionsmenupopup_Click()
 End
 Public Sub ChainsMenuPopup_Click()
   Me.mouse = Mouse.Wait
+  hide_on_fs(newchains)
   NewChains.show
   Me.mouse = Mouse.Default
 End
 Public Sub VideoFiltersMenuPopup_Click()
   Me.mouse = Mouse.Wait
+  hide_on_fs(newchains)
   NewChains.show_video_filters()
   Me.mouse = Mouse.Default
 End
 Public Sub VideoDriversMenuPopup_Click()
   Me.mouse = Mouse.Wait
+  hide_on_fs(newchains)
   NewChains.show_video_drivers()
   Me.mouse = Mouse.Default
 End
 Public Sub AudioFiltersMenuPopup_Click()
   Me.mouse = Mouse.Wait
+  hide_on_fs(newchains)
   NewChains.show_audio_filters()
   Me.mouse = Mouse.Default
 End
 Public Sub AudioDriversMenuPopup_Click()
   Me.mouse = Mouse.Wait
-    NewChains.show_audio_drivers()
+  hide_on_fs(newchains)
+  NewChains.show_audio_drivers()
   Me.mouse = Mouse.Default
 End
 Public Sub SubsAndOsdMenuPopup_Click()
   Me.mouse = Mouse.Wait
+  hide_on_fs(subandosd)
   SubAndOsd.show
   Me.mouse = Mouse.Default
 End
 Public Sub HotKeysMenuPopup_Click()
   Me.mouse = Mouse.Wait
+  hide_on_fs(hotkeys)
   HotKeys.show
   Me.mouse = Mouse.Default
 End

@@ -1050,8 +1050,6 @@ End
 
 Public Sub Form_Show()
   Form_Open()
-  While Not FMain.FullyLoaded
-    Wait 0.1
-  Wend
+  If Not FMain.FullyLoaded Then Wait 2
   GeneralOptions.EnableDisable_video_drivers_panels()
 End
