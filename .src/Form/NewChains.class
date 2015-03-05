@@ -300,12 +300,12 @@ Private Sub draw_filters_audio_cfg()
 
 
   'volume[=<volumedb>[:...]]
-    AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
-    AllParams.add(["SWITCH", "replaygain-track:", "DISABLED", "Volume2", ("Use track-gain from replaygain metadata value")])
-    AllParams.add(["SWITCH", "replaygain-album:", "DISABLED", "Volume3", ("Like replaygain-track, but using the album-gain value")])
+   ' AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
     AllParams.add(["RANGE", "replaygain-preamp=", "-20", "0", "20", "Volume4", ("Pre-amplification in dB to apply to the replaygain gain")])
+    AllParams.add(["CHOOSE", "replaygain-track=", "yes", "no", "Volume2", ("Use track-gain from replaygain metadata value")])
+    AllParams.add(["CHOOSE", "replaygain-album=", "yes", "no", "Volume3", ("Like replaygain-track, but using the album-gain value")])
     AllParams.add(["CHOOSE", "replaygain-clip=", "yes", "no", "Volume5", ("Prevent replaygain clipping by lowering the gain")])
-    AllParams.add(["SWITCH", "softclip", "ENABLED" "Volume6", ("Turns on soft clipping")])
+    AllParams.add(["CHOOSE", "softclip=", "yes", "no", "Volume6", ("Turns on soft clipping")])
     Global.DrawGui(AllParams, "volume", aTabstrip, Switchable)
     AllParams.Clear
     
