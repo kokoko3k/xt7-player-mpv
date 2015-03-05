@@ -3322,6 +3322,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
       If global.IsCdaudio(mplayer.getP("fullpath")) Then Goto ReturnLabel 'cd title is treated differently
       Try CUSTOMTITLE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
+      Audioform.label18.text = CUSTOMTITLE_OLD
   
     Case "cache"
       If data_new <> "(unavailable)" Then CACHEVALUE_OLD = data_new

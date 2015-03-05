@@ -454,23 +454,6 @@ End
 Public Function exist_cached_options(profilename As String) As Boolean
   Dim cached_options_file_name As String = global.confpath & "/" & profilename & ".cached"
   Return Exist(cached_options_file_name, True)
-
-
-
-
-
-
-  ' Dim profile_dir As String = global.confpath & "/mpv_config/"
-  ' Dim profile_file_name As String = profile_dir & "config"
-  ' Dim profile_file As New String[]
-  ' Dim profile_head As String
-  ' 
-  ' If Not Exist(profile_file_name) Then Return False
-  ' profile_file = Split(File.Load(profile_file_name), "\n", "", False, True)
-  ' profile_head = "[xt7." & profilename & "]"
-  ' 
-  ' Return (profile_file.Find(profile_head) >= 0)
-
 End
 
 
@@ -490,47 +473,7 @@ Public Function get_cached_options(profilename As String) As Collection
       out[l] = Chr(8)
     Endif
   Next
-    Stop
   Return out
-
-  ' Dim profile_head As String
-  ' Dim profile_dir As String = global.confpath & "/mpv_config/"
-  ' Dim profile_file_name As String = profile_dir & "config"
-  ' Dim profile_file As New String[]
-  ' Dim new_data As String
-  ' Dim s, e, i As Integer
-  ' Dim aLine As String
-  ' Dim out As New Collection
-  ' Dim opt, data As String
-  ' 
-  ' 'convert mpv profile to mpv options
-  ' 
-  ' If Not Exist(profile_file_name, True) Then Return Null
-  ' 
-  ' profile_head = "[xt7." & profilename & "]"
-  ' profile_file = Split(File.Load(profile_file_name), "\n", "", False, True)
-  ' s = profile_file.Find(profile_head)
-  ' If s < 0 Then Return Null
-  ' For i = s + 1 To profile_file.Max
-  '   aLine = (profile_file[i])
-  '   If (Left(aline) = "[") And (Right(aline) = "]") And (Len(aline) > 2) Then 
-  '     e = i - 1
-  '     Break
-  '       Else
-  '     If Trim(aline) <> "" Then 
-  '       opt = ""
-  '       data = ""
-  '       If aline Like "*=*" Then 
-  '         opt = Left(aline, InStr(aline, "=") - 1)
-  '         data = Right(aline, Len(aline) - Len(opt) - 1)
-  '         out[opt] = data
-  '           Else
-  '         out[aline] = Chr(8)
-  '       Endif
-  '     Endif
-  '   Endif
-  ' Next
-  ' Return out
 End
 
 Public Sub save_cached_options(ProfileName As String)
@@ -538,9 +481,7 @@ Public Sub save_cached_options(ProfileName As String)
   Dim cached_file_name As String = global.confpath & "/" & Profilename & ".cached"
   Dim cached_data, data As String
   Dim opts As New Collection
-  
-  Stop
-  
+
   If Not Exist(global.confpath, True) Then 
     Debug "Error: configuration directory not found; something is going VERY wrong."
     Stop
