@@ -1078,7 +1078,8 @@ End
 
 
 Public Sub NopParseAudioDeviceCombo_Enter()
-  Dim d, ad As String
+  Dim d, ad, t As String
+  t = Last.text
   If NopParseAudioDeviceCombo.count < 2 Then
     Shell fmain.mplayer.executable(5) & " --audio-device=help " To ad
     For Each d In Split(ad, "\n", "", True)
@@ -1086,7 +1087,7 @@ Public Sub NopParseAudioDeviceCombo_Enter()
       Try Debug Split(d, "'", "", True)[1]
     Next
   Endif
-  
+  Last.text = t
 
 End
 

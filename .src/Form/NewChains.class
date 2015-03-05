@@ -978,7 +978,6 @@ Public Sub MenuLoadDefault_Click()
   If drivers_video_order.text <> "" Then 
     ReDraw_Ordered(drivers_video_container, Split(drivers_video_order.text, Chr(8), "", True))
   Endif
-
   AlreadyLoaded = True
   
   'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts

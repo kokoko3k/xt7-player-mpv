@@ -4305,7 +4305,6 @@ Public Sub MenuAudioDriver_Click()
 End
 
 Public Sub MenuSaveDefault_Click()
-  Stop
   If Lower(global.CurrentProfile) = "factory_defaults" Then
     If MyQuestion.Ask(("You can't modify the current profile\nbecause it is the Factory defaults one"), ("Switch to ''default'' profile and save"), ("Don't save")) = 1 Then
       global.CurrentProfile = "default"
@@ -4404,7 +4403,7 @@ Public Sub Apply()
     
     'restore the old ytdl option
     Try new_opts["ytdl"] = mplayer.mpvoptions["ytdl"]
-
+Stop
     mplayer.do_Apply(new_opts)
 
     global.ResetApplyBtnColor()

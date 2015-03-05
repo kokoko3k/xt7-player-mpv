@@ -1944,7 +1944,7 @@ Public Sub do_apply(new_opts As Collection)
   'see if we need a restart
   'make a list of changed options
   changed_opts = what_changes(mpvoptions, new_opts)
-  
+
   For Each changed_opts
     name = changed_opts.Key
     data = changed_opts[changed_opts.Key]
