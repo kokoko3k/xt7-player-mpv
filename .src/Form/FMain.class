@@ -2391,29 +2391,24 @@ Public Sub user_options() As Collection
   Dim opt As Mpvoption
   Dim name, data As String
   
-
   'initialize uninitialized forms and load settings
   generaloptions.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
 
-  'if exist an mpv cached profile and we haven't initializaed newchains yet, use the cache:
-  'newchains seems the only settings that can be cached.
-  Stop
-  If global.exist_mpv_profile(global.CurrentProfile) And (Not NewChains.initdone) Then 
-    'opts["profile"] = "xt7." & global.CurrentProfile
-    Debug "Found a cached mpv profile, using it"
-    opts = global.get_mpv_profile(global.currentprofile)
+  'if exists a set of cached options for the current profile
+  ' And we haven't initializaed newchains yet, use the cache:
+  If global.exist_cached_options(global.CurrentProfile) And (Not NewChains.initdone) Then 
+    Debug "Found cached options, using it"
+    opts = global.get_cached_options(global.currentprofile)
       Else
     'parse the chain if we have not a cache
     NewChains.FirstLoadIfNeeded()
     opts["vo"] = NewChains.parse_drivers(False) 'XConfigureVideoDriver.ParsedVideoDriver()
     opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
 
-
     opts["vf-add"] = NewChains.parse_filters(False)
     opts["af-add"] = NewChains.parse_filters(True)
   Endif
-  
   
   For Each opt In generaloptions.Parse()
     If opt.data = "" Then opt.data = Chr(8)
@@ -4353,7 +4348,7 @@ Public Sub MenuAudioDriver_Click()
 End
 
 Public Sub MenuSaveDefault_Click()
-  
+  Stop
   If Lower(global.CurrentProfile) = "factory_defaults" Then
     If MyQuestion.Ask(("You can't modify the current profile\nbecause it is the Factory defaults one"), ("Switch to ''default'' profile and save"), ("Don't save")) = 1 Then
       global.CurrentProfile = "default"

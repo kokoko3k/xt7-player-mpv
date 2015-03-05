@@ -447,69 +447,120 @@ Public Sub SaveAllSettings(ProfileName As String, Optional WithLibraryAndPls As 
   MySettings.Save(VideoEqualizer, Global.ConfPath & "/" & ProfileName)
   HotKeys.SaveHotKeys(Global.confpath & "/" & ProfileName)
 
-  save_mpv_profile(ProfileName)
+  save_cached_options(ProfileName)
 End
 
 
-Public Function exist_mpv_profile(profilename As String) As Boolean
-  Dim profile_dir As String = global.confpath & "/mpv_config/"
-  Dim profile_file_name As String = profile_dir & "config"
-  Dim profile_file As New String[]
-  Dim profile_head As String
+Public Function exist_cached_options(profilename As String) As Boolean
+  Dim cached_options_file_name As String = global.confpath & "/" & profilename & ".cached"
+  Return Exist(cached_options_file_name, True)
 
-  If Not Exist(profile_file_name) Then Return False
-  profile_file = Split(File.Load(profile_file_name), "\n", "", False, True)
-  profile_head = "[xt7." & profilename & "]"
 
-  Return (profile_file.Find(profile_head) >= 0)
+
+
+
+
+  ' Dim profile_dir As String = global.confpath & "/mpv_config/"
+  ' Dim profile_file_name As String = profile_dir & "config"
+  ' Dim profile_file As New String[]
+  ' Dim profile_head As String
+  ' 
+  ' If Not Exist(profile_file_name) Then Return False
+  ' profile_file = Split(File.Load(profile_file_name), "\n", "", False, True)
+  ' profile_head = "[xt7." & profilename & "]"
+  ' 
+  ' Return (profile_file.Find(profile_head) >= 0)
 
 End
 
 
-Public Function get_mpv_profile(profilename As String) As Collection
-  Dim profile_head As String
-  Dim profile_dir As String = global.confpath & "/mpv_config/"
-  Dim profile_file_name As String = profile_dir & "config"
-  Dim profile_file As New String[]
-  Dim new_data As String
-  Dim s, e, i As Integer
-  Dim aLine As String
+Public Function get_cached_options(profilename As String) As Collection
+  Dim cached_options_file_name As String = global.confpath & "/" & profilename & ".cached"
   Dim out As New Collection
-  Dim opt, data As String
-
-  'convert mpv profile to mpv options
-
-  If Not Exist(profile_file_name, True) Then Return Null
+  Dim l, opt, data As String
   
-  profile_head = "[xt7." & profilename & "]"
-  profile_file = Split(File.Load(profile_file_name), "\n", "", False, True)
-  s = profile_file.Find(profile_head)
-  If s < 0 Then Return Null
-  For i = s + 1 To profile_file.Max
-    aLine = (profile_file[i])
-    If (Left(aline) = "[") And (Right(aline) = "]") And (Len(aline) > 2) Then 
-      e = i - 1
-      Break
+  If Not Exist(cached_options_file_name, True) Then Return Null
+  
+  For Each l In Split(File.Load(cached_options_file_name), "\n", "", True)
+    If l Like "*=*" Then 
+      opt = Left(l, InStr(l, "=") - 1)
+      data = Right(l, Len(l) - Len(opt) - 1)
+      out[opt] = data
         Else
-      If Trim(aline) <> "" Then 
-        opt = ""
-        data = ""
-        If aline Like "*=*" Then 
-          opt = Left(aline, InStr(aline, "=") - 1)
-          data = Right(aline, Len(aline) - Len(opt) - 1)
-          out[opt] = data
-            Else
-          out[aline] = Chr(8)
-        Endif
-      Endif
+      out[l] = Chr(8)
     Endif
   Next
+    Stop
   Return out
+
+  ' Dim profile_head As String
+  ' Dim profile_dir As String = global.confpath & "/mpv_config/"
+  ' Dim profile_file_name As String = profile_dir & "config"
+  ' Dim profile_file As New String[]
+  ' Dim new_data As String
+  ' Dim s, e, i As Integer
+  ' Dim aLine As String
+  ' Dim out As New Collection
+  ' Dim opt, data As String
+  ' 
+  ' 'convert mpv profile to mpv options
+  ' 
+  ' If Not Exist(profile_file_name, True) Then Return Null
+  ' 
+  ' profile_head = "[xt7." & profilename & "]"
+  ' profile_file = Split(File.Load(profile_file_name), "\n", "", False, True)
+  ' s = profile_file.Find(profile_head)
+  ' If s < 0 Then Return Null
+  ' For i = s + 1 To profile_file.Max
+  '   aLine = (profile_file[i])
+  '   If (Left(aline) = "[") And (Right(aline) = "]") And (Len(aline) > 2) Then 
+  '     e = i - 1
+  '     Break
+  '       Else
+  '     If Trim(aline) <> "" Then 
+  '       opt = ""
+  '       data = ""
+  '       If aline Like "*=*" Then 
+  '         opt = Left(aline, InStr(aline, "=") - 1)
+  '         data = Right(aline, Len(aline) - Len(opt) - 1)
+  '         out[opt] = data
+  '           Else
+  '         out[aline] = Chr(8)
+  '       Endif
+  '     Endif
+  '   Endif
+  ' Next
+  ' Return out
 End
 
+Public Sub save_cached_options(ProfileName As String)
+  'save mpv options in a profile format compatible with mpv
+  Dim cached_file_name As String = global.confpath & "/" & Profilename & ".cached"
+  Dim cached_data, data As String
+  Dim opts As New Collection
+  
+  Stop
+  
+  If Not Exist(global.confpath, True) Then 
+    Debug "Error: configuration directory not found; something is going VERY wrong."
+    Stop
+    Return
+  Endif
 
+    opts = fmain.user_options()
+    For Each data In opts
+      If data <> Chr(8) Then
+        cached_data &= opts.key & "=" & data & "\n"
+          Else
+        cached_data &= opts.key & "\n"
+      Endif
+    Next
+    cached_data &= "volume=" & fmain.Initialvolume() & "\n"
 
-Public Sub save_mpv_profile(ProfileName As String)
+    File.Save(cached_file_name, cached_data)
+End
+
+Public Sub OLD_save_cached_options(ProfileName As String)
   'save mpv options in a profile format compatible with mpv
  Dim opts As New Collection
  Dim data As String
@@ -593,7 +644,7 @@ Public Sub save_mpv_profile(ProfileName As String)
     opts = fmain.user_options()
     For Each data In opts
       If data <> Chr(8) Then
-        If Left(data) <> "\"" And Right(data) <> "\"" Then data = "\"" & data & "\""
+        'If Left(data) <> "\"" And Right(data) <> "\"" Then data = "\"" & data & "\""
         profile_data &= opts.key & "=" & data & "\n"
           Else
         profile_data &= opts.key & "\n"
