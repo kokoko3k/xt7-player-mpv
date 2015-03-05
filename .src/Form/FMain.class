@@ -2342,7 +2342,9 @@ Public Function VmetersOptionsAndInitIfNeeded(filename As String) As String
 
   If GeneralOptions.ShowVmeterCHK.value Then
     If Not (global.IsVideoFile(filename)) Then
-      exportfile = exportfilespath & Int(Rnd(1, 9999))
+      If exportfile = "" Then 
+        exportfile = exportfilespath & Int(Rnd(1, 9999))
+      Endif
       'Return " -af-add export=" & exportfile & ":" & GeneralOptions.RmsSizeSpinBox.value
       Return exportfile & ":" & GeneralOptions.RmsSizeSpinBox.value
       audioform.BarBox.visible = True
@@ -2438,6 +2440,7 @@ Public Sub file_options(fullpath As String) As Collection
   Dim opt As Mpvoption
   Dim ytformats As String = ""
   Dim yt3d As Boolean = False
+  Dim export_opts As String = ""
 
   If Youtube.IsYoutubeLink(fullpath) Then
     yt3d = generaloptions.Get3dYT.Value
@@ -2468,8 +2471,8 @@ Public Sub file_options(fullpath As String) As Collection
 
   generaloptions.FirstLoadIfNeeded()
   If GeneralOptions.ShowVmeterCHK.value Then
-    exportfile = VmetersOptionsAndInitIfNeeded(fullpath)
-    If exportfile <> "" Then opts["af-pre"] = "export=" & exportfile
+    export_opts = VmetersOptionsAndInitIfNeeded(fullpath)
+    If export_opts <> "" Then opts["af-pre"] = "export=" & export_opts
   Endif
 
   For Each opt In SetRightCache(fullpath)
@@ -2492,7 +2495,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   Dim opt As Mpvoption
   Dim opts As New Collection
   Dim data As String
-  
+
   Object.Attach(mplayer, Me, "mplayer")
   InitABLoop()
   DOHACKIMAGE = True
@@ -3292,9 +3295,11 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
       If data_new = "yes" Then
         ButtonPlay.picture = Picture["media-playback-start.png"]
         mplayer.event_loop.delay = 2000 'be light when we're on pause
+        If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.pause()
           Else
         ButtonPlay.picture = Picture["media-playback-pause.png"]
         mplayer.event_loop.delay = 500 'be reactive
+        If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.unpause()
       Endif
   
     Case "=chapter"
@@ -3369,7 +3374,8 @@ Public Sub Mplayer_mykill(return_value As Integer)
   ExecutePostCmd()
   videobox.cached = False
   'delete export file
-     Try Kill mplayer.exportfile 'fixmempv audio meters
+    Stop
+     Try Kill mymeters.exportfile
       If TogglePls.value And (Not UserStopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) Then
           Debug "end of media reached, playing next video..."
           Debug
@@ -4417,29 +4423,6 @@ Public Sub MenuConfigureAudioFilters_Click()
   
 End
 
-Public Sub OLD_Apply()
-  'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
-  global.ResetApplyBtnColor()
-  VEqHasBeenSet = False
-  subnotset = True
-  If mplayer.ProcessRunningOvr() Then
-    ForcedAspectRT = "default"
-    mplayer.do_restart(mplayer.getP("fullpath"), GetOptionsFromGui() & SetRightCache() & VmetersOptionsAndInitIfNeeded())
-    PrevValuecTime = 999999
-    aspectmenu.visible = Not (mplayer.getP("audioonly") Or fsform.fullscreen)
-    mplayer.Renice(GeneralOptions.NiceLevelSpinBox.value)
-    CorrectAreaAspect
-    'LogWindow.clearlogs()
-    'LogWindow.ShowLogs()
-  Endif
-  
-  Try VideoEqualizer.CheckDynamicOverbright_Click()
-  ' fixmempv
-  ' If LASTAUDIOID <> -1 Then mplayer.Send("switch_audio " & LASTAUDIOID)
-  ' If LASTSUBID <> 99999 Then mplayer.Send("sub_select " & lastsubid)
-  
-  'onesectimer.start
-End
 
 Public Sub Apply()
   Dim temp_opts As New Collection

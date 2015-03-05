@@ -17,9 +17,9 @@ Public Sub OkBTN_Click()
 End
 
 Public Sub RefreshBTN_Click()
-
   ShowLogs()
-
+  searchterm_Click()
+  searchterm2_Click()
 End
 
 Public Sub Form_Show()
@@ -146,4 +146,5 @@ Private Function DoHighlight(logarea As Object, foundstr As String) As Boolean
   logarea.RichText = rtext  
   Return found
 End
+
 

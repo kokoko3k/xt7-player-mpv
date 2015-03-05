@@ -3,6 +3,8 @@
 Public bars As New Object[]
 Public latency As Integer = 300
 Public MaxH As Integer
+Public exportfile As String
+
 Private frband As Integer[] = [31, 62, 125, 250, 500, 1000, 1900, 4000, 8000] ', 16000]
 Private timer1 As Timer
 Private barsdone As Boolean = False
@@ -10,7 +12,6 @@ Private channels As Integer
 Private samplesperchannel As Integer
 Private buffer As New Integer[][]
 Private mparent As Object
-Private exportfile As String
 Private pfps As Integer
 Private spacingg As Integer
 Private hfile As File
@@ -20,6 +21,7 @@ Private scaledspacing As Integer
 Private gvis As String
 
 Public Sub init(pparent As Object, platency As Integer, Maxheight As Integer, pexportfile As String, pspacingg As Integer, fps As Integer, Optional vis As String = "vmeters")
+
   If vis = "" Then vis = "vmeters"
   If bars.count > 0 Then Try stopp()
   latency = platency
@@ -57,10 +59,18 @@ Public Function ChangeFps(fps As Integer)
     timer1.delay = 1000 Div fps
 End
 
+Public Sub pause()
+  timer1.stop
+End
+
+Public Sub unpause()
+  timer1.start
+End
+
+
 Public Sub Timer1_Timer()
   Dim sync As Integer
   Dim samples As New Short[]
-  If FMain.mplayer.getP("paused") Then Return
   Try hFile = Open exportfile For Input
   If Error Then Return
   hFile.ByteOrder = gb.LittleEndian
@@ -226,3 +236,4 @@ End
   power = s_prev2 * s_prev2 + s_prev * s_prev - coeff * s_prev * s_prev2
   Return power
  End
+
