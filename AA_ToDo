@@ -662,4 +662,34 @@ autokill in caso di morte gui
 l'mkv workaround diventa il send del nuovo delay ad ogni seek
 trovare un modo per mostrare la sezione del man relativo all'opzione/filtro/driver
 rimuovere i riferimenti ad mplayer editando i file di testo dei form
+cddb più preciso
+quintali di variabili inutilizzate
+rimuovere qualche opzione da setstyle per velocizzare l'avvio?
+non funge la visulaizzazione audio
+lo switch automatico al profilo di default al primo avvio, funziona?
+non prende le tag icy per le radio
+come posizionare i sub sulle bande nerE?
+
+il parse dei filtri ladspa dal profilo non funziona a causa delle virgolette
+ non aggiungere le virgolette alla cieca
+
+se non usiamo il profilo mpv, allora non gli passare la confdir.
+anche se non lo usa, in realtà lo "parsa" ugualmente; niente gli fa,
+peròòò efficienza
+
+il nome della finestra newchains è ancora xt7-player
+forse anche altre finestre
+
+-af volume confligge con softvol=yes rimuovere volumedb?
+
+riavviando più volte a volte il volume iniziale diventa 1 (forse se
+    riavviamo prima che siano passati tot secondi?) sì, 1
+    
+ perchè la finestra del l'equalizzatore appare in fullscreen, mentre quelle dei chains no§?
+ 
+se modifichi lo sharpen del filtro unsharp e fai varie prove, per un attimo noti un flash dei settaggi vecchi.
+prova a impostare matrice 3x3 con valori alti, poi metti 11x11, poi 3x3 etc...
+
+se cambi parametri del driver video:
+es: parti con opengl e poi gli aggiungi scale lanczos e fai apply, xt7 non riavvia il play come dovrebbe    
 
