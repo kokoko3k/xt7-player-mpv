@@ -1462,60 +1462,6 @@ End
 
 Public ForcedZoomRT As String = "" 'leave "NOBARS" "HALFBARS" or empty
 
-Public Sub OLD_CorrectAreaAspect()
-  'this sets the draweing area of the form to the aspect of the video
-  Dim VideoW As Integer = 4
-  Dim VideoH As Integer = 3
-  Dim Aspect As Float = 1.333
-  Dim TmpX, TmpY, TmpW, TmpH As Integer
-  
-  If Not mplayer.ProcessRunningOvr() Then Return
-  If fmain.closing Then Return
-  If global.IsImgFile(mplayer.getP("fullpath")) Then mplayer.do_seek(0)
-
-  Try VideoW = mplayer.getP("video-params/dw")
-  Try VideoH = mplayer.getP("video-params/dh")
-  If (VideoW > 0) And (VideoH > 0) Then
-    If ForcedAspectRT = "default" Then
-      Aspect = VideoW / VideoH
-    Else
-      Try Aspect = CFloat(ForcedAspectRT)
-    Endif
-    
-    'Drawing area must fit in the outerbox, so try to set the width and calculate the Height:
-    TmpW = OuterBox.Width '* ResizeFactor
-    TmpH = OuterBox.Width / Aspect '* ResizeFactor
-    
-    'Disable caching for high pan-scan as it slows down
-    If ((TmpW > OuterBox.Width) Or (TmpH > OuterBox.Height)) Then
-      TmpH = (OuterBox.Height) '* ResizeFactor
-      TmpW = (OuterBox.Height * Aspect) '* ResizeFactor
-    Endif
-
-    'apply the zoom factor:
-    Select Case ForcedZoomRT
-      Case "NOBARS"
-        ResizeFactor = aspect / (outerbox.w / outerbox.h)
-        If ResizeFactor < 1 Then resizefactor = 1 / ResizeFactor
-      Case "HALFBARS"
-        ResizeFactor = 1 + (((aspect / (outerbox.w / outerbox.h)) - 1) / 2)
-        If ResizeFactor < 1 Then resizefactor = 1 / ResizeFactor
-    End Select
-    Object.Lock(realtimeform.PanscanSlider)
-    realtimeform.PanscanSlider.value = resizefactor * 10000
-    Object.unLock(realtimeform.PanscanSlider)
-    TmpW = TmpW * resizefactor
-    TmpH = TmpH * resizefactor
-    
-    'finally, resize and center VideoBox in Outerbox 
-    TmpX = (OuterBox.Width / 2) - (TmpW / 2)
-    TmpY = (OuterBox.Height / 2) - (TmpH / 2)
-
-    If (tmpw > 64) Then VideoBox.Move(TmpX, TmpY, TmpW + 1, TmpH + 1) 'don't touch (tmpw>64) or else heavy swap will occour!
-  Endif
-  
-End
-
 Public Sub CorrectAreaAspect()
   'this sets the draweing area of the form to the aspect of the video
   Dim dW As Integer = 4
@@ -1523,6 +1469,10 @@ Public Sub CorrectAreaAspect()
   Dim AR As Float = 1.333
   Dim NoBarResize As Float
   Dim TmpX, TmpY, TmpW, TmpH As Integer
+  Dim no_video As Boolean = True
+ 
+  Try no_video = mplayer.getP("audioonly")
+  If no_video Then Return
 
   If Not mplayer.ProcessRunningOvr() Then Return
 
@@ -1547,6 +1497,7 @@ Public Sub CorrectAreaAspect()
   Object.unLock(realtimeform.PanscanSlider)
 
   VideoBox.move(0, 0, outerbox.w, outerbox.h)
+  Stop
   mplayer.set_property_mpv("video-zoom", Replace(CStr(resizefactor), ",", "."))
 
 End
@@ -2345,7 +2296,6 @@ Public Function VmetersOptionsAndInitIfNeeded(filename As String) As String
       If exportfile = "" Then 
         exportfile = exportfilespath & Int(Rnd(1, 9999))
       Endif
-      'Return " -af-add export=" & exportfile & ":" & GeneralOptions.RmsSizeSpinBox.value
       Return exportfile & ":" & GeneralOptions.RmsSizeSpinBox.value
       audioform.BarBox.visible = True
     Else
