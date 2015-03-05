@@ -4403,7 +4403,7 @@ Public Sub Apply()
     
     'restore the old ytdl option
     Try new_opts["ytdl"] = mplayer.mpvoptions["ytdl"]
-Stop
+
     mplayer.do_Apply(new_opts)
 
     global.ResetApplyBtnColor()

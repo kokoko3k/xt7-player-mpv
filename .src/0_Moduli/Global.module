@@ -501,16 +501,16 @@ Public Sub save_cached_options(ProfileName As String)
     NewChains.FirstLoadIfNeeded()
 
     data = NewChains.parse_drivers(False)
-    If data <> "" Then cached_data &= "--vo=" & data & "\n"
+    If data <> "" Then cached_data &= "vo=" & data & "\n"
     
     data = NewChains.parse_drivers(True)
-    If data <> "" Then cached_data &= "--ao=" & data & "\n"
+    If data <> "" Then cached_data &= "ao=" & data & "\n"
 
     data = NewChains.parse_filters(False)
-    If data <> "" Then cached_data &= "--vf-add=" & data & "\n"
+    If data <> "" Then cached_data &= "vf-add=" & data & "\n"
 
     data = NewChains.parse_filters(True)
-    If data <> "" Then cached_data &= "--af-add=" & data & "\n"
+    If data <> "" Then cached_data &= "af-add=" & data & "\n"
 
     File.Save(cached_file_name, cached_data)
 End
