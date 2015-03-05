@@ -1497,7 +1497,7 @@ Public Sub CorrectAreaAspect()
   Object.unLock(realtimeform.PanscanSlider)
 
   VideoBox.move(0, 0, outerbox.w, outerbox.h)
-  Stop
+
   mplayer.set_property_mpv("video-zoom", Replace(CStr(resizefactor), ",", "."))
 
 End
@@ -3324,7 +3324,7 @@ Public Sub Mplayer_mykill(return_value As Integer)
   ExecutePostCmd()
   videobox.cached = False
   'delete export file
-    Stop
+
      Try Kill mymeters.exportfile
       If TogglePls.value And (Not UserStopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) Then
           Debug "end of media reached, playing next video..."
@@ -3606,7 +3606,7 @@ Public Sub SeekRestart(newpos As Integer)
     
     aspectmenu.visible = Not (mplayer.getP("audioonly") Or fsform.fullscreen)
     mplayer.Renice(GeneralOptions.NiceLevelSpinBox.value)
-    CorrectAreaAspect
+    CorrectAreaAspect()
     ' LogWindow.clearlogs()
     ' LogWindow.ShowLogs()
   Endif

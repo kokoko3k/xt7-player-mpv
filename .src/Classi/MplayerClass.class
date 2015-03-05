@@ -2019,8 +2019,18 @@ Private Sub do_apply_restart(new_opts As Collection)
   Dim fullpath As String
   Dim restart As Boolean = True
   Dim timerA As Float
+  Dim properties_changed_runtime_old_datas As New Collection
+  Dim olddata As String = "--------------"
   
   restarting = True
+  
+  'store old properties so that we can understand if we succeeded in restoring them
+  For Each properties_changed_runtime
+    name = properties_changed_runtime.key
+    data = get_property_mpv(name, True, 100, True)
+    properties_changed_runtime_old_datas[name] = data
+  Next
+  
   
   If ProcessRunningOvr() Then
     clear_options()
@@ -2046,10 +2056,12 @@ Private Sub do_apply_restart(new_opts As Collection)
       Repeat
         name = properties_changed_runtime.key
         data = properties_changed_runtime[name]
+        olddata = Null
+        Try olddata = properties_changed_runtime_old_datas[name]
         set_property_mpv(name, data, False)
         Wait 0.01
         newdata = get_property_mpv(name)
-      Until (newdata <> "(unavailable)") Or ((Timer() - TimerA) > 10) 'dont spend more than one second per property
+      Until (newdata <> "(unavailable)") Or ((Timer() - TimerA) > 10) Or (newdata = olddata) 'dont spend more than one second per property
       'is it possible that newdata is available but still with an unset value, wo, just to be sure, restore it one more time.
       Wait 0.01
       set_property_mpv(name, data, False)
