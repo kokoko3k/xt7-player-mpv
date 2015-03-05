@@ -2373,8 +2373,8 @@ End
 Public Sub static_options() As Collection
   'Basic and static optionsm they are always the same
   Dim opts As New Collection
-  'opts["config"] = "no"
-  opts["config-dir"] = global.confpath & "/mpv_config"
+  opts["config"] = "no"
+  'opts["config-dir"] = global.confpath & "/mpv_config" 'not needed since we won't load an mpv_profile anymore
   opts["input-conf"] = "/tmp/FakeInput.conf"
   opts["load-scripts"] = "no"
   opts["osc"] = "no"
@@ -2398,6 +2398,7 @@ Public Sub user_options() As Collection
 
   'if exist an mpv cached profile and we haven't initializaed newchains yet, use the cache:
   'newchains seems the only settings that can be cached.
+  Stop
   If global.exist_mpv_profile(global.CurrentProfile) And (Not NewChains.initdone) Then 
     'opts["profile"] = "xt7." & global.CurrentProfile
     Debug "Found a cached mpv profile, using it"
