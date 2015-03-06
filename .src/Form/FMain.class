@@ -3247,13 +3247,13 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
   
     Case "pause"
       If data_new = "yes" Then
+        If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.pause()
         ButtonPlay.picture = Picture["media-playback-start.png"]
         mplayer.event_loop.delay = 2000 'be light when we're on pause
-        If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.pause()
           Else
+        If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.unpause()
         ButtonPlay.picture = Picture["media-playback-pause.png"]
         mplayer.event_loop.delay = 500 'be reactive
-        If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.unpause()
       Endif
   
     Case "=chapter"
@@ -4392,23 +4392,23 @@ Public Sub Apply()
     For Each data In temp_opts
       new_opts[temp_opts.key] = data
     Next
-
+Stop
     temp_opts = file_options(mplayer.getP("fullpath"))
     For Each data In temp_opts
       new_opts[temp_opts.key] = data
     Next
-
+Stop
     temp_opts = user_options()
 
     For Each data In temp_opts
       new_opts[temp_opts.key] = data
     Next  
-
+Stop
     new_opts["volume"] = Initialvolume()
     
     'restore the old ytdl option
     Try new_opts["ytdl"] = mplayer.mpvoptions["ytdl"]
-
+Stop
     mplayer.do_Apply(new_opts)
 
     global.ResetApplyBtnColor()

@@ -1939,7 +1939,9 @@ Public Sub do_apply(new_opts As Collection)
   Dim changed_opts_realtime As New Collection
   Dim af_new As String = ""
   Dim vf_new As String = ""
-
+  Dim af_pre_new As String = ""
+  Dim vf_pre_new As String = ""
+  
   'see if we need a restart
   'make a list of changed options
   changed_opts = what_changes(mpvoptions, new_opts)
@@ -1968,28 +1970,52 @@ For Each new_opts
       Case "af"
         af_new = data
       Case "af-add"
-        af_new = af_new & "," & data
+        If af_new <> "" Then
+          af_new = af_new & "," & data
+            Else
+          af_new = data
+        Endif
       Case "af-pre"
-        af_new = data & "," & af_new
+        If af_pre_new <> "" Then
+          af_pre_new = af_pre_new & "," & data
+            Else
+          af_pre_new = data
+        Endif
       Case "af-clr"
         af_new = ""
-
+        af_pre_new = ""
       Case "vf"
         vf_new = data
       Case "vf-add"
-        vf_new = vf_new & "," & data
+        If vf_new <> "" Then
+          vf_new = vf_new & "," & data
+            Else
+          vf_new = data
+        Endif
       Case "vf-pre"
-        vf_new = data & "," & vf_new
+        If vf_pre_new <> "" Then
+          vf_pre_new = vf_pre_new & "," & data
+            Else
+          vf_pre_new = data
+        Endif
       Case "vf-clr"
         vf_new = ""
+        vf_pre_new = ""
     End Select
   Endif
 Next
 'Stop
   ' If Left(af_new, "3") = "-1," Then af_new = Right(af_new, -3)
   ' If Left(vf_new, "3") = "-1," Then vf_new = Right(vf_new, -3)
+
   If Left(af_new) = "," Then af_new = Right(af_new, -1)
   If Left(vf_new) = "," Then vf_new = Right(vf_new, -1)
+  If Left(af_pre_new) = "," Then af_new = Right(af_pre_new, -1)
+  If Left(vf_pre_new) = "," Then vf_new = Right(vf_pre_new, -1)
+
+  If af_pre_new <> "" Then af_new = af_pre_new & "," & af_new
+  If vf_pre_new <> "" Then vf_new = vf_pre_new & "," & vf_new
+
   If af_new = "|(removed)|" Then af_new = ""
   If vf_new = "|(removed)|" Then vf_new = ""
   
