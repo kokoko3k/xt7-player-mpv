@@ -892,6 +892,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
           Else
         ACheckbox = New Checkbox(AnHBox) As "dynaobj"
         ACheckbox.Name = CurrentParams[CurrentParams.Count - 2] & ".CheckBox"
+        Debug ACheckbox.Name
         ACheckbox.text = CurrentParams[1]
         ' [GB2:FNTW] ACheckBox.width = Acheckbox.Font.TextWidth(Acheckbox.Text) + 32
         ACheckBox.width = Acheckbox.Font.TextWidth(Acheckbox.Text) + 32
