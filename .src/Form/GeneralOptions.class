@@ -115,7 +115,7 @@ Private Sub DrawFiltersGui()
     AllParams.Clear
       
   '-softvol-max <10.0-10000.0>
-    AllParams.add(["RANGE", ("Maximum Amplification"), "10", "100", "10000", "softvol000max", "%"])
+    AllParams.add(["RANGE", ("Maximum Amplification"), "10", "100", "10000", "softvol000max", ""])
     Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Set the maximum amplification level in percent (default: 110).\n A value of 200 will allow you to adjust the volume up to a maximum of double the current level.\n mpv option: -softvol-max"))
     Try Object.SetProperty(Me.Controls["softvol000max.CheckBox"], "value", True) 'enabled by default ;)
     AllParams.Clear
@@ -227,18 +227,18 @@ Private Sub DrawFiltersGui()
     AllParams.Clear
     
   '-framedrop
-    AllParams.add(["CHOOSE", ("Field dominance"), "auto", "auto", "top", "bottom", "field000dominance", ("-1=auto (default)")])
+    AllParams.add(["CHOOSE", ("Field dominance"), "auto", "auto", "top", "bottom", "field000dominance", ("")])
     Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Set first field for interlaced content\n mpv option: -field-dominance"))
     AllParams.Clear
     
   '-dvd-speed
-    AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "dvd000speed", ("X")])
+    AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "dvd000speed", ("")])
     Global.DrawGui(AllParams, ("DVD"), Tabstrip1, Switchable, ("Try to limit DVD speed. 0 means no change.\nNote that you need write access to dvd device\n mpv option: -dvd-speed"))
     AllParams.Clear
     
   '-cdda speed=
     'AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "cdda00998Aspeed=", ("X")])
-    AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "cdda000speed", ("X")])
+    AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "cdda000speed", ("")])
     Global.DrawGui(AllParams, ("Audio CD"), Tabstrip1, Switchable, ("Try to limit cdrom speed. 0 means no change.\nNote that you need write access to dvd device\n mpv option: -cdda speed=x"))
     AllParams.Clear
 

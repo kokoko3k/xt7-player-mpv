@@ -663,6 +663,7 @@ hwdec  proprietà con stessi valori dell'opzione non è necessario riavviare
 autokill in caso di morte gui
 
 l'mkv workaround diventa il send del nuovo delay ad ogni seek
+  Non riesco più a riprodurre il problema, nè con mpv nè con mplayer.
 
 trovare un modo per mostrare la sezione del man relativo all'opzione/filtro/driver
 
@@ -688,3 +689,6 @@ il contrasto dinamico non funziona.
 
 scaletempo non mi pare che funzioni in modo corretto:
   https://github.com/mpv-player/mpv/issues/1653
+
+abbiamo poi risolto il problema dell'exportfile e dei filtri audio?
+'cera un conflitto nell' apply o nel play da cache, non ricordo.

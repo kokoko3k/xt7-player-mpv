@@ -36,7 +36,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["drc", "karaoke", "extrastereo", "equalizer", "scaletempo", "volume", "CustomAudio1", "CustomAudio2", "CustomAudio3"]
+  filters_audio_list = ["equalizer", "drc", "karaoke", "extrastereo", "scaletempo", "volume", "CustomAudio1", "CustomAudio2", "CustomAudio3"]
   For Each filter In filters_audio_list
     draw_list_item(filters_audio_container, filter)
   Next 'filter
@@ -299,6 +299,7 @@ Private Sub draw_filters_audio_cfg()
     AllParams.Clear
 
 
+
   'volume[=<volumedb>[:...]]
    ' AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
     AllParams.add(["RANGE", "replaygain-preamp=", "-20", "0", "20", "Volume4", ("Pre-amplification in dB to apply to the replaygain gain")])
@@ -313,10 +314,10 @@ Private Sub draw_filters_audio_cfg()
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
 
     AllParams.add(["RANGEFLOAT", "scale=", "0.1", "1", "4", "scaletempo5", ""])
-    AllParams.add(["RANGE", "stride=", "5", "60", "500", "scaletempo2", "ms"])
-    AllParams.add(["RANGEFLOAT", "overlap=", "0.10", "0.20", "1", "scaletempo3", "%"])
-    AllParams.add(["RANGE", "search=", "1", "14", "100", "scaletempo4", "ms"])
-    AllParams.add(["CHOOSE", "speed=", "both", "tempo", "pitch", "none", "scaletempo1", ("Runtime responce to speed change")])
+    AllParams.add(["RANGE", "stride=", "5", "60", "500", "scaletempo2", ""])
+    AllParams.add(["RANGEFLOAT", "overlap=", "0.10", "0.20", "1", "scaletempo3", ""])
+    AllParams.add(["RANGE", "search=", "1", "14", "100", "scaletempo4", ""])
+    AllParams.add(["CHOOSE", "speed=", "both", "tempo", "pitch", "none", "scaletempo1", ("Runtime response to speed change")])
     Global.DrawGui(AllParams, "scaletempo", aTabstrip, Switchable)
     AllParams.Clear
     
