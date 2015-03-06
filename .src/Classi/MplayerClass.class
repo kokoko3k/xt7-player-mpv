@@ -2058,6 +2058,7 @@ Private Sub do_apply_restart(new_opts As Collection)
         data = properties_changed_runtime[name]
         olddata = Null
         Try olddata = properties_changed_runtime_old_datas[name]
+        Stop
         set_property_mpv(name, data, False)
         Wait 0.01
         newdata = get_property_mpv(name)

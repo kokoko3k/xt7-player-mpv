@@ -910,7 +910,7 @@ Private Sub SaveCustomEqSettings(EqSettings As String)
 End
 
 Private Function LoadCustomEqSettings() As String
-  Return File.Load(global.confpath & "/" & global.currentprofile & ".profile/audioequalizer.txt")
+  Try Return File.Load(global.confpath & "/" & global.currentprofile & ".profile/audioequalizer.txt")
 End
 
 
