@@ -75,11 +75,11 @@ Public Sub init()
   'Please terminate ALLFILTERS with ";"!
   'ALLFilters  '= Videofilter & ";" & AudioFilter & ";" & UncommonVideoFilters & ";" & UncommonAudiofilters
   quotes = "\""       'double quotes in strings
-  aboutmessage = "\n" & ("Xt7-Player-mpv version ") & Application.version & (" by Antonio Orefice.\nxt7player@gmail.com\n\nThanks to Benoît Minisini for Gambas.") & "\n\n" & "I92guboj - Spanish translation \n" & "Wackenroader - Brazilian Portuguese translation \n" & "Shimingzhou - simplified Chinese translation\n" & "Jacky Bamière - French translation\n" & "VictorR2007 - Russian Translation\n" & "SymbianFlo - Testing and 'spiritual' support\n" & "NickiNicki - Bug reports\n" & "Eloaders and all the contributors\nat https://launchpad.net/xt7-player \n" 
+  aboutmessage = "\n" & ("xt7-Player-mpv version ") & Application.version & (" by Antonio Orefice.\nxt7player@gmail.com\n\nThanks to Benoît Minisini for Gambas.") & "\n\n" & "I92guboj - Spanish translation \n" & "Wackenroader - Brazilian Portuguese translation \n" & "Shimingzhou - simplified Chinese translation\n" & "Jacky Bamière - French translation\n" & "VictorR2007 - Russian Translation\n" & "SymbianFlo - Testing and 'spiritual' support\n" & "NickiNicki - Bug reports\n" & "Eloaders and all the contributors\nat https://launchpad.net/xt7-player \n" 
   Alternatecolor = &EEEEFF&
   LSyncing = False 'is true when library is syncing.
   LSyncingMessage = ("Syncing Library, please wait...")
-  AppName = "Xt7-Player-mpv"
+  AppName = "xt7-Player-mpv"
   ConfPath = Settings.DefaultDir & "/" & Appname
   CustomBindKeys = "Xt7BindKeys"
   XbindkeysBIN = global.confpath & "/" & CustomBindKeys
@@ -126,44 +126,6 @@ Public Function SavedProfileChanged() As Boolean
   Try ChangedForms.Remove(ChangedForms.Find("Searchfields"))
   Return ChangedForms.count > 0
 End
-
-
-' Public Sub FixFormNames()
-'   Try AFiltersCfg.name = "AFiltersCfg"
-'   Try AddUriForm.name = "AddUriForm"
-'   Try AskName.name = "AskName"
-'   Try AudioForm.name = "AudioForm"
-'   Try Chains.name = "Chains"
-'   Try ChooseAspect.name = "ChooseAspect"
-'   Try CountDown.name = "CountDown"
-'   Try CoverManager.name = "CoverManager"
-'   Try DVBTuner.name = "DVBTuner"
-'   Try EpgForm.name = "EpgForm"
-'   Try FMain.name = "FMain"
-'   Try FsForm.name = "FsForm"
-'   Try GeneralOptions.name = "GeneralOptions"
-'   Try HotKeyGrab.name = "HotKeyGrab"
-'   Try HotKeys.name = "HotKeys"
-'   Try LogWindow.name = "LogWindow"
-'   Try MyAskName.name = "MyAskName"
-'   Try MyQuestion.name = "MyQuestion"
-'   Try OpenSubtitesForm.name = "OpenSubtitesForm"
-'   Try OverlayTrayTip.name = "OverlayTrayTip"
-'   Try ProfileManager.name = "ProfileManager"
-'   Try RealtimeForm.name = "RealtimeForm"
-'   Try Searchfields.name = "Searchfields"
-'   Try ServiceForm.name = "ServiceForm"
-'   Try SubAndOsd.name = "SubAndOsd"
-'   Try TextDialog.name = "TextDialog"
-'   Try TranslationNeeded.name = "TranslationNeeded"
-'   Try VFiltersCfg.name = "VFiltersCfg"
-'   Try VideoEqualizer.name = "VideoEqualizer"
-'   Try XConfigureAudioDriver.name = "XConfigureAudioDriver"
-'   Try XConfigureVideoDriver.name = "XConfigureVideoDriver"
-'   Try Xt7Egg.name = "Xt7Egg"
-'   Try zzzFake.name = "zzzFake"
-' End
-
 
 
 Public Function makeN(number As String, digits As Integer) As String
@@ -618,8 +580,6 @@ Public Sub LoadEarlySettings(ProfileName As String)
   Dim MySettings As New SettingsClass
   Dim out As String
   
-  'changed name from Xt7-Player to xt7-player, config transition needed:
-  Shell "mv -f " & Settings.DefaultDir & "/Xt7-Player.conf " & Settings.DefaultDir & "/xt7-player.conf >/dev/null 2>&1" Wait To out
   MySettings.Load(Fmain, Global.confpath & "/" & ProfileName)
   MySettings.Load(GeneralOptions, Global.confpath & "/" & ProfileName) '<--- rallenta l'avvio
   MySettings.Load(Searchfields, Global.confpath & "/" & ProfileName)
@@ -632,8 +592,6 @@ End
 Public Sub LoadAllSettings(ProfileName As String) 'THIS Is PROBABLY BROKEN
   Dim MySettings As New SettingsClass
   Dim out As String
-  'changed name from Xt7-Player to xt7-player, config transition needed:
-    Shell "mv -f " & Settings.DefaultDir & "/Xt7-Player.conf " & Settings.DefaultDir & "/xt7-player.conf >/dev/null 2>&1" Wait To out
 
   MySettings.Load(Fmain, Global.confpath & "/" & ProfileName)
   MySettings.Load(GeneralOptions, Global.confpath & "/" & ProfileName)

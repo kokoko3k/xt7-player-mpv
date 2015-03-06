@@ -7293,7 +7293,7 @@ Public TimerHideTray As New Timer As "TimerHideTray"
 Public Sub TrayIcon1_Enter()
 
   If mplayer.ProcessRunningOvr() Then
-    OverlaytrayTip.Redraw("..:Xt7-Player::.", Last.screenx - (TrayIcon1.w), Last.screeny - (OverlayTrayTip.h))
+    OverlaytrayTip.Redraw("..:xt7-player::.", Last.screenx - (TrayIcon1.w), Last.screeny - (OverlayTrayTip.h))
     OverlaytrayTip.show
     TimerHideTray.delay = 5000
     TimerHideTray.start
@@ -8558,7 +8558,7 @@ Public Sub UpdateEmbeddedFromSelected(mygrid As Gridview)
   Dim coverfilename As String
   Dim fullpath As String
   
-  If MyQuestion.Ask(("Xt7 will try to find and update embedded covers,\nBeware that covers explicitely set without album/artist information will be lost."), "Ok", "Cancel") = 2 Then Return
+  If MyQuestion.Ask(("xt7 will try to find and update embedded covers,\nBeware that covers explicitely set without album/artist information will be lost."), "Ok", "Cancel") = 2 Then Return
   mygrid.mouse = mouse.wait
   mygrid.enabled = False
   For r = 0 To mygrid.rows.count - 1
