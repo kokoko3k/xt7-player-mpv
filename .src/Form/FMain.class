@@ -3171,6 +3171,7 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   Dim SmallWindow As Boolean = False
   Dim icy_title As String = ""
   'If Not mplayer.ProcessRunningOvr() Then Return 
+
   If customtitle = "" Then 
     pretext = file.BaseName(mplayer.getP("fullpath"))
       Else
@@ -3222,7 +3223,10 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   Endif
   
   StatusLabelLeft.text = " " & Pretext
-  If (Not volumefocused) Then StatusLabelRight.text = Posttext & " "
+  If (Not volumefocused) Then 
+    StatusLabelRight.text = Posttext & " "
+    StatusLabelright.Foreground = color.white
+  Endif
   AudioForm.UpdateLength(PostText)
   If fsform.FullScreen Then statusbar1.w = statusbar1.Parent.w
 End
@@ -3435,7 +3439,8 @@ Private Sub UpdateVolumeTooltip()
   Dim volume As Integer
   Dim overboost As String
 
-  Try overboost = mplayer.get_option("softvol-max")
+  Try overboost = Split(mplayer.get_property_mpv("options/softvol-max"), ".,")[0]
+  If overboost = Null Then Try overboost = mplayer.get_option("softvol-max")
   If overboost = Null Then overboost = "100"
   If Not mplayer.ProcessRunningOvr() Then Return
   volume = CInt(SaveVolumeSlider.value * (overboost / SaveVolumeSlider.MaxValue))
