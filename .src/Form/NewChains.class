@@ -36,7 +36,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "volume", "drc", "extrastereo", "karaoke", "scaletempo", "CustomAudio1", "CustomAudio2", "CustomAudio3"]
+  filters_audio_list = ["drc", "karaoke", "extrastereo", "equalizer", "scaletempo", "volume", "CustomAudio1", "CustomAudio2", "CustomAudio3"]
   For Each filter In filters_audio_list
     draw_list_item(filters_audio_container, filter)
   Next 'filter
@@ -49,7 +49,7 @@ End
 Private Sub Init_filters_video()
   Dim filters_video_list As New String[]
   Dim filter As String
-  filters_video_list = ["Expand", "Scale", "HqDn3D", "Eq", "UnSharp", "Yadif", "DeLogo", "GradFun"]
+  filters_video_list = ["Yadif", "GradFun", "HqDn3D", "UnSharp", "DeLogo", "Eq", "Scale", "Expand"]
   filters_video_list.Insert(["Stereo3D", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
