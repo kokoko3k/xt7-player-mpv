@@ -263,9 +263,11 @@
         Index = 0
       }
       { ButtonLadspaHelper Button
-        MoveScaled(0,24,4,4)
+        MoveScaled(1,26,4,4)
         Visible = False
         ToolTip = ("Show a tool that helps you to compile ladspa filter parameters.\nIf you don't use ladspa, just don't push it.")
+        AutoResize = True
+        Text = ("Ladspa ")
         Picture = Picture["icon:/16/component"]
       }
       { DescriptionArea TextArea

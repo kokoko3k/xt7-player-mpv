@@ -1026,7 +1026,8 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       Abutton = New Button(anHbox)
       Object.Attach(abutton, helper.window, helper.name)
       AButton.visible = True
-      abutton.w = helper.w
+      'abutton.w = helper.w
+      abutton.autoresize = True
       abutton.h = helper.h
       abutton.picture = helper.Picture
       abutton.tooltip = helper.Tooltip
