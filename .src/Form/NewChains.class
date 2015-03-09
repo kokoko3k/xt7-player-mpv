@@ -4,7 +4,6 @@ Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings f
 Public InitDone As Boolean = False
 
 Private Sub fill_tabstrip(aTabstrip As Tabstrip, aScrollview As Scrollview)
-  Dim num_items As Integer = aScrollview.children.count
   Dim i As Integer
   Dim tabScrollview As ScrollView
   Dim tabstrip_elements As New String[]
@@ -140,8 +139,6 @@ End
 
 Private Sub ReDraw_Ordered(item_container As Scrollview, chain_items As String[])
   Dim i, j As Integer
-  Dim f_name As String
-  Dim f_obj As Object
   Dim childrens As New Object[]
   
   For i = 0 To item_container.Children.count - 1
@@ -544,7 +541,6 @@ Private Function parse_audio_filter_custom() As String
                             'it is created by DrawFiltersGui function
   Dim SubObject As Object
   Dim customfilter As String = ""
-  Dim aTabstrip As Tabstrip = TabStrip_filters_audio
 
   For Each MyScrollview In TabStrip_filters_audio.Children
     For Each PanelObject In MyScrollView.Children

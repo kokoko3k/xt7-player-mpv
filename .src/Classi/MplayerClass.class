@@ -14,7 +14,6 @@ Public stdout As String
 Public stderr As String
 
 Private Playerprocess As Process
-Private cddbqueryprocess As Process
 Private RenicerProcess As Process
 
 
@@ -328,7 +327,7 @@ End
 
 
 
-Private mplayeroptions As String = ""
+
 
 Public Function dvb_set_channel(channelname As String, dvbcardID As Integer) As Boolean 'fixmempv is stub
   ' Dim channelN As String
@@ -396,7 +395,7 @@ Public Sub set_option(name As String, data As String)
 End
 
 Private Function set_options() As String
-  Dim name, data, out As String
+  Dim data, out As String
   For Each data In mpvoptions
     If data <> Chr(8) Then 'chr(8) is used instead of null because the collection doesn't keep null values
       out &= "--" & Trim(mpvoptions.Key) & "=" & data & " " 'trim is needed because we use white spaces to have multiple options with the same name
@@ -420,7 +419,6 @@ Public Sub clear_options()
 End
 
 Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
-  Dim i As Integer
   Dim cTime As Float = 0
 
   Repeat
@@ -474,7 +472,7 @@ Public event_loop As Timer
 
 
 
-Private lastchapter As String = ""
+
 
 Public watched_properties As New String[]
 Public watched_properties_old_data As New String[]
@@ -552,10 +550,9 @@ End Struct
 
 Private Mycdinfo As Cdinfo
 Public Sub get_cdda_info(device As String, Optional cddb As Boolean = True) 
-  Dim dcl, t, l, pl, c, start_time, pstart_time As String
-  Dim tracks As New String[]
+  Dim dcl, t, l, start_time, pstart_time As String
   Dim track As Integer = 0
-  Dim numtracks, length As String = 0
+  Dim length As String = 0
   Dim Mycd As New Cddb
   Dim tName As String
 
@@ -612,8 +609,8 @@ End
 
 Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean 
   Dim media_taglib As New TagLib
-  Dim fileUtf8, t As String
-  Dim ts, properties As String[]
+  Dim fileUtf8 As String
+  Dim properties As String[]
   
   If getP("fullpath") = "" Then Return
 
@@ -915,8 +912,9 @@ End
 '######################### Media Properties Section
 
 
-Private previoustime As Integer = "0"
-Private previoustimefloat As Float = 0
+
+
+
 
 Public Function CurrentTime() As String
   Dim reply As String
@@ -958,7 +956,6 @@ End
 
 
 Public Sub sub_add(file As String, UseSub As Boolean)
-  Dim flag As String
   If Usesub Then 
     mpv_command(["sub_add", file, "select"])
       Else
@@ -1092,7 +1089,6 @@ Public Function DeMuxerslist() As String[]
   Dim HeadSkipped As Boolean = False
   Dim CheckHead As String = "demuxer:"
   Dim Option As String = " --config=no -demuxer help"
-  Dim i As Integer
   Dim spaces_before As String = ""
 
   CheckHead = "demuxer:"
@@ -1128,7 +1124,6 @@ Public Function CodecsList(TYPE As String) As String[]
   Dim HeadSkipped As Boolean = False
   Dim CheckHead As String = "demuxer:"
   Dim Option As String = " --config=no -demuxer help"
-  Dim i As Integer
   Dim cname, cdesc As String
 
   If TYPE = "AUDIO" Then
@@ -1933,15 +1928,13 @@ Private Function what_changes(oldc As Collection, newc As Collection) As Collect
 End
 
 
-Private realtime_opts_previous As New Collection
+
 
 Public Sub do_apply(new_opts As Collection)
   Dim realtime_opts As String[] = ["af", "af-add", "af-clr", "af-pre", "vf", "vf-add", "vf-clr", "vf-pre"]
   Dim ignore_opts As String[] = ["input-file", "msg-color", "term-status-msg", "start"]
   Dim name, data As String
   Dim changed_opts As New Collection
-  Dim changed_opts_fixed As New Collection
-  Dim changed_opts_realtime As New Collection
   Dim af_new As String = ""
   Dim vf_new As String = ""
   Dim af_pre_new As String = ""

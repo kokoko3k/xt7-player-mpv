@@ -209,7 +209,7 @@ End
 Private Sub ParseChannel(xmlbuffer As String, Optional GenresTree As Treeview = Null, Optional ShutResultGrid As Gridview = Null)
   Dim title, br, mt, id, MyLink As String = ""
   Dim tunein_base As String = ""
-  Dim aline, attrs As String
+  Dim aline As String
   Dim LastRow As Integer = 0
   Dim feed As String[]
   Try feed = Split(xmlbuffer, "<", "", True)

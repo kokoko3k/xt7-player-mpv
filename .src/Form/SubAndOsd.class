@@ -3,8 +3,8 @@
 'Copyright (C) 2007, 2008 Antonio Orefice
 ' Gambas class file
 Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
-Private MyScaleSlider As VSlider
-Private MyOutlineSpinbox As FloatSpinBox
+
+
 Public mplayer As New MplayerClass
 
 Public Struct mpvOption
@@ -45,13 +45,9 @@ Public Function ParseSubGui() As MpvOption[]
   Dim subFontName As String
   Dim Outline As String = ",outline=" & OutlineSpinBox.text
   Dim Shadow As String = ",shadow=" & ShadowSpinBox.text
-
-  Dim Alignment As String = "Alignment=" & Left(ComboAlignment.Text, 1)
   Dim AssForceStyle As String = ""
   Dim opts As New MpvOption[]
   Dim opt As New MpvOption
-  Dim subpos As String = 0
-
 
   If ASSDisableCHK.value Then
     opt.name = "sub-ass"
@@ -163,9 +159,7 @@ Public Function OLD_ParseSubGui() As MpvOption[]
   Dim Alignment As String = "Alignment=" & Left(ComboAlignment.Text, 1)
   Dim AssForceStyle As String = ""
   Dim opts As New MpvOption[]
-  Dim opt As MpvOption
-  Dim subpos As String = 0
-
+  
   'biold Ass style
   If ASSDisableCHK.value = False Then 
   'Ass related

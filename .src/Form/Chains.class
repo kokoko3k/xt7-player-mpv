@@ -115,7 +115,7 @@ End
 Public Function ParsedChain(VideoOrAudio As String) As String
   Dim out As String = ""
   Dim CurrentFilter As Object
-  Dim ParsedFilters As String = "" ' "-vf-add "
+
 
   Dim PrevAudioTabIndex As Integer = AFiltersCfg.GetCurrentTabIndex() 'Those two are necessary because ParseFilterGui
   Dim PrevVideoTabIndex As Integer = VFiltersCfg.GetCurrentTabIndex() 'Function alters the tabstrip index property
@@ -221,8 +221,8 @@ Public Sub OkBTN_Click()
 End
 
 
-Private previousvideofilters As String = "NOPEBECAUSEITSTHEFIRSTTIME"
-Private previousaudiofilters As String = "NOPEBECAUSEITSTHEFIRSTTIME"
+
+
 
 
 Public Sub ApplyBTN_Click()

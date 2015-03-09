@@ -91,18 +91,15 @@ End
 
 
 Private Sub DrawFiltersGui()
-  Dim Resolution As String = ("resolution")
   Dim Switchable As Boolean = True
   Dim NotSwitchable As Boolean = False
   Dim AllParams As New Variant[]
-  Dim o As Object
-  AllParams.Clear
 
+  AllParams.Clear
 
     ' AllParams.Add(["CHOOSE", ("Hardware decoding"), "no", "auto", "vdpau", "vaapi", "vaapi-copy", "hwdec", ""])
     ' Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Specify the hardware video decoding API that should be used if possible.\nWhether hardware decoding is actually done depends on the video  codec.\nIf hardware decoding is not possible, mpv will fall back on software decoding.  \n mpv option: hwdec"))
     ' AllParams.Clear
-
 
   '-channels <number> (also see -af channels) 
     AllParams.Add(["CHOOSE", ("Output Channels"), "2 - Stereo", "4 - Surround", "6 - Full 5.1", "8 - Full 7.1", "audio000channels", ""])
@@ -302,13 +299,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Dim Thescrollview As Object
   Dim TheBox As Object
   Dim AllOptions As String = ""
-  Dim lparam As String
-  Dim lparams As New String[]
-  Dim lparamposstart As Integer = 0
-  Dim lparamposend As Integer = 0
-  Dim lopts As Integer = 0
-  Dim s, e As Integer
-  Dim tmpstr, hwdec_choice As String
+  Dim hwdec_choice As String
   Dim myopts As New MpvOption[]
   Dim pt As String
 

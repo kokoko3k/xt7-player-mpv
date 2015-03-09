@@ -179,13 +179,12 @@ Public ISCDDA As Boolean = False
 
 Public FullyLoaded As Boolean = False
 
-Private MousePos As String = "0.0"
+
 Public Alternate As Boolean = True
 Private IgnoreMouse As Boolean = False
 Public ResizeFactor As Float = 0
 Public old_ResizeFactor As Float = 1
 
-Private PostVFilters As String = ""
 Private mouseleft As Boolean = False 'used to manage dblclick event in videoarea group
 Private MouseOnFmain As Boolean = True 'used to manage autohide panels on multihead screens ;-)
 'statusbar time format, can be:
@@ -1468,7 +1467,7 @@ Public Sub CorrectAreaAspect()
   Dim dH As Integer = 3
   Dim AR As Float = 1.333
   Dim NoBarResize As Float
-  Dim TmpX, TmpY, TmpW, TmpH As Integer
+
   Dim no_video As Boolean = True
  
   Try no_video = mplayer.getP("audioonly")
@@ -1849,7 +1848,7 @@ End
 
 Public Function FillTitlesAndChaptersMenu() As Boolean
   Dim dtl, dcl, t, l, k, c, p, lk As String = ""
-  Dim nt, ct, pt, n As Integer = 0
+  Dim ct, pt As Integer = 0
   Dim lengths As String[]
   Dim SubMenu As Menu 
   Dim ddevice As String
@@ -2079,7 +2078,7 @@ Public Sub menuitemopensubtitle_Click()
 End
 
 Public Sub TreeView1_Activate()
-  Dim k, title, stime As String
+  Dim k, stime As String
   k = treeview1.Item.key
   If k Like "chapter*" Then 
     If Not mplayer.ProcessRunningOvr() Then Return
@@ -2342,7 +2341,7 @@ Public Sub user_options() As Collection
   'user options configured through gui
   Dim opts As New Collection
   Dim opt As Mpvoption
-  Dim name, data As String
+
   
   'initialize uninitialized forms and load settings
   generaloptions.FirstLoadIfNeeded()
@@ -3170,7 +3169,7 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   Dim PreText As String = ""
   Dim PostText As String
   Dim SmallWindow As Boolean = False
-  Dim icy_title As String = ""
+
   'If Not mplayer.ProcessRunningOvr() Then Return 
 
   If customtitle = "" Then 
@@ -4476,7 +4475,7 @@ End
 
 
 Public Sub Show_runtime_infos()
-  Dim info As String = "a\nb\nc\n"
+
   Dim prop As New Collection
   Dim msg As String
   Dim name, data As String
@@ -7650,11 +7649,9 @@ Public Sub ProfilesListBox_DblClick()
 End
 
 Public Sub ReLoadCurrentProfile()
-  'DIM TheError AS Boolean = FALSE
 
-  Dim cachedfile As File
   Try Global.ReallyLoadAllSettings() 'current profile is the default
-  
+
   Try GeneralOptions.LoadWatchDir(global.confpath & "/" & global.CurrentProfile)
   Try GeneralOptions.LoadExcludeDir(global.confpath & "/" & global.CurrentProfile)
   Try HotKeys.LoadHotKeys(global.confpath & "/" & global.CurrentProfile)
@@ -7789,7 +7786,7 @@ End
 
 Public Sub Button3_Click()
   Dim HotKeyConfigured As Boolean = True
-  Dim Rewind As Boolean = True
+
 
   'HotKeysCheck First  
   HotKeyConfigured = HotKeyConfigured And (Trim(HotKeys.HotKeysGrid[73, 0].text) <> "")
@@ -8855,8 +8852,6 @@ End
 
 Public Sub TimerTreeDelayExpand_Timer()
   Dim IsChild As Boolean = False
-  Dim RealYTVideoUrl As String = ""
-
   'if the item has no parent then refresh it, else play it
   fmain.mouse = mouse.wait
   youtubeTree.MoveCurrent
@@ -9963,9 +9958,7 @@ Public Sub DVBTGrid_Menu()
 End
 
 Public Sub RenameGridItem(mygrid As Gridview, myrow As Integer, myplaylist As Playlistclass, newname As String)
-
   Dim fullpath, sep, oldname As String
-  
   Dim i As Integer
   Dim imax As Integer
 
@@ -10662,7 +10655,6 @@ End
 Public mthumbler As Mplayerclass
 Public Sub ActivateThumbler()
 'fixmempv stub
-  Dim opts As String = "-noconfig all -noautosub -nosub -osdlevel 0 -nocache -nosound -zoom -loop 0 -speed 0.5"
   Dim fullpath As String
 
   If Not mplayer.ProcessRunningOvr() Then Return
@@ -10745,7 +10737,7 @@ End
 Private Sub movethumble()
   Dim x, y, w, h As Integer
   Dim ar As Float = -1
-  Dim t As String
+
   If Not thumbleractive Then Return
   If Not mplayer.ProcessRunningOvr() Then Return
   If Not mthumbler.ProcessRunningOvr() Then Return
@@ -11061,8 +11053,9 @@ End
 
 
 
+
 Private ABLoopInitValue As Float = 99999.99999
-Private ABLoopInitText As String = "(AB)-A"
+
 Private ABLoopA As Float = ABLoopInitValue
 Private ABLoopB As Float = ABLoopInitValue
 

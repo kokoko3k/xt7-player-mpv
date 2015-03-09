@@ -72,7 +72,6 @@ Public Sub Form_Open()
 End
 
 Public Sub Sliders_Change()
-  Dim oldosd As String
   If (Last Is Slider) And (Last.next Is Spinbox) Then
     Try Last.Next.value = Last.value
     If (FMain.FullyLoaded Or ApplyEqCheckbox.value) Then 

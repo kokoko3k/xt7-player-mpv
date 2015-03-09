@@ -442,7 +442,6 @@ Public Sub save_cached_options(ProfileName As String)
   'save mpv options in a profile format compatible with mpv
   Dim cached_file_name As String = global.confpath & "/" & Profilename & ".cached"
   Dim cached_data, data As String
-  Dim opts As New Collection
 
   If Not Exist(global.confpath, True) Then 
     Debug "Error: configuration directory not found; something is going VERY wrong."
@@ -486,7 +485,6 @@ Public Sub OLD_save_cached_options(ProfileName As String)
  Dim profile_dir As String = global.confpath & "/mpv_config/"
  Dim profile_file_name As String = profile_dir & "config"
  Dim profile_file As New String[]
- Dim new_data As String
  Dim s, e, i As Integer
  Dim aLine As String
 
@@ -578,7 +576,6 @@ End
 
 Public Sub LoadEarlySettings(ProfileName As String)
   Dim MySettings As New SettingsClass
-  Dim out As String
   
   MySettings.Load(Fmain, Global.confpath & "/" & ProfileName)
   MySettings.Load(GeneralOptions, Global.confpath & "/" & ProfileName) '<--- rallenta l'avvio
@@ -591,7 +588,6 @@ End
 
 Public Sub LoadAllSettings(ProfileName As String) 'THIS Is PROBABLY BROKEN
   Dim MySettings As New SettingsClass
-  Dim out As String
 
   MySettings.Load(Fmain, Global.confpath & "/" & ProfileName)
   MySettings.Load(GeneralOptions, Global.confpath & "/" & ProfileName)
@@ -876,7 +872,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
           Else
         ACheckbox = New Checkbox(AnHBox) As "dynaobj"
         ACheckbox.Name = CurrentParams[CurrentParams.Count - 2] & ".CheckBox"
-        Debug ACheckbox.Name
         ACheckbox.text = CurrentParams[1]
         l = ACheckBox.Font.TextWidth(ACheckBox.text) + checkbox_no_text_width
         If l > max_obj_w Then max_obj_w = l
