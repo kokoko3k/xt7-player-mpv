@@ -810,11 +810,18 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   Dim checkbox_no_text_width As Integer
   
   'find the width of an empty checkbox
+  alabel = New Label(zzzfake)
+  alabel.text = "sometext"
+  alabel.autoresize = True
+  
   acheckbox = New CheckBox(zzzFake)
-  acheckbox.text = Null
+  acheckbox.text = "sometext"
   acheckbox.autoresize = True
-  checkbox_no_text_width = acheckbox.w * 3.1 'it seems that "*3*" is the key
+  'it seems that "*3*" is the key, but the right thing to do is:
+  'get the width of "[x] sometext", get the width of "sometext"; subtract the latter from the former.
+  checkbox_no_text_width = acheckbox.w - alabel.w 'acheckbox.w * 3.1 
   acheckbox.Delete
+  alabel.delete
   
   'Find the destination Tab
   Try TheTabstrip.index = TabIndexByName(TabCaption, TheTabStrip)

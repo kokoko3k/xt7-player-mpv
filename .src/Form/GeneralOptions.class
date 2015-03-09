@@ -842,7 +842,10 @@ End
 
 Public Sub Form_Show()
   FillCdAndDvdDevices()
-  AlignObjects()
+  If Not aligned Then
+    AlignObjects()
+    aligned = True
+  Endif
 End
 
 
@@ -1183,8 +1186,9 @@ Private Sub AlignObjects()
   Dim aBox, child As Object
   Dim c, l, checkbox_no_text_width, max_obj_w As Integer
   Dim acheckbox As Checkbox
-  If aligned Then Return
-  aligned = True
+  Dim alabel As Label
+
+  
   containers.Add(ScrollView1)
   containers.Add(ScrollView2)
   containers.Add(ScrollView6)
@@ -1199,13 +1203,18 @@ Private Sub AlignObjects()
   containers.Add(ScrollViewUserOptions)
   
   'find the width of an empty checkbox
+  alabel = New Label(zzzfake)
+  alabel.text = "sometext"
+  alabel.autoresize = True
+  
   acheckbox = New CheckBox(zzzFake)
-  acheckbox.text = Null
+  acheckbox.text = "sometext"
   acheckbox.autoresize = True
   'it seems that "*3*" is the key, but the right thing to do is:
   'get the width of "[x] sometext", get the width of "sometext"; subtract the latter from the former.
-  checkbox_no_text_width = acheckbox.w * 3.1 
+  checkbox_no_text_width = acheckbox.w - alabel.w 'acheckbox.w * 3.1 
   acheckbox.Delete
+  alabel.delete
 
   For Each acontainer In containers
    
@@ -1219,9 +1228,13 @@ Private Sub AlignObjects()
           child = aBox.children[0]
           If (child Is Checkbox) Or (child Is Label) Then
             If child.text = "" Then child = child.next
-            l = child.Font.textwidth(child.text) '+ checkbox_no_text_width
+            l = child.Font.textwidth(child.text) + checkbox_no_text_width
             If l > max_obj_w Then max_obj_w = l
             align_objs.Add(child)
+            If acontainer.name = "ScrollView2" Then
+              Debug child.text, l, max_obj_w
+            Endif
+
           Endif
         Endif
       Endif
