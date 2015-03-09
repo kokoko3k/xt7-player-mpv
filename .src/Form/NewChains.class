@@ -758,6 +758,7 @@ Public Function parse_filters(audio As Boolean) As String
   Dim cBox As Checkbox
   Dim filters As String
   Dim filters_container As Scrollview
+  Dim filter As String
   
   If audio Then 
     filters_container = filters_audio_container
@@ -771,9 +772,11 @@ Public Function parse_filters(audio As Boolean) As String
     cBox = Me.Controls[item_name & "_checkbox_" & filters_container.name]
     If cBox.value = True Then
       If audio Then 
-        filters &= Parse_audio_filter(item_name) & ","
+        filter = Parse_audio_filter(item_name)        'needed to fix
+        If filter <> "" Then filters &= filter & ","  'null custom filters
           Else
-        filters &= Parse_video_filter(item_name) & "," 
+        filter = Parse_video_filter(item_name)        'needed to fix
+        If filter <> "" Then filters &= filter & ","  'null custom filters
       Endif
     Endif
   Next
