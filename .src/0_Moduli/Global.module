@@ -817,7 +817,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   acheckbox = New CheckBox(zzzFake)
   acheckbox.text = Null
   acheckbox.autoresize = True
-  checkbox_no_text_width = acheckbox.w * 3 'it seems that "*3*" is the key
+  checkbox_no_text_width = acheckbox.w * 3.1 'it seems that "*3*" is the key
   acheckbox.Delete
   
   'Find the destination Tab
@@ -878,7 +878,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
         ACheckbox.Name = CurrentParams[CurrentParams.Count - 2] & ".CheckBox"
         Debug ACheckbox.Name
         ACheckbox.text = CurrentParams[1]
-
         l = ACheckBox.Font.TextWidth(ACheckBox.text) + checkbox_no_text_width
         If l > max_obj_w Then max_obj_w = l
           align_objs.Add(ACheckBox)

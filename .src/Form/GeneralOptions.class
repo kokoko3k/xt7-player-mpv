@@ -851,7 +851,10 @@ End
 
 Public Sub Form_Show()
   FillCdAndDvdDevices()
+  AlignObjects()
 End
+
+
 
 Public Sub SaveCurrentTo(profile As String)
   Dim MySettings As New SettingsClass
@@ -1179,5 +1182,68 @@ Public Sub EnableDisable_video_drivers_panels()
     Try NewChains.drivers_video_container.enabled = True
     'Try XConfigureVideoDriver.ConfigureTabs.enabled = True
   Endif
+End
+
+Private Aligned As Boolean = False
+Private Sub AlignObjects()
+  Dim containers As New Object[]
+  Dim align_objs As New Object[]
+  Dim acontainer As Object
+  Dim aBox, child As Object
+  Dim c, l, checkbox_no_text_width, max_obj_w As Integer
+  Dim acheckbox As Checkbox
+  If aligned Then Return
+  aligned = True
+  containers.Add(ScrollView1)
+  containers.Add(ScrollView2)
+  containers.Add(ScrollView6)
+  containers.Add(ScrollView5)
+  containers.Add(ScrollView10)
+  containers.Add(ScrollView7)
+  containers.Add(ScrollView4)
+  containers.Add(ScrollView11)
+  containers.Add(ScrollView8)
+  containers.Add(ScrollView3)
+  containers.Add(ScrollView9)
+  containers.Add(ScrollViewUserOptions)
+  
+  'find the width of an empty checkbox
+  acheckbox = New CheckBox(zzzFake)
+  acheckbox.text = Null
+  acheckbox.autoresize = True
+  'it seems that "*3*" is the key, but the right thing to do is:
+  'get the width of "[x] sometext", get the width of "sometext"; subtract the latter from the former.
+  checkbox_no_text_width = acheckbox.w * 3.1 
+  acheckbox.Delete
+
+  For Each acontainer In containers
+   
+    max_obj_w = 0
+    align_objs.clear
+    For Each aBox In acontainer.children
+      Try c = aBox.Children.Count
+      If Not Error Then
+        If c > 1 Then
+
+          child = aBox.children[0]
+          If (child Is Checkbox) Or (child Is Label) Then
+            If child.text = "" Then child = child.next
+            l = child.Font.textwidth(child.text) '+ checkbox_no_text_width
+            If l > max_obj_w Then max_obj_w = l
+            align_objs.Add(child)
+          Endif
+        Endif
+      Endif
+    Next 'abox
+
+    'align labels
+
+    For Each child In align_objs
+      Object.SetProperty(child, "w", max_obj_w)
+
+    Next
+    
+    
+  Next 'acontainer
 End
 
