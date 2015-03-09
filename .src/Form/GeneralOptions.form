@@ -131,105 +131,157 @@
         Spacing = True
         Margin = True
         Padding = 6
-        { Panel3 Panel
-          MoveScaled(0,1,52,21)
-          Arrangement = Arrange.Vertical
+        { NoParse8 HBox
+          MoveScaled(0,0,50,4)
           Spacing = True
-          Margin = True
-          Padding = 8
-          Border = Border.Plain
-          { NoParse8 HBox
-            MoveScaled(0,0,50,4)
-            Spacing = True
-            { ShowVmeterCHK CheckBox
-              MoveScaled(1,0,19,4)
-              Expand = True
-              Text = ("Visualization")
-            }
-            { VBox8 VBox
-              MoveScaled(19,0,3,3)
-              Expand = True
-            }
-            { NoParseVisType ComboBox
-              MoveScaled(23,0,26,4)
-              Expand = True
-              ReadOnly = True
-              List = [("vmeters - Audio meters"), ("DFT - Spectrum analyzer")]
-              Text = ("vmeters - Audio meters")
-            }
-          }
-          { NoParse42 HBox
-            MoveScaled(0,4,50,4)
-            ToolTip = ("If you see meters moving sooner than the audio, raise this value.")
-            Spacing = True
-            Indent = True
-            { NoParseLabel8 Label
-              MoveScaled(2,1,14,3)
-              AutoResize = True
-              Text = ("Audio Latency")
-            }
-            { LatencySpinbox SpinBox
-              MoveScaled(18,0,11,4)
-              MaxValue = 3000
-              Value = 250
-            }
-            { NoParseLabel16 Label
-              MoveScaled(35,1,5,3)
-              Font = Font["Italic"]
-              AutoResize = True
-              Text = ("ms")
-            }
-          }
-          { NoParse40 HBox
-            MoveScaled(0,8,50,4)
-            ToolTip = ("Frames per second")
-            Spacing = True
-            Indent = True
-            { NoParseLabel17 Label
-              MoveScaled(1,1,14,3)
-              AutoResize = True
-              Text = ("Update at")
-            }
-            { fpsspinbox SpinBox
-              MoveScaled(18,0,11,4)
-              MinValue = 5
-              MaxValue = 30
-              Value = 60
-            }
-            { NoParseLabel18 Label
-              MoveScaled(31,0,5,3)
-              Font = Font["Italic"]
-              AutoResize = True
-              Text = ("fps")
-            }
-          }
-          { NoParse43 HBox
-            MoveScaled(0,12,50,4)
-            ToolTip = ("How many samples to get to calculate the average audio level.")
-            Spacing = True
-            Indent = True
-            { NoParseLabel19 Label
-              MoveScaled(1,1,14,3)
-              AutoResize = True
-              Text = ("Rms window size")
-            }
-            { RmsSizeSpinBox SpinBox
-              MoveScaled(18,0,11,4)
-              MinValue = 64
-              MaxValue = 1024
-              Step = 128
-              Value = 512
-            }
-            { NoParseLabel20 Label
-              MoveScaled(31,0,14,3)
-              Font = Font["Italic"]
-              AutoResize = True
-              Text = ("samples")
-            }
+          { ShowVmeterCHK CheckBox
+            MoveScaled(1,0,14,4)
+            Expand = True
+            AutoResize = True
+            Text = ("Visualization:")
           }
         }
+        { NoParse55 HBox
+          MoveScaled(0,4,50,4)
+          Spacing = True
+          Indent = True
+          { NoParseVisType ComboBox
+            MoveScaled(1,0,26,4)
+            Expand = True
+            ReadOnly = True
+            List = [("vmeters - Audio meters"), ("DFT - Spectrum analyzer")]
+            Text = ("vmeters - Audio meters")
+          }
+        }
+        { NoParse42 HBox
+          MoveScaled(0,9,50,4)
+          ToolTip = ("If you see meters moving sooner than the audio, raise this value.")
+          Spacing = True
+          Indent = True
+          { NoParseLabel8 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("Audio Latency")
+          }
+          { LatencySpinbox SpinBox
+            MoveScaled(18,0,11,4)
+            MaxValue = 3000
+            Value = 250
+          }
+          { NoParseLabel16 Label
+            MoveScaled(35,1,5,3)
+            Font = Font["Italic"]
+            AutoResize = True
+            Text = ("ms")
+          }
+        }
+        { NoParse40 HBox
+          MoveScaled(0,13,50,4)
+          ToolTip = ("Frames per second")
+          Spacing = True
+          Indent = True
+          { NoParseLabel17 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("Update at")
+          }
+          { fpsspinbox SpinBox
+            MoveScaled(18,0,11,4)
+            MinValue = 5
+            MaxValue = 30
+            Value = 60
+          }
+          { NoParseLabel18 Label
+            MoveScaled(31,0,5,3)
+            Font = Font["Italic"]
+            AutoResize = True
+            Text = ("fps")
+          }
+        }
+        { NoParse43 HBox
+          MoveScaled(0,17,50,4)
+          ToolTip = ("How many samples to get to calculate the average audio level.")
+          Spacing = True
+          Indent = True
+          { NoParseLabel19 Label
+            MoveScaled(1,1,14,3)
+            AutoResize = True
+            Text = ("Rms window size")
+          }
+          { RmsSizeSpinBox SpinBox
+            MoveScaled(18,0,11,4)
+            MinValue = 64
+            MaxValue = 1024
+            Step = 128
+            Value = 512
+          }
+          { NoParseLabel20 Label
+            MoveScaled(31,0,14,3)
+            Font = Font["Italic"]
+            AutoResize = True
+            Text = ("samples")
+          }
+        }
+        { NOPARSESeparator2345 Separator
+          MoveScaled(2,22,46,1)
+        }
+        { noparsevboxpt HBox
+          MoveScaled(0,25,50,4)
+          ToolTip = ("Select what audio codec won't be decoded by mpv,\nbut passed directly through spdif.\n\nTipical use includes just ac3 and dts.\n\nmpv option: --ad=spdif:<codecname>")
+          Spacing = True
+          { Label26 Label
+            MoveScaled(0,0,7.1429,4)
+            AutoResize = True
+            Text = ("Passthrough")
+          }
+          { ToggleButton1 ToggleButton
+            MoveScaled(11,0,6,4)
+            Tag = "ac3"
+            Expand = True
+            AutoResize = True
+            Text = ("AC3")
+          }
+          { ToggleButton2 ToggleButton
+            MoveScaled(17,0,6,4)
+            Tag = "dts"
+            Expand = True
+            AutoResize = True
+            Text = ("DTS")
+          }
+          { ToggleButton3 ToggleButton
+            MoveScaled(23,0,7,4)
+            Tag = "eac3"
+            Expand = True
+            AutoResize = True
+            Text = ("EAC3")
+          }
+          { ToggleButton4 ToggleButton
+            MoveScaled(29,0,7,4)
+            Tag = "mp3"
+            Expand = True
+            AutoResize = True
+            Text = ("MP3")
+          }
+          { ToggleButton5 ToggleButton
+            MoveScaled(35,0,6,4)
+            Tag = "aac"
+            Expand = True
+            AutoResize = True
+            Text = ("AAC")
+          }
+          { ToggleButton6 ToggleButton
+            MoveScaled(41,0,8.5714,4)
+            Tag = "truehd"
+            Expand = True
+            AutoResize = True
+            Text = ("TRUEHD")
+          }
+        }
+        { NOPARSESeparator4 Separator
+          MoveScaled(1,31,46,1)
+        }
         { adevicehbox HBox
-          MoveScaled(1,24,50,4)
+          MoveScaled(0,38,50,4)
           Spacing = True
           { audio000device CheckBox
             MoveScaled(1,0,19,4)

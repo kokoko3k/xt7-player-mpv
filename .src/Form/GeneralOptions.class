@@ -125,8 +125,6 @@ Private Sub DrawFiltersGui()
     Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("#-12..#+12 are semitones.\n See also 'speed' under 'scaletempo' filter in chains window.\n mpv option: speed"))
     AllParams.Clear
 
-
-    
   ' '-delay < sec >
   '   AllParams.add(["RANGEFLOAT", ("Audio Delay"), "-600", "0", "600", "delay", ("Seconds")])
   '   Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Positive values delay the audio, and negative values delay the video.\n mpv option: audio-delay"))
@@ -312,6 +310,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Dim s, e As Integer
   Dim tmpstr, hwdec_choice As String
   Dim myopts As New MpvOption[]
+  Dim pt As String
 
   Previndex = Tabstrip1.index
   For i = 0 To TabStrip1.count - 1
@@ -358,6 +357,21 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   If tsprobechk.value Then
      myopts.Add(newopt("demuxer-lavf-probesize", comboboxtsprobe.text))
   Endif
+  
+  
+  'audio passthrough
+  For Each option In noparsevboxpt.Children
+    If option Is Togglebutton Then
+      If option.value = True Then
+        pt &= "spdif:" & option.tag & ","
+      Endif
+    Endif
+    
+  Next
+  If Right(pt) = "," Then pt = Left(pt, -1)
+  If pt <> "" Then myopts.Add(newopt("ad", pt))
+  ' 
+  
   Return myopts.Insert(parse_custom_options())
 
 End
@@ -878,6 +892,7 @@ Public Sub ShowVmeterCHK_Click()
   noparse42.enabled = Last.value
   noparse40.enabled = Last.value
   noparse43.enabled = Last.value
+  NoParseVisType.enabled = Last.value
 End
 
 
@@ -1165,5 +1180,4 @@ Public Sub EnableDisable_video_drivers_panels()
     'Try XConfigureVideoDriver.ConfigureTabs.enabled = True
   Endif
 End
-
 
