@@ -4392,31 +4392,29 @@ Public Sub Apply()
     For Each data In temp_opts
       new_opts[temp_opts.key] = data
     Next
-Stop
+
     temp_opts = file_options(mplayer.getP("fullpath"))
     For Each data In temp_opts
       new_opts[temp_opts.key] = data
     Next
-Stop
+
     temp_opts = user_options()
 
     For Each data In temp_opts
       new_opts[temp_opts.key] = data
     Next  
-Stop
+
     new_opts["volume"] = Initialvolume()
     
     'restore the old ytdl option
     Try new_opts["ytdl"] = mplayer.mpvoptions["ytdl"]
-Stop
+
     mplayer.do_Apply(new_opts)
 
     global.ResetApplyBtnColor()
 
   Endif
     
-  
-  
 End
 
 

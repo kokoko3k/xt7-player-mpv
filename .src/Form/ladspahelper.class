@@ -152,6 +152,9 @@ Public Sub Button1_Click()
   Next
   'TextBox1.text = "ladspa=" & LADSPA_FILE & ":" & "\"" & LADSPA_LABEL & "\"" & ":" & Left(outstr, Len(outstr) - 1)
   TextBox1.text = "ladspa=" & "'" & LADSPA_FILE & "'" & ":" & LADSPA_LABEL & ":[" & Left(outstr, Len(outstr) - 1) & "]"
+  TextBox1.text = "ladspa=" & "\"" & LADSPA_FILE & "\"" & ":" & LADSPA_LABEL & ":[" & Left(outstr, Len(outstr) - 1) & "]"
+
+  
 End
 
 Public Sub CopyBTN_Click()
@@ -170,7 +173,7 @@ Public Sub Button2_Click()
   Dim myobj As Object
   Dim i As Integer = 0
 
-  Try lpath = Split(Split(Mid(s, InStr(s, "'")), ":")[0], "'")[1] 'Split(Mid(s, InStr(s, "=") + 1), ":")[0]
+  Try lpath = Split(Split(Mid(s, InStr(s, "\"")), ":")[0], "\"")[1] 'Split(Mid(s, InStr(s, "=") + 1), ":")[0]
   If Error Then Goto errorquit
   Try llabel = Split(s, ":")[1]
   If Error Then Goto errorquit

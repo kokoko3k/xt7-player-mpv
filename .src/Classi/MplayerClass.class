@@ -1459,6 +1459,11 @@ Private properties_changed_runtime As New Collection 'holds changed properties t
 
 Public Function set_property_mpv(name As String, data As String, Optional osd As Boolean = False) 
   'mpv_command(["set_property_string", name, data])
+  Dim s As String = "\\"
+  Dim q As String = "\""
+
+  data = Replace(data, q, s & q)        'replace " with \"
+  data = Replace(data, s & s & q, s & q) 'replace \\" with \" (in case we quoted an already quoted string)
   If osd Then 
     mpv_command(["set", name, data])
       Else
