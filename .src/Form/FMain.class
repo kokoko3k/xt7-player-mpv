@@ -2518,7 +2518,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   ResizeFactor = 0
   'LogWindow.streamtextbox.text = fullpath
 
-  'fixmempv doanalyze = Not (global.IsNetworkURI(mplayer.Media_FullPath)) And (VideoEqualizer.CheckDynamicOverbright.value)
   PrevValuecTime = 999999
   
   mplayer.watched_properties = ["pause", "volume", "=chapter", "=time-pos", "length", "=length", "percent-pos", "cache", "media-title"]
@@ -2584,7 +2583,12 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
       Else
     CorrectAreaAspect() 
     ShowAudioPanel(False)
+    If Not (global.IsNetworkURI(fullpath)) And (VideoEqualizer.CheckDynamicOverbright.value) Then
+      mplayer.StartOverbrightAnalyze()
+    Endif
   Endif
+
+
   
     ' If Not (mplayer.getP("audioonly")) Then
     '   ShowAudioPanel(False)
@@ -3362,9 +3366,10 @@ Public Sub Mplayer_mykill(return_value As Integer)
 
 End
 
-Private PrevValuecTime As Integer = 9999999 'so that the first value will be used
+Private PrevValuecTime As Integer = 0 'so that the first value will be used
 Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional NewValuecTime As Integer)
   Dim bAvgAdapted As Integer
+  Debug 
   If (NewValuecTime - PrevValuecTime >= 10) Then
     If ((NewValuecTime - PrevValuecTime) Mod 5 = 0) Then
       Debug "Skipping periodic keyframe, diff = " & (NewValuecTime - PrevValuecTime)
@@ -3375,7 +3380,7 @@ Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional Ne
     
   PrevValuecTime = NewValuecTime
   Wait delay
-  'Debug "waiting:", delay
+  Debug "waiting:", delay
   'bAvgAdapted = CInt(bAvg * (100 / 255)) 'es: 64 -> 25
   bAvgAdapted = CInt(bAvg * (100 / 255)) 'es: 64 -> 25
   bAvgAdapted = 100 - bAvgAdapted 'es: 25 -> 75
@@ -3392,7 +3397,7 @@ Private Sub SlideTo(aSlider As Slider, aTarget As Integer)
   Dim wasdisabled As Boolean = True
   'Dim bdiff As Integer
   Dim aThreshold As Integer = 7 'do not move slider under this threshold. If you plan not to use threshold, dont change the code, but set it to 0.
-  'Dim waittime As Float
+  Dim waittime As Float = 0.005
   
   'If (fmain.mplayer.VideoOut_Driver = "vaapi") Then aThreshold = 2 'fixmempv
   VideoEqualizer.NoOsd = True
@@ -3415,13 +3420,13 @@ Private Sub SlideTo(aSlider As Slider, aTarget As Integer)
       If (mplayer.pausing Or mplayer.Paused()) Then Return
       aSlider.value += 1 
       Wait 0.005
-      'Wait waittime '0.01
+      'Wait  '0.01
     Until aSlider.value = aTarget
       Else
     Repeat
       If (mplayer.pausing Or mplayer.Paused()) Then Return
      aSlider.value -= 1 
-      'Wait waittime
+      'Wait 
       Wait 0.005
     Until aSlider.value = aTarget
     If wasdisabled Then aSlider.Enabled = False

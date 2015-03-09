@@ -871,6 +871,7 @@ Public Function do_stop() As Boolean
   If Not restarting Then 
     ClearMediaProperties()
     properties_changed_runtime.clear
+    StopOverBrightAnalyze()
   Endif
   timeout = maxtimeout
   Repeat 'be kind
@@ -887,7 +888,6 @@ Public Function do_stop() As Boolean
 
   Try Close #mystream
   Try Kill inputpipe
-  StopOverBrightAnalyze()
   Return True
 End
 
@@ -1296,7 +1296,7 @@ Public Sub Analyze(videofile As String)
     mystream = Open tmpdir & "/fifo" For Write
     Print #mystream, "no-osd set pause yes"
     'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 0  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -vf scale=64:64:0:3,scale=16:16:0:3,smartblur=5:1:0,scale -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
-    cmd = executable() & " --term-status-msg='${=time-pos}' --config=no --no-sub --osd-level=0 --vd-lavc-skiploopfilter=all --speed 0.01 --input-file=" & tmpdir & "/fifo --vf=scale=1:1:0:3  --no-audio --vo=image:format=jpg:jpeg-quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
+    cmd = executable() & " --term-status-msg='${=time-pos}' --config=no --no-sub --osd-level=0 --vd-lavc-skiploopfilter=all --speed 0.01 --input-file=" & tmpdir & "/fifo --vf=scale=16:16  --no-audio --vo=image:format=png:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
     'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 3  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
     Debug cmd
     mpanalyze = Shell cmd
@@ -1309,11 +1309,11 @@ Public Sub Analyze(videofile As String)
       Try outfile = Split(File.Load(tmpdir & "/mpout"), "\n")
       Sleep 0.05
     Until (outfile.max > 1)
-    
+
     While mpanalyze.state = Process.Running
       'Debug
       If stopob Then Goto lEnd
-      For Each sFile In Dir(tmpdir, "*.jpg*")
+      For Each sFile In Dir(tmpdir, "*.png*")
         Kill tmpdir & "/" & sFile
       Next
       
@@ -1337,7 +1337,7 @@ Public Sub Analyze(videofile As String)
       'wait for pic
       timeout = 100
       If Not Exist(tmpdir) Then Goto lStart
-      While Dir(tmpdir, "*.jpg").count = 0 And (timeout > 0) And mpanalyze.state = Process.Running
+      While Dir(tmpdir, "*.png").count = 0 And (timeout > 0) And mpanalyze.state = Process.Running
         Wait 0.01
         timeout -= 1
       Wend
@@ -1349,20 +1349,22 @@ Public Sub Analyze(videofile As String)
       
       '''''''''If (timeout <= 0) Or (mpanalyze.state <> Process.Running) Then Goto lEnd
       outfile = Split(File.Load(tmpdir & "/mpout"), "\n\r", "", True) '<- this is sloooow over time, watchout!
+
+      
       pLine = outfile[outfile.max - 1]
       'Try cTime = Val(Trim(Mid(pLine, 3, InStr(pLine, ".") - 3)))
       'Try ctime = CFloat(Trim(Mid(pLine, 3, InStr(pLine, ".") - 1))) 'get the current float time
       Try ctime = CFloat(Trim(pLine)) 'get the current float time
       
-      
       Try cTimei = Split(cTime, ".")[0]
       Try cTimef = Split(cTime, ".")[1]
-      Try t = tmpdir & Dir(tmpdir, "*.jpg")[0]
+      Try t = tmpdir & Dir(tmpdir, "*.png")[0]
       If Exist(t) Then
-        Try i = i.Load(tmpdir & Dir(tmpdir, "*.jpg")[0])
+        Try i = i.Load(tmpdir & Dir(tmpdir, "*.png")[0])
         'Shell "mv  " & (tmpdir & Dir(tmpdir, "*.jpg")[0]) & " /tmp/tmp/" & ctime & ".jpg" Wait
         If Not Error Then 
-          bavg = Color[i.Pixels[0]].value 
+          bavg = c_mean(i)
+          'bavg = Color[i.Pixels[0]].value 
           Debug "time", ctime, "AVG:", bavg
           'barray index represents the integer part of the time, so we store the float part with the average picture brightness value in the array cell
           'and set a delay afterwards for near pefect timing
@@ -1378,7 +1380,16 @@ Public Sub Analyze(videofile As String)
   Shell "rm -Rf " & tmpdir
 End
 
-
+Private Function c_mean(img As Image) As Integer
+Dim i, s As Integer
+Dim skiprows As Integer = img.Pixels.count Div 8
+'an imprecise color mean
+  For i = skiprows To img.Pixels.Count - skiprows Step 3
+    s += Color[img.Pixels[i]].value
+  Next
+  Return CInt(s / (img.Pixels.count - (skiprows * 2))) * 3
+  Stop
+End
 
 Public TimerAnalyzePre As Timer
 Public Sub TimerAnalizePRE_timer()
@@ -1579,7 +1590,6 @@ Public Sub mpv_command(command As String[])
   Next
   sbuf = Left(sbuf, -1)
   send(sbuf)
-  Debug sbuf
 End
 
 
