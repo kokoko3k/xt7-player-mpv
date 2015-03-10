@@ -2585,20 +2585,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
     ShowAudioPanel(False)
   Endif
 
-
-  
-    ' If Not (mplayer.getP("audioonly")) Then
-    '   ShowAudioPanel(False)
-    ' Endif
-    ' fixmempv
-    ' If doanalyze Then
-    '   PrevValuecTime = 999999
-    '   Object.Lock(VideoEqualizer)
-    '   VideoEqualizer.Slider6.value = 0
-    '   VideoEqualizer.Spinbox6.value = 0
-    '   Object.unLock(VideoEqualizer)
-    ' Endif
-
   aspectmenu.visible = Not (mplayer.getP("audioonly") Or fsform.FullScreen)
 
   If Not StatusLabelLeft.visible Then
@@ -2668,15 +2654,20 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
 
   global.ResetApplyBtnColor()
 
-  If (VideoEqualizer.CheckDynamicOverbright.value) Then
-    If Not (mplayer.getP("audioonly")) Then
-      If Not (global.IsNetworkURI(fullpath)) Then mplayer.StartOverbrightAnalyze()
+  If Not (mplayer.getP("audioonly"))
+    If Not (global.IsNetworkURI(fullpath)) Then 
+      If (VideoEqualizer.CheckDynamicOverbright.value) Then StartOverbrightAnalyze()
+      If (VideoEqualizer.ApplyEqCheckbox.value = True) Then VideoEqualizer.ApplyEqSettings()
     Endif
   Endif
 
   Return True
 End
 
+Private Sub StartOverbrightAnalyze()
+  VideoEqualizer.ZeroControls()
+  mplayer.StartOverbrightAnalyze()
+End
 
 
 
@@ -3399,8 +3390,10 @@ Private Sub SlideTo(aSlider As Slider, aTarget As Integer)
   Dim prevosd As String = mplayer.osdlevel
   Dim wasdisabled As Boolean = True
   'Dim bdiff As Integer
-  Dim aThreshold As Integer = 7 'do not move slider under this threshold. If you plan not to use threshold, dont change the code, but set it to 0.
-  Dim waittime As Float = 0.005
+  'Dim aThreshold As Integer = 7 'do not move slider under this threshold. If you plan not to use threshold, dont change the code, but set it to 0.
+  Dim aThreshold As Integer = 4 'do not move slider under this threshold. If you plan not to use threshold, dont change the code, but set it to 0.
+  Dim waittime As Float = 0.01
+  Dim paused As Boolean
   
   'If (fmain.mplayer.VideoOut_Driver = "vaapi") Then aThreshold = 2 'fixmempv
   VideoEqualizer.NoOsd = True
@@ -3418,20 +3411,19 @@ Private Sub SlideTo(aSlider As Slider, aTarget As Integer)
   'If waittime < 0 Then waittime = 0
   'If waittime > 0.06 Then waittime = 0.06
   'Debug waittime
+  paused = (mplayer.get_property_mpv("paused", True, 100, True) = "yes")
   If aSlider.value < aTarget Then
     Repeat
-      If (mplayer.pausing Or mplayer.Paused()) Then Return
+      If (mplayer.pausing Or Paused) Then Return
       aSlider.value += 1 
-      'Wait 0.005
-      'Wait  '0.01
-    Until aSlider.value = aTarget
+      Sleep waittime
+    Until aSlider.value >= aTarget
       Else
     Repeat
-      If (mplayer.pausing Or mplayer.Paused()) Then Return
-     aSlider.value -= 1 
-      'Wait 
-     ' Wait 0.005
-    Until aSlider.value = aTarget
+      If (mplayer.pausing Or Paused) Then Return
+     aSlider.value -= 1
+     Sleep waittime
+    Until aSlider.value <= aTarget
     If wasdisabled Then aSlider.Enabled = False
   Endif
   
@@ -3475,7 +3467,6 @@ Public Sub SaveVolumeSlider_enter()
     VolumeFocused = True
     UpdateVolumeTooltip()
   Endif
-
 End
 
 Public Sub SaveVolumeSlider_leave()

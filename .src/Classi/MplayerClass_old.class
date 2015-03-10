@@ -805,9 +805,9 @@ Public Function do_play(filename As String, options As String, Optional restart 
       WaitForHeaders()
       GetAllTags()
   
-    If Not ImIdlePlaying Then
-      If doanalyze And (Not audioonly) Then StartOverbrightAnalyze()
-    Endif
+  '   If Not ImIdlePlaying Then
+  '     If doanalyze And (Not audioonly) Then StartOverbrightAnalyze()
+  '   Endif
   Endif
   Return True
 End

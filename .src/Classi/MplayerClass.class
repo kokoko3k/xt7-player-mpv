@@ -1412,6 +1412,7 @@ Public Sub TimerAnalize_timer()
   If Error Then Return
   If PrevCtime = cTime Then Return
   prevCtime = cTime
+  If ctime < 0 Then Return
   bAvg = Split(barray[ctime], ":")[0]
   If bAvg <> -1 Then
     TimerAnalyze.Stop
