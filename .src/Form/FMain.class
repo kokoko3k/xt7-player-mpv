@@ -2313,7 +2313,7 @@ Private dumpfile As String
 Public Function Initialvolume() As String
   'initialvolume
   If lastvolume = -2 Then lastvolume = (SaveVolumeSlider.value * 4)
-  'If lastvolume = 0 Then lastvolume = 1 'softvol has problems with volume=0 '
+  'If lastvolume = 0 Then lastvolume = 1 'mplayer's softvol has problems with volume=0 'mpv seems ok.
   Return lastvolume 
 End
 

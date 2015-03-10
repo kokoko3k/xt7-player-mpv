@@ -24,8 +24,9 @@ End
 
 Public Sub Form_Show()
 
-  ShowLogs()
-
+ ShowLogs()
+ searchterm.SetFocus()
+'logarea.text = "1\n\n2\n\n3\n\n4\n\n5\n\n6\n\n7\n\n8\n\n9\n\n0\n\n1\n\n2\n\n3\n\n4\n\n5\n\n6\n\n7\n\n8\n\n9\n\n0\n\n1\n\n2\n\n3\n\n4\n\n5\n\n6\n\n7\n\n8\n\n9\n\n0\n\n1\n\n2\n\n3\n\n4\n\n5\n\n6\n\n7\n\n8\n\n9\n\n0\n\n"
 End
 
 
@@ -66,25 +67,29 @@ End
 
 
 
-Public Sub ShowLogs_old_mplayer()
-  ' Dim Tmp As String = ""
-  ' Dim i As Integer
-  ' LogWindow.Label2.visible = False
-  ' 'Logarea.Clear
-  ' If FMain.mplayer.mediaheaders.Count > 1 Then
-  '   tmp = "Commandline:" & "\n"
-  '   tmp = tmp & Replace(FMain.mplayer.Commandline, " -", "\n -") & "\n" & "\n"
-  '   tmp &= "------------------------------------------------------------------------------\n\n"
-  '   For i = 0 To FMain.mplayer.mediaheaders.Count - 1
-  '     tmp = tmp & FMain.mplayer.mediaheaders[i] & "\n"
-  '   Next 'i
-  '   logarea.text = tmp
-  ' Endif
+
+Public Sub ScrollTo(text As String, logarea As Textedit)
+  Dim p As Integer
+  p = InStr(logarea.text, text, CInt(logarea.tag + 1))
+  If (p = 0) And (logarea.tag <> 0) Then 
+    logarea.tag = 0 
+    p = InStr(logarea.text, text, CInt(logarea.tag + 1))
+  Endif
+  logarea.scrolly = 9999999999
+  logarea.scrollx = 9999999999
+  logarea.pos = p
+  logarea.EnsureVisible
+  logarea.scrolly -= 20
+  logarea.scrollx -= 20
+  Wait
+  logarea.tag = p
 End
+
 
 
 Public Sub searchterm_Click()
   HighLight(logarea, Last.text)
+  ScrollTo(Last.text, logarea)
 End
 
 
@@ -95,6 +100,11 @@ End
 
 Public Sub Searchterm_Keyrelease()
   Dim previous_search As String = searchterm.text
+  If (key.code = Key.return) Or (Key.code = Key.enter) Then
+    ScrollTo(searchterm.text, logarea)
+    Return
+  Endif
+
   Wait 0.5
   If previous_search <> searchterm.text Then Return
   HighLight(logarea, Last.text)
@@ -107,6 +117,10 @@ End
 
 
 Public Sub Highlight(logarea As Object, searchterm As String)
+  Dim sx, sy As Integer
+  ' sx = logarea.scrollx
+  ' sy = logarea.scrolly
+  
   If (Trim(Last.text) = "") Then 
     Last.background = Color.Background
     Return
@@ -115,7 +129,9 @@ Public Sub Highlight(logarea As Object, searchterm As String)
     Last.background = Color.Background
       Else
     Last.background = Color.red
-  Endif  
+  Endif
+  ' logarea.scrollx = sx
+  ' logarea.scrolly = sy
 End
 
 
@@ -146,5 +162,6 @@ Private Function DoHighlight(logarea As Object, foundstr As String) As Boolean
   logarea.RichText = rtext  
   Return found
 End
+
 
 

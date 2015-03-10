@@ -1049,6 +1049,8 @@ End
 
 Public Sub Form_Show()
   Form_Open()
+  If FMain.mplayer.manpage = "" Then FMain.mplayer.fill_manpage()
+
   If Not FMain.FullyLoaded Then Wait 2
   GeneralOptions.EnableDisable_video_drivers_panels()
 End

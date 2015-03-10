@@ -30,6 +30,14 @@ Public commandline As String = ""
 
 Private InputPipe As String = ""
 
+Public manpage As String = ""
+
+
+Public Sub fill_manpage()
+  Shell "man mpv|col -b" To manpage
+End
+
+
 
 
 Public Function executable(Optional timeout As Integer = -1) As String
