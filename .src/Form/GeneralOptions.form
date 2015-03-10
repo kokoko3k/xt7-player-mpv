@@ -731,12 +731,13 @@
           { cacheseekspinbox SpinBox notifyobj
             Name = "cacheseekspinbox"
             MoveScaled(25,1,8,4)
+            MaxValue = 100000
           }
           { Label12 Label labelcheck
             Name = "Label12"
             MoveScaled(34,1,14,4)
             AutoResize = True
-            Text = ("% of total cache size ")
+            Text = ("Kbytes")
           }
         }
         { NOPARSESEP6 Separator
