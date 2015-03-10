@@ -2583,9 +2583,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
       Else
     CorrectAreaAspect() 
     ShowAudioPanel(False)
-    If Not (global.IsNetworkURI(fullpath)) And (VideoEqualizer.CheckDynamicOverbright.value) Then
-      mplayer.StartOverbrightAnalyze()
-    Endif
   Endif
 
 
@@ -2670,6 +2667,12 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   If GeneralOptions.ToolTipsCHKDBUS.value Then Try ExportDbusProperties()
 
   global.ResetApplyBtnColor()
+
+  If (VideoEqualizer.CheckDynamicOverbright.value) Then
+    If Not (mplayer.getP("audioonly")) Then
+      If Not (global.IsNetworkURI(fullpath)) Then mplayer.StartOverbrightAnalyze()
+    Endif
+  Endif
 
   Return True
 End
@@ -3419,7 +3422,7 @@ Private Sub SlideTo(aSlider As Slider, aTarget As Integer)
     Repeat
       If (mplayer.pausing Or mplayer.Paused()) Then Return
       aSlider.value += 1 
-      Wait 0.005
+      'Wait 0.005
       'Wait  '0.01
     Until aSlider.value = aTarget
       Else
@@ -3427,7 +3430,7 @@ Private Sub SlideTo(aSlider As Slider, aTarget As Integer)
       If (mplayer.pausing Or mplayer.Paused()) Then Return
      aSlider.value -= 1 
       'Wait 
-      Wait 0.005
+     ' Wait 0.005
     Until aSlider.value = aTarget
     If wasdisabled Then aSlider.Enabled = False
   Endif
