@@ -463,7 +463,7 @@
         }
         { NoParse44 HBox
           MoveScaled(1,9,50,4)
-          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nMplayer option: -cache-min")
+          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           { CacheMinCheckbox CheckBox notifyobj
             Name = "CacheMinCheckbox"
@@ -624,7 +624,7 @@
         }
         { NoParse45 HBox
           MoveScaled(0,11,50,4)
-          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nMplayer option: -cache-min")
+          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           { CacheMinCheckbox2 CheckBox notifyobj
             Name = "CacheMinCheckbox2"
@@ -662,7 +662,7 @@
         Padding = 6
         { NoParse26 HBox
           MoveScaled(0,1,48,4)
-          ToolTip = ("Maximum cache size.\nMplayer option: -cache ")
+          ToolTip = ("Maximum cache size.\nmpv option: --cache ")
           AutoResize = True
           Spacing = True
           { NetCacheCheckbox CheckBox notifyobj
@@ -686,7 +686,7 @@
         }
         { NoParse32 HBox
           MoveScaled(0,6,50,4)
-          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nMplayer option: -cache-min")
+          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           AutoResize = True
           Spacing = True
           { NetminCacheCheckbox CheckBox notifyobj
@@ -714,7 +714,7 @@
         }
         { NoParse34 HBox
           MoveScaled(0,11,53,4)
-          ToolTip = ("HINT: For youtube, enable this option and set 0.\n--\n If a seek is to be made to a position within <percentage> of the cache size from the current position, \nMPlayer will wait  for  the cache to be filled to this position rather than performing a stream seek (default: 50).\nMplayer option: -cache-seek-min <percentage>")
+          ToolTip = ("HINT: For youtube, enable this option and set 0.\n--\n If a seek is to be made to a position within <percentage> of the cache size from the current position, \nmpv will wait  for  the cache to be filled to this position rather than performing a stream seek (default: 50).\nmpv option: --cache-seek-min")
           AutoResize = True
           Spacing = True
           { NetseekCacheCheckbox CheckBox notifyobj
@@ -850,7 +850,7 @@
       { ScrollView11 ScrollView
         MoveScaled(2,1,56,58)
         Tag = "dvb-t"
-        ToolTip = ("When playing an MPEG-TS stream, this option lets you specify how  many  bytes  in  the\nstream you want MPlayer to search for the desired audio and video IDs.\nMplayer Option: -tsprobe <byte position>")
+        ToolTip = ("When playing an MPEG-TS stream, this option lets you specify how  many  bytes  in  the\nstream to search for the desired audio and video IDs.\nmpv Option: --demuxer-lavf-probesize")
         Expand = True
         Arrangement = Arrange.Vertical
         Spacing = True
@@ -957,7 +957,7 @@
         }
         { NoParse38 HBox
           MoveScaled(0,21,50,4)
-          ToolTip = ("Maximum cache size.\nMplayer option: -cache ")
+          ToolTip = ("Maximum cache size.\nmpv option: --cache ")
           Spacing = True
           { dvbtCacheCheckbox CheckBox notifyobj
             Name = "dvbtCacheCheckbox"
@@ -980,7 +980,7 @@
         }
         { NoParse39 HBox
           MoveScaled(0,25,50,4)
-          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nMplayer option: -cache-min")
+          ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           { dvbtminCacheCheckbox CheckBox notifyobj
             Name = "dvbtminCacheCheckbox"
@@ -1007,7 +1007,7 @@
         }
         { NOPARSEHbox3 HBox
           MoveScaled(1,29,48,4)
-          ToolTip = ("It you have more than a dvb card,\nyou can specify one here.\nmplayer option: -dvbin card=#")
+          ToolTip = ("It you have more than a dvb card,\nyou can specify one here.\nmpv option: --dvbin card=#")
           Spacing = True
           { LabelCard Label
             MoveScaled(1,1,8,3)
@@ -1022,7 +1022,7 @@
         }
         { NOPARSEHbox4 HBox
           MoveScaled(1,33,49,4)
-          ToolTip = ("How much seconds to wait for the channel to be tuned.\nmplayer option: -dvbin timeout=#\n")
+          ToolTip = ("How much seconds to wait for the channel to be tuned.\nmpv option: --dvbin timeout=#\n")
           Spacing = True
           { LabelCard2 Label
             MoveScaled(1,1,14,3)
@@ -1038,12 +1038,12 @@
         }
         { NOPARSEHbox5 HBox
           MoveScaled(1,37,50,4)
-          ToolTip = ("When playing an MPEG-TS stream, this option lets you specify how  many  bytes  in  the\nstream you want MPlayer to search for the desired audio and video IDs.\nMplayer option:\n-tsprobe <byte position>\n\nThis can speed-up tuning/zapping.")
+          ToolTip = ("Maximum  amount  of  data  to  probe during the detection phase. In the case of MPEG-TS this value identifies the maximum number of TS packets to scan.\nmpv option: --demuxer-lavf-probesize")
           Spacing = True
           { tsprobechk CheckBox notifyobj
             Name = "tsprobechk"
             MoveScaled(1,0,15,4)
-            ToolTip = ("Maximum  amount  of  data  to  probe during the detection phase. In the case of MPEG-TS this value identifies the maximum number of TS packets to scan.\nmpv option: demuxer-lavf-probesize")
+            ToolTip = ("Maximum  amount  of  data  to  probe during the detection phase. In the case of MPEG-TS this value identifies the maximum number of TS packets to scan.\nmpv option: --demuxer-lavf-probesize")
             AutoResize = True
             Text = ("probesize")
           }
@@ -1056,7 +1056,7 @@
         }
         { NoParse51 HBox
           MoveScaled(0,42,54,4)
-          ToolTip = ("Use mplayer command: dvb_set_channel.\nIt will cut down time needed to tune channels, \nbut you could have troubles with missing or wrong audio,\nIt is an mplayer bug you may want to check here:\nhttp://bugzilla.mplayerhq.hu/show_bug.cgi?id=2070\n--\n0 - The safer choice.\n1 - Let xt7 decide if it is safe or not.\n2 - Could even crash mplayer, depends on its version.")
+          ToolTip = ("Use command: dvb_set_channel.\nIt will cut down time needed to tune channels, \nbut you could have troubles with missing or wrong audio,\nIt is an mplayer bug you may want to check here:\nhttp://bugzilla.mplayerhq.hu/show_bug.cgi?id=2070\n--\n0 - The safer choice.\n1 - Let xt7 decide if it is safe or not.\n2 - Could even crash mpv, depends on its version.")
           Spacing = True
           { Label24 Label labelcheck
             Name = "Label24"
@@ -1128,7 +1128,7 @@
         }
         { NoParse17 HBox
           MoveScaled(1,13,48,4)
-          ToolTip = ("Add the selected language to the list of preferred languages.\nMplayer Option:\n-slang \"language list\"\n\nThis option also allows you to search for online subtitles at Opensubtitles.org")
+          ToolTip = ("Add the selected language to the list of preferred languages.\nmpv Option:\n--slang \"language list\"\n\nThis option also allows you to search for online subtitles at Opensubtitles.org")
           Spacing = True
           { SlangComboBox ComboBox
             MoveScaled(0,0,24,4)
@@ -1167,7 +1167,7 @@
         Padding = 6
         { NoParse49 HBox
           MoveScaled(1,0,50,4)
-          ToolTip = ("Select your mplayer executable.\nJust write 'mplayer' for default.")
+          ToolTip = ("Select your mpv executable.\nJust write 'mpv' for default.")
           Spacing = True
           { NoParseLabel21 Label
             MoveScaled(1,1,20,3)
@@ -1182,7 +1182,7 @@
         }
         { NoParse9 HBox
           MoveScaled(1,5,44,4)
-          ToolTip = ("Select your mplayer executable.\nJust write 'mplayer' for default.")
+          ToolTip = ("Select your mpv executable.\nJust write 'mpv' for default.")
           Spacing = True
           { NoParseLabel9 Label
             MoveScaled(1,1,14,3)

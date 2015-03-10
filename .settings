@@ -7,6 +7,12 @@ Count=0
 [DebugWindow/AC3s]
 Geometry=[928,154,344,344]
 
+[DebugWindow/ACheckBox]
+Geometry=[1280,0,299,639]
+
+[DebugWindow/ACheckbox]
+Geometry=[1280,0,210,724]
+
 [DebugWindow/AFiltersCfg]
 Geometry=[52,0,210,920]
 
@@ -84,6 +90,9 @@ Geometry=[0,0,344,344]
 
 [DebugWindow/Color]
 Geometry=[0,0,301,301]
+
+[DebugWindow/Color[img.Pixels[i]]]
+Geometry=[1280,0,210,536]
 
 [DebugWindow/ColumnView(FileView1.Children[1]).Columns]
 Geometry=[726,312,564,770]
@@ -304,6 +313,12 @@ Geometry=[0,0,301,301]
 
 [DebugWindow/HBox(Last.Parent).Next]
 Geometry=[709,152,267,712]
+
+[DebugWindow/HBox(acontainer.children[2]).Children]
+Geometry=[1308,28,210,210]
+
+[DebugWindow/HBox(acontainer.children[2]).Children[0]]
+Geometry=[1322,42,210,210]
 
 [DebugWindow/Hbox]
 Geometry=[0,0,301,301]
@@ -975,11 +990,29 @@ Geometry=[576,220,526,656]
 [DebugWindow/achild.proxy]
 Geometry=[1442,202,210,210]
 
+[DebugWindow/acontainer.children]
+Geometry=[1280,0,210,210]
+
+[DebugWindow/acontainer.children[2]]
+Geometry=[1294,14,210,210]
+
 [DebugWindow/albums]
 Geometry=[47,-3,1229,1002]
 
 [DebugWindow/albums.Sort()]
 Geometry=[51,0,632,651]
+
+[DebugWindow/align_objs]
+Geometry=[1280,0,210,210]
+
+[DebugWindow/align_objs[0]]
+Geometry=[1294,14,210,210]
+
+[DebugWindow/align_objs[1]]
+Geometry=[1294,14,210,210]
+
+[DebugWindow/align_objs[2]]
+Geometry=[1294,14,210,210]
 
 [DebugWindow/answer]
 Geometry=[1280,0,210,210]
@@ -1323,6 +1356,9 @@ Geometry=[1498,0,210,363]
 
 [DebugWindow/img]
 Geometry=[51,0,210,210]
+
+[DebugWindow/img.Pixels]
+Geometry=[1280,0,290,810]
 
 [DebugWindow/img.Stretch(nw, nh).picture]
 Geometry=[1276,-3,210,210]
@@ -2001,36 +2037,36 @@ SearchComment=True
 SearchString=True
 
 [OpenFile]
-File[1]=".src/Form/NewChains.class:920.0"
+File[1]=".src/Form/NewChains.class:312.4"
 File[2]=".src/Form/AudioFilters.form"
 File[3]=".src/Form/GeneralOptions.form"
-Active=4
-File[4]=".src/Form/GeneralOptions.class:362.33"
+File[4]=".src/Form/GeneralOptions.class:311.22"
 File[5]=".src/Form/FMain.form"
-File[6]=".src/Form/FMain.class:4405.0"
-File[7]=".src/Classi/SettingsClass.class:565.37"
-File[8]=".src/0_Moduli/Global.module:503.16"
+File[6]=".src/Form/FMain.class:3387.0"
+File[7]=".src/Classi/SettingsClass.class:516.0"
+File[8]=".src/0_Moduli/Global.module:949.31"
 File[9]=".src/Form/EpgForm.form"
-File[10]=".src/Classi/MplayerClass.class:2060.12"
+File[10]=".src/Classi/MplayerClass.class:1425.10"
 File[11]=".src/Form/MyQuestion.class:87.16"
 File[12]=".src/Classi/FloatSpinBox.class:51.0"
-File[13]=".src/Form/CoverManager.class:110.75"
-File[14]=".src/Form/SubAndOsd.class:63.0"
+File[13]=".src/Form/CoverManager.class:1120.75"
+File[14]=".src/Form/SubAndOsd.class:46.56"
+Active=15
 File[15]=".src/Form/SubAndOsd.form"
 File[16]=".src/Form/NewChains.form"
 File[17]=".src/0_Moduli/MyDialog.class:45.8"
 File[18]="CHANGELOG_GIT:978.26"
 File[19]="xt7-player-mpv.desktop:1.19"
 File[20]=".src/Form/Chains.form"
-File[21]=".src/Form/Chains.class:88.2"
+File[21]=".src/Form/Chains.class:224.0"
 File[22]=".src/Form/XConfigureVideoDriver.form"
 File[23]=".src/Form/FsForm.class:0.0"
 File[24]=".src/Form/XConfigureVideoDriver.class:181.7"
 File[25]=".src/Form/LogWindow.form"
-File[26]=".src/Form/LogWindow.class:150.0"
+File[26]=".src/Form/LogWindow.class:108.0"
 File[27]=".src/Form/HotKeys.form"
 File[28]=".src/Form/HotKeys.class:411.11"
-File[29]="AA_ToDo:690.0"
+File[29]="AA_ToDo:665.69"
 File[30]=".src/Form/AddUriForm.form"
 File[31]=".src/Form/AFiltersCfg.form"
 File[32]=".src/Form/RealtimeForm.form"
@@ -2038,11 +2074,20 @@ File[33]=".src/Form/RealtimeForm.class:60.2"
 File[34]=".src/Form/AudioForm.form"
 File[35]=".src/Classi/Meters.class:67.3"
 File[36]=".src/Form/AudioForm.class:135.3"
-File[37]=".src/Classi/MplayerClass_old.class:343.33"
+File[37]=".src/Classi/MplayerClass_old.class:810.2"
 File[38]=".src/Form/ChooseAspect.class:32.25"
 File[39]="3dglassess.png"
 File[40]=".src/Form/FsForm.form"
-Count=40
+File[41]=".src/Form/DVBTuner.form"
+File[42]=".src/Classi/OpenSubtitlesAPI.class:222.0"
+File[43]=".src/Classi/ShoutCastClass.class:211.11"
+File[44]=".src/Form/VideoEqualizer.class:204.17"
+File[45]=".src/Form/XConfigureAudioDriver.class:364.6"
+File[46]=".src/Form/OverlayTrayTip.class:18.0"
+File[47]=".src/Form/OpenSubtitesForm.class:92.0"
+File[48]=".src/Form/VideoEqualizer.form"
+File[49]=".src/Form/OpenSubtitesForm.form"
+Count=49
 
 [Watches]
 Count=4
