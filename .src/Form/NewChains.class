@@ -212,7 +212,15 @@ End
 
 
 Public Sub filter_label_MouseDown()
+  Dim search_for As String = ""
   select_item(Last)
+  
+  'help window
+  If Not HelpBox.hidden Then
+    textareahelp.text = ""
+    Wait 0.5
+    timerDelayShowHelp.start
+  Endif
 End
 
 Public Sub filter_checkbox_Click()
@@ -231,6 +239,7 @@ Private Sub select_item(item As Object)
   item.parent.background = Color.SelectedBackground
   item.parent.foreground = Color.SelectedForeground
   Select_tabstrip_item(item.parent.name, item.parent.parent.tag)
+  
 End
 
 Public Sub show_audio_filter(filter_name As String)
@@ -245,13 +254,18 @@ End
 Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
   Dim item_tab As Integer = -1
   Dim i As Integer
+  helpbox.tag = item_name
   Try item_tab = aTabstrip.Tag.Find(Lower(item_name))
   If item_tab >= 0 Then 
     aTabstrip.index = item_tab
+    HelpBox.reparent(aTabstrip)
       Else
     For i = 0 To aTabstrip.count - 1
       aTabstrip.index = i
-      If Lower(aTabstrip.caption) = item_name Then Return
+      If Lower(aTabstrip.caption) = item_name Then 
+        HelpBox.reparent(aTabstrip)
+        Return
+      Endif
     Next
   Endif
 End
@@ -1049,8 +1063,65 @@ End
 
 Public Sub Form_Show()
   Form_Open()
-  If FMain.mplayer.manpage = "" Then FMain.mplayer.fill_manpage()
 
   If Not FMain.FullyLoaded Then Wait 2
   GeneralOptions.EnableDisable_video_drivers_panels()
 End
+
+Public Sub HelpBox_Show()
+  helpbox.Expand = True
+  timerDelayShowHelp.start
+End
+
+Public Sub HelpBox_hide()
+  helpbox.expand = False
+  helpbox.h = 32
+End
+
+Public Sub timerDelayShowHelp_Timer()
+  Show_Help(HelpBox.tag, textareahelp)
+  ' textareahelp.scrollx = 0
+  ' textareahelp.scrolly = 0
+  textareahelp.pos = 0
+  TextAreahelp.EnsureVisible()
+  timerDelayShowHelp.stop
+End
+
+
+Private Sub search_term(item As String) As String[]
+  Dim out As New String[]
+  Select Case item
+    Case "vdpau"
+      Return ["'   vdpau (X11 only)'"]
+    Case "vaapi"
+      Return ["'Intel VA API video'"]
+  End Select
+  out.add("'    " & Lower(item) & "[=" & "'")
+  out.add("'    " & Lower(item) & "=[" & "'")
+  out.add("'    " & Lower(item) & "'")
+  Return out
+End
+
+Private Sub Show_Help(search_for As String, tArea As Textarea)
+  Dim st, help As String
+  For Each st In search_term(search_for)
+    Debug "man mpv|col -b|grep -A100 -F " & st  
+    Shell "man mpv|col -b|grep -A100 -F " & st To help
+    If help <> "" Then Break
+    Wait
+  Next
+  If help = "" Then 
+    tArea.clear
+    Goto returnlabel
+      Else
+    tArea.text = help
+  Endif
+  returnlabel:
+  ' tArea.scrollx = 0
+  ' tArea.scrolly = 0
+  tArea.pos = 0
+  tArea.EnsureVisible()
+  Return
+End
+
+

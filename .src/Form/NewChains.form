@@ -28,7 +28,7 @@
     Visible = False
   }
   { TabStrip1 TabStrip
-    MoveScaled(4,6,95,59)
+    MoveScaled(4,6,95,60)
     Expand = True
     Arrangement = Arrange.Horizontal
     Margin = True
@@ -37,16 +37,36 @@
     Text = ("Video Filters")
     Picture = Picture["icon:/small/video"]
     { filters_video_container ScrollView
-      MoveScaled(1,2,30,47)
+      MoveScaled(1,2,30,31)
       Background = Color.TextBackground
       Arrangement = Arrange.Vertical
     }
     { TabStrip_filters_video TabStrip
-      MoveScaled(32,1,56,47)
+      MoveScaled(33,2,59,46)
       #Translate = False
       Expand = True
       Index = 0
       Text = "tabstrip1"
+      { HelpBox Expander
+        MoveScaled(1,6,56,34)
+        Arrangement = Arrange.Fill
+        Border = False
+        Text = ("Filter Help")
+        Hidden = True
+        { timerDelayShowHelp #Timer
+          #MoveScaled(46,5)
+          Delay = 100
+        }
+        { TextAreaHelp TextArea
+          MoveScaled(1,8,43,22)
+          Font = Font["Monospace"]
+          Background = Color.ButtonBackground
+          Foreground = Color.ButtonForeground
+          Tag = "0"
+          Expand = True
+          ReadOnly = True
+        }
+      }
       Index = 0
     }
     Index = 1
