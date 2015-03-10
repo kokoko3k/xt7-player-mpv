@@ -3579,23 +3579,7 @@ Public Sub SeekBar_Change()
   If Not (Seekbar.tag = "timer") Then
     'OneSecTimer.Enabled = False
     percent = SeekBar.value * 100
-
-    'Restart the stream from a new position on youtube streams instead of seeking.
-    If (generaloptions.DoSeekRestartBox.value = True) And (((mplayer.getP("fullpath") Like "http://*.youtube.*/*") Or (mplayer.getP("fullpath") Like "https://*.youtube.*/*"))) Then
-      seekbar.enabled = False
-      If SeekingRestarting Then Return
-      fmain.mouse = mouse.wait
-      Try newpos = CInt(mplayer.getP("length") / (100 / percent))
-      If Error Then newpos = 0
-      SeekingRestarting = True
-      SeekRestart(newpos)
-      fmain.mouse = mouse.normal
-      SeekingRestarting = False
-      seekbar.enabled = True
-    Else
-      mplayer.do_seek(percent)
-    Endif
-    'OneSecTimer.Enabled = True
+    mplayer.do_seek(percent)
   Endif
 End
 
