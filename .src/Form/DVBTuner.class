@@ -424,7 +424,7 @@ Public Sub Button4_Click()
   Endif
   File.Save(mplayerchannelsfile, filedata)
   If displayinfo Then
-    msg = msg & "Your old mplayer channels file:\n"
+    msg = msg & "Your old mpv channels file:\n"
     msg = msg & mplayerchannelsfile & "\n"
     msg = msg & "Has been copied as\n"
     msg = msg & mplayerchannelsfilebak & "\n"

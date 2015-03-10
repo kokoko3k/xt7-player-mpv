@@ -591,7 +591,7 @@ Public Sub stucktimer_timer()
 
   Silences = silences + 1
   If (ProcessRunningOvr() And (silences >= 2) And (Not paused)) Then
-    Debug "WARNING: Not receiving any output from mplayer which is not paused... did it freezed?"
+    Debug "WARNING: Not receiving any output from mpv which is not paused... did it freezed?"
     Debug
     If StuckRestartedTimes <= 3 Then
       Debug "WARNING: Trying to restart it..."
@@ -786,7 +786,7 @@ Public Function do_play(filename As String, options As String, Optional restart 
         If global.IsImgFile(filename) Then commandline &= " -fps 0.1 -nocache"
       Endif
    
-      Debug "Starting mplayer now:"
+      Debug "Starting mpv now:"
       Debug "commandline=" & commandline
       Debug
       playerprocess = Shell commandline For Read As "playerprocess"
@@ -1019,7 +1019,7 @@ Public Function do_pause_insist() As Boolean 'crea problemi...
     MaxWait = MaxWait - 1
     Wait interval / 2 
   Until paused Or (MaxWait = 0)
-  If maxwait = 0 Then Debug "Doh, mplayer didn't paused in" & CStr(totalwait) & " seconds"
+  If maxwait = 0 Then Debug "Doh, mpv didn't paused in" & CStr(totalwait) & " seconds"
 End
 
 

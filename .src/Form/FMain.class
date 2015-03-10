@@ -1377,7 +1377,7 @@ Public Sub Form_Close()
   Debug
   MyLibrary.MplayerTag.do_stop()
   MyPlaylist.MplayerTag.do_stop()
-  Debug "mplayer stopped"
+  Debug "mpv stopped"
   Debug
   Try HotKeys.xbindkeys.kill
   Print "xbindkeys killed"
@@ -3335,7 +3335,7 @@ Public Sub Mplayer_mykill(return_value As Integer)
           SelectNext(True, GetActivePlayQueue())
           PlaylistFinished = Not global.IsNextSelected
           If (Shutdown = "PLS") And PlaylistFinished And (Not ShufflePls.value) Then CountDown.engage
-          Debug "Mplayer was off, so hit PLAY from here"
+          Debug "mpv was off, so hit PLAY from here"
           Debug
           If Not (mplayer.ProcessRunningOvr()) Then
             Play(Media_Next_path)
@@ -4870,7 +4870,7 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
     Wait 0.025
     If mplayerwasrunning Then 'Or (TogglePls.value) Then
       Try customtitle = youtubetree.Current.text
-      Debug "mplayer was off so hit play from here"
+      Debug "mpv was off so hit play from here"
       Debug
       Play(Media_Next_path)
     Endif
@@ -4993,7 +4993,7 @@ Public Sub ButtonPrev_Click()
     Wait 0.025
     If mplayerwasrunning Then 
       Try customtitle = youtubetree.Current.text
-      Debug "mplayer was off so hit play from here"
+      Debug "mpv was off so hit play from here"
       Debug
       Play(Media_Next_path)
     Endif

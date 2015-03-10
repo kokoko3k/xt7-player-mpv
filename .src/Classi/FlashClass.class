@@ -78,7 +78,7 @@ Public Function getflashes() As String[]
   'for each of them, make sure that it is not an mplayer process (ie: our process)
   For Each findout In Split(findout, "\n", "", True)
     Shell "cat " & File.Dir(File.Dir(findout)) & "/cmdline" To cmdline
-    If Not (cmdline Like "*mplayer*") Then
+    If Not (cmdline Like "*mpv*") Then
       If Not (cmdline Like "*tail*") Then 'ail is used by our recorder...
         findouts.Add(findout)
       Endif

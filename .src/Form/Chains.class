@@ -125,7 +125,7 @@ Public Function ParsedChain(VideoOrAudio As String) As String
   Dim AlreadyWarnedA As Boolean = False
   
   warnpre = ("It seems that you want to use the filter: \n")
-  warnpost = ("\nWhich seems not to be supported by your mplayer.\n ")
+  warnpost = ("\nWhich seems not to be supported by your mpv.\n ")
   warnpost &= ("\nTry to remove it from tha chain or to use another mplayer.")
   warnpost &= ("\nThe Playback will probably fail.")
 

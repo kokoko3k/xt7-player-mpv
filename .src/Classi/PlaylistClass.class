@@ -1134,7 +1134,7 @@ Dim fileUtf8 As String
       tl.tlFree()
     Endif
       Else 'but fallback to mplayertag if needed
-    Debug "TagLib doesnt support " & f & ",fallback to mplayer routines..."
+    Debug "TagLib doesnt support " & f & ",fallback to mpv routines..."
     Debug
     'CheckPlayerAlive()
     MplayerTag.quick = quick

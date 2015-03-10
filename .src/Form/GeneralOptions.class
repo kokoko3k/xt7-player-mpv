@@ -160,7 +160,7 @@ Private Sub DrawFiltersGui()
      
      '-mc
      AllParams.add(["RANGEFLOAT", "mc", "0", "0.001", "1", "mc", ("maximum A-V sync correction per frame (in seconds)")])
-     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("maximum A-V sync correction per frame (in seconds)\n mplayer options: -mc"))
+     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("maximum A-V sync correction per frame (in seconds)\n mpv options: -mc"))
      AllParams.Clear
      
 
@@ -565,7 +565,7 @@ Public Sub MplayerExeOpen_Click()
   Dim tmp As String[]
   Dim expat As String = myDialog.Path
   tmp = myDialog.filter
-  myDialog.filter = ["*.*;*", "mplayer executable"]
+  myDialog.filter = ["*.*;*", "mpv executable"]
   myDialog.path = "/usr"
   If Not (MyDialog.OpenFile()) Then
     MplayerExeText.text = "\"" & myDialog.path & "\""

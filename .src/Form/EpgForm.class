@@ -580,7 +580,7 @@ Public Sub ButtonRefreshAll_Click()
   ButtonStop.show
   If FMain.mplayer.ProcessRunningOvr() Then
     If Lower(FMain.mplayer.getP("fullpath")) Like "dvb://*" Then
-      If MyQuestion.Ask(("It seems an mplayer instance is playing a dvb channel.") & "\n" & ("When other applications are using the dvbt card,") & "\n" & ("scanning may fail."), ("Stop mplayer and scan"), ("Try to scan")) = 1 Then
+      If MyQuestion.Ask(("It seems an mpv instance is playing a dvb channel.") & "\n" & ("When other applications are using the dvbt card,") & "\n" & ("scanning may fail."), ("Stop mpv and scan"), ("Try to scan")) = 1 Then
         FMain.ButtonStop_Click()
         Wait 0.01
       Endif
