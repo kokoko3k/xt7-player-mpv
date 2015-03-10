@@ -280,7 +280,7 @@ Private Sub draw_filters_audio_cfg()
 
   AllParams.Clear
   'drc[=method:target]
-  AllParams.add(["CHOOSE", ("Method"), "1", "2", "VolNorm1", ""])
+  AllParams.add(["ROCHOOSE", ("Method"), "1", "2", "VolNorm1", ""])
   AllParams.add(["RANGEFLOAT", ("Target"), "0", "0.25", "2", "VolNorm2", ""])
   Global.DrawGui(AllParams, "drc", aTabstrip, NotSwitchable)
   AllParams.Clear
@@ -300,21 +300,21 @@ Private Sub draw_filters_audio_cfg()
   'volume[=<volumedb>[:...]]
    ' AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
     AllParams.add(["RANGE", "replaygain-preamp=", "-20", "0", "20", "Volume4", ("Pre-amplification in dB to apply to the replaygain gain")])
-    AllParams.add(["CHOOSE", "replaygain-track=", "yes", "no", "Volume2", ("Use track-gain from replaygain metadata value")])
-    AllParams.add(["CHOOSE", "replaygain-album=", "yes", "no", "Volume3", ("Like replaygain-track, but using the album-gain value")])
-    AllParams.add(["CHOOSE", "replaygain-clip=", "yes", "no", "Volume5", ("Prevent replaygain clipping by lowering the gain")])
-    AllParams.add(["CHOOSE", "softclip=", "yes", "no", "Volume6", ("Turns on soft clipping")])
+    AllParams.add(["ROCHOOSE", "replaygain-track=", "yes", "no", "Volume2", ("Use track-gain from replaygain metadata value")])
+    AllParams.add(["ROCHOOSE", "replaygain-album=", "yes", "no", "Volume3", ("Like replaygain-track, but using the album-gain value")])
+    AllParams.add(["ROCHOOSE", "replaygain-clip=", "yes", "no", "Volume5", ("Prevent replaygain clipping by lowering the gain")])
+    AllParams.add(["ROCHOOSE", "softclip=", "yes", "no", "Volume6", ("Turns on soft clipping")])
     Global.DrawGui(AllParams, "volume", aTabstrip, Switchable)
     AllParams.Clear
     
   'scaletempo[=option1:option2:...]
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
 
+    AllParams.add(["ROCHOOSE", "speed=", "both", "tempo", "pitch", "none", "scaletempo1", ("Runtime response to speed change")])
     AllParams.add(["RANGEFLOAT", "scale=", "0.1", "1", "4", "scaletempo5", ""])
     AllParams.add(["RANGE", "stride=", "5", "60", "500", "scaletempo2", ""])
     AllParams.add(["RANGEFLOAT", "overlap=", "0.10", "0.20", "1", "scaletempo3", ""])
     AllParams.add(["RANGE", "search=", "1", "14", "100", "scaletempo4", ""])
-    AllParams.add(["CHOOSE", "speed=", "both", "tempo", "pitch", "none", "scaletempo1", ("Runtime response to speed change")])
     Global.DrawGui(AllParams, "scaletempo", aTabstrip, Switchable)
     AllParams.Clear
     
@@ -424,9 +424,9 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["RANGE", ("Height"), "-11", "0", "2048", "Scale2", ("0 disables scaling,see man below")])
   AllParams.Add(["FREE", ("Scaling Parameters"), "", "Scale5", ("Depends on sws, leave blank if unsure")])
   AllParams.Add(["FREE", ("Scaling Parameters"), "", "Scale6", ("Depends on sws, leave blank if unsure")])
-  AllParams.Add(["CHOOSE", ("Chroma skipping"), ("0 - Use all available input lines for chroma"), ("1 - Use only every 2. input line for chroma"), ("2 - Use only every 4. input line for chroma"), ("3 - Use only every 8. input line for chroma"), "Scale4", ("lower=slower")])
-  AllParams.Add(["CHOOSE", ("Disable Upscaling"), ("0 - Allow Upscaling"), ("1 - Disallow if one dimensions exceeds its original value"), ("2 - Disallow if both dimensions exceed their original values"), "scale8", ""])
-  AllParams.Add(["CHOOSE", ("Accurate Rounding"), ("no - Disable Accurate rounding"), ("yes - Enable Accurate rounding"), "scale9", ""])
+  AllParams.Add(["ROCHOOSE", ("Chroma skipping"), ("0 - Use all available input lines for chroma"), ("1 - Use only every 2. input line for chroma"), ("2 - Use only every 4. input line for chroma"), ("3 - Use only every 8. input line for chroma"), "Scale4", ("lower=slower")])
+  AllParams.Add(["ROCHOOSE", ("Disable Upscaling"), ("0 - Allow Upscaling"), ("1 - Disallow if one dimensions exceeds its original value"), ("2 - Disallow if both dimensions exceed their original values"), "scale8", ""])
+  AllParams.Add(["ROCHOOSE", ("Accurate Rounding"), ("no - Disable Accurate rounding"), ("yes - Enable Accurate rounding"), "scale9", ""])
   Global.DrawGui(AllParams, "scale", aTabstrip, NotSwitchable)
   AllParams.Clear
   

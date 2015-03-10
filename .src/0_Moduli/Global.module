@@ -936,6 +936,20 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       Next 'i
       AComboBox.text = CurrentParams[2]
       AComboBox.expand = True
+      
+    Else If CurrentParams[0] = "ROCHOOSE" Then       'Let's Draw a readonky ComboBox
+    'Syntax for TheParameters is: ["CHOOSE", Caption, Choice1,...., ChoiceN, CheckBoxName,Comment]
+      AComboBox = New ComboBox(AnHBox) As "dynaobj"
+      AComboBox.refresh
+      AComboBox.name = CurrentParams[CurrentParams.count - 2] & ".ComboBox"
+
+      For i = 2 To CurrentParams.count - 3
+        AComboBox.Add(CurrentParams[i])
+        'Resize(AcomboBox)
+      Next 'i
+      AComboBox.ReadOnly = True
+      AComboBox.text = CurrentParams[2]
+      AComboBox.expand = True
 
 'AllParams.Add(["VSLIDER", "31", "-12", "0", "12", "Equalizer1", ""])
 '                    0       1     2     3    4        5          6

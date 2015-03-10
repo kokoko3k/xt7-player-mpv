@@ -124,7 +124,7 @@
       Index = 1
       Text = ("Audio")
       { ScrollView2 ScrollView
-        MoveScaled(4,4,53,44)
+        MoveScaled(4,5,53,44)
         Tag = "audio"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -223,62 +223,63 @@
           }
         }
         { NOPARSESeparator2345 Separator
-          MoveScaled(2,22,46,1)
+          MoveScaled(2,22,46,4)
+        }
+        { Label26 Label
+          MoveScaled(1,24,15,4)
+          AutoResize = True
+          Text = ("Passthrough those codecs:")
         }
         { noparsevboxpt HBox
-          MoveScaled(0,25,50,4)
+          MoveScaled(0,31,50,4)
           ToolTip = ("Select what audio codec won't be decoded by mpv,\nbut passed directly through spdif.\n\nTipical use includes just ac3 and dts.\n\nmpv option: --ad=spdif:<codecname>")
-          Spacing = True
-          { Label26 Label
-            MoveScaled(0,0,7.1429,4)
-            AutoResize = True
-            Text = ("Passthrough")
-          }
+          Indent = True
           { ToggleButton1 ToggleButton
-            MoveScaled(11,0,6,4)
+            MoveScaled(8,0,5,4)
             Tag = "ac3"
             Expand = True
             AutoResize = True
             Text = ("AC3")
           }
           { ToggleButton2 ToggleButton
-            MoveScaled(17,0,6,4)
+            MoveScaled(14,0,4,4)
             Tag = "dts"
             Expand = True
             AutoResize = True
             Text = ("DTS")
           }
           { ToggleButton3 ToggleButton
-            MoveScaled(23,0,7,4)
+            MoveScaled(19,0,5,4)
             Tag = "eac3"
             Expand = True
             AutoResize = True
             Text = ("EAC3")
           }
           { ToggleButton4 ToggleButton
-            MoveScaled(29,0,7,4)
+            MoveScaled(25,0,5,4)
             Tag = "mp3"
             Expand = True
             AutoResize = True
             Text = ("MP3")
           }
           { ToggleButton5 ToggleButton
-            MoveScaled(35,0,6,4)
+            MoveScaled(30,0,5,4)
             Tag = "aac"
             Expand = True
             AutoResize = True
             Text = ("AAC")
           }
           { ToggleButton6 ToggleButton
-            MoveScaled(41,0,8.5714,4)
+            MoveScaled(36,0,7,4)
+            #Translate = False
             Tag = "truehd"
             Expand = True
             AutoResize = True
-            Text = ("TRUEHD")
+            Text = "TRUEHD"
           }
         }
         { NOPARSESeparator4 Separator
-          MoveScaled(1,31,46,1)
+          MoveScaled(2,35,46,1)
         }
         { adevicehbox HBox
           MoveScaled(0,38,50,4)
