@@ -478,14 +478,14 @@
           }
           { CacheMinSpinboxFile SpinBox notifyobj
             Name = "CacheMinSpinboxFile"
-            MoveScaled(24,1,8,4)
-            MaxValue = 99
+            MoveScaled(25,0,11,4)
+            MaxValue = 100000
           }
           { Label19 Label labelcheck
             Name = "Label19"
-            MoveScaled(33,0,14,4)
+            MoveScaled(37,0,10,4)
             AutoResize = True
-            Text = ("% of total cache size")
+            Text = ("KBytes")
           }
         }
         { NoParse28 HBox
@@ -638,15 +638,15 @@
           }
           { DVDCacheMinSpinBox SpinBox notifyobj
             Name = "DVDCacheMinSpinBox"
-            MoveScaled(24,1,8,4)
-            MaxValue = 99
+            MoveScaled(25,1,11,4)
+            MaxValue = 100000
             Value = 1
           }
           { Label21 Label labelcheck
             Name = "Label21"
-            MoveScaled(33,0,14,4)
+            MoveScaled(38,0,11,4)
             AutoResize = True
-            Text = ("% of total cache size")
+            Text = ("KBytes")
           }
         }
       }
@@ -702,14 +702,14 @@
           }
           { cacheminspinbox SpinBox notifyobj
             Name = "cacheminspinbox"
-            MoveScaled(24,1,8,4)
-            MaxValue = 99
+            MoveScaled(25,0,11,4)
+            MaxValue = 100000
           }
           { Label9 Label labelcheck
             Name = "Label9"
-            MoveScaled(33,0,14,4)
+            MoveScaled(40,0,8,4)
             AutoResize = True
-            Text = ("% of total cache size")
+            Text = ("Kbytes")
           }
         }
         { NoParse34 HBox
@@ -730,12 +730,12 @@
           }
           { cacheseekspinbox SpinBox notifyobj
             Name = "cacheseekspinbox"
-            MoveScaled(25,1,8,4)
+            MoveScaled(25,1,11,4)
             MaxValue = 100000
           }
           { Label12 Label labelcheck
             Name = "Label12"
-            MoveScaled(34,1,14,4)
+            MoveScaled(40,1,9,4)
             AutoResize = True
             Text = ("Kbytes")
           }
