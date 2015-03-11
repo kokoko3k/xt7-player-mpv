@@ -386,6 +386,7 @@ Public mpvoptions As New Collection
 
 
 Public Sub set_option(name As String, data As String)
+ 'chr(8) is used instead of null because the collection doesn't keep null values
   While mpvoptions.Exist(name)
     name = " " & name 'prefix white spaces to use multiple options with the same name
   Wend
@@ -516,6 +517,7 @@ Public Function do_play(filename As String, Optional string_options As String = 
   'set_option("quiet", "yes")
   set_option("input-file", SetUpInputPipe())
   set_option("msg-color", "no")
+  set_option("msg-level", "all=v,cplayer=status")
   set_option("term-status-msg", "\"\"")
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)
