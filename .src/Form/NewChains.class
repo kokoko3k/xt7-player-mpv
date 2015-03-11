@@ -223,9 +223,6 @@ Public Sub filter_label_MouseDown()
   Dim search_for As String = ""
   select_item(Last)
   'man window
-  If textareahelp.visible Then
-    timerDelayShowHelp.start
-  Endif
 End
 
 Public Sub filter_checkbox_Click()
@@ -244,7 +241,11 @@ Private Sub select_item(item As Object)
   item.parent.background = Color.SelectedBackground
   item.parent.foreground = Color.SelectedForeground
   Select_tabstrip_item(item.parent.name, item.parent.parent.tag)
-  
+
+  If textareahelp.visible Then
+    timerDelayShowHelp.start
+  Endif
+
 End
 
 Public Sub show_audio_filter(filter_name As String)
@@ -1088,7 +1089,7 @@ End
   Private Sub HelpBox_myArrange()
     If textareahelp.visible = False Then
       helpbox.expand = False
-      Last.h = button1.h
+      Last.h = Button_show_man.h
         Else
       helpbox.expand = True
     Endif
@@ -1098,7 +1099,7 @@ End
     HelpBox_myArrange()
   End
   
-  Public Sub Button1_Click()
+  Public Sub Button_show_man_Click()
     If Last.value Then
       timerDelayShowHelp.start
     Endif
