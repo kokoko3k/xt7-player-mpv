@@ -68,7 +68,7 @@ End
 
 Public Sub ScrollTo(text As String, logarea As Textedit)
   Dim p As Integer
-  p = InStr(logarea.text, text, CInt(logarea.tag + 1), gb.case)
+  p = InStr(logarea.text, text, CInt(logarea.tag + 1), gb.IgnoreCase)
   If (p = 0) And (logarea.tag <> 0) Then 
     logarea.tag = 0 
     p = InStr(logarea.text, text, CInt(logarea.tag + 1))
