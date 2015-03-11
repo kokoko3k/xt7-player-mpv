@@ -214,11 +214,8 @@ End
 Public Sub filter_label_MouseDown()
   Dim search_for As String = ""
   select_item(Last)
-  
-  'help window
-  If Not HelpBox.hidden Then
-    textareahelp.text = ""
-    Wait 0.5
+  'man window
+  If textareahelp.visible Then
     timerDelayShowHelp.start
   Endif
 End
@@ -1063,65 +1060,47 @@ End
 
 Public Sub Form_Show()
   Form_Open()
-
   If Not FMain.FullyLoaded Then Wait 2
   GeneralOptions.EnableDisable_video_drivers_panels()
 End
 
-Public Sub HelpBox_Show()
-  helpbox.Expand = True
-  timerDelayShowHelp.start
+
+
+Public Sub timerDelayShowHelp_Timer()
+  Dim help_str As String
+  timerDelayShowHelp.stop
+  help_str = FMain.mplayer.search_man(HelpBox.tag)
+  TextAreahelp.text = help_str
+  textareahelp.pos = 0
+  TextAreahelp.EnsureVisible()
 End
 
+'my personal expander because the gambas one is... buggy!
+
+  Private Sub HelpBox_myArrange()
+    If textareahelp.visible = False Then
+      helpbox.expand = False
+      Last.h = button1.h
+        Else
+      helpbox.expand = True
+    Endif
+  End
+  
+  Public Sub HelpBox_BeforeArrange()
+    HelpBox_myArrange()
+  End
+  
+  Public Sub Button1_Click()
+    If Last.value Then
+      timerDelayShowHelp.start
+    Endif
+    textareahelp.visible = Last.value
+    HelpBox_myArrange()
+  End
+  
 Public Sub HelpBox_hide()
   helpbox.expand = False
   helpbox.h = 32
 End
-
-Public Sub timerDelayShowHelp_Timer()
-  Show_Help(HelpBox.tag, textareahelp)
-  ' textareahelp.scrollx = 0
-  ' textareahelp.scrolly = 0
-  textareahelp.pos = 0
-  TextAreahelp.EnsureVisible()
-  timerDelayShowHelp.stop
-End
-
-
-Private Sub search_term(item As String) As String[]
-  Dim out As New String[]
-  Select Case item
-    Case "vdpau"
-      Return ["'   vdpau (X11 only)'"]
-    Case "vaapi"
-      Return ["'Intel VA API video'"]
-  End Select
-  out.add("'    " & Lower(item) & "[=" & "'")
-  out.add("'    " & Lower(item) & "=[" & "'")
-  out.add("'    " & Lower(item) & "'")
-  Return out
-End
-
-Private Sub Show_Help(search_for As String, tArea As Textarea)
-  Dim st, help As String
-  For Each st In search_term(search_for)
-    Debug "man mpv|col -b|grep -A100 -F " & st  
-    Shell "man mpv|col -b|grep -A100 -F " & st To help
-    If help <> "" Then Break
-    Wait
-  Next
-  If help = "" Then 
-    tArea.clear
-    Goto returnlabel
-      Else
-    tArea.text = help
-  Endif
-  returnlabel:
-  ' tArea.scrollx = 0
-  ' tArea.scrolly = 0
-  tArea.pos = 0
-  tArea.EnsureVisible()
-  Return
-End
-
-
+  
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

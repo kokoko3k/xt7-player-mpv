@@ -47,24 +47,28 @@
       Expand = True
       Index = 0
       Text = "tabstrip1"
-      { HelpBox Expander
-        MoveScaled(1,6,56,34)
-        Arrangement = Arrange.Fill
-        Border = False
-        Text = ("Filter Help")
-        Hidden = True
-        { timerDelayShowHelp #Timer
-          #MoveScaled(46,5)
-          Delay = 100
+      { HelpBox Panel
+        MoveScaled(3,11,54,29)
+        Tag = "0"
+        Arrangement = Arrange.Vertical
+        { Button1 ToggleButton
+          MoveScaled(1,2,51,4)
+          Text = ("Show man page")
+          Picture = Picture["icon:/16/help"]
         }
         { TextAreaHelp TextArea
-          MoveScaled(1,8,43,22)
+          MoveScaled(5,7,43,22)
+          Visible = False
           Font = Font["Monospace"]
           Background = Color.ButtonBackground
           Foreground = Color.ButtonForeground
           Tag = "0"
           Expand = True
           ReadOnly = True
+        }
+        { TimerDelayShowHelp #Timer
+          #MoveScaled(1,9)
+          Delay = 500
         }
       }
       Index = 0
