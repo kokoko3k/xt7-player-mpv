@@ -260,7 +260,6 @@ Public Sub Form_Open()
   If global.TranslationNeeded Then
     If Not (Exist(TranslationNeeded.Notranslatefile)) Then TranslationNeeded.show
   Endif
-
 End
 
 Public Sub SetFlexSpaceVisibility(Visibility As Boolean)
@@ -11226,4 +11225,10 @@ End
 
 Public Sub ButtonmenuNEWBTN_click()
   topmenu.popup
+End
+
+Public Sub Button6_Click()
+
+    Object.SetProperty(Me, "boh", "dkok")
+
 End

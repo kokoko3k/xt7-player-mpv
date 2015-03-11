@@ -31,9 +31,12 @@ Public commandline As String = ""
 Private InputPipe As String = ""
 
 
+
+
 Public Function executable(Optional timeout As Integer = -1) As String
   Dim out As String
   Dim proxy As String
+  
   out &= out & GeneralOptions.MplayerEnvVars.text & " " 'user specified environment variables
   If GeneralOptions.vdpauooverlaycheck.value = True Then
     out &= " " & "VDPAU_NVIDIA_NO_OVERLAY=1" & " "
@@ -507,6 +510,8 @@ Event property_change(name As String, data_old As String, data_new As String)
 
 
 Public Function do_play(filename As String, Optional string_options As String = "", Optional restart As Boolean = False, Optional bugid1870 As Boolean = False, Optional cookieopts As String = "", Optional dumpfile As String = "/tmp/stream.dump.xt7.mpeg", Optional doanalyze As Boolean = False) As Boolean
+  Dim killer_script As String = Temp()
+  ' Dim heartbeat_cmd As String
   return_value = 0
   If string_options Like "*-idle *" Then 
     Stop
@@ -519,6 +524,10 @@ Public Function do_play(filename As String, Optional string_options As String = 
   set_option("msg-color", "no")
   set_option("msg-level", "all=v,cplayer=status")
   set_option("term-status-msg", "\"\"")
+  'The following will be a script that will kill mpv if xt7 crashes:
+  ' set_option("heartbeat-cmd", "'" & heartbeat_script & "'")
+  ' set_option("heartbeat-interval", "1")
+  
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)
   Debug commandline, commandline
@@ -533,13 +542,33 @@ Public Function do_play(filename As String, Optional string_options As String = 
   event_loop.delay = 500
   event_loop.start
   setP("fullpath", filename)
+
+  'compile a littel script that will kill mpv if xt7 crashes
+  ' heartbeat_cmd = generate_heartbeat_cmd()
+  ' File.Save(heartbeat_script, heartbeat_cmd)
+  ' Chmod heartbeat_script To "-rwxr-xr-x"
+  
+  'The following will be a script that will kill mpv if xt7 crashes:
+  Copy "killer.sh" To killer_script
+  Chmod killer_script To "rwxr-xr-x"
+
+  Shell killer_script & " " & Application.id & " " & playerprocess.id
+  Debug killer_script & " " & Application.id & " " & playerprocess.id
   Return True
 End
 
-
-
-
-
+' Private Function generate_heartbeat_cmd() As String
+'   Dim out As String
+'   Dim mpv_pid As Integer = playerprocess.id
+'   Dim xt7_pid As Integer = Application.id
+'   Dim xt7_cmd As String
+'   'this will assure us that we are killing the right process
+'   xt7_cmd = File.Load("/proc/" & xt7_pid & "/cmdline")
+'   
+'   
+'   
+'   Return out
+' End
 
 
 Public Struct CDINFO
