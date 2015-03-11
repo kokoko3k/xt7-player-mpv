@@ -3181,7 +3181,8 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
     If TimeFormat = 0 Then
       PostText = mplayer.FormatTime(cTime) & " / " & mplayer.FormatTime(mplayer.getP("=length"))
   Else If Timeformat = 1 Then
-    RemainingTime = mplayer.getP("=length") - cTime
+    Try RemainingTime = mplayer.getP("=length") - cTime
+    If Error Then Return
     PostText = "-" & mplayer.FormatTime(remainingtime) & " / " & mplayer.getP("length")
   Else If Timeformat = 2 Then
     PostText = cTime & " / " & mplayer.getP("=length")
