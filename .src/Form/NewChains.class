@@ -37,7 +37,11 @@ Private Sub Init_filters_audio()
   Dim filter As String
   filters_audio_list = ["equalizer", "drc", "karaoke", "extrastereo", "scaletempo", "volume", "CustomAudio1", "CustomAudio2", "CustomAudio3"]
   For Each filter In filters_audio_list
-    draw_list_item(filters_audio_container, filter)
+    If filter = "scaletempo" Then 
+      draw_list_item(filters_audio_container, filter, True)
+        Else
+      draw_list_item(filters_audio_container, filter)
+    Endif
   Next 'filter
   filters_audio_container.tag = TabStrip_filters_audio
   fill_tabstrip(TabStrip_filters_audio, filters_audio_container)
@@ -86,7 +90,7 @@ Private Sub Init_drivers_video()
 End
 
 
-Private Sub draw_list_item(item_container As Scrollview, item_name As String)
+Private Sub draw_list_item(item_container As Scrollview, item_name As String, Optional checked As Boolean = False)
 Dim t As Integer
     'an Hbox container; his name holds the item name information
     filter_box = New Hbox(item_container)
@@ -111,17 +115,21 @@ Dim t As Integer
 
     'a checkbox to enable/disable the item
     filter_checkbox = New CheckBox(filter_box) As "filter_checkbox"
+      Object.Lock(filter_checkbox)
       filter_checkbox.name = item_name & "_checkbox_" & item_container.name
       filter_checkbox.text = Null
       filter_checkbox.autoresize = True
       t = filter_checkbox.w
       filter_checkbox.autoresize = False
       filter_checkbox.w = t * 3 'hack may not work well with all of the themes.
-
+      filter_checkbox.value = checked
+      Object.unLock(filter_checkbox)
+      
     'finally the text label; his name holds the item name information
     filter_text = New Label(filter_box) As "filter_label"
       filter_text.text = item_name
       filter_text.expand = True
+      
 End
 
 
