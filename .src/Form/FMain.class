@@ -11178,49 +11178,56 @@ Private Sub hide_on_fs(f As Form)
 End
 
 
+
 Public Sub GeneralOptionsmenupopup_Click()
+  If Not fmain.FullyLoaded Then Return
   Me.mouse = Mouse.Wait
   GeneralOptions.show
   Me.mouse = Mouse.Default
 End
 Public Sub ChainsMenuPopup_Click()
+  If Not fmain.FullyLoaded Then Return
   Me.mouse = Mouse.Wait
   hide_on_fs(newchains)
   NewChains.show
   Me.mouse = Mouse.Default
 End
 Public Sub VideoFiltersMenuPopup_Click()
+  If Not fmain.FullyLoaded Then Return
   Me.mouse = Mouse.Wait
   hide_on_fs(newchains)
   NewChains.show_video_filters()
   Me.mouse = Mouse.Default
 End
 Public Sub VideoDriversMenuPopup_Click()
+  If Not fmain.FullyLoaded Then Return
   Me.mouse = Mouse.Wait
   hide_on_fs(newchains)
   NewChains.show_video_drivers()
   Me.mouse = Mouse.Default
 End
 Public Sub AudioFiltersMenuPopup_Click()
+  If Not fmain.FullyLoaded Then Return
   Me.mouse = Mouse.Wait
   hide_on_fs(newchains)
   NewChains.show_audio_filters()
   Me.mouse = Mouse.Default
 End
 Public Sub AudioDriversMenuPopup_Click()
+  If Not fmain.FullyLoaded Then Return
   Me.mouse = Mouse.Wait
   hide_on_fs(newchains)
   NewChains.show_audio_drivers()
   Me.mouse = Mouse.Default
 End
 Public Sub SubsAndOsdMenuPopup_Click()
-  Me.mouse = Mouse.Wait
+  If Not fmain.FullyLoaded Then Return
   hide_on_fs(subandosd)
   SubAndOsd.show
   Me.mouse = Mouse.Default
 End
 Public Sub HotKeysMenuPopup_Click()
-  Me.mouse = Mouse.Wait
+  If Not fmain.FullyLoaded Then Return
   hide_on_fs(hotkeys)
   HotKeys.show
   Me.mouse = Mouse.Default

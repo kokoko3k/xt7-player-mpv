@@ -126,7 +126,7 @@ End
 Public Sub Highlight(logarea As Object, searchbox As ButtonBox)
   Dim sx, sy As Integer
   If (Trim(searchbox.text) = "") Then 
-    searchbox.background = Color.Background
+    searchbox.background = Color.textBackground
     Return
   Endif
   If DoHighlight(logarea, searchbox.text) Then

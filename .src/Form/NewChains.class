@@ -148,7 +148,7 @@ End
 Private Sub ReDraw_Ordered(item_container As Scrollview, chain_items As String[])
   Dim i, j As Integer
   Dim childrens As New Object[]
-  
+
   For i = 0 To item_container.Children.count - 1
     childrens.add(item_container.Children[i])
   Next 'i
@@ -157,10 +157,6 @@ Private Sub ReDraw_Ordered(item_container As Scrollview, chain_items As String[]
     If item_container.Children[i] Is Hbox Then item_container.Children[i].reparent(Me)
   Next 'i
   
-  ' For Each f_name In chain_items
-  '   f_obj = Me.Controls[f_name]
-  '   f_obj.reparent(item_container)
-  ' Next
   For i = 0 To chain_items.max
     For j = 0 To childrens.Max
       If childrens[j].name = chain_items[i] Then
@@ -232,19 +228,22 @@ End
 
 Private Sub select_item(item As Object)
   Dim bro As Object
-  For Each bro In item.parent.parent.Children
-    If bro Is HBox Then
-      bro.background = Color.TextBackground
-      bro.foreground = Color.TextForeground
-    Endif
-  Next
-  item.parent.background = Color.SelectedBackground
-  item.parent.foreground = Color.SelectedForeground
+  If item.parent.parent.enabled Then
+    For Each bro In item.parent.parent.Children
+      If bro Is HBox Then
+        bro.background = Color.TextBackground
+        bro.foreground = Color.TextForeground
+      Endif
+    Next
+    item.parent.background = Color.SelectedBackground
+    item.parent.foreground = Color.SelectedForeground
+  Endif
   Select_tabstrip_item(item.parent.name, item.parent.parent.tag)
 
   If textareahelp.visible Then
     timerDelayShowHelp.start
   Endif
+  
 
 End
 
@@ -1037,9 +1036,13 @@ End
 Public Sub override_video_driver(vo As String)
   If vo = "" Then 
     NewChains.drivers_video_container.enabled = True
+    nosavelabel1.text = ""
+    nosavelabel1.Visible = False
     Return
       Else
     NewChains.drivers_video_container.enabled = False
+    nosavelabel1.text = vo & " " & ("is overridden")
+    nosavelabel1.Visible = True
   Endif
 End
 
@@ -1073,6 +1076,7 @@ End
 
 Public Sub Form_Open()
   If Not initdone Then 
+    Try GeneralOptions.FirstLoadIfNeeded()
     Init()
     initdone = True
   Endif
@@ -1085,8 +1089,8 @@ End
 
 
 Public Sub Form_Show()
+  If Not FMain.fullyloaded Then Return
   Form_Open()
-  If Not FMain.FullyLoaded Then Wait 2
   GeneralOptions.EnableDisable_video_drivers_panels()
 End
 
@@ -1130,3 +1134,8 @@ Public Sub HelpBox_hide()
 End
   
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Public Sub NOSAVELabel1_MouseUp()
+  GeneralOptions.Show
+  GeneralOptions.TabStrip1.index = Global.TabIndexByName(("Video"), GeneralOptions.TabStrip1)
+End

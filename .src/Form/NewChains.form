@@ -310,10 +310,26 @@
     Index = 2
     Text = ("Video Drivers")
     Picture = Picture["icon:/small/video"]
-    { drivers_video_container ScrollView
-      MoveScaled(0,0,30,50)
-      Background = Color.TextBackground
+    { Panel1 Panel
+      MoveScaled(0,0,30,55)
       Arrangement = Arrange.Vertical
+      { drivers_video_container ScrollView
+        MoveScaled(2,0,25,45)
+        Background = Color.TextBackground
+        Expand = True
+        Arrangement = Arrange.Vertical
+      }
+      { NOSAVELabel1 TextLabel
+        MoveScaled(3,47,24,7)
+        Visible = False
+        Background = Color.TooltipForeground
+        Foreground = Color.TooltipBackground
+        ToolTip = ("Gpu decoding settings forced this video driver,\nso any other driver will be ignored, but you can\nstill configure the options for the overridden driver.\n\nClick to open the gpu decoding settings window.\n")
+        Padding = 6
+        AutoResize = True
+        Alignment = Align.Center
+        Border = Border.Plain
+      }
     }
     Index = 3
     Text = ("Audio Drivers")
