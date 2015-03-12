@@ -13,7 +13,7 @@ mpv_cmd=$(cat /proc/$mpv_pid/cmdline)
 
 #Wait while xt7 is alive:
 while [ "$xt7_cmd" == "$(cat /proc/$xt7_pid/cmdline)" ] ; do
-    echo xt7 pid $xt7_pid is alive
+    #echo xt7 pid $xt7_pid is alive
     if [ "$mpv_cmd" != "$(cat /proc/$mpv_pid/cmdline)" ]; then
       echo mpv pid $mpv_pid is dead, exiting now
       exit 0

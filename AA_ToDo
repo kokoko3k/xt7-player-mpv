@@ -589,7 +589,6 @@ FIX: tries hardly (5 seconds limit) to pause mplayer even when it doesn't answer
 - *CHANGED: Use FIFO(s) to talk to mplayer (workaround for archlinux+kde(mod?))
 - *FIX: don't kill xbindkeys which don't belong to you.
 - drag della barretta del volume, ne indica la percentuale e magari tiene conto anche dell'
-  overboost dato da da -softvol-max
 - Changed default subtitle and osd aspect.
 - *Aggiunta finestra di log
 - Speedincr +0.1 --> Speed_incr +0.01
@@ -641,13 +640,11 @@ FIX: tries hardly (5 seconds limit) to pause mplayer even when it doesn't answer
   (oggetti che spariscono nel nulla)...
   Bisogna in qualche modo mettere dei constraints
   *Aggiunti mousemove forzati quando il mouse si avvicina ai bordi.
-  -aggiungere fake input.conf
   -audiotag non interpreta caratteri strani (risolto tramite dconv e sconv)
         (-BUG, drag and drop di max gazzè, errore runtime)        
 -add audio output options and video output options to driver tabs...  
  
 
--BUG: L'asterisco in XConfigureAudio(Video)Driver sui filtri presenti nei chain attivi non viene sempre aggiunto.
 
 in pluginmode non si chiude bene, le sessioni di mplayer rimangono appese.
 basta, anche senza aprire più tab, guardare più video uno dietro l'altro.
@@ -659,8 +656,6 @@ basta, anche senza aprire più tab, guardare più video uno dietro l'altro.
 se volume = 0 allora mute ?
 
 hwdec  proprietà con stessi valori dell'opzione non è necessario riavviare
-
-autokill in caso di morte gui
 
 l'mkv workaround diventa il send del nuovo delay ad ogni seek
   Non riesco più a riprodurre il problema, nè con mpv nè con mplayer.
@@ -676,5 +671,26 @@ mostrare le cose fatte a runtime nel log
 se modifichi lo sharpen del filtro unsharp e fai varie prove, per un attimo noti un flash dei settaggi vecchi.
 prova a impostare matrice 3x3 con valori alti, poi metti 11x11, poi 3x3 etc...
 
+display-fps nelle proprietà
 
+poi imposta un font più piccolo quando mostri le proprietà ?
 
+equalizzatore video:
+  vdpau+vdpau e opengl sono identici.
+  l'unica cosa che manca a vdpau è la correzione gamma
+  e per assurdo l'immagine è migliore
+
+  permettere all'utente di distribuire i pesi per l'overbright?
+
+  Per ottenere immagini uguali, questi sono i livelli:
+    opengl    xv+eq (probbilmente = opengl+eq)
+    b.max      98      84
+    b.min     -90     -78
+    c.max      100     70
+    c.min     -98     -97
+    g.max     100      77    problemi di clipping per opengl
+    g.min     -100    -80    problemi di clipping per opengl
+    h         me ne frego
+    s         direi uguale
+
+dynagui non serve più, praticamente, e nemmeno chains, è il caso di rimuoverli dai file
