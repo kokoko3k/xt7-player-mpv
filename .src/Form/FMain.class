@@ -3438,9 +3438,12 @@ Private Sub UpdateVolumeTooltip()
   Dim tip As String
   Dim volume As Integer
   Dim overboost As String
-
-  Try overboost = Split(mplayer.get_property_mpv("options/softvol-max"), ".,")[0]
-  If overboost = Null Then Try overboost = mplayer.get_option("softvol-max")
+  Dim softvol As String = "auto"
+  Try softvol = Trim(mplayer.get_property_mpv("options/softvol"))
+  If softvol <> "no" Then
+    Try overboost = Split(mplayer.get_property_mpv("options/softvol-max"), ".,")[0]
+    If overboost = Null Then Try overboost = mplayer.get_option("softvol-max")
+  Endif
   If overboost = Null Then overboost = "100"
   If Not mplayer.ProcessRunningOvr() Then Return
   volume = CInt(SaveVolumeSlider.value * (overboost / SaveVolumeSlider.MaxValue))

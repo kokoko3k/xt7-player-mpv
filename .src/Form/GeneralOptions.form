@@ -92,26 +92,27 @@
           }
         }
         { NOPARSE_Separator1 Separator
-          MoveScaled(1,17,47,2)
+          MoveScaled(0,17,47,2)
         }
         { NOPARSE_Label26 Label
-          MoveScaled(3,18,19,4)
-          ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anithing but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
+          MoveScaled(1,18,19,4)
           AutoResize = True
-          Text = ("Hardware decoding:")
+          Text = ("Gpu decoding")
+          Alignment = Align.TopLeft
         }
         { NoParseBox123 Panel
-          MoveScaled(1,23,47,5)
+          MoveScaled(1,23,47,4.5714)
+          ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anithing but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
           Arrangement = Arrange.Horizontal
-          AutoResize = True
           Spacing = True
+          Indent = True
           { PictureBox3 PictureBox
-            MoveScaled(0,0,4.5714,4.5714)
-            Picture = Picture["icon:/64/hardware"]
-            Stretch = True
+            MoveScaled(1,1,4.5714,4.5714)
+            Picture = Picture["icon:/large/hardware"]
+            AutoResize = True
           }
           { NOPARSE_HwdecCombobox ComboBox
-            MoveScaled(10,0,27,4)
+            MoveScaled(20,0,27,4)
             #Translate = False
             ToolTip = "Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anithing but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding"
             Expand = True
@@ -120,17 +121,22 @@
             Text = "0 - disabled (allow all video processing filters)"
           }
         }
-        { NOPARSE_Separator2 Separator
-          MoveScaled(1,29,47,1)
-        }
-        { NOPARSEvdpauoverlayboxnew HBox
-          MoveScaled(2,34,45,4)
-          ToolTip = ("vdpau need some codecs to be loaded,\nchecking this will auto add: \nffmpeg12vdpau, ffh264vdpau, ffwmv3vdpau, ffvc1vdpau")
+        { Panel3 HBox
+          MoveScaled(2,29,47,4)
+          ToolTip = ("Using vdpau overlay surface may lead to instability problems under some circumstances \nlike heavy cpu load or switching to/from fullscreen.\n\nNOT using vdpau overlay may cause tearing.\n\nIf you experience tearing, try to disable this option, if you experience instability,\ntry to check it.\n\nThis option disable the overlay surface by setting the environment variable:\nVDPAU_NVIDIA_NO_OVERLAY=1")
+          Spacing = True
+          Indent = True
+          { Panel5 Panel
+            MoveScaled(1,0,4.5714,4.5714)
+          }
           { vdpauooverlaycheck CheckBox
-            MoveScaled(2,1,38,3)
-            ToolTip = ("Using vdpau overlay surface may lead to instability problems under some circumstances \nlike heavy cpu load or switching to/from fullscreen.\n\nNOT using vdpau overlay may cause tearing.\n\nIf you experience tearing, try to disable this option, if you experience instability,\ntry to check it.\n\nThis option disable the overlay surface by setting the environment variable:\nVDPAU_NVIDIA_NO_OVERLAY=1")
+            MoveScaled(18,0,28,3)
+            AutoResize = True
             Text = ("Disable VDPAU overlay surface")
           }
+        }
+        { NOPARSE_Separator2 Separator
+          MoveScaled(0,34,47,1)
         }
       }
       Index = 1
@@ -555,7 +561,7 @@
           }
           { Label4 Label labelcheck
             Name = "Label4"
-            MoveScaled(5,1,15,3)
+            MoveScaled(5,1,18,3)
             AutoResize = True
             Text = ("CD Cache size (KB)")
           }

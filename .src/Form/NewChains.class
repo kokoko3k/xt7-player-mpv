@@ -1032,6 +1032,23 @@ End
 '--End Save and load functions-----------------------------------
 'Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "drivers_audio"] '<
 
+
+
+Public Sub override_video_driver(vo As String)
+  If vo = "" Then 
+    NewChains.drivers_video_container.enabled = True
+    Return
+      Else
+    NewChains.drivers_video_container.enabled = False
+  Endif
+End
+
+
+
+
+
+
+
 Public Sub show_audio_drivers()
   Me.Show
   tabstrip1.index = tabs.Find("drivers_audio")
