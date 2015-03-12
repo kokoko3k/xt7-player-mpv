@@ -104,6 +104,8 @@ Private Sub DrawFiltersGui()
   '-channels <number> (also see -af channels) 
     AllParams.Add(["ROCHOOSE", ("Output Channels"), "2 - Stereo", "4 - Surround", "6 - Full 5.1", "8 - Full 7.1", "audio000channels", ""])
     Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Request the number of playback channels (default: 2).\n This is usually only important when playing videos with AC-3 audio (like DVDs).\n mpv option: audio-channels"))
+     Object.SetProperty(Me["audio000channels.CheckBox"], "value", True)
+     Object.SetProperty(Me["audio000channels.ComboBox"], "text", "2 - Stereo")
     AllParams.Clear
     
   '-softvol
