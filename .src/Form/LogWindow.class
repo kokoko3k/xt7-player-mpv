@@ -20,6 +20,7 @@ Public Sub RefreshBTN_Click()
   ShowLogs()
   searchterm_Click()
   searchterm2_Click()
+  Wait
 End
 
 Public Sub Form_Show()
@@ -30,7 +31,7 @@ End
 
 Public Sub clearlogs()
   Try logarea.Clear
-  Try errorarea.clear
+  Try ModulesArea.clear
 End
 
 Public Struct mpvOption 
@@ -43,7 +44,7 @@ Public Sub ShowLogs()
 
   streamtextbox.text = FMain.mplayer.getP("fullpath")
   Logarea.Clear
-  errorarea.clear
+  ModulesArea.clear
   
   logarea.text &= "Commandline:\n"
   logarea.text &= FMain.mplayer.commandline & "\n\n"
@@ -60,7 +61,7 @@ Public Sub ShowLogs()
   logarea.text &= "\n"
   
   logarea.text &= FMain.mplayer.stdout
-  errorarea.text &= FMain.mplayer.stderr
+  ModulesArea.text &= FMain.mplayer.modules_out
 End
 
 
@@ -86,13 +87,14 @@ End
 
 
 Public Sub searchterm_Click()
-  HighLight(logarea, Last.text)
+  HighLight(logarea, searchterm)
   ScrollTo(Last.text, logarea)
 End
 
 
 Public Sub searchterm2_Click()
-  HighLight(errorarea, Last.text)
+  HighLight(ModulesArea, searchterm2)
+  ScrollTo(Last.text, ModulesArea)
 End
 
 
@@ -105,31 +107,33 @@ Public Sub Searchterm_Keyrelease()
 
   Wait 0.5
   If previous_search <> searchterm.text Then Return
-  HighLight(logarea, Last.text)
+  HighLight(logarea, searchterm)
 End
 
 
 Public Sub Searchterm2_Keyrelease()
-  HighLight(errorarea, Last.text)
+  Dim previous_search As String = searchterm2.text
+  If (key.code = Key.return) Or (Key.code = Key.enter) Then
+    ScrollTo(searchterm2.text, ModulesArea)
+    Return
+  Endif
+  Wait 0.5
+  If previous_search <> searchterm2.text Then Return
+  HighLight(ModulesArea, searchterm2)
 End
 
 
-Public Sub Highlight(logarea As Object, searchterm As String)
+Public Sub Highlight(logarea As Object, searchbox As ButtonBox)
   Dim sx, sy As Integer
-  ' sx = logarea.scrollx
-  ' sy = logarea.scrolly
-  
-  If (Trim(Last.text) = "") Then 
-    Last.background = Color.Background
+  If (Trim(searchbox.text) = "") Then 
+    searchbox.background = Color.Background
     Return
   Endif
-  If DoHighlight(logarea, searchterm) Then
-    Last.background = Color.Background
+  If DoHighlight(logarea, searchbox.text) Then
+    searchbox.background = Color.textBackground
       Else
-    Last.background = Color.red
+    searchbox.background = Color.red
   Endif
-  ' logarea.scrollx = sx
-  ' logarea.scrolly = sy
 End
 
 
@@ -160,6 +164,5 @@ Private Function DoHighlight(logarea As Object, foundstr As String) As Boolean
   logarea.RichText = rtext  
   Return found
 End
-
 
 

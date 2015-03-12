@@ -54,8 +54,8 @@
       Expand = True
     }
     Index = 1
-    Text = ("Errors")
-    Picture = Picture["icon:/16/important"]
+    Text = ("Modules")
+    Picture = Picture["icon:/16/terminal"]
     { HBox4 HBox
       MoveScaled(2,1,58,4)
       Spacing = True
@@ -70,18 +70,13 @@
         Picture = Picture["icon:/16/find"]
       }
     }
-    { ErrorArea TextEdit
+    { ModulesArea TextEdit
       MoveScaled(1,9,51,16)
       Font = Font["Monospace"]
+      Tag = "0"
       Expand = True
     }
     Index = 0
-  }
-  { Label2 Label
-    MoveScaled(4,41,66,3)
-    Visible = False
-    Font = Font["Italic"]
-    Text = ("(\"'R' means that the last line is repeating a lot of times\")")
   }
   { HBox1 HBox
     MoveScaled(12,48,52,4)

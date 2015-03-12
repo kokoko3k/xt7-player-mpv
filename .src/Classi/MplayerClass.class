@@ -12,6 +12,7 @@ Public IsNetworkURI As Boolean = False
 
 Public stdout As String
 Public stderr As String
+Public modules_out As String
 
 Private Playerprocess As Process
 Private RenicerProcess As Process
@@ -305,8 +306,12 @@ Public Sub playerprocess_read(Optional injected As String = "")
       'Debug question, "=", getP(question)
     Next 'sbuf
       Else
-    'Debug sBuf
-    stdout &= sBuf & "\n"
+    If sbuf Like "\\[*\\] *" Then
+      modules_out &= sBuf & "\n"
+        Else
+      stdout &= sBuf & "\n"
+      'Debug sBuf
+    Endif
   Endif
 End
 
@@ -555,6 +560,8 @@ Public Function do_play(filename As String, Optional string_options As String = 
   
   stdout = ""
   stderr = ""
+  modules_out = ""
+  
   playerprocess = Shell commandline For Read Write As "playerprocess"
   
   watched_properties_old_data.Resize(watched_properties.count)
