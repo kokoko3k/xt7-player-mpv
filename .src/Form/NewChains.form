@@ -45,6 +45,7 @@
       MoveScaled(33,2,59,46)
       #Translate = False
       Expand = True
+      Margin = True
       Index = 0
       Text = "tabstrip1"
       { HelpBox Panel
@@ -86,6 +87,7 @@
       #Translate = False
       Expand = True
       Arrangement = Arrange.Fill
+      Margin = True
       Index = 0
       Text = "equalizer"
       { ScrollView1xx Panel
@@ -324,6 +326,7 @@
         Visible = False
         Background = Color.TooltipForeground
         Foreground = Color.TooltipBackground
+        Mouse = Mouse.Pointing
         ToolTip = ("Gpu decoding settings forced this video driver,\nso any other driver will be ignored, but you can\nstill configure the options for the overridden driver.\n\nClick to open the gpu decoding settings window.\n")
         Padding = 6
         AutoResize = True

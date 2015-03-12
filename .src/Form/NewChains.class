@@ -1074,6 +1074,7 @@ Public Sub OkBTN_Click()
   Me.hide
 End
 
+Private aligned As Boolean = False
 Public Sub Form_Open()
   If Not initdone Then 
     Try GeneralOptions.FirstLoadIfNeeded()
@@ -1083,6 +1084,10 @@ Public Sub Form_Open()
   If Not AlreadyLoaded Then
     MenuLoadDefault_Click()
     Alreadyloaded = True
+  Endif
+  If Not aligned Then 
+    AlignObjects()
+    aligned = True
   Endif
   Global.Center(Fmain, Me)
 End
@@ -1138,4 +1143,74 @@ End
 Public Sub NOSAVELabel1_MouseUp()
   GeneralOptions.Show
   GeneralOptions.TabStrip1.index = Global.TabIndexByName(("Video"), GeneralOptions.TabStrip1)
+End
+
+
+
+
+Private Sub AlignObjects()
+  Dim containers As New Object[]
+  Dim align_objs As New Object[]
+  Dim acontainer As Object
+  Dim aBox, child As Object
+  Dim c, l, checkbox_no_text_width, max_obj_w As Integer
+  Dim acheckbox As Checkbox
+  Dim alabel As Label
+
+  containers.Add(XConfigureVideoDriver.xvScrollview)
+  containers.Add(XConfigureVideoDriver.GLScrollView)
+  containers.Add(XConfigureVideoDriver.VdPauScrollView)
+  containers.Add(XConfigureVideoDriver.VaapiScrollview)
+  containers.Add(XConfigureVideoDriver.CustomVideoScrollview)
+
+containers.Add(XConfigureAudioDriver.AlsaScrollview)
+containers.Add(XConfigureAudioDriver.jackScrollview)
+containers.Add(XConfigureAudioDriver.pulseScrollview)
+containers.Add(XConfigureAudioDriver.pcmscrollview)
+  
+    'find the width of an empty checkbox
+  alabel = New Label(zzzfake)
+  alabel.text = "sometext"
+  alabel.autoresize = True
+  
+  acheckbox = New CheckBox(zzzFake)
+  acheckbox.text = "sometext"
+  acheckbox.autoresize = True
+  'it seems that "*3*" is the key, but the right thing to do is:
+  'get the width of "[x] sometext", get the width of "sometext"; subtract the latter from the former.
+  checkbox_no_text_width = acheckbox.w - alabel.w 'acheckbox.w * 3.1 
+  acheckbox.Delete
+  alabel.delete
+
+  For Each acontainer In containers
+   
+    max_obj_w = 0
+    align_objs.clear
+    For Each aBox In acontainer.children
+      Try c = aBox.Children.Count
+      If Not Error Then
+        If c > 1 Then
+
+          child = aBox.children[0]
+          If (child Is Checkbox) Or (child Is Label) Then
+            If child.text = "" Then child = child.next
+            l = child.Font.textwidth(child.text & "--") + checkbox_no_text_width
+            If l > max_obj_w Then max_obj_w = l
+            align_objs.Add(child)
+            If acontainer.name = "ScrollView2" Then
+              Debug child.text, l, max_obj_w
+            Endif
+
+          Endif
+        Endif
+      Endif
+    Next 'abox
+
+    'align labels
+    For Each child In align_objs
+      Object.SetProperty(child, "autoresize", False)
+      Object.SetProperty(child, "w", max_obj_w)
+    Next
+
+  Next 'acontainer
 End

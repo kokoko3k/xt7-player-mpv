@@ -30,9 +30,10 @@
     { VSplit1 VSplit
       MoveScaled(16,0,59,56)
       { ConfigureTabs TabStrip
-        MoveScaled(3,6,56,36)
+        MoveScaled(4,5,56,36)
         Expand = True
         Arrangement = Arrange.Vertical
+        Margin = True
         Padding = 4
         Count = 7
         Index = 0
@@ -44,6 +45,7 @@
           Border = False
           { XvParseMeHbox4 HBox
             MoveScaled(0,1,45,6)
+            AutoResize = True
             Padding = 6
             { PortChk2XV CheckBox
               MoveScaled(1,1,15,4)
@@ -53,7 +55,7 @@
             }
             { SpinBox10Xv SpinBox notifyobj
               Name = "SpinBox10Xv"
-              MoveScaled(18,1,9,4)
+              MoveScaled(33,1,9,4)
               MaxValue = 999
             }
           }
@@ -74,6 +76,7 @@
           Border = False
           { openglParseMeHBox10 HBox
             MoveScaled(0,0,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox3gl CheckBox
               MoveScaled(1,1,17,4)
@@ -92,6 +95,7 @@
           }
           { openglParseMeHBox2 HBox
             MoveScaled(0,7,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox2gl CheckBox
               MoveScaled(1,1,20,4)
@@ -102,6 +106,7 @@
           }
           { openglParseMeHBox3 HBox
             MoveScaled(0,13,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox6gl CheckBox
               MoveScaled(1,1,17,4)
@@ -112,6 +117,7 @@
           }
           { openglParseMeHBox11 HBox
             MoveScaled(0,20,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox4gl CheckBox
               MoveScaled(1,1,17,4)
@@ -122,12 +128,14 @@
             { Label1 Label
               MoveScaled(20,1,23,3)
               Font = Font["Italic,-1"]
+              AutoResize = True
               Text = ("may noy work with HW decoding")
               Alignment = Align.Right
             }
           }
           { openglParseMeHBox1 HBox
             MoveScaled(0,26,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox5gl CheckBox
               MoveScaled(1,1,24,4)
@@ -153,6 +161,7 @@
           Border = False
           { vdpauParseMeHBox1 HBox
             MoveScaled(0,2,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox21vdpau CheckBox
               MoveScaled(1,1,17,4)
@@ -171,6 +180,7 @@
           }
           { vdpauParseMeHBox2 HBox
             MoveScaled(0,8,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox22vdpau CheckBox
               MoveScaled(1,1,17,4)
@@ -187,48 +197,9 @@
               Text = "0 - no denoise"
             }
           }
-          { vdpauParseMeHBox3 HBox
-            MoveScaled(0,14,45,6)
-            Padding = 8
-            { CheckBox23vdpau CheckBox
-              MoveScaled(1,1,17,4)
-              #Translate = False
-              Tag = "deint="
-              AutoResize = True
-              Text = "deint"
-            }
-            { ComboBox8vdpau ComboBox
-              MoveScaled(19,1,24,4)
-              #Translate = False
-              Expand = True
-              ReadOnly = True
-              List = ["0 - No deinterlacing", "1 - Show only first field", "2 - Bob deinterlacing", "3 - Motion adaptive", "4 - Motion adaptive with edge-guided interpolation"]
-              Text = "0 - No deinterlacing"
-            }
-          }
-          { vdpauParseMeHBox4 HBox
-            MoveScaled(0,21,45,5)
-            Padding = 8
-            { CheckBox24vdpau CheckBox
-              MoveScaled(1,0,18,4)
-              #Translate = False
-              Tag = "chroma-deint"
-              AutoResize = True
-              Text = "chroma-deint"
-            }
-          }
-          { vdpauParseMeHBox5 HBox
-            MoveScaled(0,27,45,5)
-            Padding = 8
-            { CheckBox25vdpau CheckBox
-              MoveScaled(1,0,18,4)
-              #Translate = False
-              Tag = "pullup"
-              Text = "pullup"
-            }
-          }
           { vdpauParseMeHBox7 HBox
-            MoveScaled(0,33,45,6)
+            MoveScaled(0,14,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox27vdpau CheckBox
               MoveScaled(1,1,17,4)
@@ -245,17 +216,57 @@
               Text = "0 - Use default VDPAU scaling"
             }
           }
+          { vdpauParseMeHBox3 HBox
+            MoveScaled(0,20,45,6)
+            AutoResize = True
+            Padding = 8
+            { CheckBox23vdpau CheckBox
+              MoveScaled(1,1,17,4)
+              #Translate = False
+              Tag = "deint="
+              Text = "deint"
+            }
+            { ComboBox8vdpau ComboBox
+              MoveScaled(19,1,24,4)
+              #Translate = False
+              Expand = True
+              ReadOnly = True
+              List = ["0 - No deinterlacing", "1 - Show only first field", "2 - Bob deinterlacing", "3 - Motion adaptive", "4 - Motion adaptive with edge-guided interpolation"]
+              Text = "0 - No deinterlacing"
+            }
+          }
+          { vdpauParseMeHBox4 HBox
+            MoveScaled(0,27,45,6)
+            AutoResize = True
+            Padding = 8
+            { CheckBox24vdpau CheckBox
+              MoveScaled(1,0,18,4)
+              #Translate = False
+              Tag = "chroma-deint"
+              Text = "chroma-deint"
+            }
+          }
+          { vdpauParseMeHBox5 HBox
+            MoveScaled(0,33,45,6)
+            AutoResize = True
+            Padding = 8
+            { CheckBox25vdpau CheckBox
+              MoveScaled(1,0,18,4)
+              #Translate = False
+              Tag = "pullup"
+              Text = "pullup"
+            }
+          }
           { vdpauParseMeHBox9 HBox
             MoveScaled(1,40,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox29vdpau CheckBox
               MoveScaled(1,1,18,4)
-              AutoResize = True
               Text = ("Additional options")
             }
             { TextBox6vdpau TextBox
               MoveScaled(22,1,22,4)
-              Mouse = Mouse.Blank
               Expand = True
             }
           }
@@ -269,6 +280,7 @@
           Border = False
           { vaapiParseMeHBox16 HBox
             MoveScaled(1,1,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox36vaapi CheckBox
               MoveScaled(1,1,17,4)
@@ -286,6 +298,7 @@
           }
           { vaapiParseMeHBox12 HBox
             MoveScaled(1,8,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox32vaapi CheckBox
               MoveScaled(1,1,17,4)
@@ -304,6 +317,7 @@
           }
           { vaapiParseMeHBox14 HBox
             MoveScaled(1,15,45,6)
+            AutoResize = True
             Padding = 8
             { CheckBox1vaapi CheckBox
               MoveScaled(1,1,17,4)
@@ -325,6 +339,7 @@
           }
           { HBox2 HBox
             MoveScaled(0,5,48,6)
+            AutoResize = True
             Padding = 6
             { TextBox5cv TextBox
               MoveScaled(1,1,48,4)
