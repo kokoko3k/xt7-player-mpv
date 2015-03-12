@@ -62,6 +62,10 @@ Public Sub ShowLogs()
   
   logarea.text &= FMain.mplayer.stdout
   ModulesArea.text &= FMain.mplayer.modules_out
+  Try logarea.pos = CInt(logarea.tag)
+  Try modulesarea.pos = CInt(modulesarea.tag)
+  logarea.EnsureVisible()
+  modulesarea.EnsureVisible()
 End
 
 
