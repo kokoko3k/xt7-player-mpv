@@ -8,6 +8,8 @@
 Public Sub Form_Open()
 'logarea.text = File.Load("/tmp/text")
   Global.Center(Fmain, Me)
+  ShowLogs()
+  searchterm.SetFocus()
 End
 
 Public Sub OkBTN_Click()
@@ -23,10 +25,6 @@ Public Sub RefreshBTN_Click()
   Wait
 End
 
-Public Sub Form_Show()
- ShowLogs()
- searchterm.SetFocus()
-End
 
 
 Public Sub clearlogs()
