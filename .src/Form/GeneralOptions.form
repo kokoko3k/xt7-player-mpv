@@ -462,14 +462,10 @@
           Spacing = True
           { CacheCheckbox CheckBox notifyobj
             Name = "CacheCheckbox"
-            MoveScaled(1,0,3,4)
-            Value = CheckBox.True
-          }
-          { Label3 Label labelcheck
-            Name = "Label3"
-            MoveScaled(6,1,20,3)
+            MoveScaled(1,0,26,4)
             AutoResize = True
             Text = ("Local file cache size (KB)")
+            Value = CheckBox.True
           }
           { CacheSpinBox SpinBox notifyobj
             Name = "CacheSpinBox"
@@ -485,14 +481,10 @@
           Spacing = True
           { CacheMinCheckbox CheckBox notifyobj
             Name = "CacheMinCheckbox"
-            MoveScaled(1,0,3,4)
-            Value = CheckBox.True
-          }
-          { Label18 Label labelcheck
-            Name = "Label18"
-            MoveScaled(5,1,18,3)
+            MoveScaled(1,0,21,4)
             AutoResize = True
             Text = ("Start playback after filling")
+            Value = CheckBox.True
           }
           { CacheMinSpinboxFile SpinBox notifyobj
             Name = "CacheMinSpinboxFile"
@@ -511,11 +503,7 @@
           ToolTip = ("Player nice level.\nThe lower the value, the higher the priority\nthe player will get against other processes.")
           Spacing = True
           { NoEffectsCheckbox CheckBox
-            MoveScaled(1,0,3,4)
-          }
-          { Label17 Label labelcheck
-            Name = "Label17"
-            MoveScaled(6,1,40,3)
+            MoveScaled(1,0,37,4)
             ToolTip = ("Use dbus (need dbus-send command) to disable kwin effects\nand avoid glitches in fullscreen mode.")
             AutoResize = True
             Text = ("Disable Kde Effects in fullscreen mode")
@@ -525,7 +513,7 @@
       Index = 4
       Text = ("Audio CD")
       { ScrollView10 ScrollView
-        MoveScaled(3,1,58,52)
+        MoveScaled(3,2,58,52)
         Tag = "Audio CD"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -556,14 +544,10 @@
           Spacing = True
           { CDDACacheCheckbox CheckBox notifyobj
             Name = "CDDACacheCheckbox"
-            MoveScaled(1,0,3,4)
-            Value = CheckBox.True
-          }
-          { Label4 Label labelcheck
-            Name = "Label4"
-            MoveScaled(5,1,18,3)
+            MoveScaled(1,0,24,4)
             AutoResize = True
             Text = ("CD Cache size (KB)")
+            Value = CheckBox.True
           }
           { CDDACacheSpinBox SpinBox notifyobj
             Name = "CDDACacheSpinBox"
@@ -579,11 +563,7 @@
           Spacing = True
           { CDDBCheckbox CheckBox notifyobj
             Name = "CDDBCheckbox"
-            MoveScaled(1,0,3,4)
-          }
-          { Label23 Label CDDBCHECK
-            Name = "Label23"
-            MoveScaled(5,1,15,3)
+            MoveScaled(1,0,29,4)
             AutoResize = True
             Text = ("Use CDDB")
           }
@@ -624,11 +604,7 @@
           Spacing = True
           { DvdCacheCheckbox CheckBox notifyobj
             Name = "DvdCacheCheckbox"
-            MoveScaled(1,0,3,4)
-          }
-          { Label5 Label labelcheck
-            Name = "Label5"
-            MoveScaled(6,1,15,3)
+            MoveScaled(1,0,23,4)
             AutoResize = True
             Text = ("Dvd Cache size (KB)")
           }
@@ -646,11 +622,7 @@
           Spacing = True
           { CacheMinCheckbox2 CheckBox notifyobj
             Name = "CacheMinCheckbox2"
-            MoveScaled(1,0,3,4)
-          }
-          { Label20 Label labelcheck
-            Name = "Label20"
-            MoveScaled(5,1,18,3)
+            MoveScaled(1,0,21,4)
             AutoResize = True
             Text = ("Start playback after filling")
           }
@@ -685,14 +657,10 @@
           Spacing = True
           { NetCacheCheckbox CheckBox notifyobj
             Name = "NetCacheCheckbox"
-            MoveScaled(1,0,3,4)
-            Value = CheckBox.True
-          }
-          { Label6 Label labelcheck
-            Name = "Label6"
-            MoveScaled(5,1,15,3)
+            MoveScaled(1,0,22,4)
             AutoResize = True
             Text = ("Net Cache size (KB)")
+            Value = CheckBox.True
           }
           { NetCacheSpinBox SpinBox notifyobj
             Name = "NetCacheSpinBox"
@@ -709,14 +677,10 @@
           Spacing = True
           { NetminCacheCheckbox CheckBox notifyobj
             Name = "NetminCacheCheckbox"
-            MoveScaled(1,0,3,4)
-            Value = CheckBox.True
-          }
-          { Label8 Label labelcheck
-            Name = "Label8"
-            MoveScaled(5,1,18,3)
+            MoveScaled(1,0,22,4)
             AutoResize = True
             Text = ("Start playback after filling")
+            Value = CheckBox.True
           }
           { cacheminspinbox SpinBox notifyobj
             Name = "cacheminspinbox"
@@ -737,14 +701,10 @@
           Spacing = True
           { NetseekCacheCheckbox CheckBox notifyobj
             Name = "NetseekCacheCheckbox"
-            MoveScaled(1,0,3,4)
-            Value = CheckBox.True
-          }
-          { Label11 Label labelcheck
-            Name = "Label11"
-            MoveScaled(5,1,18,3)
+            MoveScaled(1,0,23,4)
             AutoResize = True
             Text = ("Minimum seek cache size")
+            Value = CheckBox.True
           }
           { cacheseekspinbox SpinBox notifyobj
             Name = "cacheseekspinbox"
@@ -814,7 +774,7 @@
           AutoResize = True
           Spacing = True
           { SlowTagsCHK CheckBox
-            MoveScaled(-1,0,49,4)
+            MoveScaled(0,0,49,4)
             Expand = True
             Text = ("Skip tags on network streams.")
             Value = CheckBox.True
@@ -826,7 +786,7 @@
           AutoResize = True
           Spacing = True
           { SeekThumbsYoutubeCheckbox CheckBox
-            MoveScaled(0,0,49,4)
+            MoveScaled(1,0,49,4)
             Expand = True
             Text = ("Live preview when seeking")
           }
@@ -969,14 +929,10 @@
           Spacing = True
           { dvbtCacheCheckbox CheckBox notifyobj
             Name = "dvbtCacheCheckbox"
-            MoveScaled(1,0,3,4)
-            Value = CheckBox.True
-          }
-          { Label14 Label labelcheck
-            Name = "Label14"
-            MoveScaled(5,1,23,3)
+            MoveScaled(1,0,28,4)
             AutoResize = True
             Text = ("DVB-T Cache size (KB)")
+            Value = CheckBox.True
           }
           { dvbtCacheSpinBox SpinBox notifyobj
             Name = "dvbtCacheSpinBox"
@@ -992,14 +948,10 @@
           Spacing = True
           { dvbtminCacheCheckbox CheckBox notifyobj
             Name = "dvbtminCacheCheckbox"
-            MoveScaled(1,0,3,4)
-            Value = CheckBox.True
-          }
-          { Label15 Label labelcheck
-            Name = "Label15"
-            MoveScaled(5,1,18,3)
+            MoveScaled(1,0,23,4)
             AutoResize = True
             Text = ("Start playback after filling")
+            Value = CheckBox.True
           }
           { dvbtcacheminspinbox SpinBox notifyobj
             Name = "dvbtcacheminspinbox"
@@ -1054,12 +1006,13 @@
             ToolTip = ("Maximum  amount  of  data  to  probe during the detection phase. In the case of MPEG-TS this value identifies the maximum number of TS packets to scan.\nmpv option: --demuxer-lavf-probesize")
             AutoResize = True
             Text = ("probesize")
+            Value = CheckBox.True
           }
           { comboboxtsprobe ComboBox notifyobj
             Name = "comboboxtsprobe"
             MoveScaled(18,0,22,3)
             List = [("64000"), ("128000"), ("256000"), ("512000"), ("1024000"), ("2048000"), ("4096000"), ("8192000")]
-            Text = ("1024000")
+            Text = ("512000")
           }
         }
         { NoParse51 HBox
@@ -1367,17 +1320,18 @@
         { NoParseUserOption1 HBox
           MoveScaled(1,5,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox1 CheckBox notifyobj
             Name = "UserOptionChackbox1"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox1 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(7,0,22,4)
             Expand = True
           }
           { TextLabel1 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(30,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center
@@ -1390,17 +1344,18 @@
         { NoParseUserOption2 HBox
           MoveScaled(-1,9,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox2 CheckBox notifyobj
             Name = "UserOptionChackbox2"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox2 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(9,0,22,4)
             Expand = True
           }
           { TextLabel2 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(30,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center
@@ -1413,17 +1368,18 @@
         { NoParseUserOption3 HBox
           MoveScaled(-1,13,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox3 CheckBox notifyobj
             Name = "UserOptionChackbox3"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox3 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(9,0,22,4)
             Expand = True
           }
           { TextLabel3 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(31,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center
@@ -1436,17 +1392,18 @@
         { NoParseUserOption4 HBox
           MoveScaled(-2,19,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox4 CheckBox notifyobj
             Name = "UserOptionChackbox4"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox4 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(9,0,22,4)
             Expand = True
           }
           { TextLabel4 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(31,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center
@@ -1459,17 +1416,18 @@
         { NoParseUserOption5 HBox
           MoveScaled(-2,23,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox5 CheckBox notifyobj
             Name = "UserOptionChackbox5"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox5 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(10,0,22,4)
             Expand = True
           }
           { TextLabel5 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(31,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center
@@ -1482,17 +1440,18 @@
         { NoParseUserOption6 HBox
           MoveScaled(-1,29,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox6 CheckBox notifyobj
             Name = "UserOptionChackbox6"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox6 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(8,0,22,4)
             Expand = True
           }
           { TextLabel6 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(30,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center
@@ -1505,17 +1464,18 @@
         { NoParseUserOption7 HBox
           MoveScaled(-2,34,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox7 CheckBox notifyobj
             Name = "UserOptionChackbox7"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox7 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(8,0,22,4)
             Expand = True
           }
           { TextLabel7 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(30,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center
@@ -1526,19 +1486,20 @@
           }
         }
         { NoParseUserOption8 HBox
-          MoveScaled(-3,39,57,4)
+          MoveScaled(-1,39,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox8 CheckBox notifyobj
             Name = "UserOptionChackbox8"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox8 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(10,0,22,4)
             Expand = True
           }
           { TextLabel8 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(31,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center
@@ -1551,17 +1512,18 @@
         { NoParseUserOption9 HBox
           MoveScaled(-1,44,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox9 CheckBox notifyobj
             Name = "UserOptionChackbox9"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox9 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(8,0,22,4)
             Expand = True
           }
           { TextLabel9 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(31,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center
@@ -1574,17 +1536,18 @@
         { NoParseUserOption10 HBox
           MoveScaled(-1,49,57,4)
           ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
           Spacing = True
           { UserOptionChackbox10 CheckBox notifyobj
             Name = "UserOptionChackbox10"
-            MoveScaled(1,0,3,4)
+            MoveScaled(1,0,5,4)
           }
           { ComboBox10 ComboBox
-            MoveScaled(5,0,22,4)
+            MoveScaled(9,0,22,4)
             Expand = True
           }
           { TextLabel10 TextLabel
-            MoveScaled(28,0,4,4)
+            MoveScaled(31,0,4,4)
             AutoResize = True
             Text = ("=")
             Alignment = Align.Center

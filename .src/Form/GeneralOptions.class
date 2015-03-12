@@ -789,11 +789,11 @@ Public Sub Tabstrip1_KeyPress()
 End
 
 
-Public Sub labelcheck_MouseUp()
-  If Last.previous Is CheckBox Then
-    Last.previous.value = Not Last.previous.value
-  Endif
-End
+' Public Sub labelcheck_MouseUp()
+'   If Last.previous Is CheckBox Then
+'     Last.previous.value = Not Last.previous.value
+'   Endif
+' End
 
 Public Function FindCdDvdDevices() As String[]
   Dim devices, devices2 As New String[]
@@ -1241,8 +1241,8 @@ Private Sub AlignObjects()
     'align labels
 
     For Each child In align_objs
-      Object.SetProperty(child, "w", max_obj_w)
-
+      Try Object.SetProperty(child, "autoresize", False)
+      Try Object.SetProperty(child, "w", max_obj_w)
     Next
     
     
