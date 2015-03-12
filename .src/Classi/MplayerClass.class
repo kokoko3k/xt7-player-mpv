@@ -1496,8 +1496,7 @@ Private Function SetUpInputPipe() As String
   Endif
   mystream = Pipe inputpipe For Write
   Debug "inputpipe=", inputpipe
-  Shell "ls -la " & InputPipe
-  
+
   Return inputpipe
 End
 
