@@ -102,7 +102,7 @@
         }
         { NoParseBox123 Panel
           MoveScaled(1,23,47,4.5714)
-          ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anithing but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
+          ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
           Arrangement = Arrange.Horizontal
           Spacing = True
           Indent = True
@@ -254,38 +254,43 @@
           Indent = True
           { ToggleButton1 ToggleButton
             MoveScaled(8,0,5,4)
+            #Translate = False
             Tag = "ac3"
             Expand = True
             AutoResize = True
-            Text = ("AC3")
+            Text = "AC3"
           }
           { ToggleButton2 ToggleButton
             MoveScaled(14,0,4,4)
+            #Translate = False
             Tag = "dts"
             Expand = True
             AutoResize = True
-            Text = ("DTS")
+            Text = "DTS"
           }
           { ToggleButton3 ToggleButton
             MoveScaled(19,0,5,4)
+            #Translate = False
             Tag = "eac3"
             Expand = True
             AutoResize = True
-            Text = ("EAC3")
+            Text = "EAC3"
           }
           { ToggleButton4 ToggleButton
             MoveScaled(25,0,5,4)
+            #Translate = False
             Tag = "mp3"
             Expand = True
             AutoResize = True
-            Text = ("MP3")
+            Text = "MP3"
           }
           { ToggleButton5 ToggleButton
             MoveScaled(30,0,5,4)
+            #Translate = False
             Tag = "aac"
             Expand = True
             AutoResize = True
-            Text = ("AAC")
+            Text = "AAC"
           }
           { ToggleButton6 ToggleButton
             MoveScaled(36,0,7,4)
@@ -734,9 +739,10 @@
           }
           { Youtubeformat ComboBox
             MoveScaled(24,0,13,3)
+            #Translate = False
             ReadOnly = True
-            List = [("360p"), ("480p"), ("720p"), ("1080p")]
-            Text = ("360p")
+            List = ["360p", "480p", "720p", "1080p"]
+            Text = "360p"
           }
           { PictureBox1 PictureBox
             MoveScaled(44,0,5,4)
@@ -1562,7 +1568,7 @@
           { Label25 Label
             MoveScaled(0,0,50,6)
             AutoResize = True
-            Text = ("TODO: Ogni opzione qui deve essere univoca/avere priorità sulle opzioni di base di xt7")
+            Text = ("TODO: Every option set here must override.")
           }
         }
       }

@@ -224,7 +224,7 @@ Private Sub DrawFiltersGui()
     
   '-framedrop
     AllParams.add(["ROCHOOSE", "FrameDrop", "vo", "no", "decoder", "decoder+vo", "framedrop", ("Skip frames to maintain A/V sync")])
-    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Skip displaying some frames to maintain A/V sync,\n or playing high framerate video on video output that hace a lower upper framerate limit\nmpv option: -framedrop"))
+    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Skip displaying some frames to maintain A/V sync,\n or playing high framerate video on video output that have a lower upper framerate limit\nmpv option: -framedrop"))
     AllParams.Clear
     
   '-framedrop
