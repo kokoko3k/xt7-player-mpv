@@ -2336,7 +2336,7 @@ Public Sub static_options() As Collection
   Return opts
 End
 
-Public Sub user_options() As Collection
+Public Sub user_options(fullpath As String) As Collection
   'user options configured through gui
   Dim opts As New Collection
   Dim opt As Mpvoption
@@ -2369,7 +2369,7 @@ Public Sub user_options() As Collection
     opts[opt.name] = opt.data
   Next
 
-  For Each opt In SubAndOsd.ParseSubGui()
+  For Each opt In SubAndOsd.ParseSubGui(fullpath)
     opts[opt.name] = opt.data
   Next
 
@@ -2487,13 +2487,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   Wait
   videobox.visible = True
   
-  'http://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870
-  If SubAndOsd.MkvWorkaroundCHK.value Then 'fixmempv per ora non fa nulla, dove lo mettiamo?
-    If Not global.IsNetworkURI(fullpath) Then
-      MkvSubsWorkaround = True 
-    Endif
-  Endif
-  
   SubNotSet = True
 
   'fixmempv 
@@ -2532,7 +2525,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next  
-  opts = user_options()
+  opts = user_options(fullpath)
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next  
@@ -4357,6 +4350,7 @@ Public Sub Apply()
   Dim temp_opts As New Collection
   Dim new_opts As New Collection
   Dim data As String
+  Dim fullpath As String = mplayer.getP("fullpath")
   'fixmempv: questi due sotto servono ancora?
     VEqHasBeenSet = False
     subnotset = True
@@ -4368,12 +4362,12 @@ Public Sub Apply()
       new_opts[temp_opts.key] = data
     Next
 
-    temp_opts = file_options(mplayer.getP("fullpath"))
+    temp_opts = file_options(fullpath)
     For Each data In temp_opts
       new_opts[temp_opts.key] = data
     Next
 
-    temp_opts = user_options()
+    temp_opts = user_options(fullpath)
 
     For Each data In temp_opts
       new_opts[temp_opts.key] = data

@@ -39,7 +39,7 @@ Private Function o(name As String, data As String) As MpvOption
 End
 
 
-Public Function ParseSubGui() As MpvOption[]
+Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
 'SSA related:
   Dim FontName As String = ",FontName=" "\"" & FontString.Font.name & "\""
   Dim subFontName As String
@@ -141,6 +141,17 @@ Public Function ParseSubGui() As MpvOption[]
       opts.Add(o("sub-codepage", ComboSubCp.text))
     Endif
   Endif
+  
+  If (fullpath <> "") Then
+    If MkvWorkaroundCHK.value Then    'http://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870
+      If (Lower(file.Ext((fullpath))) = "mkv") Then
+        opts.Add(o("sub-file", SConv(fullpath)))
+        opts.Add(o("sub-ass", "no"))
+      Endif
+    Endif
+  Endif
+
+  
   
   For Each opt In opts
     Debug opt.name & "=" & opt.data
