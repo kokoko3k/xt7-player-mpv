@@ -24,10 +24,11 @@ Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = Tru
   Dim title, myurl, audiotype, bitrate, genre As String
   Dim i, count As Integer 
   mytree.Enabled = False
+  mytree.parent.mouse = Mouse.wait
+    Wait
   yplines.clear
   'update YP cache
   If Not Exist(Global.YPCacheFile, True) Or UseCache = False Then
-
     If UseCache = True Then 
       Debug "Missing icecast cache file, downloading yellow pages now..."
     Else
@@ -35,7 +36,10 @@ Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = Tru
     Endif
     
     mywget = New Wgetclass
+  
     YPData = mywget.DownloadAsync(YPurl, False)
+    mytree.parent.mouse = Mouse.default
+    Wait
     Try file.Save(Global.YPCacheFile, YPData)
     If Error Then 
       message.Error(("Could not download the Yellow pages"))
@@ -100,6 +104,7 @@ Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = Tru
     End Select
   Next 'ypline
   mytree.Enabled = True
+  mytree.parent.mouse = Mouse.default
 End
 
 

@@ -7996,8 +7996,7 @@ Public Sub ShoutCast_Select()
   If NOSAVEVBox3.visible And GenresTree.count = 0 Then 
     If buttonshoutcast.value = True Then
       MyRadio.FillCachedGenres(GenresTree)
-    Else
-      'If Not fmain.fullyloaded Then Return
+    Else If buttonicecast.value Then
       Try IceRadio.FillGenresTree(genrestree, True)
     Endif
   Endif
@@ -10969,7 +10968,7 @@ Public Sub ButtonRadios_click()
   Last.mouse = mouse.Wait
   If buttonicecast.value Then
     If Not fmain.fullyloaded Then Return
-    Try IceRadio.FillGenresTree(genrestree, True)
+    IceRadio.FillGenresTree(genrestree, True)
   Else
     MyRadio.FillCachedGenres(genrestree)
   Endif
