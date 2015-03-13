@@ -4537,7 +4537,7 @@ Public Sub HotKeyToMplayer(HotKey As String)
   'Some actions such as fullscreen and panscan are treated internally
   Dim currentfile As String
   Dim Action As String 
-
+  Dim osd_level As String = ""
   Action = Lower(HotKeys.ActionRelatedTo(Hotkey))
   
   Debug Action
@@ -4619,10 +4619,20 @@ Public Sub HotKeyToMplayer(HotKey As String)
           Endif
         Endif
       Endif
+ 
+    Case "osd"
+      mplayer.Send(Action)
+      Try osd_level = mplayer.get_property_mpv("osd-level")
+      Select Case osd_level
+        Case "0" 
+          mplayer.ShowText(("OSD disabled"), 1000)
+        Case "1"
+          mplayer.ShowText(("OSD enabled"), 1000)
+      End Select
+ 
     Case Else
-
-    mplayer.Send(Action)
-    'mplayer.Send("no-osd " & Action)
+      mplayer.Send(Action)
+      'mplayer.Send("no-osd " & Action)
   End Select
   
 End
