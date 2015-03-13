@@ -200,7 +200,7 @@ Public Function org_mpris_MediaPlayer2_Player_Play()
 End
 
 Public Function org_mpris_MediaPlayer2_Player_Seek(p As Long)
-  FMain.mplayer.do_seek_by(p Div 1000000, FMain.FsForm)
+  FMain.mplayer.do_seek_by(p Div 1000000, FsForm.fullscreen)
 End
 
 Public Function org_mpris_MediaPlayer2_Player_SetPosition(o As Long, p As Long)

@@ -3564,7 +3564,7 @@ Public Sub SeekBar_Change()
   If Not (Seekbar.tag = "timer") Then
     'OneSecTimer.Enabled = False
     percent = SeekBar.value * 100
-    mplayer.do_seek(percent, FMain.FsForm)
+    mplayer.do_seek(percent, FsForm.fullscreen)
   Endif
 End
 
@@ -10614,9 +10614,9 @@ End
 Public Sub textlabel1_MouseWheel()
 
   If Mouse.Delta > 0 Then 
-    mplayer.do_seek_by("+20", FMain.FsForm)
+    mplayer.do_seek_by("+20", FsForm.fullscreen)
       Else
-    mplayer.do_seek_by("-20", FMain.FsForm)
+    mplayer.do_seek_by("-20", FsForm.fullscreen)
   Endif
   UpdateSeekSlider()
 End
