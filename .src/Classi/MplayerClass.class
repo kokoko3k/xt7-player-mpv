@@ -435,10 +435,6 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
     Wait 0.01
     timeoutcentisecs -= 1
     Try cTime = getP("=time-pos")
-    Debug get_property_mpv("cache-buffering-state", True, 1)
-    Debug get_property_mpv("paused-for-cache", True, 1)
-    Debug get_property_mpv("cache-idle", True, 1)
-    Debug get_property_mpv("cache", True, 1)
   Until (cTime > 0) Or (timeoutcentisecs <= 0)
   If ctime > 0 Then 
     setP("=time-pos", Null)
