@@ -132,7 +132,7 @@ Public Function ParseSubGui() As MpvOption[]
   
 
   
-  opts.Add(o("sub-auto", Split(Combofuzziness.text, " ", "", True)[0]))
+  Try opts.Add(o("sub-auto", Split(Combofuzziness.text, " ", "", True)[0]))
   
   If EncaComboBox.text Like "* *" Then
     If Split(EncaComboBox.text, " ", "", True)[0] <> "xx" Then

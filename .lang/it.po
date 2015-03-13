@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xt7-player-mpv 3.6.2\n"
-"PO-Revision-Date: 2015-03-13 14:04 UTC\n"
+"PO-Revision-Date: 2015-03-13 14:59 UTC\n"
 "Last-Translator: root <root@Gozer>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -772,6 +772,10 @@ msgstr "-"
 #: Chains.form:381
 msgid "ScaleTempo"
 msgstr "-"
+
+#: Chains.form:447 GeneralOptions.form:2584 SubAndOsd.form:759
+msgid "Use"
+msgstr "&Usa"
 
 #: ChooseAspect.form:15
 msgid "Choose an Aspect Ratio"
@@ -2795,7 +2799,7 @@ msgstr "Compensa la desincronizzazione Audio/Video misurando il ritardo audio."
 
 #: GeneralOptions.class:162
 msgid "Try  -autosync 30 to smooth out problems with sound drivers which do not implement a perfect audio delay measurement.\n [..] mpv option: autosync"
-msgstr "Prova -autosync 30 per 'ammorbitire' problemi con i driver audio che non implementano\nuna perfetta misurazione del ritardo.\Opzione mpv: autosync"
+msgstr "Prova -autosync 30 per ammorbidire problemi con i driver audio che non implementano\nuna perfetta misurazione del ritardo.\nOpzione mpv: autosync"
 
 #: GeneralOptions.class:166
 msgid "maximum A-V sync correction per frame (in seconds)"
@@ -3790,7 +3794,7 @@ msgid "mpv options in the format \"name = value\""
 msgstr ""
 
 #: GeneralOptions.form:2204
-msgid "TODO: Ogni opzione qui deve essere univoca/avere priorità sulle opzioni di base di xt7"
+msgid "TODO: Every option set here must override."
 msgstr ""
 
 #: GeneralOptions.form:2209
