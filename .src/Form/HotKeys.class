@@ -26,9 +26,9 @@ Public Sub xbindkeys_read()
       Case "previous track"
         FMain.ButtonPrev_Click()
       Case "seek +10sec"
-        FMain.mplayer.do_seek_by("+10")
+        FMain.mplayer.do_seek_by("+10", FMain.FsForm)
       Case "seek -10sec"
-        FMain.mplayer.do_seek_by("-10")
+        FMain.mplayer.do_seek_by("-10", FMain.FsForm)
       Case "volume +"
         FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
       Case "volume -"

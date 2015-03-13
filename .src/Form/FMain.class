@@ -3530,23 +3530,12 @@ Public Sub SaveVolumeSlider_Change()
 
   'OneSecTimer.delay = OneSecTimer.delay * 100
   If Not (SaveVolumeSlider.tag = "timer") Then
-    mplayer.do_SetVolume(SaveVolumeSlider.value * (100 Div SaveVolumeSlider.MaxValue)) ' + 1) 'don't allow volume=0 as it has problems with softvol
+    mplayer.do_SetVolume(SaveVolumeSlider.value * (100 Div SaveVolumeSlider.MaxValue), fsform.FullScreen) ' + 1) 'don't allow volume=0 as it has problems with softvol
     If VolumeFocused Then UpdateVolumeTooltip()
   Endif
   'OneSecTimer.delay = OneSecTimer.delay Div 100
   'Call GetProperty"volume" now, so onesectimer will found the answer
 
-End
-
-Public Sub OLD_SeekBar_Change()
-  '"if" is needed, because seekbar position is changed by mplayer itself through sec_timer
-  
-  If Not (Seekbar.tag = "timer") Then
-    'OneSecTimer.Enabled = False
-    mplayer.do_seek(SeekBar.value Div 10)
-    'OneSecTimer.Enabled = True
-  Endif
-  
 End
 
 Public SeekingRestarting As Boolean = False
@@ -3582,7 +3571,7 @@ Public Sub SeekBar_Change()
   If Not (Seekbar.tag = "timer") Then
     'OneSecTimer.Enabled = False
     percent = SeekBar.value * 100
-    mplayer.do_seek(percent)
+    mplayer.do_seek(percent, FMain.FsForm)
   Endif
 End
 
@@ -4538,6 +4527,7 @@ Public Sub HotKeyToMplayer(HotKey As String)
   Dim currentfile As String
   Dim Action As String 
   Dim osd_level As String = ""
+  Dim n As String
   Action = Lower(HotKeys.ActionRelatedTo(Hotkey))
   
   Debug Action
@@ -4619,7 +4609,9 @@ Public Sub HotKeyToMplayer(HotKey As String)
           Endif
         Endif
       Endif
- 
+    Case Like "seek *"
+      n = Split(Action, " ")[1]
+      mplayer.do_seek_by(n, fsform.FullScreen)
     Case "osd"
       mplayer.Send(Action)
       Try osd_level = mplayer.get_property_mpv("osd-level")
@@ -4632,7 +4624,6 @@ Public Sub HotKeyToMplayer(HotKey As String)
  
     Case Else
       mplayer.Send(Action)
-      'mplayer.Send("no-osd " & Action)
   End Select
   
 End
@@ -10630,10 +10621,9 @@ End
 Public Sub textlabel1_MouseWheel()
 
   If Mouse.Delta > 0 Then 
-    mplayer.Send("seek +20")
-    mplayer.do_seek_by("+20")
+    mplayer.do_seek_by("+20", FMain.FsForm)
       Else
-    mplayer.do_seek_by("-20")
+    mplayer.do_seek_by("-20", FMain.FsForm)
   Endif
   UpdateSeekSlider()
 End

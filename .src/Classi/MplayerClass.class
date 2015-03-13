@@ -963,9 +963,9 @@ Public Function do_slow() As Boolean
 End
 
 
-Public Function do_SetVolume(Percentual As String) As Boolean
+Public Function do_SetVolume(Percentual As String, Optional osd As Boolean = False) As Boolean
   If Not ProcessRunningOvr() Then Return
-  set_property_mpv("volume", Percentual)
+  set_property_mpv("volume", Percentual, osd)
 End
 
 
@@ -1670,14 +1670,26 @@ Public Sub abloop_set_b(Optional timefloat As String = "notset") 'no argument me
 End
 
 
-Public Function do_seek(Percentual As String) As Boolean
-  mpv_command(["no-osd", "seek", Percentual, "absolute-percent"])
+Public Function do_seek(Percentual As String, Optional osd As Boolean = False) As Boolean
+  If osd Then 
+    mpv_command(["seek", Percentual, "absolute-percent"])
+      Else
+    mpv_command(["no-osd", "seek", Percentual, "absolute-percent"])
+  Endif
 End
-Public Function do_seek_to(newpos As String, Optional precise As Boolean = False) As Boolean
-  mpv_command(["no-osd", "seek", newpos, "absolute"]) 'fixmempv precise paramters not implemented 
+Public Function do_seek_to(newpos As String, Optional precise As Boolean = False, Optional osd As Boolean = False) As Boolean
+  If osd Then 
+    mpv_command(["seek", newpos, "absolute"]) 'fixmempv precise paramters not implemented 
+      Else
+    mpv_command(["no-osd", "seek", newpos, "absolute"]) 'fixmempv precise paramters not implemented 
+  Endif
 End
-Public Function do_seek_by(seconds As String) As Boolean
-  mpv_command(["no-osd", "seek", seconds, "relative"])
+Public Function do_seek_by(seconds As String, Optional osd As Boolean = False) As Boolean
+  If osd Then 
+    mpv_command(["seek", seconds, "relative"])
+      Else
+    mpv_command(["no-osd", "seek", seconds, "relative"])
+  Endif
 End
 
 Public Sub _new()
@@ -1685,9 +1697,13 @@ Public Sub _new()
 End
 
 
-Public Function send(data As String)
+Public Function send(data As String, Optional osd As Boolean = True)
   If Not ProcessRunningOvr() Then Return
-  Write #mystream, data & "\n"
+  If osd Then 
+    Write #mystream, data & "\n"
+      Else
+    Write #mystream, "no-osd " & data & "\n"
+  Endif
 End
 
 
