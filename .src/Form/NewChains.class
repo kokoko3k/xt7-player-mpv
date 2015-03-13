@@ -598,11 +598,14 @@ Private Function Parse_video_filter(Filtername As String) As String
   Dim aTabstrip As Tabstrip = TabStrip_filters_video
   Dim i As Integer
   Dim parse As Boolean = True
+  Dim out As String
   i = aTabstrip.index
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = Global.TabIndexByName(ParsedFilter, aTabstrip)
   If Parsedfilter Like "customvideo*" Then
-    Return Parse_video_filter_Custom()
+    out = Parse_video_filter_Custom()
+    aTabstrip.index = i
+    Return out
       Else
     'Discend the Tab objects,parse them and build the commandline
     'hierarchy is:
@@ -663,15 +666,19 @@ Private Function Parse_audio_filter(Filtername As String) As String
   Dim aTabstrip As Tabstrip = TabStrip_filters_audio
   Dim i As Integer
   Dim parse As Boolean = True
+  Dim out As String
   i = aTabstrip.index
-
+  
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
   If ParsedFilter = "equalizer" Then
-    Return ParseEq()
+    out = ParseEq()
+    aTabstrip.index = i 
+    Return out
   Else If Parsedfilter Like "customaudio*" Then
-
-    Return parse_audio_filter_custom()
+    out = parse_audio_filter_custom()
+    aTabstrip.index = i 
+    Return out
       Else
     'Discend the Tab objects,parse them and build the commandline
     'hierarchy is:
@@ -774,7 +781,6 @@ Public Function parse_filters(audio As Boolean) As String
   Dim filters As String
   Dim filters_container As Scrollview
   Dim filter As String
-  
   If audio Then 
     filters_container = filters_audio_container
       Else
