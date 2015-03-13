@@ -546,28 +546,35 @@
         }
       }
       { HBox2 HBox
-        MoveScaled(5,75,46,4)
+        MoveScaled(2,76,53,4)
         Spacing = True
-        { VBox1 VBox
-          MoveScaled(2,1,3,2)
-          Expand = True
-        }
         { TestBTN Button
-          MoveScaled(10,0,12,4)
+          MoveScaled(0,0,12,4)
           ToolTip = ("Test the new configuration in the preview box.")
           AutoResize = True
           Text = ("Retest")
           Picture = Picture["icon:/16/refresh"]
         }
+        { VBox1 VBox
+          MoveScaled(14,1,3,2)
+          Expand = True
+        }
+        { SaveBTN Button
+          MoveScaled(18,0,10,4)
+          ToolTip = ("Save and use new settings")
+          AutoResize = True
+          Text = ("Save")
+          Picture = Picture["icon:/16/save"]
+        }
         { ApplyBTN Button
-          MoveScaled(22,0,12,4)
+          MoveScaled(28,0,12,4)
           ToolTip = ("Use new settings without save.\nTo save settings, use menu item.")
           AutoResize = True
           Text = Shortcut(("Use"), "U")
           Picture = Picture["icon:/16/redo"]
         }
         { OkBTN Button
-          MoveScaled(34,0,12,4)
+          MoveScaled(40,0,12,4)
           ToolTip = ("Close the window")
           AutoResize = True
           Text = ("Close")
