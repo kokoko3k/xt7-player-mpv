@@ -807,7 +807,8 @@ Public Function FindCdDvdDevices() As String[]
   'convert them to a link (eventually with -e)
   For Each device In devices
     devicefullpath = devdir & device
-      Shell "readlink -e " & devicefullpath To pointsto
+      Try Shell "readlink -e " & devicefullpath To pointsto
+      If Error Then Return [""]
     'add them only if they're not dupes
     If (devices2.Find(Trim(pointsto)) = -1) Then devices2.Add(Trim(pointsto))
   Next 'device

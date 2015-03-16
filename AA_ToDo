@@ -697,3 +697,14 @@ dynagui non serve più, praticamente, e nemmeno chains, è il caso di rimuoverli
 
 
 si ci vuole troppo tempo per riempire la cache, cosa succede.. timeout?
+  si blocca tutto, non ho capito perchè.
+  puoi testare così:
+  mpv /tmp/pipe.avi --msg-level=cache=v --cache=10000 --cache-initial=10000
+  ...dove pipe.avi è una pipe riempita con:
+  cat realvideofile.avi | pv -L 200k > /tmp/pipe.avi
+  
+
+opzione per rinominare i filtri custom?
+
+se in fullscreren fai il seek usando il pannello, si vede la barra di mpv, è brutto.
+
