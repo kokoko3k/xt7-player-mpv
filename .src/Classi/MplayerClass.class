@@ -1699,9 +1699,9 @@ End
 Public Function send(data As String, Optional osd As Boolean = True)
   If Not ProcessRunningOvr() Then Return
   If osd Then 
-    Write #mystream, data & "\n"
+    Try Write #mystream, data & "\n"
       Else
-    Write #mystream, "no-osd " & data & "\n"
+    Try Write #mystream, "no-osd " & data & "\n"
   Endif
 End
 
