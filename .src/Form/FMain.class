@@ -7765,35 +7765,9 @@ Public Sub ToolPanel1_Click()
 End
 
 Public Sub Button3_Click()
-  Dim HotKeyConfigured As Boolean = True
-
-
-  'HotKeysCheck First  
-  HotKeyConfigured = HotKeyConfigured And (Trim(HotKeys.HotKeysGrid[73, 0].text) <> "")
-  HotKeyConfigured = HotKeyConfigured And (Trim(HotKeys.HotKeysGrid[74, 0].text) <> "")
-  HotKeyConfigured = HotKeyConfigured And (Trim(HotKeys.HotKeysGrid[75, 0].text) <> "")
-  HotKeyConfigured = HotKeyConfigured And (Trim(HotKeys.HotKeysGrid[76, 0].text) <> "")
-  HotKeyConfigured = HotKeyConfigured And (Trim(HotKeys.HotKeysGrid[77, 0].text) <> "")
-  HotKeyConfigured = HotKeyConfigured And (Trim(HotKeys.HotKeysGrid[78, 0].text) <> "")
-  HotKeyConfigured = HotKeyConfigured And (Trim(HotKeys.HotKeysGrid[79, 0].text) <> "")
-  HotKeyConfigured = HotKeyConfigured And (Trim(HotKeys.HotKeysGrid[80, 0].text) <> "")
-  
-  If Not HotKeyConfigured Then
-    MyQuestion.Ask(("Not all of the hotkeys are defined for dvd navigation mode\nPlease configure dvdnav hotkeys first."), "Ok", "")
-    Return
-  Endif
-  'mplayer.do_play("dvdnav://", mplayer.CurrentOptions & " -nocache ")
   play("dvd://menu" & dvd_device(mplayer.last_media))
 End
 
-' Public Sub TimerDVD_Timer()
-'   
-'   'Try mplayer.Send("set_mouse_pos " & (mouse.screenx - VideoBox.screenx) & " " & (mouse.screeny - VideoBox.screeny))
-'   Debug
-'   mplayer.mpv_command(["mouse", (mouse.screenx - VideoBox.screenx), (mouse.screeny - VideoBox.screeny)])
-'   Wait 0.1
-'   mplayer.mpv_command(["discnav", "mouse_move"])
-' End
 
 Public Sub ButtonGetGenres_Click()
   Leftsidepanel.mouse = mouse.wait
