@@ -48,7 +48,6 @@ Public Sub ConvertandSaveAudio()
   
   Try Shell "mkdir -p " & audiotempfolder & " >/dev/null 2>&1" Wait
   
-  mymplayer.wantlog = False
   If converting Then
     Message.Error("Sorry, another conversion is in progress")
     Return
@@ -104,80 +103,44 @@ Public Sub ConvertandSaveAudio()
       Endif
     Endif
     
-  
-    tmpout = audiotempfolder & "/" & Rnd(0, 9999) & "." & i & ".wav"
-    TextArea1.text &= ("Extracting audio to PCM data...") & "\n"     
-    mymplayer.ExtractAudioTo(currentstream, tmpout)
-    While mymplayer.ProcessRunningOvr()
-      mymplayer.Send("get_percent_pos")
-      Wait 0.5
-      'TextArea1.text &= mymplayer.Media_percent_pos & "% " & "\n"
-      Try Progressbar1.value = mymplayer.getP("percent-pos") / 200
-      'Try Progressbar2.value = (Progressbar1.value / items.max) + (i / (items.max + 1))
-      If mymplayer.getP("percent-pos") = 100 Then mptimeout -= 1
-      If mptimeout = 0 Then Break
-      If RequestStopALL Then Goto returnlabel
-      If RequestSkip Then Goto nextlabel
-    Wend
-    mymplayer.do_stop()
-    Progressbar1.value = 0.5
-    Try Progressbar2.value = (Progressbar1.value / (items.max + 1)) + (i / (items.max + 1))
-    length = mymplayer.getP("=length")
 
     TextArea1.text &= ("Done.") & "\n"
     TextArea1.text &= "\n"
     TextArea1.text &= ("Encoding...") & "\n"
-    
-    'ffmpeg -i /tmp/tmp.0.wav -y -b:a 192k -vn /tmp/out.mp3
-    'ffmpeg -i /tmp/tmp.0.wav -y  -acodec libvorbis -b:a 192k /tmp/out.ogg
 
       If yttitle = "" Then 
-        'finalfile = Shell$(outputfolder & "/" & File.Name(currentstream))
         finalfile = outputfolder & "/" & File.Name(currentstream)
           Else
-        'finalfile = Shell$(outputfolder & "/" & yttitle)
         finalfile = (outputfolder & "/" & yttitle) 
       Endif
+    finalfile &= "." & combobox1.text
 
     kbps = combobox2.text
-    ffcmdline = "ffmpeg -i " & tmpout & " -progress " & ffprogressfile & " -y "
+    mymplayer.clear_options()
+    mymplayer.set_option("oacopts=ab", kbps)
+    mymplayer.set_option("o", Shell(finalfile))
+    mymplayer.set_option("no-video", Chr(8))
+    mymplayer.set_option("ytdl", "no")
+    Select combobox1.text
+      Case Like "*mp3*"
+        mymplayer.set_option("of", "mp3")
+      Case Like "*ogg*"
+        mymplayer.set_option("of", "oga")
+      Case Like "*wav*"
+        mymplayer.set_option("of", "wav")
+    End Select
 
-    If combobox1.text Like "*mp3*" Then
-      finalfile = finalfile & ".mp3"
-      ffcmdline = ffcmdline & " -b:a " & combobox2.text & " -vn " & "'" & finalfile & "'" & " -v warning &>" & ffout
-      ffproc = Shell ffcmdline
-      Debug ffcmdline
-        Else If combobox1.text Like "*ogg*" Then 
-          finalfile = finalfile & ".ogg"
-          ffcmdline = ffcmdline & "-acodec libvorbis -b:a " & combobox2.text & " -vn " & "'" & finalfile & "'" & " -v warning &>" & ffout
-          ffproc = Shell ffcmdline
-          Debug ffcmdline
-      Else
-          finalfile = finalfile & ".wav"
-          Progressbar1.value = 1
-          Try Progressbar2.value = (Progressbar1.value / (items.max + 1)) + (i / (items.max + 1))
-          Try Shell "mv " & tmpout & " " & "'" & finalfile & "'"
-    Endif
-    Wait 1
-    Try TextArea1.text &= File.Load(ffout) & "\n"
-    While ffProcessRunningOvr()
-      Wait 0.5
+    mymplayer.do_play(currentstream)
+    mymplayer.waitplayback(100)
+    
+    TextArea1.text &= "\n" & mymplayer.commandline & "\n"
+    Try TextArea1.text &= mymplayer.stdout
+    While mymplayer.ProcessRunningOvr()
        If RequestStopALL Then Goto returnlabel
        If RequestSkip Then Goto nextlabel
-       tmpprogress = Split(File.Load(ffprogressfile), "\n")
-
-       'find the progress line
-       For j = tmpprogress.max DownTo 0
-         If tmpprogress[j] Like "*out_time=*" Then 
-           Try ffcurtime = Split(Split(tmpprogress[j], "=")[1], ".")[0]
-           Try ffcurtime = mymplayer.DeFormatTime(ffcurtime)
-           'TextArea1.text &= Split(CStr((CInt(ffcurtime) / CInt(length)) * 100), ".")[0] & "%" "\n"
-           Try Progressbar1.value = 0.5 + (ffcurtime / length / 2)
-           Try Progressbar2.value = (Progressbar1.value / (items.max + 1)) + (i / (items.max + 1))
-           Break
-         Endif
-       Next
-
+       Try Progressbar1.value = mymplayer.get_property_mpv("percent-pos") / 100
+       Try Progressbar2.value = (Progressbar1.value / (items.max + 1)) + (i / (items.max + 1))
+       Wait 0.1
     Wend
 
     TextArea1.text &= ("Done.") & "\n"
@@ -186,16 +149,17 @@ Public Sub ConvertandSaveAudio()
     
     nextlabel:
     mymplayer.do_stop()
-    Try ffkill()
+
     If RequestSkip = False Then ConvertedItems.Add(finalfile)
     RequestSkip = False
     RequestStopALL = False
     i += 1
-    Try Kill tmpout
+
   Wend
   
   returnlabel:
-  Try ffkill()
+  Progressbar1.value = 1
+  Progressbar2.value = 1
   mymplayer.do_stop()
   RequestSkip = False
   RequestStopALL = False
@@ -206,6 +170,7 @@ Public Sub ConvertandSaveAudio()
   converting = False
   Me.text = ("Updating Library/Playlist")
   Wait
+Stop
   For Each finalitem In converteditems
     If CheckLIB.Value Then FMain.MyPlaylist.AddFile(FMain.librarygrid, finalitem, False)
     If CheckPLS.Value Then FMain.MyLibrary.AddFile(FMain.playlistgrid, finalitem, False)

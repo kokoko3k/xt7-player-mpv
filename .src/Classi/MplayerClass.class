@@ -557,7 +557,6 @@ Public Function do_play(filename As String, Optional string_options As String = 
   For Each data In internal_opts
     mpvOptions[internal_opts.key] = data
   Next
-  
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)
   Debug commandline, commandline
@@ -1582,7 +1581,7 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
       If getP(name) <> Null Then Return getP(name)
       timeoutcentisecs -= 1
       send(dataout)
-      Debug "asking ", dataout
+      ' Debug "asking ", dataout
       Wait 0.01
     Wend
     'Debug name & " --> " & getP(name)
