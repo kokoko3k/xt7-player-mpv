@@ -2400,9 +2400,6 @@ Public Sub file_options(fullpath As String) As Collection
   Endif
 
   Select Case Lower(fullpath)
-    Case Like "dvb://*"
-      'maybe a bug somewhere in mpv, but without this, cache seek wont work for dvb.
-      opts["hr-seek"] = "yes"
     Case Like "dvd://menu*"
       'for dvd menus, we rely entirely on mpv input until we found a better way to interact with it
       discbox1.visible = True
@@ -2416,6 +2413,8 @@ Public Sub file_options(fullpath As String) As Collection
       discbox3.visible = False
       opts["input-cursor"] = "no"
       opts["input-vo-keyboard"] = "no"
+      'maybe a bug somewhere in mpv, but without this, cache seek wont work for dvb.
+      If Lower(fullpath) Like "dvb://*" Then opts["hr-seek"] = "yes"
   End Select
 
   generaloptions.FirstLoadIfNeeded()
