@@ -71,10 +71,7 @@ Private Sub Init_drivers_audio()
     draw_list_item(drivers_audio_container, driver)
   Next
   tabstrip1.index = tabs.Find("drivers_audio")
-
-  XConfigureAudioDriver.ConfigureTabs.reparent(tabstrip1)
-  
-  drivers_audio_container.tag = XConfigureAudioDriver.ConfigureTabs
+  drivers_audio_container.tag = ConfigureTabs_audio
 End
 
 Private Sub Init_drivers_video()
@@ -85,8 +82,7 @@ Private Sub Init_drivers_video()
     draw_list_item(drivers_video_container, driver)
   Next
   tabstrip1.index = tabs.Find("drivers_video")
-  XConfigureVideoDriver.ConfigureTabs.reparent(tabstrip1)  
-  drivers_video_container.tag = XConfigureVideoDriver.ConfigureTabs
+  drivers_video_container.tag = ConfigureTabs_video
 End
 
 
@@ -739,6 +735,7 @@ Public Function parse_drivers(audio As Boolean) As String
   Dim drivers As String
   Dim item_container As Object
   Dim video_driver_overridden As String = ""
+
   If audio Then 
     item_container = drivers_audio_container
       Else
@@ -748,7 +745,7 @@ Public Function parse_drivers(audio As Boolean) As String
   If Not audio Then 'search for any override in generaloptions (like hwdec macro)
     Try video_driver_overridden = GeneralOptions.video_driver_overridden() 
     If video_driver_overridden <> "" Then
-        drivers &= XconfigureVideoDriver.parse_driver(video_driver_overridden, item_container.tag) & ","
+        drivers &= parse_video_driver(video_driver_overridden, item_container.tag) & ","
         Goto returnlabel
     Endif
   Endif
@@ -758,9 +755,9 @@ Public Function parse_drivers(audio As Boolean) As String
     cBox = Me.Controls[item_name & "_checkbox_" & item_container.name]  
     If cBox.value = True Then
       If audio Then 
-        drivers &= XconfigureAudioDriver.parse_driver(item_name, item_container.tag) & ","
+        drivers &= parse_audio_driver(item_name, item_container.tag) & ","
           Else
-        drivers &= XconfigureVideoDriver.parse_driver(item_name, item_container.tag) & ","
+        drivers &= parse_video_Driver(item_name, item_container.tag) & ","
       Endif
     Endif
   Next
@@ -989,6 +986,7 @@ End
 Public Sub MenuLoadDefault_Click()
   Dim MySettings As New SettingsClass
   If Not InitDone Then Init()
+  
   MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
 
   If filters_audio_order.text <> "" Then 
@@ -1163,16 +1161,16 @@ Private Sub AlignObjects()
   Dim acheckbox As Checkbox
   Dim alabel As Label
 
-  containers.Add(XConfigureVideoDriver.xvScrollview)
-  containers.Add(XConfigureVideoDriver.GLScrollView)
-  containers.Add(XConfigureVideoDriver.VdPauScrollView)
-  containers.Add(XConfigureVideoDriver.VaapiScrollview)
-  containers.Add(XConfigureVideoDriver.CustomVideoScrollview)
+  containers.Add(xvScrollview)
+  containers.Add(GLScrollView)
+  containers.Add(VdPauScrollView)
+  containers.Add(VaapiScrollview)
+  containers.Add(CustomVideoScrollview)
 
-containers.Add(XConfigureAudioDriver.AlsaScrollview)
-containers.Add(XConfigureAudioDriver.jackScrollview)
-containers.Add(XConfigureAudioDriver.pulseScrollview)
-containers.Add(XConfigureAudioDriver.pcmscrollview)
+  containers.Add(AlsaScrollview)
+  containers.Add(jackScrollview)
+  containers.Add(pulseScrollview)
+  containers.Add(pcmscrollview)
   
     'find the width of an empty checkbox
   alabel = New Label(zzzfake)
@@ -1220,3 +1218,191 @@ containers.Add(XConfigureAudioDriver.pcmscrollview)
 
   Next 'acontainer
 End
+
+
+'----------------------------
+'from the old xvonfigure*driver
+
+
+Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip) As String
+  Dim obj, child, container_obj As Object
+  Dim tab_index_old As Integer = aTabstrip.index
+  Dim outline As String
+  
+  If Lower(driver_name) Like "custom*" Then
+    Return TextBox5customaudio.text
+  Endif
+
+  aTabstrip.index = 0
+  While Lower(aTabstrip.Caption) <> driver_name
+    Try aTabstrip.index += 1
+    If Error Then
+      Debug "Could not find the right tab :( "
+      Return ""
+    Endif
+  Wend
+
+  If aTabstrip.Children[0] Is Scrollview Then 
+    container_obj = aTabstrip.Children[0]
+      Else
+    container_obj = aTabstrip
+  Endif
+  
+  For Each obj In container_obj.Children
+    If Upper(obj.name) Like Upper(driver_name) & "*" Then
+      For Each child In obj.Children
+        'IF child.name LIKE "*Chk" THEN 
+        If object.type(child) = "CheckBox" Then
+          If child.value Then
+              outline = outline & child.tag
+                If (child.next <> Null) Then
+                  If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
+                    If child.NEXT.text Like "*" & gb.tab & "*" Then
+                      outline = outline & Split(child.NEXT.text, gb.tab)[0]
+                        Else
+                      outline = outline & child.NEXT.text
+                    Endif
+                  Endif
+                Endif
+                outline = outline & ":"
+          Endif
+        Endif
+      Next
+    Endif
+  Next
+
+  aTabstrip.index = tab_index_old
+  If Right(outline) = ":" Then outline = Left(outline, -1)
+  If Right(outline) = "" Then 
+    Return driver_name
+      Else
+    Return driver_name & "=" & outline 
+  Endif
+
+End
+
+
+
+Public Sub PcmFileOpen_Click()
+    If Dialog.SaveFile() Then Return
+    TextBox8pcm.text = "\"" & myDialog.Path & "\""
+End
+
+Public Sub GetAlsaDevices() As String[]
+  Dim acard, acardid, acardname, apcm, apcminfo, apcminfos, apcmid As String
+  Dim adevices As New String[]
+  Dim apcms As New String[]
+  Dim acards As New String[]
+  Dim tabs As String = gb.tab
+
+  adevices.Add("plug:dmix" & tabs & " - [" & ("Default device, software mixing") & "]")
+  adevices.Add("default" & tabs & " - [" & ("Default alsa device") & "]")
+  adevices.Add("spdif" & tabs & " - [" & ("Default S/PDIF device") & "]")
+  adevices.Add("hdmi" & tabs & " - [" & ("Default hdmi device") & "]")
+  Try acards = Dir("/proc/asound/", "card*", gb.directory)
+  If Not Error Then
+    For Each acard In acards
+      Try acardname = Trim(File.Load("/proc/asound/" & acard & "/id"))
+      If Error Then acardname = "Unknown Card"
+      acardid = Replace(acard, "card", "")
+      Try apcms = Dir("/proc/asound/" & acard, "pcm*p").Sort(gb.Ascent)
+      If Not Error Then
+        For Each apcm In apcms
+          Try apcminfos = Trim(File.Load("/proc/asound/" & acard & "/" & apcm & "/info"))
+          If Error Then apcminfos = "name: No pcm info"
+          For Each apcminfo In Split(apcminfos, "\n", "", True)
+            If apcminfo Like "name: *" Then
+              apcminfo = Trim(Split(apcminfo, ":", "", True)[1])
+              apcmid = Replace(apcm, "pcm", "")
+              apcmid = Trim(Replace(apcmid, "p", ""))
+              Break
+            Endif
+          Next
+         ' Debug acardid, apcmid, acardname, apcminfo
+          adevices.add("plughw:" & acardid & "." & apcmid & tabs & " - " & "[" & acardname & ":" & apcminfo & "]")
+        Next
+      Endif
+
+    Next
+  Endif
+  
+ Return adevices
+  
+End
+
+
+
+Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip) As String
+  Dim obj, child, container_obj As Object
+  Dim tab_index_old As Integer = aTabstrip.index
+  Dim outline As String
+  
+  If Lower(driver_name) Like "custom*" Then
+    Return TextBox5cv.text
+  Endif
+
+  aTabstrip.index = 0
+  While Lower(aTabstrip.Caption) <> driver_name
+    Try aTabstrip.index += 1
+    If Error Then
+      Debug "Could not find the right tab :( "
+      Return ""
+    Endif
+  Wend
+
+  If aTabstrip.Children.count > 0 Then
+    If aTabstrip.Children[0] Is Scrollview Then 
+      container_obj = aTabstrip.Children[0]
+        Else
+      container_obj = aTabstrip
+    Endif
+  
+    For Each obj In container_obj.children
+      If Upper(obj.name) Like Upper(driver_name) & "*" Then
+        For Each child In obj.Children
+          'IF child.name LIKE "*Chk" THEN 
+          If object.type(child) = "CheckBox" Then
+            If child.value Then
+                outline = outline & child.tag
+                  If (child.next <> Null) Then
+                    If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
+                      If (object.type(child.next) = "ComboBox") Then
+                        Try outline = outline & Split(child.NEXT.text, " ")[0]
+                          Else
+                        Try outline = outline & child.NEXT.text
+                        If Error Then Debug "an error occurred, please report this message and what you're doing"
+                      Endif
+                    Endif
+                  Endif
+                  outline = outline & ":"
+            Endif
+          Endif
+        Next
+      Endif
+    Next
+  Endif
+  
+  aTabstrip.index = tab_index_old
+  If Right(outline) = ":" Then outline = Left(outline, -1)
+  If Right(outline) = "" Then 
+    Return driver_name
+      Else
+    Return driver_name & "=" & outline 
+  Endif
+
+End
+
+
+Public Sub xvScrollview_Arrange()
+  Shell "xvinfo -short | grep -i adaptor" To TextBoxAdaptorsxv.text
+  TextBoxAdaptorsxv.text = ("Adaptors list:\n---------------------------------\n") & TextBoxAdaptorsxv.text
+End
+
+Public Sub CheckBox2gl_Click()
+  If Last.value Then CheckBox3gl.value = False
+End
+
+Public Sub CheckBox3gl_Click()
+  If Last.value Then CheckBox2gl.value = False
+End
+

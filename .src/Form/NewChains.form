@@ -28,7 +28,7 @@
     Visible = False
   }
   { TabStrip1 TabStrip
-    MoveScaled(4,6,95,60)
+    MoveScaled(3,7,95,60)
     Expand = True
     Arrangement = Arrange.Horizontal
     Margin = True
@@ -334,6 +334,330 @@
         Border = Border.Plain
       }
     }
+    { ConfigureTabs_video TabStrip
+      MoveScaled(30,4,62,47)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      Margin = True
+      Padding = 4
+      Count = 7
+      Index = 0
+      Text = ("Xv")
+      { xvScrollview ScrollView
+        MoveScaled(2,5,58,31)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Border = False
+        { XvParseMeHbox4 HBox
+          MoveScaled(0,1,45,6)
+          AutoResize = True
+          Padding = 6
+          { PortChk2XV CheckBox
+            MoveScaled(1,1,15,4)
+            #Translate = False
+            Tag = "adaptor="
+            Text = "Adaptor"
+          }
+          { SpinBox10Xv SpinBox notifyobj
+            Name = "SpinBox10Xv"
+            MoveScaled(33,1,9,4)
+            MaxValue = 999
+          }
+        }
+        { TextBoxAdaptorsxv TextArea
+          MoveScaled(8,10,44,15)
+          Text = ("TextBox8")
+          ReadOnly = True
+        }
+      }
+      Index = 1
+      Text = ("opengl")
+      { GLScrollView ScrollView
+        MoveScaled(2,-2,47,35)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Padding = 4
+        Border = False
+        { openglParseMeHBox10 HBox
+          MoveScaled(0,0,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox3gl CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "scale="
+            Text = "scale"
+          }
+          { ComboBox1gl ComboBox
+            MoveScaled(19,1,24,4)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["bilinear", "spline36", "lanczos", "ewa_lanczos", "mitchell"]
+            Text = "bilinear"
+          }
+        }
+        { openglParseMeHBox2 HBox
+          MoveScaled(0,7,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox2gl CheckBox
+            MoveScaled(1,1,20,4)
+            #Translate = False
+            Tag = "scale=spline36:scale-down=mitchell:dither-depth=auto:fbo-format=rgba16:fancy-downscaling:sigmoid-upscaling"
+            Text = "HQ preset"
+          }
+        }
+        { openglParseMeHBox3 HBox
+          MoveScaled(0,13,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox6gl CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "glfinish"
+            Text = "glfinish"
+          }
+        }
+        { openglParseMeHBox11 HBox
+          MoveScaled(0,20,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox4gl CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "smoothmotion"
+            Text = "smoothmotion"
+          }
+          { Label1 Label
+            MoveScaled(20,1,23,3)
+            Font = Font["Italic,-1"]
+            AutoResize = True
+            Text = ("may noy work with HW decoding")
+            Alignment = Align.Right
+          }
+        }
+        { openglParseMeHBox1 HBox
+          MoveScaled(0,26,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox5gl CheckBox
+            MoveScaled(1,1,24,4)
+            #Translate = False
+            Tag = "smoothmotion-threshold="
+            Text = "smoothmotion-threshold"
+          }
+          { ComboBox2gl ComboBox
+            MoveScaled(29,1,15,4)
+            #Translate = False
+            Expand = True
+            List = ["0.0", "0.05", "0.1", "0.15", "0.2", "0.25", "0.30", "0.35", "0.40", "0.45", "0.50"]
+            Text = "0.0"
+          }
+        }
+      }
+      Index = 2
+      Text = ("vdpau")
+      { VdPauScrollView ScrollView
+        MoveScaled(2,-3,52,35)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Border = False
+        { vdpauParseMeHBox1 HBox
+          MoveScaled(0,2,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox21vdpau CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "sharpen="
+            Text = "sharpen"
+          }
+          { ComboBox6vdpau ComboBox
+            MoveScaled(19,1,24,4)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["-1", "-0.9", "-0.8", "-0.7", "-0.6", "-0.5", "-0.4", "-0.3", "-0.2", "-0.1", "0 - no sharpen", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"]
+            Text = "0 - no sharpen"
+          }
+        }
+        { vdpauParseMeHBox2 HBox
+          MoveScaled(0,8,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox22vdpau CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "denoise="
+            Text = "denoise"
+          }
+          { ComboBox7vdpau ComboBox
+            MoveScaled(19,1,24,4)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["0 - no denoise", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"]
+            Text = "0 - no denoise"
+          }
+        }
+        { vdpauParseMeHBox7 HBox
+          MoveScaled(0,14,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox27vdpau CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "hqscaling="
+            Text = "hqscaling"
+          }
+          { ComboBox10vdpau ComboBox
+            MoveScaled(19,1,24,4)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+            Text = "0 - Use default VDPAU scaling"
+          }
+        }
+        { vdpauParseMeHBox3 HBox
+          MoveScaled(0,20,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox23vdpau CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "deint="
+            Text = "deint"
+          }
+          { ComboBox8vdpau ComboBox
+            MoveScaled(19,1,24,4)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["0 - No deinterlacing", "1 - Show only first field", "2 - Bob deinterlacing", "3 - Motion adaptive", "4 - Motion adaptive with edge-guided interpolation"]
+            Text = "0 - No deinterlacing"
+          }
+        }
+        { vdpauParseMeHBox4 HBox
+          MoveScaled(0,27,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox24vdpau CheckBox
+            MoveScaled(1,0,18,4)
+            #Translate = False
+            Tag = "chroma-deint"
+            Text = "chroma-deint"
+          }
+        }
+        { vdpauParseMeHBox5 HBox
+          MoveScaled(0,33,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox25vdpau CheckBox
+            MoveScaled(1,0,18,4)
+            #Translate = False
+            Tag = "pullup"
+            Text = "pullup"
+          }
+        }
+        { vdpauParseMeHBox9 HBox
+          MoveScaled(1,40,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox29vdpau CheckBox
+            MoveScaled(1,1,18,4)
+            Text = ("Additional options")
+          }
+          { TextBox6vdpau TextBox
+            MoveScaled(22,1,22,4)
+            Expand = True
+          }
+        }
+      }
+      Index = 3
+      Text = ("vaapi")
+      { VaapiScrollview ScrollView
+        MoveScaled(-1,0,57,35)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Border = False
+        { vaapiParseMeHBox16 HBox
+          MoveScaled(1,1,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox36vaapi CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "scaling="
+            Text = "scaling"
+          }
+          { ComboBox15vaapi ComboBox
+            MoveScaled(19,1,24,4)
+            Expand = True
+            ReadOnly = True
+            List = [("default - use implementation default (default)"), ("fast - use fast scaling, but possibly with less quality"), ("hq - use high-quality scaling, but possibly slower"), ("nla - use non-linear anamorphic scaling")]
+            Text = ("default - use implementation default (default)\n")
+          }
+        }
+        { vaapiParseMeHBox12 HBox
+          MoveScaled(1,8,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox32vaapi CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "deint="
+            Text = "deint"
+          }
+          { ComboBox13vaapi ComboBox
+            MoveScaled(19,1,24,4)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["first-field", "bob"]
+            Text = "no"
+          }
+        }
+        { vaapiParseMeHBox14 HBox
+          MoveScaled(1,15,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox1vaapi CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "scaled-osd"
+            Text = "scaled-osd"
+          }
+        }
+      }
+      Index = 4
+      Text = ("Custom video")
+      { CustomVideoScrollview ScrollView
+        MoveScaled(1,1,49,25)
+        Expand = True
+        Border = False
+        { Label12 Label
+          MoveScaled(1,0,36,4)
+          Text = (" Custom Driver(s) options, \"-vo \" is implicit.")
+        }
+        { HBox2 HBox
+          MoveScaled(0,5,48,6)
+          AutoResize = True
+          Padding = 6
+          { TextBox5cv TextBox
+            MoveScaled(1,1,48,4)
+            Expand = True
+          }
+        }
+      }
+      Index = 5
+      Text = ("x11")
+      Index = 6
+      Text = ("null")
+      Index = 0
+    }
     Index = 3
     Text = ("Audio Drivers")
     Picture = Picture["icon:/small/audio"]
@@ -341,6 +665,218 @@
       MoveScaled(0,0,30,50)
       Background = Color.TextBackground
       Arrangement = Arrange.Vertical
+    }
+    { ConfigureTabs_audio TabStrip
+      MoveScaled(32,3,59,38)
+      Expand = True
+      Arrangement = Arrange.Vertical
+      Margin = True
+      Count = 6
+      Index = 0
+      Text = ("Alsa")
+      { AlsaScrollview ScrollView
+        MoveScaled(2,2,50,26)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Border = False
+        { AlsaParseMeHbox1 HBox
+          MoveScaled(0,0,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk2 CheckBox
+            MoveScaled(1,1,15,4)
+            #Translate = False
+            Tag = "mixer-name="
+            Text = "mixer-name"
+          }
+          { AlsaDeviceTextBox2 ComboBox
+            MoveScaled(18,1,26,4)
+            #Translate = False
+            Font = Font["Monospace"]
+            Expand = True
+            List = ["Master", "PCM", "Headphone", "Front", "Center", "Surround", "LFE"]
+            Text = "Master"
+          }
+        }
+        { AlsaParseMeHbox2 HBox
+          MoveScaled(0,6,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk1 CheckBox
+            MoveScaled(1,1,15,4)
+            #Translate = False
+            Tag = "mixer-index="
+            Text = "mixer-index"
+          }
+          { SpinBox1Alsa SpinBox
+            MoveScaled(34,1,9,4)
+            MaxValue = 10
+          }
+        }
+      }
+      Index = 1
+      Text = ("Jack")
+      { jackscrollview ScrollView
+        MoveScaled(1,1,56,31)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Border = False
+        { JackParseMeHBox8 HBox
+          MoveScaled(0,0,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox18jack CheckBox
+            MoveScaled(1,2,17,4)
+            #Translate = False
+            Tag = "port="
+            Text = "Port"
+          }
+          { TextBox3jack TextBox
+            MoveScaled(19,1,22,4)
+            #Translate = False
+            Expand = True
+          }
+        }
+        { JackParseMeHBox1 HBox
+          MoveScaled(0,6,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox1jack CheckBox
+            MoveScaled(1,2,17,4)
+            #Translate = False
+            Tag = "name="
+            Text = "Name"
+          }
+          { TextBox4jack TextBox
+            MoveScaled(19,1,22,4)
+            #Translate = False
+            Expand = True
+            Text = "mpv"
+          }
+        }
+      }
+      Index = 2
+      Text = ("Pulse")
+      { pulsescrollview ScrollView
+        MoveScaled(1,2,56,30)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Border = False
+        { PulseParseMeHbox1 VBox
+          MoveScaled(1,0,45,13)
+          Padding = 6
+          { PulseDriverChk2pulse CheckBox
+            MoveScaled(1,1,29,4)
+            #Translate = False
+            Text = "host:output sink"
+          }
+          { TextBox6Alsapulse TextBox
+            MoveScaled(1,6,41,4)
+          }
+        }
+        { PulseParseMeHbox3 HBox
+          MoveScaled(0,15,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk3pulse CheckBox
+            MoveScaled(1,1,18,4)
+            #Translate = False
+            Tag = "buffer="
+            Text = "buffer"
+          }
+          { ComboBox1pulse ComboBox
+            MoveScaled(21,1,24,4)
+            #Translate = False
+            List = ["native", "100", "250", "500", "750", "1000", "1250", "1500", "1750", "2000"]
+            Text = "250"
+          }
+        }
+        { PulseParseMeHbox2 HBox
+          MoveScaled(0,22,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk4pulse CheckBox
+            MoveScaled(1,1,18,4)
+            #Translate = False
+            Tag = "latency-hacks="
+            Text = "latency-hacks"
+          }
+          { ComboBox2pulse ComboBox
+            MoveScaled(21,1,24,4)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "no"
+          }
+        }
+      }
+      Index = 3
+      Text = ("Pcm")
+      { pcmscrollview ScrollView
+        MoveScaled(1,2,54,29)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Border = False
+        { PcmParseMeHBox3 HBox
+          MoveScaled(0,0,45,6)
+          Tag = "noestimate"
+          AutoResize = True
+          Padding = 8
+          { CheckBox3pcm CheckBox
+            MoveScaled(1,1,18,4)
+            Tag = "nowaveheader"
+            Text = ("NoWaveHeader")
+          }
+        }
+        { PcmParseMeHBox4 HBox
+          MoveScaled(0,6,45,6)
+          Tag = "noestimate"
+          AutoResize = True
+          Padding = 8
+          { CheckBox4pcm CheckBox
+            MoveScaled(1,1,18,4)
+            Tag = "append"
+            Text = ("append")
+          }
+        }
+        { PcmParseMeHBox2 HBox
+          MoveScaled(0,13,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox2pcm CheckBox
+            MoveScaled(1,0,17,4)
+            Tag = "file="
+            Text = ("File")
+          }
+          { TextBox8pcm TextBox
+            MoveScaled(20,0,19,4)
+            Expand = True
+          }
+          { PcmFileOpen ToolButton
+            MoveScaled(40,0,3.2857,3.2857)
+            Picture = Picture["icon:/24/open"]
+          }
+        }
+      }
+      Index = 4
+      Text = ("Custom audio")
+      { Label13 Label
+        MoveScaled(2,1,36,4)
+        Text = (" Custom Driver(s) options, \"-ao \" is implicit.")
+      }
+      { HBox5 HBox
+        MoveScaled(1,6,55,6)
+        AutoResize = True
+        Margin = True
+        Padding = 6
+        { TextBox5customaudio TextBox
+          MoveScaled(1,1,48,4)
+          Expand = True
+        }
+      }
+      Index = 5
+      Text = ("null")
+      Index = 0
     }
     Index = 0
   }

@@ -12,7 +12,7 @@ Public ParentContainers As String[] = ["VideoFiltersBox", "AudioFiltersBox", "Vi
 
 'Those objects values aren't saved 
 'PUBLIC ExcludedValues AS String[] = ["Statusbar1", "SaveVolumeSlider", "SeekBar", "TagPanel"]
-Public ExcludedValues As String[] = ["thumblebox", "NumberBox", "View", "Statusbar1", "SeekBar", "TagPanel", "DriverDescription", "DescriptionArea", "FilterTextBox", "NOPARSETABLIBRARY", "NOPARSETABPLAYLIST", "NOPARSETABDVD", "NOPARSETABFLASH", "NOPARSETABSHOUTCAST", "NOPARSETABPODCAST", "NOPARSETABPROFILES", "NOPARSETABMEDIAINFO", "YOUVIDEOINFO", "SCROLLVIEWYT", "SIDEPANELYOUTUBE", "CACHEBAR", "NOSAVEVBOX2", "NOSAVEVBOX3", "NOSAVEHBOX10", "AUDIOCHAINBOX", "AUDIOFILTERSBOX", "VIDEOCHAINBOX", "VIDEOFILTERSBOX", "PLAYLISTSELINFOBOX", "PLAYLISTSELINFO", "LIBRARYSELINFO", "BUTTON_SHOW_MAN", "HELPBOX", "TEXTAREAHELP", "NOSAVELABEL1"]
+Public ExcludedValues As String[] = ["thumblebox", "NumberBox", "View", "Statusbar1", "SeekBar", "TagPanel", "DriverDescription", "DescriptionArea", "FilterTextBox", "NOPARSETABLIBRARY", "NOPARSETABPLAYLIST", "NOPARSETABDVD", "NOPARSETABFLASH", "NOPARSETABSHOUTCAST", "NOPARSETABPODCAST", "NOPARSETABPROFILES", "NOPARSETABMEDIAINFO", "YOUVIDEOINFO", "SCROLLVIEWYT", "SIDEPANELYOUTUBE", "CACHEBAR", "NOSAVEVBOX2", "NOSAVEVBOX3", "NOSAVEHBOX10", "AUDIOCHAINBOX", "AUDIOFILTERSBOX", "VIDEOCHAINBOX", "VIDEOFILTERSBOX", "PLAYLISTSELINFOBOX", "PLAYLISTSELINFO", "LIBRARYSELINFO", "BUTTON_SHOW_MAN", "HELPBOX", "TEXTAREAHELP", "NOSAVELABEL1", "filter_button_up", "filter_button_down"]
 
 Public Function ReadedConfFile(FileName As String) As String[]
   
@@ -258,7 +258,55 @@ Public Sub oldLoad(TheForm As Object, FileName As String)
   
 End
 
+
+
 Public Sub Load(TheForm As Object, Filename As String)
+  
+  Dim myobj As Object
+  Dim theSettings, SubSettings As String[]
+  Dim i, j As Integer = 0
+  Dim obj_name As String
+  'Filename is the form setting file
+  '/home/user/.config/gambas/Xt7-Player/default.profile/FMain
+  FileName = Filename & ".profile/" & TheForm.name
+  
+  theSettings = ReadedConfFile(Filename)
+  
+  For i = 0 To thesettings.Max
+    If Left(thesettings[i]) <> "." Then 'if it is not a property, but an object name
+      obj_name = thesettings[i]
+      myobj = theform[obj_name]
+      If myobj <> Null Then 'if we found that object in the form controls
+        Subsettings = NameAndProperties(obj_name, thesettings)
+        If subsettings <> Null Then  'if that object has some settings saved
+          Try Reconfigure(myobj, Subsettings, TheForm)
+          If Error Then 
+            Debug Error.Text
+            Stop
+          Endif
+        Endif
+      Endif
+    Endif
+  Next
+  
+  
+  'check if there is something that needs to be reparented
+  If TheForm.tag = "reparents" Then
+    Debug "Timer = " & Timer
+    Debug
+    ReparentAndSort(Theform, thesettings)
+    Debug "Timer = " & Timer
+    Debug
+  Endif
+  
+  If Upper(theform.name) <> "GENERALOPTIONS" Then
+    Try TheForm.AlreadyLoaded = True
+  Endif
+  If Lower(TheForm.name) = "fmain" Then LoadLeftSideTabsVisibility(FileName)
+End
+
+
+Public Sub OLD_Load(TheForm As Object, Filename As String)
   
   Dim myobj As Object
   Dim theSettings, SubSettings As String[]
@@ -552,6 +600,9 @@ Public Sub Save(TheForm As Object, FileName As String)
   Endif
   
   For Each TheObject In TheForm.controls
+    
+    'If theobject.name Like "#*" Then Stop
+    
     Try objvalid = (theobject.name <> "")
     If Error Then Goto returnlabel
     If (Not (Object.Type(TheObject) = "Menu")) And (Not Match(TheObject.name, ExcludedValues)) And (Not (theobject Is Separator)) Then
