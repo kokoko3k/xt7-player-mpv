@@ -215,7 +215,7 @@ Private Const TabStripMediaInfo As Integer = 2
 'mousedrag is incorrectly raised on dblclick on videogrouparea, so we use this:
 Public SwitchingFullScreen As Boolean = False
 
-Private UserStopped As Boolean = False 'if user has hit stop, don't advance in playlist.
+'Private UserStopped As Boolean = False 'if user has hit stop, don't advance in playlist.
 Private FirstPlay As Boolean = False ' used to avoid playing the media at startup if togglepls button is toggled
 
 Public LastDvdID As String = ""            'used to manage dvd disk changes
@@ -1634,7 +1634,7 @@ Public Sub GridRefreshWorkaround(librarygrid As Gridview)
 End
 
 Public Sub ButtonStop_Click()
-  UserStopped = True
+  'UserStopped = True
   InitABLoop()
   Stopmthumbler()
   previousfile_cover = ""
@@ -2447,7 +2447,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   Object.Attach(mplayer, Me, "mplayer")
   InitABLoop()
   DOHACKIMAGE = True
-  UserStopped = False
+  'UserStopped = False
   CACHEVALUE_OLD = ""
   CTIME_OLD = "0"
   CUSTOMTITLE_OLD = ""
@@ -3299,7 +3299,7 @@ Public Sub Mplayer_mykill(return_value As Integer)
   cachebar.w = 0
   ButtonPlay.picture = Picture["media-playback-start.png"]
   SubNotSet = True
-  If (Not Userstopped) And (Shutdown = "MEDIA") Then CountDown.engage
+  If (Not mplayer.user_stopped) And (Shutdown = "MEDIA") Then CountDown.engage
 
   If buttoncapture.value Then StopDumping(generaloptions.dvbfinaldir.text) 'fixmempv dumping
   buttoncapture.enabled = False
@@ -3318,9 +3318,8 @@ Public Sub Mplayer_mykill(return_value As Integer)
   ExecutePostCmd()
   videobox.cached = False
   'delete export file
-
      Try Kill mymeters.exportfile
-      If TogglePls.value And (Not UserStopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) Then
+      If TogglePls.value And (Not mplayer.user_stopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) Then
           Debug "end of media reached, playing next video..."
           Debug
           

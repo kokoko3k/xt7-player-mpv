@@ -31,7 +31,7 @@ Public commandline As String = ""
 
 Private InputPipe As String = ""
 
-
+Public user_stopped As Boolean = False
 
 
 Public Function executable(Optional timeout As Integer = -1) As String
@@ -545,8 +545,10 @@ Public Function do_play(filename As String, Optional string_options As String = 
     Stop
     Return 'fixmempv
   Endif
+  
   If ProcessRunningOvr() Then do_stop()
-
+  user_stopped = False 'take this right after the call to do_stop()
+  
   internal_opts = internal_options()
   For Each data In internal_opts
     mpvOptions[internal_opts.key] = data
@@ -928,6 +930,7 @@ Public Function do_stop() As Boolean
   stopping = True
 
   If Not restarting Then 
+    If ProcessRunningOvr() Then user_stopped = True
     ClearMediaProperties()
     properties_changed_runtime.clear
     StopOverBrightAnalyze()
