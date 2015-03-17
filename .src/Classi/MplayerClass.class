@@ -96,8 +96,8 @@ Public Function FillMultitracks()
   Dim T, Tcount As Integer
   Dim Type As String
   Dim id, name, lang, tmp, codec As String
-  Dim videofound As Boolean = False
   Dim properties As New String[]
+  Dim video_ok As Boolean = False
   
   If getP("fullpath") = "" Then Return
   
@@ -126,13 +126,17 @@ Public Function FillMultitracks()
     Select Case Type
       Case "audio"
         prop["audiotracks"].Add(Replace(tmp, "(unavailable)", "*"))
-      Case "video"
-        videofound = True
+      ' Case "video"
+        'multiple video tracks unsupported by xt7
       Case "sub"
         prop["subtitletracks"].Add(Replace(tmp, "(unavailable)", "*"))
     End Select
   Next
-  setP("audioonly", (Not videofound))
+
+  video_ok = (get_property_mpv("vo-configured") = "yes")
+  video_ok = video_ok And (get_property_mpv("current-vo") <> "(unavailable)")
+  setP("audioonly", (Not video_ok))
+
 End
 
 Public Function get_length() As String
