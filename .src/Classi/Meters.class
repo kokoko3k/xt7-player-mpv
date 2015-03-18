@@ -104,7 +104,7 @@ Public Sub Startt()
   Try timer1.start
 End
 
-'Private PREVAVG As Integer = 0
+Private PREVAVG As Integer = 0
 Private Sub updatebars(ByRef samples As Integer[])
   'prepare n progressbars an n channels
   'and refer to them using an array of objects
@@ -114,6 +114,7 @@ Private Sub updatebars(ByRef samples As Integer[])
   Dim widt As Integer
   Dim numbars As Integer 
   Dim o As Float 
+  Dim new_h As Integer
 
   If Not barsdone Then
     Select Case Lower(gvis)
@@ -139,7 +140,6 @@ Private Sub updatebars(ByRef samples As Integer[])
     barsdone = True
   Endif
 
-
   Select Case Lower(gvis)
     Case "vmeters" 
       'for every channel,make an average
@@ -153,10 +153,12 @@ Private Sub updatebars(ByRef samples As Integer[])
           Try total = total + Abs(samples[s])
         Next
          Try avg = (total Div SamplesPerChannel) 
-         'try avg = (CInt(total / SamplesPerChannel) + PREVAVG) Div 2
-         'PREVAVG = avg
-         bars[c - 1].h = (avg * maxh) Div 15000 
-         bars[c - 1].y = maxh - bars[c - 1].h '
+Try avg = (CInt(total / SamplesPerChannel) + PREVAVG) Div 2
+PREVAVG = avg
+         new_h = (avg * maxh) Div 15000 
+         If new_h = bars[c - 1].h Then new_h += Rand(1, 5)
+         bars[c - 1].h = new_h 
+         bars[c - 1].y = maxh - new_h
       Next
     Case "dft"
       o = 2 * Pi / (0 - (SamplesPerChannel / 3))
@@ -164,10 +166,12 @@ Private Sub updatebars(ByRef samples As Integer[])
         'fft = goertzelFilter(samples, frband[i], 0, (SamplesPerChannel Div 2)) / 1000000000
         fft = getpower(frband[i], samples, 0, (SamplesPerChannel Div 3), (timer1.delay / 1000), o) * (i * (i / (bars.count / 2)) + 1) '/ 10000
         fft = (Log2(fft + 0.00000001) * 10) - 100 
-        bars[i].h = Abs(CInt((fft * maxh) / 110))
-        bars[i].y = maxh - bars[i].h 
+        new_h = Abs(CInt((fft * maxh) / 110))
+        If new_h = bars[i].h Then new_h += Rand(-10, 10)
+        bars[i].h = new_h
+        bars[i].y = maxh - new_h
       Next
-
+      
   End Select
 End
 
