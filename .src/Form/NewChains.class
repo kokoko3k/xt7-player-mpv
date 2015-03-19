@@ -947,6 +947,7 @@ End
 Public Sub savecurrent()
   Dim MySettings As New SettingsClass
   MySettings.Save(Me, global.confpath & "/" & global.CurrentProfile)
+  global.save_cached_options(global.CurrentProfile) 
 End
 
 Public Sub SaveBTN_Click()
