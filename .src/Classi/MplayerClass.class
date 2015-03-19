@@ -1536,7 +1536,8 @@ Public Function set_property_mpv(name As String, data As String, Optional osd As
   data = Replace(data, q, s & q)        'replace " with \"
   data = Replace(data, s & s & q, s & q) 'replace \\" with \" (in case we quoted an already quoted string)
   If osd Then 
-    mpv_command(["set", name, data])
+    Debug 
+    mpv_command(["osd-msg", "set", name, data])
       Else
     mpv_command(["no-osd", "set", name, data])
   Endif
@@ -1677,21 +1678,21 @@ End
 
 Public Function do_seek(Percentual As String, Optional osd As Boolean = False) As Boolean
   If osd Then 
-    mpv_command(["seek", Percentual, "absolute-percent"])
+    mpv_command(["osd-msg", "seek", Percentual, "absolute-percent"])
       Else
     mpv_command(["no-osd", "seek", Percentual, "absolute-percent"])
   Endif
 End
 Public Function do_seek_to(newpos As String, Optional precise As Boolean = False, Optional osd As Boolean = False) As Boolean
   If osd Then 
-    mpv_command(["seek", newpos, "absolute"]) 'fixmempv precise paramters not implemented 
+    mpv_command(["osd-msg", "seek", newpos, "absolute"]) 'fixmempv precise paramters not implemented 
       Else
     mpv_command(["no-osd", "seek", newpos, "absolute"]) 'fixmempv precise paramters not implemented 
   Endif
 End
 Public Function do_seek_by(seconds As String, Optional osd As Boolean = False) As Boolean
   If osd Then 
-    mpv_command(["seek", seconds, "relative"])
+    mpv_command(["osd-msg", "seek", seconds, "relative"])
       Else
     mpv_command(["no-osd", "seek", seconds, "relative"])
   Endif
