@@ -1650,7 +1650,7 @@ Public Sub GridRefreshWorkaround(librarygrid As Gridview)
 End
 
 Public Sub ButtonStop_Click()
-  'UserStopped = True
+  global.mouse_wait(fmain, False)
   InitABLoop()
   Stopmthumbler()
   previousfile_cover = ""
@@ -2461,6 +2461,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   Dim opts As New Collection
   Dim data As String
 
+  global.mouse_wait(fmain, True)
+  
   Object.Attach(mplayer, Me, "mplayer")
   InitABLoop()
   DOHACKIMAGE = True
@@ -2472,6 +2474,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   Wait
   Stopmthumbler()
   'OneSecTimer.Stop()
+  
+
   
   needytcookie = False
   ButtonNowNext.visible = Lower(fullpath) Like "dvb://*"
@@ -2485,7 +2489,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   If fullpath = "" Then 
     Debug "Nothing to play :/"
     Debug
-    Return
+    Goto returnlabel
   Endif
   LASTAUDIOID = -1
   global.ResetApplyBtnColor()
@@ -2514,29 +2518,22 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
 
   firstplay = False
 
-  Try Last.mouse = Mouse.wait
   ButtonPlay.enabled = False
 
   ' fixmempv  
   ' If global.IsCdaudio(fullpath) Then
   '   GeneralOptions.FillCdAndDvdDevices()
   ' Endif
-
   ForcedAspectRT = "default"
   ResizeFactor = 0
   'LogWindow.streamtextbox.text = fullpath
-
   PrevValuecTime = 999999
-  
   mplayer.watched_properties = ["pause", "volume", "=chapter", "=time-pos", "length", "=length", "percent-pos", "cache", "media-title"]
-
   mplayer.clear_options() 
-  
   opts = static_options()
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next
-  
   opts = file_options(fullpath)
   For Each data In opts
     mplayer.set_option(opts.key, data)
@@ -2545,16 +2542,15 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next  
-
   mplayer.set_option("volume", Initialvolume())
 
   If Lower(fullpath) = "dvd://" Then fullpath = "dvd:///" & generaloptions.DVDDeviceText.text
   If Lower(fullpath) = "cdda://" Then fullpath = "cdda:///" & generaloptions.CDDADeviceText.text
-
   n = 0
   Repeat  'first try to play with generated options, then try to force with ytdl
     'If mplayer.do_play(mplayer.Media_FullPath, mplayer.currentoptions, False, MkvSubsWorkaround, cookieopts, dumpfile, doanalyze) Then
-    If Not mplayer.do_play(fullpath) Then Return
+
+    If Not mplayer.do_play(fullpath) Then Goto returnlabel
     ButtonPlay.picture = Picture["media-playback-pause.png"]
     CorrectAreaAspect() 'fixmempv: lo chiamo subito dopo il play... e funziona anche senza informazioni di larghezza e altezza con mpv !?
                         '...ho scritto fixmempv perchè lo chiamo poi due volte, anche sotto.
@@ -2562,6 +2558,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
     ' ' ' zzzfake.cachingbox.Hide
     ' ' ' zzzfake.cachingbox.playing = False
     Wait
+
     timeA = Timer()
     mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value)
     Debug "mplayer.get_mediainfo()", Timer() - timeA
@@ -2616,7 +2613,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   CoverManager.HitCancel = True
   If GeneralOptions.CoverCHK2.value Then CoverRefresh()
 
-  Try Last.mouse = Mouse.default
   ButtonPlay.enabled = True
   MenumediaExplorer.Enabled = True
   addhistory(FullPath)
@@ -2669,6 +2665,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
     Endif
   Endif
 
+  ReturnLabel:
+  global.mouse_wait(fmain, False)
   Return True
 End
 

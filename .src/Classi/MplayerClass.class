@@ -684,8 +684,7 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
 ' '       Next
 ' '     Endif
 ' '   ''
-
-  If Not waitplayback(1000) Then
+  If Not waitplayback(3000) Then
     Debug "EE", "Playback didn't started or timeout waiting for it to start"
     do_stop()
     Return False

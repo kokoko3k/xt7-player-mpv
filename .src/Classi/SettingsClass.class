@@ -287,10 +287,10 @@ Public Sub Load(TheForm As Object, Filename As String)
         Subsettings = NameAndProperties(obj_name, thesettings)
         If subsettings <> Null Then  'if that object has some settings saved
           Try Reconfigure(myobj, Subsettings, TheForm)
-          If Error Then 
-            Debug Error.Text
-            Stop
-          Endif
+          ' If Error Then 
+          '   Debug Error.Text
+          '   Stop
+          ' Endif
         Endif
       Endif
     Endif
