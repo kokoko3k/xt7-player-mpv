@@ -35,7 +35,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "drc", "karaoke", "extrastereo", "scaletempo", "volume", "CustomAudio1", "CustomAudio2", "CustomAudio3"]
+  filters_audio_list = ["equalizer", "drc", "karaoke", "extrastereo", "scaletempo", "volume", "CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"]
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
       draw_list_item(filters_audio_container, filter, True)
@@ -144,17 +144,18 @@ End
 
 
 Private Sub ReDraw_Ordered(item_container As Scrollview, chain_items As String[])
-  Dim i, j As Integer
+  Dim i, j, t As Integer
   Dim childrens As New Object[]
 
   For i = 0 To item_container.Children.count - 1
     childrens.add(item_container.Children[i])
+    t += 1
   Next 'i
   
   For i = item_container.Children.count - 1 DownTo 0
     If item_container.Children[i] Is Hbox Then item_container.Children[i].reparent(Me)
   Next 'i
-  
+
   For i = 0 To chain_items.max
     For j = 0 To childrens.Max
       If childrens[j].name = chain_items[i] Then
@@ -164,7 +165,12 @@ Private Sub ReDraw_Ordered(item_container As Scrollview, chain_items As String[]
       Endif
     Next
   Next
-
+  'if we add some filter/drivers and the user has a previous item order selected,
+  'then we must reparent the newly added filters too.
+  While childrens.count > 0
+   childrens[0].reparent(item_container)
+   childrens.Delete(0)
+  Wend
 
 End
 
@@ -312,10 +318,19 @@ Private Sub draw_filters_audio_cfg()
   Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable)
   AllParams.Clear
 
+
+  'lavcac3enc
+  AllParams.add(["ROCHOOSE", "tospdif=", "yes", "no", "lavcac3enc1", ("Output raw AC-3 stream if no, output to S/PDIF for pass-through if yes (default).")])
+  AllParams.add(["ROCHOOSE", "bitrate=", "auto", "96", "128", "192", "224", "320", "448", "512", "640", "lavcac3enc2", ("The bitrate use for the AC-3 stream.")])
+  AllParams.add(["ROCHOOSE", "minch=", "3", "2", "3", "4", "5", "6", "lavcac3enc3", ("If the input channel number is less than <minchn>, the filter will detach itself (default: 3).")])
+  AllParams.Add(["COMMENT", "commento mio", "lavcac30"])
+  Global.DrawGui(AllParams, "lavcac3enc", aTabstrip, switchable)
+  AllParams.Clear
+  
   
   'Karaoke
-    Global.DrawGui(AllParams, "karaoke", aTabstrip, NotSwitchable)
-    AllParams.Clear
+  Global.DrawGui(AllParams, "karaoke", aTabstrip, NotSwitchable)
+  AllParams.Clear
 
 
 
@@ -1413,4 +1428,5 @@ End
 Public Sub CheckBox3gl_Click()
   If Last.value Then CheckBox2gl.value = False
 End
+
 
