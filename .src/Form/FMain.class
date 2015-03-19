@@ -4415,53 +4415,19 @@ Public Sub HotkeysMenu_Click()
   
 End
 
-' Public Sub PauseUnPause(doPause As Boolean)
-'   If dopause Then
-'     'OneSecTimer.stop
-'     ButtonPlay.picture = Picture["media-playback-start.png"]
-'     mplayer.Send("pausing get_property paused") 'in questo modo abbiamo certamente una pausa, non uno switch.
-'       Else
-'     If mplayer.paused() Then
-'       OneSecTimer.start
-'       ButtonPlay.picture = Picture["media-playback-pause.png"]    
-'       mplayer.Send("Pause")
-'     Endif
-'   Endif
-' End
-' 
-' 
-' Public Sub HandlePause()
-'   Dim PreviousFullscreenstate As Boolean
-'   Dim doubleclicktime As Float = 0.5
-'   Previousfullscreenstate = fsform.fullscreen
-' 
-'   If mplayer.paused() Then
-'     PauseUnPause(False)
-'     'wait a while to see if we are changing fullscreenmode
-'     Wait doubleclicktime
-'     If fsform.fullscreen <> Previousfullscreenstate Then
-'       PauseUnPause(True)
-'     Endif
-'       Else
-'     PauseUnPause(True)
-'     'wait a while to see if we are changing fullscreenmode
-'     Wait doubleclicktime
-'     If fsform.fullscreen <> Previousfullscreenstate Then
-'       PauseUnPause(False)
-'     Endif
-'   Endif
-' 
-' End
-
-'HotKeys Handling *******************************************
-
 
 Public Sub Show_runtime_infos()
 
   Dim prop As New Collection
   Dim msg As String
   Dim name, data As String
-  prop["osd-height"] = "OSD H"
+  Dim screen_h As Integer
+  Dim max_screen_lines As Integer
+  Dim osd_font_size As Float
+  Dim scale_new As String
+  Dim scale_old As String = "1"
+  Dim msg_time As Integer = 4000
+  
   prop["Filepath"] = "path"
   prop["---"] = " "
   
@@ -4495,13 +4461,8 @@ Public Sub Show_runtime_infos()
   prop["audio codec"] = "audio-codec"
   prop["audio bitrate (packet)"] = "packet-audio-bitrate"
   prop["audio channels"] = "audio-channels"
-  prop["-.----"] = " "
+  prop["------"] = " "
   
-  
-
-  
-  
-
   
   For Each prop
     name = prop.Key
@@ -4514,13 +4475,24 @@ Public Sub Show_runtime_infos()
       msg &= "\\n"
     Endif
   Next
+
+
+  'optionally set osd scale so that all of the properties fits into the screen
+  screen_h = Screenbypos(videobox.x + 10, videobox.y - 10).H
+  Try osd_font_size = CFloat(mplayer.get_property_mpv("options/osd-font-size"))
+  If Not Error Then
+    max_screen_lines = CInt((screen_h / osd_font_size) / 1.3) - 4 '-4 to be safe
+    If max_screen_lines < prop.count Then
+      scale_new = CStr(max_screen_lines / prop.count)
+      Try scale_old = mplayer.get_property_mpv("osd-scale")
+      mplayer.set_property_mpv("osd-scale", scale_new)
+    Endif
+  Endif
   
-  
-  mplayer.ShowText(msg, 4000)
-  
-  'mplayer.ShowText("ciao \\n ${time-pos} ", 1000)
-  'Debug "HA!"
-'echo show_text \"linea1 \\n   time=\${time-pos}           \\n  linea 3\" >/tmp/input
+  mplayer.ShowText(msg, msg_time)
+  Wait (msg_time / 900)
+  mplayer.set_property_mpv("osd-scale", scale_old)
+
 End
 
 
