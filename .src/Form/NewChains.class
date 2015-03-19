@@ -323,7 +323,6 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["ROCHOOSE", "tospdif=", "yes", "no", "lavcac3enc1", ("Output raw AC-3 stream if no, output to S/PDIF for pass-through if yes (default).")])
   AllParams.add(["ROCHOOSE", "bitrate=", "auto", "96", "128", "192", "224", "320", "448", "512", "640", "lavcac3enc2", ("The bitrate use for the AC-3 stream.")])
   AllParams.add(["ROCHOOSE", "minch=", "3", "2", "3", "4", "5", "6", "lavcac3enc3", ("If the input channel number is less than <minchn>, the filter will detach itself (default: 3).")])
-  AllParams.Add(["COMMENT", "commento mio", "lavcac30"])
   Global.DrawGui(AllParams, "lavcac3enc", aTabstrip, switchable)
   AllParams.Clear
   
