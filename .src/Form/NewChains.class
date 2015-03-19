@@ -122,8 +122,10 @@ Dim t As Integer
       Object.unLock(filter_checkbox)
       
     'finally the text label; his name holds the item name information
-    filter_text = New Label(filter_box) As "filter_label"
+    filter_text = New Textlabel(filter_box) As "filter_label"
+      filter_text.name = "filter_text." & item_name
       filter_text.text = item_name
+      filter_text.Alignment = Align.Left
       filter_text.expand = True
       
 End
@@ -196,7 +198,7 @@ Private filter_box As Hbox
 Private filter_checkbox As CheckBox
 Private filter_button_up As Button
 Private filter_button_down As Button
-Private filter_text As Label
+Private filter_text As Textlabel
 
 
 Public Sub filter_button_up_click()
@@ -219,6 +221,11 @@ End
 
 Public Sub filter_checkbox_Click()
     select_item(Last)
+End
+
+
+Public Sub filter_label_Menu()
+  If Lower(Last.parent.name) Like "custom*" Then Last.text = MyAskName.Ask(("Rename the current filter:"), Last.text, False)
 End
 
 
