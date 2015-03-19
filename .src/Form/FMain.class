@@ -4461,7 +4461,7 @@ Public Sub Show_runtime_infos()
   Dim prop As New Collection
   Dim msg As String
   Dim name, data As String
-
+  prop["osd-height"] = "OSD H"
   prop["Filepath"] = "path"
   prop["---"] = " "
   

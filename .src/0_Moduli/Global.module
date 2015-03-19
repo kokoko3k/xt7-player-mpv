@@ -1117,22 +1117,22 @@ End
 Public mousewait_timer As Timer
 Private mouse_waiting_obj As Object
 Public Sub mouse_wait(aContainer As Object, is_waiting As Boolean)
+  Try mouse_waiting_obj.mouse = Mouse.default 
   If is_waiting Then
-    mousewait_timer = New Timer As "mousewait_timer"
-    mouse_waiting_obj = aContainer
-    aContainer.mouse = Mouse.Wait
-    mousewait_timer.delay = 500
-    mousewait_timer.start
+    Try mousewait_timer = New Timer As "mousewait_timer"
+    Try mouse_waiting_obj = aContainer
+    Try aContainer.mouse = Mouse.Wait
+    Try mousewait_timer.delay = 500
+    Try mousewait_timer.start
       Else
-    mousewait_timer.stop
-    mouse_waiting_obj = aContainer
-    aContainer.mouse = Mouse.default
+    Try mousewait_timer.stop
+    Try mouse_waiting_obj = aContainer
+    Try aContainer.mouse = Mouse.default
   Endif
 End
 
 Public Sub mousewait_timer_timer()
-  Debug
   If mouse_waiting_obj.mouse = Mouse.wait Then Return
-  mouse_waiting_obj.mouse = Mouse.wait
+  Try mouse_waiting_obj.mouse = Mouse.wait
 End
 

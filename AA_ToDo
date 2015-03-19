@@ -673,12 +673,16 @@ prova a impostare matrice 3x3 con valori alti, poi metti 11x11, poi 3x3 etc...
 
 display-fps nelle proprietà
 
+
+
 poi imposta un font più piccolo quando mostri le proprietà ?
+
 
 equalizzatore video:
   vdpau+vdpau e opengl sono identici.
   l'unica cosa che manca a vdpau è la correzione gamma
   e per assurdo l'immagine è migliore
+
 
   permettere all'utente di distribuire i pesi per l'overbright?
 
@@ -695,14 +699,6 @@ equalizzatore video:
 
 dynagui non serve più, praticamente, e nemmeno chains, è il caso di rimuoverli dai file
 
-
-si ci vuole troppo tempo per riempire la cache, cosa succede.. timeout?
-  si blocca tutto, non ho capito perchè.
-  puoi testare così:
-  mpv /tmp/pipe.avi --msg-level=cache=v --cache=10000 --cache-initial=10000
-  ...dove pipe.avi è una pipe riempita con:
-  cat realvideofile.avi | pv -L 200k > /tmp/pipe.avi
-  
 
 opzione per rinominare i filtri custom?
 
