@@ -522,9 +522,25 @@ Public Sub AllInit_Post()
     global.currentprofile = "default"
     Try UpdateProfilesTabList()
   Endif
-
+  Try MakeProfileMenu()
   Try GetLastVersion()
 
+End
+
+Private Sub MakeProfileMenu()
+  Dim j As Integer
+  Dim pmenu As Menu
+  While MenuSwitchProfile.Children.Count > 0
+    MenuSwitchProfile.Children[0].delete
+  Wend
+  For j = 0 To ProfilesListBox.count - 1
+    pmenu = New Menu(MenuSwitchProfile) As "menuprofileselect"
+    pmenu.text = ProfilesListBox[j].Text
+    pmenu.tag = ProfilesListBox[j].Text
+    pmenu.Checked = (global.CurrentProfile = pmenu.tag)
+    If (Not pmenu.checked) Then pmenu.picture = picture["icon:/16/properties"]
+  Next
+  
 End
 
 Private RecentFileEntry As Menu
@@ -7488,11 +7504,9 @@ Public Sub menutabs_click()
 End
 
 Public Sub menuprofileselect_Click()
-
   Global.CurrentProfile = Last.tag
   ReLoadCurrentProfile()
   Try UpdateProfilesTabList()
-
 End
 
 Private Sub TabOrientation()
@@ -7572,7 +7586,7 @@ Public Sub UpdateProfilesTabList()
     If ProfilesListBox[i].text = Global.currentprofile Then ProfilesListBox[i].selected = True
   Next 'i
   CurrentProfileLabel.text = ("Current profile: ") & " " & Global.currentprofile
-  
+  MakeProfileMenu()
 End
 
 Public Sub ProfileDeleteBTN_Click()
