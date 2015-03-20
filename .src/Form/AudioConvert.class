@@ -90,7 +90,6 @@ Public Sub ConvertandSaveAudio()
   While i <= items.max
     Me.text = fcaption & " - " & CStr(i + 1) & "/" & CStr(items.max + 1)
     currentstream = items[i]
-    TextArea1.text &= items[i] & "\n"
     yttitle = ""
     If Youtube.IsYoutubeLink(currentstream) Then
       TextArea1.text &= ("Seems a youtube link, getting real stream url and title...") & "\n"
@@ -103,11 +102,6 @@ Public Sub ConvertandSaveAudio()
       Endif
     Endif
     
-
-    TextArea1.text &= ("Done.") & "\n"
-    TextArea1.text &= "\n"
-    TextArea1.text &= ("Encoding...") & "\n"
-
       If yttitle = "" Then 
         finalfile = outputfolder & "/" & File.Name(currentstream)
           Else
@@ -129,20 +123,32 @@ Public Sub ConvertandSaveAudio()
       Case Like "*wav*"
         mymplayer.set_option("of", "wav")
     End Select
-
+    mymplayer.set_option("msg-level", "all=status")
     mymplayer.do_play(currentstream)
     mymplayer.waitplayback(100)
     
-    TextArea1.text &= "\n" & mymplayer.commandline & "\n"
-    Try TextArea1.text &= mymplayer.stdout
+    'TextArea1.text &= "\n" & mymplayer.commandline & "\n"
+    TextArea1.text &= ("Source:") & " " & File.Name(currentstream) & "\n"
+    TextArea1.text &= ("Destination:") & " " & finalfile & "\n"
+
+    Wait
     While mymplayer.ProcessRunningOvr()
-       If RequestStopALL Then Goto returnlabel
-       If RequestSkip Then Goto nextlabel
+       If RequestStopALL Then 
+        TextArea1.text &= ("User stopped.") & "\n\n"
+        Goto returnlabel
+       Endif
+       If RequestSkip Then 
+        TextArea1.text &= ("Skipped.") & "\n\n"
+        Goto nextlabel
+       Endif
        Try Progressbar1.value = mymplayer.get_property_mpv("percent-pos") / 100
        Try Progressbar2.value = (Progressbar1.value / (items.max + 1)) + (i / (items.max + 1))
        Wait 0.1
     Wend
-
+    'Try TextArea1.text &= mymplayer.stdout
+    'Try TextArea1.text &= mymplayer.modules_out
+    'Try TextArea1.text &= mymplayer.stderr
+    
     TextArea1.text &= ("Done.") & "\n"
     TextArea1.text &= "\n"
     Debug outstr
@@ -170,7 +176,6 @@ Public Sub ConvertandSaveAudio()
   converting = False
   Me.text = ("Updating Library/Playlist")
   Wait
-Stop
   For Each finalitem In converteditems
     If CheckLIB.Value Then FMain.MyPlaylist.AddFile(FMain.librarygrid, finalitem, False)
     If CheckPLS.Value Then FMain.MyLibrary.AddFile(FMain.playlistgrid, finalitem, False)
