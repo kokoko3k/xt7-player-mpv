@@ -4,6 +4,7 @@
   MoveScaled(0,0,62,47)
   Text = ("Realtime Controls")
   Icon = Picture["icon:/16/clock"]
+  Persistent = True
   Stacking = Window.Above
   Arrangement = Arrange.Vertical
   AutoResize = True
@@ -32,8 +33,10 @@
       MoveScaled(17,1,2,3)
       Expand = True
     }
-    { ClearZoomButton ToolButton
+    { ClearZoomButton ToolButton clears
+      Name = "ClearZoomButton"
       MoveScaled(18,0,4,4)
+      Tag = "1000"
       Picture = Picture["icon:/16/clear"]
     }
     { PanscanSlider Slider
@@ -71,6 +74,7 @@
     { ToolButton1 ToolButton Clears
       Name = "ToolButton1"
       MoveScaled(18,0,4,4)
+      Tag = "0"
       Picture = Picture["icon:/16/clear"]
     }
     { AudioDelaySlider Slider
@@ -111,6 +115,7 @@
     { ToolButton2 ToolButton Clears
       Name = "ToolButton2"
       MoveScaled(18,0,4,4)
+      Tag = "0"
       Picture = Picture["icon:/16/clear"]
     }
     { SubDelaySlider Slider
@@ -145,8 +150,10 @@
       MoveScaled(17,0,3,4)
       Expand = True
     }
-    { ToolButton4 ToolButton
+    { ToolButton4 ToolButton clears
+      Name = "ToolButton4"
       MoveScaled(19,0,4,4)
+      Tag = "10"
       Picture = Picture["icon:/16/clear"]
     }
     { SubScaleSlider Slider
@@ -181,6 +188,7 @@
     { ToolButton3 ToolButton Clears
       Name = "ToolButton3"
       MoveScaled(19,-1,4,4)
+      Tag = "100"
       Picture = Picture["icon:/16/clear"]
     }
     { SubPositionSlider Slider
@@ -191,6 +199,7 @@
     { SubPositionSpinBox SpinBox
       MoveScaled(48,0,10,4)
       MinValue = -100
+      Value = 100
     }
   }
   { AlignmentHBox1 HBox

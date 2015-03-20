@@ -43,20 +43,12 @@ Public Sub SubDelaySlider_Change()
 End
 
 Public Sub Clears_Click()
-Stop
   If (Last Is Toolbutton) And (Last.next Is Slider) And (Last.next.next Is Spinbox) Then
-    Try Last.next.value = 0
-    Try Last.next.next.value = 0
+    Try Last.next.value = Last.tag
+    Try Last.next.next.value = Last.tag
   Endif
 End
 
-
-Public Sub ClearZoomButton_Click()
-  If (Last Is Toolbutton) And (Last.next Is Slider) And (Last.next.next Is Spinbox) Then
-    Try Last.next.value = 10000
-    Try Last.next.next.value = 10000
-  Endif
-End
 
 Public Sub SubPositionSlider_Change()
   If (Last Is Slider) And (Last.next Is Spinbox) Then
@@ -84,12 +76,6 @@ Public Sub SubScaleSlider_Change()
   Endif
 End
 
-
-Public Sub ToolButton4_Click()
-
-  SubScaleSlider.value = 10
-
-End
 
 
 Public Sub FrameDropCHK_Click()
