@@ -96,7 +96,7 @@
           Enabled = False
           { StreamsAudioMenu Menu
             Text = ("Audio")
-            Picture = Picture["speaker_small.png"]
+            Picture = Picture["icon:/small/volume"]
             Enabled = False
           }
           { StreamsSubtitlesMenu Menu
@@ -395,19 +395,19 @@
       }
       { AudioSubMenu Menu
         Text = ("Audio")
-        Picture = Picture["speaker_small.png"]
+        Picture = Picture["icon:/small/volume"]
         { MenuConfigureGeneralAudio Menu
           Text = ("General Options") & "..."
-          Picture = Picture["speaker_small.png"]
+          Picture = Picture["icon:/small/volume"]
         }
         { MenuConfigureAudioFilters Menu
           Text = ("Filters") & "..."
-          Picture = Picture["speaker_small.png"]
+          Picture = Picture["icon:/small/volume"]
         }
         { MenuAudioDriver Menu MenuAudioDriver
           Name = "MenuAudioDriver"
           Text = ("Driver") & "..."
-          Picture = Picture["speaker_small.png"]
+          Picture = Picture["icon:/small/volume"]
         }
       }
       { Separator11 Menu
