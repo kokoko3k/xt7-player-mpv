@@ -43,6 +43,7 @@ Public Sub SubDelaySlider_Change()
 End
 
 Public Sub Clears_Click()
+Stop
   If (Last Is Toolbutton) And (Last.next Is Slider) And (Last.next.next Is Spinbox) Then
     Try Last.next.value = 0
     Try Last.next.next.value = 0

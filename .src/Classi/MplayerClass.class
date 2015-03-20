@@ -298,7 +298,6 @@ End
 Public Sub playerprocess_read(Optional injected As String = "")
   Dim sBuf As String, question, answer As String
   Try Read #playerprocess, sBuf, -4096
-  Debug sBuf
   If sBuf Like "ANS_*|*" Then
     For Each sBuf In Split(sbuf, "\n", "", True)
       question = MidC(sBuf, "_", "|")
