@@ -812,7 +812,6 @@ Public Sub ArrangeCpl(Optional NumButtonsCPL As Integer = 9)
 
   Dim ButtonWovr, ButtonHovr As Integer
   Dim TheObject As Object
-
   ' NumButtonsCPL = 0
   ' 'fix bottom panel for high sized fonts
   ' '---------------------------------------------------------------------------
@@ -829,11 +828,11 @@ Public Sub ArrangeCpl(Optional NumButtonsCPL As Integer = 9)
   Endif
 
   For Each theobject In ControlPanel.Children
-    If theobject.visible Then
+    'If theobject.visible Then
       'If Not theobject Is Panel Then
         If Not (theobject Is Panel) Then theobject.w = ButtonWovr
         theobject.h = ButtonHovr
-    Endif
+    'Endif
   Next
 
   For Each theobject In ControlPanelright.Children
@@ -2651,7 +2650,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   Try buttoncapture.enabled = buttoncapture.enabled Or (mplayer.getP("fullpath") Like "*dvb*://*") 'all dvb channels
   Try buttoncapture.enabled = buttoncapture.enabled Or (mplayer.getP("fullpath") Like "*dvd*://*") 'all dvd
   buttoncapture.visible = buttoncapture.enabled
-
   ABLoopButton.visible = (mplayer.getP("partially-seekable") = "no")
   ArrangeCpl()
   If GeneralOptions.ToolTipsCHKDBUS.value Then Try ExportDbusProperties()
