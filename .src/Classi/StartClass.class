@@ -25,7 +25,6 @@ End
 
 Static Public Sub Application_Signal(Sig As Integer)
   Debug "Got Signal " & sig & " Quitting as clean as possible"
-  Return
   ProcessSignals(False)
   FMain.Close()
   Quit

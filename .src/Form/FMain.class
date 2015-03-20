@@ -1605,7 +1605,6 @@ Public Sub ButtonOpen_Click()
   Media_Next_path = DConv(myDialog.Path)
   TogglePls.value = False
   Play(DConv(myDialog.Path))
-  
 End
 
 Private prevmpoutput As String = "__________"
