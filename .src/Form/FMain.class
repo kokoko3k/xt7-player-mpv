@@ -1604,7 +1604,7 @@ Public Sub ButtonOpen_Click()
   If myDialog.OpenFile() Then Return
   Media_Next_path = DConv(myDialog.Path)
   TogglePls.value = False
-  Play(mplayer.getP("fullpath"))
+  Play(DConv(myDialog.Path))
   
 End
 
