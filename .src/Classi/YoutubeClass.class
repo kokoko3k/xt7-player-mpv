@@ -297,7 +297,8 @@ Public Sub AddMoreResultsItem(tree As Treeview, feed As String, resizew As Integ
   Dim resizeh As Integer
   resizeh = (resizew * 3) Div 4
   mykey = "__MORERESULTS__" & CStr(Rnd(0, 9999999999999999999))
-  thumb = picture.Load("MoreResults.png").Image.Stretch(resizew, resizeh).Picture
+  thumb = picture["icon:/" & (resizew Div 2) & "/find"]
+
   'find parent text
   Try tmpkey = tree.item.key
   Try tree.MoveTo(tree.current.key)
