@@ -11,37 +11,28 @@ Public Sub Start()
   Print "Options:"
   Print "-append (add the media specified before the option to the playlist)"
   Print "Eg: xt7-player mediafile.avi -append"
-  Print "-pluginmode tells xt7 that it is embedded into another application"
   Print ""
   Print ""
   Debug "Start at: " & Timer
   Debug
   global.init()
 
-  If (Application.Args.count > 1) Then
-      For i = 1 To Application.Args.Count - 1
-      If Application.Args[i] = "-pluginmode" Then
-        global.pluginmode = True
-      Endif
-    Next
+  For i = 1 To Application.Args.Count - 1
 
-    For i = 1 To Application.Args.Count - 1
+    If Application.Args[i] = "-append" Then '-append specified, look for next
+      Try Sock_Append(Application.Args[i + 1])
+      Debug "Appended to the running playlist"
+      Quit
+    Endif
+          
+    If Not (Application.Args[i] Like "-*") Then 'file or url specified, maininit manages it
+      Try Global.Center(Fmain, Me)
+      FMain.maininit()
+      Return
+    Endif
 
-      If Application.Args[i] = "-append" Then '-append specified, look for next
-        Try Sock_Append(Application.Args[i + 1])
-        Debug "Appended to the running playlist"
-        Quit
-      Endif
-            
-      If Not (Application.Args[i] Like "-*") Then 'file or url specified, maininit manages it
-        Try Global.Center(Fmain, Me)
-        FMain.maininit()
-        Return
-      Endif
+  Next
 
-    Next
-  Endif
-      
   'else is implicit, make sure every condition up there will return or quit
      Try Global.Center(Fmain, Me)
      FMain.maininit()

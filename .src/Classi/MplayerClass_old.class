@@ -49,10 +49,6 @@ Public Function executable() As String
 
   'stop idle mplayer after 10 minutes
   If ImIdlePlaying Then 
-    If global.pluginmode Then timeout = 10 'or after 10 seconds in pluginmode
-    out &= "timeout -s 9 " & timeout & " "
-      Else
-    'add c locale to workaround somw buggy ladspa filters which calls setlocale
     out &= "LC_ALL=C "
   Endif
   proxy = global.proxyfromenv()

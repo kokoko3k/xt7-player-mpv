@@ -403,12 +403,7 @@ Public Sub AllInit_Pre()
     Debug "the User likes cover, so we prebuffer cover list In background..."
     Debug
   Endif
-  
-  If global.pluginmode Then 
-    Leftsidepanel.hide
-    bottomvbox.hide
-  Endif
-  
+
   HideGrid(PlaylistGrid)
   HideGrid(LibraryGrid)
   HideGrid(dvbtGrid)
@@ -478,11 +473,9 @@ Public Sub AllInit_Post()
   'Prepare our xbindkeys link, we'll need it to ensure only one at time.
   Shell ("ln -s $(which xbindkeys) " & global.confpath & "/Xt7BindKeys") For Read
   'start to listen for remote commands, one connection is ok.
-  If Not global.pluginmode Then
-    Mysocket.type = Net.Unix
-    Mysocket.path = global.confpath & "/.localsocket"
-    Mysocket.Listen(1)
-  Endif
+  Mysocket.type = Net.Unix
+  Mysocket.path = global.confpath & "/.localsocket"
+  Mysocket.Listen(1)
   InitGenresTag()
   Wait 0.5
   SetStyle_later()
@@ -818,15 +811,7 @@ Public Sub ArrangeCpl(Optional NumButtonsCPL As Integer = 9)
    ButtonWovr = 36 '36
    ButtonHovr = 36 '36
    PaddingOvr = 4 '5
-  ' 
-  If global.pluginmode Then
-    ' ButtonWovr = 24
-    ' buttonhovr = 28
-    PaddingOvr = 2
-    'panel9.padding = 8
-    volumecontainer.visible = True
-  Endif
-
+   
   For Each theobject In ControlPanel.Children
     'If theobject.visible Then
       'If Not theobject Is Panel Then
@@ -849,7 +834,6 @@ Public Sub ArrangeCpl(Optional NumButtonsCPL As Integer = 9)
   ControlPanel.w = controlframe.w - controlpanelright.w - (paddingovr * 2)
   controlpanelright.y = ControlPanel.y
   Statusbar1.h = Statusbar1.Font.TextHeight("[IJ]") 
-  If global.pluginmode Then statusbar1.visible = False
   SaveVolumeSlider.y = SaveVolumeSlider.Parent.h Div 6
 
 End
@@ -876,18 +860,13 @@ Public Sub SetStyle_early()
   cachebar.h = (fmain.font.textHeight("iJ") Div 4)
   
   'Set font size AND stile OF the whole form; beware the AudioForm!
-  If global.pluginmode Then 
-    Maintoolbar.h = 0
-    toolbarbackground.hide
-    'cachebar.h = 6
+
+  If desktop.Height > 600 Then
+    Maintoolbar.h = 32
   Else
-    If desktop.Height > 600 Then
-      Maintoolbar.h = 32
-    Else
-      Maintoolbar.h = 24
-    Endif
+    Maintoolbar.h = 24
   Endif
-  ' 
+
   ArrangeCpl(9)
   
   If audioform.AudioPanel.parent = Rightsidepanel Then
@@ -1085,17 +1064,15 @@ Public Sub MainInit()
     Shell "rm " & global.confpath & "/.InputPipes/Xt7Input-* >/dev/null 2>&1" Wait ' To out
     Shell "rm " & global.confpath & "/.ExportFiles/* >/dev/null 2>&1" Wait ' To out
   Endif
-  If Not global.pluginmode Then
-    If global.currentprofile = "" Then
-      global.CurrentProfile = MySettings.GetLastProfile(global.confpath)
-    Endif
-  Else
-    global.currentprofile = "pluginmode"
+
+  If global.currentprofile = "" Then
+    global.CurrentProfile = MySettings.GetLastProfile(global.confpath)
   Endif
+
   Try UpdateProfilesTabList()
 
   If (Application.Args.count >= 2) Then
-    If alreadyrunning And (Not global.pluginmode) Then
+    If alreadyrunning Then
       'try to play the file to the running xt7-player:
       zzzfake.sock_play(Application.Args[1])
       Fastquit = True
@@ -1105,9 +1082,7 @@ Public Sub MainInit()
       
       FirstPlay = True 'used to  avoid playing media at start when togglepls button is toggled
       Me.mouse = mouse.Wait
-      If Not global.pluginmode Then
-        FMain.LoadFormGeometry()
-      Endif
+      FMain.LoadFormGeometry()
       fmain.Show
       Wait 
       If Not (Application.Args[1] Like "-*") Then 
@@ -1117,7 +1092,7 @@ Public Sub MainInit()
         Play(DConv(Application.Args[1]))
       Endif
       Me.Mouse = mouse.Default
-      If Not global.pluginmode Then havetoshowbrowsetab = True
+      havetoshowbrowsetab = True
     Endif
   Endif
   If Application.Args.count = 1 Then 
@@ -1322,7 +1297,7 @@ Public Sub Form_Close()
   Try trayicon1.Delete
   Closing = True
   
-  If Not (fastquit Or global.pluginmode) Then
+  If (Not fastquit) Then
     fmain.SaveFormGeometry()
     Me.hide
     If mplayer.ProcessRunningOvr() Then
@@ -1371,9 +1346,7 @@ Public Sub Form_Close()
   Try AudioConvert.hide
   Debug "hidden all forms"
   Debug
-  
-  Try timerpluginmode.stop
-  
+
   If ChooseAspect.visible Then ChooseAspect.CancelBtn_Click
   
   'delete temporary covers on exit:
@@ -1412,7 +1385,7 @@ Public Sub Form_Close()
     Endif
   Endif
 
-  If Not (fastquit Or global.pluginmode) Then
+  If (Not fastquit) Then
     MySettings.WriteLastProfile(Global.confpath, global.CurrentProfile)
     Debug "wrote last profile"
     Debug
@@ -3844,12 +3817,6 @@ Public Sub ArrangeBottmVbox()
 End
 
 Private Sub CostrainFormSizes()
-  If (global.pluginmode) Then
-    If Not fsform.fullscreen Then
-      ArrangeBottmVbox()
-    Endif
-  Endif
-  
   MainToolbar.width = FMain.clientw - 16
   If statusbar1.visible Then
     BottomVbox.h = controlframe.h + Statusbar1.h ' + cachebar.h 
@@ -4007,7 +3974,7 @@ Public Sub SwitchToWindow()
   
   'show the menu
   AllmenuVisible(True)
-  If Not global.pluginmode Then toolbarbackground.show
+  toolbarbackground.show
   'restore the form position
   LeftsidePanel.Visible = LeftsideWasVisible
   
@@ -4037,7 +4004,6 @@ Public Sub SwitchToWindow()
   controlframe.ignore = False
   statusbar1.ignore = False
   CostrainFormSizes()
-  If global.pluginmode Then bottomvbox.Hide
   FsForm.hide
   FsForm.FullScreen = False
   fmain.Maximized = winmax
@@ -4136,7 +4102,7 @@ Public Sub TimerFullScreen_Timer()
   
   If AttachZone2 Then
     MainToolBar.visible = True
-    If Not global.pluginmode Then toolbarbackground.show
+    toolbarbackground.show
     AllmenuVisible(True)
   Endif
   
@@ -5476,7 +5442,7 @@ Public Sub Hsplit1_MyRefresh()
     If Not VideoBox.visible Then videobox.show
     rightsidepanel.visible = True
     audioform.AudioPanel.visible = True
-    If Not global.pluginmode Then toolbarbackground.show
+    toolbarbackground.show
   Endif
   YouVideoInfo.w = scrollviewyt.w - 64
   Try MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, albumviewtexlen)
@@ -10358,38 +10324,7 @@ Public Sub VideoAreaGroup_MouseMove()
   '   Try mplayer.Send("set_mouse_pos " & (mouse.screenx - VideoBox.screenx) & " " & (mouse.screeny - VideoBox.screeny))
   '   Return
   ' Endif
-  If global.pluginmode Then
-    timerpluginmode.Stop()
-    If fsform.fullscreen Then 
-      Return
-        Else
-      cachebar.Move(0, bottomvbox.y - cachebar.h)
-      bottomvbox.visible = True
-      cachebar.raise
-      cachebar.Show
-      timerpluginmode.Start()
-    Endif
-      Else
-    If fsform.fullscreen Then 
-      HideMouseDelayed()
-    Endif
-  Endif
-End
-
-
-Public Sub timerpluginmode_Timer()
-    bottomvbox.visible = False
-    cachebar.visible = False
-End
-
-
-Private timerpluginmodenabled As Boolean = False
-Public Sub ControlFrame_Enter()
-   timerpluginmodenabled = timerpluginmode.enabled
-   timerpluginmode.stop
-End
-Public Sub ControlFrame_Leave()
-  timerpluginmode.enabled = timerpluginmodenabled
+  If fsform.fullscreen Then HideMouseDelayed()
 End
 
 Private Sub CantSeekMessage()

@@ -57,8 +57,6 @@ Public NOsoftvolmessagefile As String
 
 Public UserPlaylistsDir As String
 
-Public pluginmode As Boolean = False 'set various options when is true
-
 Public Sub init()
   'FixFormNames() 'needed with gambas 3.4.1; form names arent set by default!
   UncommonVideoFilters = "Flash*;*.ts;*.m2v;*.m4v;*.mpeg;*.flv;*.gvi;*.iso;*.fli;*.flv;*.mpg;*.mpv;*.vob;*.viv;*.swf;*.rm;*.rmvb;*.dv;*.3gp;*.qt;*.divx;*.asx;*.ogm;*.ogv;*.oga;*.m4v;*.speex;*.spx;*.wavpack;*.wv;*.trueaudio;*.tta"
