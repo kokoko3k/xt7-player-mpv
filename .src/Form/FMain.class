@@ -503,9 +503,8 @@ Public Sub AllInit_Post()
       Else
     shadeup.visible = True
   Endif
-  If fmain.havetoshowbrowsetab Then
-    fmain.havetoshowbrowsetab = False
-    If Exist(Application.Args[1]) Then fmain.ShowBrowseTabTo(Application.Args[1])
+  If global.arg_file <> "" Then
+    If Exist(global.arg_file) Then fmain.ShowBrowseTabTo(global.arg_file)
   Endif
   If GeneralOptions.ToolTipsCHKDBUS.value Then Try ExportDbusProperties()
   updaterecentfiles()
@@ -1071,10 +1070,10 @@ Public Sub MainInit()
 
   Try UpdateProfilesTabList()
 
-  If (Application.Args.count >= 2) Then
+  If (global.arg_file <> "") Then
     If alreadyrunning Then
       'try to play the file to the running xt7-player:
-      zzzfake.sock_play(Application.Args[1])
+      zzzfake.sock_play(global.arg_file)
       Fastquit = True
       fmain.form_Close()
     Else
@@ -1085,17 +1084,17 @@ Public Sub MainInit()
       FMain.LoadFormGeometry()
       fmain.Show
       Wait 
-      If Not (Application.Args[1] Like "-*") Then 
-        Media_Next_path = DConv(Application.Args[1])
+      If (Not global.arg_append) And (global.arg_file <> "") Then 
+        Media_Next_path = DConv(global.arg_file)
         PlayFromCommandline = True 
-        SetActivePlayQueue("browse")
-        Play(DConv(Application.Args[1]))
+        If Exist(DConv(global.arg_file)) Then SetActivePlayQueue("browse")
+        Play(DConv(global.arg_file))
       Endif
       Me.Mouse = mouse.Default
       havetoshowbrowsetab = True
     Endif
   Endif
-  If Application.Args.count = 1 Then 
+  If global.arg_file = "" Then 
     AllInit_pre()
     FMain.LoadFormGeometry()
     fmain.Show
@@ -1104,7 +1103,8 @@ Public Sub MainInit()
   DelayTimer.delay = 1000
   DelayTimer.Start
   
-  If (Application.Args.count = 1) Or ((Application.Args.count > 1) And (Not alreadyrunning)) Then
+  'If (Application.Args.count = 1) Or ((Application.Args.count > 1) And (Not alreadyrunning)) Then
+  If (global.arg_file = "") Or ((global.arg_file <> "") And (Not alreadyrunning)) Then
     'FMain.LoadFormGeometry()
     fmain.Show
   Endif

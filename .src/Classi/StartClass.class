@@ -6,7 +6,7 @@ Static Public Sub ProcessSignals(Doit As Boolean)
   Dim sig As Integer
   If doit
     For Each sig In signals
-      Debug sig
+      'Debug sig
       Signal[sig].Catch
     Next
       Else

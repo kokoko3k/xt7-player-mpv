@@ -4,46 +4,35 @@
 ' Gambas class file
 
 Public Sub Start()
-  Dim i As Integer
-  Print ""
-  Print Application.name & " " & Application.version
-  Print "Usage: " & Application.name & ".gambas [Mediafile] [options]"
-  Print "Options:"
-  Print "-append (add the media specified before the option to the playlist)"
-  Print "Eg: xt7-player mediafile.avi -append"
-  Print ""
-  Print ""
-  Debug "Start at: " & Timer
-  Debug
+  Dim p_profile As String = ""
+  Dim helpmsg As String
+  Stop
+  
   global.init()
-
-  For i = 1 To Application.Args.Count - 1
-
-    If Application.Args[i] = "-append" Then '-append specified, look for next
-      Try Sock_Append(Application.Args[i + 1])
-      Debug "Appended to the running playlist"
-      Quit
-    Endif
-          
-    If Not (Application.Args[i] Like "-*") Then 'file or url specified, maininit manages it
-      Try Global.Center(Fmain, Me)
-      FMain.maininit()
-      Return
-    Endif
-
-  Next
-
-  'else is implicit, make sure every condition up there will return or quit
-     Try Global.Center(Fmain, Me)
-     FMain.maininit()
-    
-
+  helpmsg &= "\n" & File.Name(Application.Args[0]) & " "
+  helpmsg &= "[options] file"
+  
+  Args.begin(helpmsg)
+    Try global.arg_profile = Args.get("p", "profile", ("Start with the specified profile (not yet implemented)"), "profilename")
+    Try global.arg_append = Args.Has("a", "append", ("Append the file to the playlist of a running instance"))
+    Try global.arg_file = Args.end()[0]
+  
+  If p_profile <> "" Then 
+    Debug "Will switch profile to: " & p_profile
+    global.arg_profile
+  Endif
+  If global.arg_append Then 
+    Debug "Will append instead of play"
+    Try Sock_Append(global.arg_profile)
+  Endif
+  If global.arg_file <> "" Then
+    Debug "The file to open is " & global.arg_file
+  Endif
+  
+  Try Global.Center(Fmain, Me)
+  FMain.maininit()
 
 End
-
-
-
-
 
 
 
