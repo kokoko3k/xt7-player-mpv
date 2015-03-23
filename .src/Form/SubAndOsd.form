@@ -524,7 +524,7 @@
         }
         { SubDelayHbox2 HBox
           MoveScaled(0,29,51,4)
-          ToolTip = ("Subtitle delay.\nmpv option: --sub-delay <sec>")
+          ToolTip = ("Setting this to 1.00 should display the same font dimension you will see\non fullscreen with all of the video drivers, but Xv, which is a special case.")
           AutoResize = True
           Spacing = True
           Padding = 10
@@ -533,15 +533,16 @@
             Expand = True
           }
           { Label3 Label
-            MoveScaled(21,-1,20,4)
+            MoveScaled(14,0,20,4)
             AutoResize = True
             Text = ("Preview scale factor: ")
           }
-          { pScaleFactorSpinBox SpinBox
-            MoveScaled(42,0,8,4)
-            MinValue = 1
-            MaxValue = 10
-            Value = 3
+          { pScaleFactorComboBox ComboBox
+            MoveScaled(35,0,12,4)
+            #Translate = False
+            ReadOnly = True
+            List = ["0.30", "0.35", "0.40", "0.45", "0.50", "0.55", "0.60", "0.65", "0.70", "0.75", "0.80", "0.85", "0.90", "0.95", "1.00", "1.10", "1.20", "1.30", "1.40", "1.50", "1.60", "1.70", "1.80", "1.90", "2.00", "2.20", "2.40", "2.60", "2.80", "3.00"]
+            Text = "1.00"
           }
         }
       }

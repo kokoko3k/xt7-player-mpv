@@ -168,11 +168,10 @@ Public Sub TestBTN_Click()
   Dim AnImage As New Image
   Dim Filename As String
   Dim MyOptions, previewoptions As String
-  
   Dim MySrtFile As File
- 
+  Dim screen_h As Integer = 720
   Dim opt As MpvOption
-
+  Dim pScale As Float = 1
   'If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
   If SubAndOsd.visible Then 'we wanna preview only if the form is visible
 
@@ -223,10 +222,14 @@ Public Sub TestBTN_Click()
     mplayer.set_option("mf-type", "png")
     mplayer.set_option("loop", "inf")
     mplayer.set_option("osc", "no")
-    mplayer.set_option("osd-scale", pScaleFactorSpinBox.value)
-    mplayer.set_option("sub-scale", pScaleFactorSpinBox.value)
-    ' mplayer.set_option("sub-scale-by-window", "no")
-    ' mplayer.set_option("osd-scale-by-window", "no")
+ 
+    mplayer.set_option("osd-scale-by-window", "no")
+    mplayer.set_option("sub-scale-by-window", "no")
+    screen_h = FMain.Screenbypos(DrawingArea1.x + 1, DrawingArea1.x + 1).H
+    pScale = screen_h / 720 * CFloat(pScaleFactorComboBox.text) * pScaleFactorComboBox.text
+
+    mplayer.set_option("osd-scale", pScale)
+    mplayer.set_option("sub-scale", pScale)
 
     'mplayer.set_option("zoom", "true") 'fixmempv, come si fa?
 
@@ -235,7 +238,7 @@ Public Sub TestBTN_Click()
     Next 'opt
 
 
-
+    
     mplayer.do_play("mf://" & global.confpath & "/SubBackImage*.png", MyOptions & previewoptions)
 
     Me.mouse = Mouse.default
@@ -404,21 +407,10 @@ Public Sub notify_Change()
   If (alreadyloaded And Me.visible) Then global.NotifyApplyNeeds()
 End
 
+Public Sub pScaleFactorComboBox_Change()
 
-
-
-Public Sub Form_Arrange()
-'   'panel2.h = CInt((vbox2.h - panelsubtitles.h - panelosd.h) / 2)
-'   panelsubtitles.h = hsplit1.h Div 2
-' 
-'   panelosd.h = 50
-' Return
-  ' panel2.h = panelextra.y - (panelosd.y + panelosd.h)
-  ' If panel2.h < 0 Then panel2.h = 0
 End
 
-Public Sub pScaleFactorSpinBox_Change()
-
+Public Sub pScaleFactorComboBox_Click()
   TestBTN_Click()
-
 End
