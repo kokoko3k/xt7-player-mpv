@@ -4478,9 +4478,10 @@ Public Sub Show_runtime_infos()
   screen_h = Screenbypos(videobox.x + 10, videobox.y - 10).H
   Try osd_font_size = CFloat(mplayer.get_property_mpv("options/osd-font-size"))
   If Not Error Then
-    max_screen_lines = CInt((screen_h / osd_font_size) / 1.3) - 4 '-4 to be safe
+    max_screen_lines = CInt((screen_h / osd_font_size)) 
+    max_screen_lines = CInt((screen_h / (osd_font_size * (screen_h / 720)))) 
     If max_screen_lines < prop.count Then
-      scale_new = CStr(max_screen_lines / prop.count)
+      scale_new = CStr(max_screen_lines / (prop.count + 5)) 
       Try scale_old = mplayer.get_property_mpv("osd-scale")
       mplayer.set_property_mpv("osd-scale", scale_new)
     Endif
