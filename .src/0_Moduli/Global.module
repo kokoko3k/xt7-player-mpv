@@ -60,6 +60,7 @@ Public UserPlaylistsDir As String
 Public arg_profile As String = "" 'cmdline argument: user wants to switch profile
 Public arg_file As String = "" 'cmdline argument: user wants to play this
 Public arg_append As Boolean = False 'cmdline argument: the user want to append an uri to a running instance
+Public arg_debug_level As Integer = 9 '0..9, where 9 means debug everything
 
 Public Sub init()
   'FixFormNames() 'needed with gambas 3.4.1; form names arent set by default!
@@ -115,6 +116,19 @@ Public Sub init()
 End
 
 
+Public Sub myDebug(level As Integer, Optional a As String = "", Optional b As String = "", Optional c As String = "", Optional d As String = "", Optional e As String = "")
+  'Debug function that takes an integer value
+  'If level <= than the global defined one, Then it will Print the message
+  'we also use a trick of generate an error and catch it to get the backtrace
+  'and so print the caller debug line.
+  Dim Caller As String = "Unknown caller"
+  If level > arg_debug_level Then Return
+  Stop
+  Print 0 / 0 'generate an error
+  Catch
+  Print "An error occurred: "; Error.Text
+  Try caller = Error.Backtrace[1]
+End
 
 
 
