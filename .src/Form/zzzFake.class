@@ -16,7 +16,7 @@ Public Sub Start()
     Try global.arg_append = Args.Has("a", "append", ("Append the file to the playlist of a running instance"))
   Try global.arg_file = Args.end()[0]
   
-  If Left(global.arg_file) <> "/" Then
+  If (global.arg_file <> "") And Left(global.arg_file) <> "/" Then
     'convert relative to absolute path
     If Not ((global.arg_file Like "*://*") Or (global.arg_file Like "*://")) Then
       global.arg_file = Application.Dir & "/" & global.arg_file
