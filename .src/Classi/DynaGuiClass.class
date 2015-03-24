@@ -213,7 +213,7 @@ Public Sub SmartInsert(TheObject As Object, TheForm As Object)
             If DestinationObj.children[i].name = TheObject.name Then skipone = True
             If IsVerticalArranged(DestinationObj) Then
               found = (DestinationObj.children[i].ScreenY > mouse.screenY)
-              Debug DestinationObj.children[i].name, DestinationObj.children[i].ScreenY
+              global.myDebug(DestinationObj.children[i].name, DestinationObj.children[i].ScreenY)
                 Else
               found = (DestinationObj.children[i].ScreenX > mouse.screenX)
             Endif

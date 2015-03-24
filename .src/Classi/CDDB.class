@@ -52,7 +52,7 @@ Private Function CDDBID(device As String) As String
   p_cdio = cdio_open(device, DRIVER_UNKNOWN)
   
   If IsNull(p_cdio) Then 
-    Debug "Can't access device " & device
+    global.myDebug("Can't access device " & device)
     Return ""
   Endif
   
@@ -91,13 +91,13 @@ Public Function cddb_query(device As String, Optional timeout_decisecs As Intege
 
   Shell "which cddb_query" To cddbquery
    If Trim(cddbquery) = "" Then 
-     Debug "can't find cddb_query from libcddb" 
+     global.myDebug("can't find cddb_query from libcddb")
      Return Null
    Endif
   cddbquery = Trim(cddbquery)
   discid = CDDBID(device)
   If discid = "" Then Return Null
-  Debug cddbquery & " read misc " & discid & " > " & out
+  global.myDebug(cddbquery & " read misc " & discid & " > " & out)
   Shell cddbquery & " read misc " & discid & " > " & out
 
   Repeat
@@ -106,7 +106,7 @@ Public Function cddb_query(device As String, Optional timeout_decisecs As Intege
     fileout = File.Load(out)
   Until (Len(fileout) > 0) Or timeout_decisecs < 0
   If timeout_decisecs < 0 Then 
-    Debug "cddb timeout"
+    global.myDebug("cddb timeout")
     Return Null
   Endif
 

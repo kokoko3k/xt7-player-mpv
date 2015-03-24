@@ -30,7 +30,7 @@ Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = Tru
   'update YP cache
   If Not Exist(Global.YPCacheFile, True) Or UseCache = False Then
     If UseCache = True Then 
-      Debug "Missing icecast cache file, downloading yellow pages now..."
+      global.myDebug("Missing icecast cache file, downloading yellow pages now...")
     Else
       Debug "Downloading yellow pages now..."
     Endif

@@ -60,13 +60,7 @@ Public UserPlaylistsDir As String
 Public arg_profile As String = "" 'cmdline argument: user wants to switch profile
 Public arg_file As String = "" 'cmdline argument: user wants to play this
 Public arg_append As Boolean = False 'cmdline argument: the user want to append an uri to a running instance
-Public arg_debug_level As Integer = 9 '0..5, where 5 means debug everything
-
-Public DEBUG_NONE As Integer = 1
-Public DEBUG_ERROR As Integer = 2
-Public DEBUG_WARNING As Integer = 3
-Public DEBUG_INFO As Integer = 4
-Public DEBUG_EVERYTHING As Integer = 5
+Public arg_debug As Boolean = False 
 
 
 Public Sub init()
@@ -123,18 +117,15 @@ Public Sub init()
 End
 
 
-Public Sub myDebug(level As Integer, Optional a As String = "", Optional b As String = "", Optional c As String = "", Optional d As String = "", Optional e As String = "")
-  'Debug function that takes an integer value
-  'If level <= than the global defined one, Then it will Print the message
-  'we also use a trick of generate an error and catch it to get the backtrace
+Public Sub myDebug(Optional a As String = "", Optional b As String = "", Optional c As String = "", Optional d As String = "", Optional e As String = "")
+  'Use a trick of generate an error and catch it to get the backtrace
   'and so print the caller debug line.
   Dim Caller As String = "Unknown caller"
-  If level > arg_debug_level Then Return
-  Stop
+  If Not arg_debug Then Return
   Print 0 / 0 'generate an error
   Catch
-  Print "An error occurred: "; Error.Text
-  Try caller = Error.Backtrace[1]
+  Try caller = Error.Backtrace[1] 
+  Print caller & ": " & a, b, c, d, e
 End
 
 
@@ -277,7 +268,7 @@ Public Sub AddUserExtensions(exts As String)
   If Trim(returnexts) <> "" Then
     ALLFilters = ALLFilters & returnexts
   Endif
-  Debug allfilters
+  global.myDebug(allfilters)
 End
 
 
@@ -371,10 +362,8 @@ Public Function GetTotalFiles(dragdata As String, FromDesktop As Boolean) As Int
         Else
       droppedfile = Global.NoFileSuffix(Global.FormatDrag(droppedfile))
     Endif
-    'Shell "sync" Wait
-    ' [GB2:QUOT] Shell "ls -LR1 " & Quote.Shell(DroppedFile) & " |grep \\. |grep -v \\/ |sort -u |wc -l" Wait To subtotal
+
     Shell "ls -LR1 " & Shell$(DroppedFile) & " |grep \\. |sort -u |wc -l" Wait To subtotal
-    'Debug "ls -LR1 " & Shell$(DroppedFile) & " |grep \\. |grep -v \\/ |sort -u |wc -l"
     total = total + CInt(Trim(subtotal))
   Next
   Return total
@@ -412,8 +401,8 @@ Public Sub SaveMandatorySettings(Profilename As String)
 
   Try covermanager.flushUncoveredFile()
 
-  Debug "Mandatory settings saved"
-  Debug
+  global.myDebug("Mandatory settings saved")
+
 End
 
 
@@ -470,8 +459,7 @@ Public Sub save_cached_options(ProfileName As String)
   Dim cached_data, data As String
 
   If Not Exist(global.confpath, True) Then 
-    Debug "Error: configuration directory not found; something is going VERY wrong."
-    Stop
+    global.myDebug("Configuration directory not found; something is going VERY wrong.")
     Return
   Endif
 
@@ -532,7 +520,7 @@ Public Sub ReallyLoadAllSettings()
   Dim MyForms As New Object[]
   Dim TheForm As Object
   Dim WasVisible As Boolean = False
-  Debug "Start at: " & Time
+  global.myDebug("Start at: " & Time)
   Debug
   Try fmain.mouse = Mouse.wait
   If (Not global.initearlyformsdone) Then
@@ -555,7 +543,7 @@ Public Sub ReallyLoadAllSettings()
     TheForm.visible = WasVisible
   Next
   Try fmain.mouse = Mouse.default
-  Debug "Ends at: " & Time
+  global.myDebug("Ends at: " & Time)
   Debug
 End
 
@@ -569,12 +557,11 @@ Public Sub DelayLoadStates_Timer()
   Dim TheForm As Object
   Dim WasVisible As Boolean = False
   
-  Debug "Start at: " & Time
-  Debug
+  global.myDebug("Start at: " & Time)
+
   Try fmain.mouse = Mouse.wait
   If Not (fmain.visible Or Fmain.Closing) Then
-    Debug "Waiting..."
-    Debug
+    global.myDebug("Waiting...")
     Return
   Endif
   DelayLoadStates.Stop
@@ -602,8 +589,7 @@ Public Sub DelayLoadStates_Timer()
   FirstTimeSettignsLoaded = True
   initlatelyformsdone = True
   Try fmain.mouse = Mouse.default
-  Debug "Ends at: " & Time
-  Debug
+  global.myDebug("Ends at: " & Time)
 End
 
 
@@ -1057,19 +1043,12 @@ Public Sub NotifyChanges(obj As Object)
   If fmain.fullyloaded Then
     If myform.visible Then
       RedApplyBtnColor()
-      ' Debug "Cached Options needs to be unvalidated" 'fixmempv se vuoi reimplementare le cachedopts
     Endif
   Endif
 End
 
 Public Sub NotifyApplyNeeds()
   RedApplyBtnColor()
-  ' fixmempv se vuoi reimplementare le cachedopts
-  ' If fmain.cachedopts <> "" Then
-  '   Debug "Cached Options unvalidated"
-  '   Debug
-  '   fmain.cachedopts = ""
-  ' Endif
 End
 
 
