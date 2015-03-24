@@ -9,7 +9,7 @@ Public Sub Start()
 
   global.init()
   helpmsg &= "\n" & File.Name(Application.Args[0]) & " "
-  helpmsg &= "[options] file"
+  helpmsg &= "[options] [file|protocol://]"
   
   Args.begin(helpmsg)
     Try global.arg_profile = Args.get("p", "profile", ("Start with the specified profile"), "profilename")
@@ -18,7 +18,9 @@ Public Sub Start()
   
   If Left(global.arg_file) <> "/" Then
     'convert relative to absolute path
-    global.arg_file = Application.Dir & "/" & global.arg_file
+    If Not ((global.arg_file Like "*://*") Or (global.arg_file Like "*://")) Then
+      global.arg_file = Application.Dir & "/" & global.arg_file
+    Endif
   Endif
   
   If p_profile <> "" Then 
