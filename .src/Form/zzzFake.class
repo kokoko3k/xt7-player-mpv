@@ -13,7 +13,7 @@ Public Sub Start()
   helpmsg &= "[options] file"
   
   Args.begin(helpmsg)
-    Try global.arg_profile = Args.get("p", "profile", ("Start with the specified profile (not yet implemented)"), "profilename")
+    Try global.arg_profile = Args.get("p", "profile", ("Start with the specified profile"), "profilename")
     Try global.arg_append = Args.Has("a", "append", ("Append the file to the playlist of a running instance"))
     Try global.arg_file = Args.end()[0]
   
