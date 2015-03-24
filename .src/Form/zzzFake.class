@@ -6,8 +6,7 @@
 Public Sub Start()
   Dim p_profile As String = ""
   Dim helpmsg As String
-  Stop
-  
+
   global.init()
   helpmsg &= "\n" & File.Name(Application.Args[0]) & " "
   helpmsg &= "[options] file"

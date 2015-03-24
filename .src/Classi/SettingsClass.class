@@ -435,14 +435,8 @@ Private Function IsSafeToReparent(TheObject As Object) As Boolean
 End
 
 Public Sub WriteLastProfile(confpath As String, currentprofile As String)
-  
-  Dim myfile As File
   Dim myfilename As String = confpath & "/" & lastprofilefile
-  
-  myfile = Open myfilename For Write Create
-  Print #myfile, currentprofile
-  Close #myfile
-  
+  File.Save(myfilename, currentprofile)
 End
 
 Public Sub SaveLeftSideTabsVisibility(ProfilePath As String)
