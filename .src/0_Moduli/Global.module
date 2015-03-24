@@ -60,7 +60,14 @@ Public UserPlaylistsDir As String
 Public arg_profile As String = "" 'cmdline argument: user wants to switch profile
 Public arg_file As String = "" 'cmdline argument: user wants to play this
 Public arg_append As Boolean = False 'cmdline argument: the user want to append an uri to a running instance
-Public arg_debug_level As Integer = 9 '0..9, where 9 means debug everything
+Public arg_debug_level As Integer = 9 '0..5, where 5 means debug everything
+
+Public DEBUG_NONE As Integer = 1
+Public DEBUG_ERROR As Integer = 2
+Public DEBUG_WARNING As Integer = 3
+Public DEBUG_INFO As Integer = 4
+Public DEBUG_EVERYTHING As Integer = 5
+
 
 Public Sub init()
   'FixFormNames() 'needed with gambas 3.4.1; form names arent set by default!
