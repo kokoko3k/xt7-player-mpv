@@ -26,7 +26,7 @@ Public Sub init(pparent As Object, platency As Integer, Maxheight As Integer, pe
   If bars.count > 0 Then Try stopp()
   latency = platency
   MaxH = MaxHeight
-  Debug maxh
+  global.myDebug(maxh)
   mparent = pparent
   exportfile = pexportfile
   spacingg = pspacingg
@@ -46,12 +46,11 @@ Public Sub init(pparent As Object, platency As Integer, Maxheight As Integer, pe
   gvis = Lower(vis)
   
   Try Object.Detach(timer1)
-  Debug "Made new meters timer"
+  global.myDebug("Made new meters timer")
   Debug
   timer1 = New Timer As "timer1"
   timer1.delay = 1000 Div fps
-  Debug "meters initialized at " & fps & " fps"
-  Debug
+  global.myDebug("meters initialized at " & fps & " fps")
 End
 
 
@@ -96,8 +95,7 @@ Public Sub Stopp()
   bars.Resize(0)
   buffer.Resize(0)
   barsdone = False
-  Debug "meters timer stopped"
-  Debug
+  global.myDebug("meters timer stopped")
 End
 
 Public Sub Startt()

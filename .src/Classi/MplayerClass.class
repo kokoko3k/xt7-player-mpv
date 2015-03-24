@@ -105,7 +105,7 @@ Public Function FillMultitracks()
   Try prop["subtitletracks"].Clear
   Try Tcount = CInt(get_property_mpv("track-list/count"))
   If Error Then
-    Debug "WW", "unable to get track count"
+    global.myDebug("WW", "unable to get track count")
     Return
   Endif
 
@@ -144,142 +144,12 @@ Public Function get_length() As String
 End
 
 
-Private Function GetAllTags(Optional idleplay As Boolean = False)
-  ' 'Fill MediaProperties Values
-  ' 
-  ' Dim tmp As String[]
-  ' Dim media As New TagLib
-  ' Dim tracks As Integer = 0
-  ' Dim cddbtrack As Integer = 0
-  ' Dim i As Integer = 0
-  ' Dim fileUtf8 As String
-  ' Try fileUtf8 = DConv(Media_FullPath) 'from system charset to utf8
-  ' If Error Then fileutf8 = Media_FullPath
-  ' fileutf8 = Media_FullPath
-  ' fileutf8 = Trim(fileutf8)
-  ' 
-  ' 
-  ' If Media_FullPath = "" Then Return
-  ' cddbtracks.clear()
-  ' AudioOnly = Media_AudioOnly()
-  ' 
-  ' Try Media_Seekable = FindTagValue("ID_SEEKABLE")
-  ' 
-  ' Try Media_Size = (Stat(Media_FullPath, True).Size Div 1024) 
-  ' Try Media_Type = FindTagValue("ID_DEMUXER")
-  ' Try Media_VideoCodec = FindTagValue("ID_VIDEO_FORMAT")
-  ' Try Media_AudioCodec = FindTagValue("ID_AUDIO_CODEC")
-  ' If Trim(media_audiocodec) = "" Then
-  '   Media_AudioCodec = FindTagValue("ID_AUDIO_CODEC")
-  ' Endif
-  ' 'for audio only files, try to get common audio tags
-  ' 'try first to get them using fast taglib
-  ' 'but fallback to mplayer in idle mode
-  ' 
-  ' If (AudioOnly And (Not Global.IsNetworkURI(Media_FullPath)) And media.IsSupported(fileutf8)) Then
-  '     If media.Init(Media_FullPath) Then
-  '       Media_Artist = media.Artist
-  '       Media_author = media.Artist
-  '       Media_Title = media.Title
-  '       Media_Album = media.Album
-  '       Media_Genre = media.Genre
-  '       media_year = media.MyYear
-  '       media_Comment = media.Comment
-  '       media_comments = media_Comment
-  '       Media_TrackNo = media.Track
-  '       Media_Length = media.Length
-  '       If Media_Length = 0 Then 
-  '         tmp = Split(Media_GetLength(), ".")
-  '         tmp = Split(tmp[0], ",")
-  '         Media_Length = tmp[0]
-  '       Endif
-  '       Media_AudioBitrate = media.Bitrate
-  '       If Media_AudioBitrate = 0 Then Try Media_AudioBitrate = FindTagValue("ID_AUDIO_BITRATE")
-  '       Media_Channels = media.Channels
-  '       Media_AudioRate = media.Samplerate
-  '       Debug "got info from taglib on " & Media_FullPath & " --"
-  '       Debug
-  '       media.tlFree()
-  '         Else  'there was a problem with TagLib Class initialization, fallback to mplayer
-  '               'or was a network uri or a cddb 
-  '       tmp = Split(Media_GetLength(), ".")
-  '       tmp = Split(tmp[0], ",")
-  '       Media_Length = tmp[0]
-  '       
-  '       If global.IsCddb(Media_FullPath) Then
-  '         Try cddbtrack = Split(Media_FullPath, "/ ", "", True, False)[1]
-  '         Try Media_Artist = FindTagValue("ID_CDDB_INFO_ARTIST")
-  '         Try Media_Author = FindTagValue("ID_CDDB_INFO_ARTIST")
-  '         Try Media_Genre = FindTagValue("ID_CDDB_INFO_GENRE")
-  '         Try Media_Album = FindTagValue("ID_CDDB_INFO_ALBUM")
-  '         Try tracks = FindTagValue("ID_CDDB_INFO_TRACKS")
-  '         If Not Error Then 
-  '           For i = 1 To tracks
-  '             Try cddbtracks.Add(FindTagValue("ID_CDDB_INFO_TRACK_" & i & "_NAME"))
-  '             If Error Then cddbtracks.add(("Unknown entry (connection problem?)"))
-  '           Next 'i 
-  '         Endif
-  '         Try Media_TrackNo = cddbtrack
-  '         Try Media_Title = cddbtracks[cddbtrack - 1]
-  '         Try Media_Name = Media_title
-  '              Else
-  '         Try Media_Artist = DConv(FindAudioTag("artist"))
-  '         Try Media_Author = DConv(FindAudioTag("author"))
-  '         Try Media_Genre = DConv(FindAudioTag("genre"))
-  '         Try Media_Album = DConv(FindAudioTag("album"))
-  '         Try Media_Year = DConv(FindAudioTag("year"))
-  '         Try Media_CreationDate = DConv(FindAudioTag("creation date"))
-  '         Try Media_TrackNo = DConv(FindAudioTag("track"))
-  '         Try Media_Title = DConv(FindAudioTag("title"))
-  '         Try Media_name = DConv(FindAudioTag("name"))
-  '         Try Media_Comment = DConv(FindAudioTag("comment")) ' & Media_ExtraComment
-  '         Try Media_Comments = DConv(FindAudioTag("comments")) ' & Media_ExtraComment
-  '       Endif
-  '       
-  '       
-  '     Endif
-  '         Else 'for not audio only files, use mplayer in idle mode.      
-  '       tmp = Split(Media_GetLength(), ".")
-  '       Try tmp = Split(tmp[0], ",")
-  '       Try Media_Length = tmp[0]
-  '       Try Media_VideoBitrate = FindTagValue("ID_VIDEO_BITRATE")
-  '       Try Media_Width = FindTagValue("ID_VIDEO_WIDTH")
-  '       Try Media_Height = FindTagValue("ID_VIDEO_HEIGHT")
-  '       Try Media_VideoFps = FindTagValue("ID_VIDEO_FPS")
-  '       Try Media_AudioBitrate = FindTagValue("ID_AUDIO_BITRATE")
-  '       Try Media_Channels = FindTagValue("ID_AUDIO_NCH")
-  '       Try Media_AudioRate = FindTagValue("ID_AUDIO_RATE")  
-  ' Endif
-  ' 
-  ' 
-  ' If (Not idleplay) Then FillMultitracks() 'will fill audiotracks[] and subtitletracks[] from mediaheaders
-  ' 'end fill  
-  ' 
-  ' Media_FullPath_Playing = Media_FullPath
-  
-End
-
 Public Sub Renice(nice As Integer, Optional JustThePlayer As Boolean = False)
   Debug "nice=" & nice
   Debug
   If (Not JustThePlayer) Then RenicerProcess = Shell "renice " & nice & " -p " & Application.id  'renice the whole application to 'nice'
   RenicerProcess = Shell "renice " & (nice - 1) & " -p " & playerprocess.id 
 End
-
-
-
-
-
-' Public Sub playerprocess_error(stderr As String)
-'   'Debug stderr
-'   If ((stderr Like "A:*") Or (stderr Like "V:*")) Then
-'     playerprocess_read(stderr) 'mplayer2 workaround
-'     Return
-'   Endif
-'   If WantLog Then FMain.mplayererroravailable(stderr)
-' End
-
-
 
 
 Private Function MidC(s As String, a As String, Optional b As String) As String
@@ -293,7 +163,6 @@ Private Function MidC(s As String, a As String, Optional b As String) As String
     Return mMid
   Endif
 End
-
 
 Public Sub playerprocess_read(Optional injected As String = "")
   Dim sBuf As String, question, answer As String
@@ -320,6 +189,7 @@ Public Sub playerprocess_read(Optional injected As String = "")
 End
 
 Public Sub playerprocess_error(err As String)
+Stop
   stderr &= err & "\n"
 End
 

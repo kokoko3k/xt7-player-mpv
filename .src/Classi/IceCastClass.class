@@ -32,7 +32,7 @@ Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = Tru
     If UseCache = True Then 
       global.myDebug("Missing icecast cache file, downloading yellow pages now...")
     Else
-      Debug "Downloading yellow pages now..."
+      global.myDebug("Downloading yellow pages now...")
     Endif
     
     mywget = New Wgetclass
