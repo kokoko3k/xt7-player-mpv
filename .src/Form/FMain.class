@@ -3249,7 +3249,7 @@ Public Sub Mplayer_mykill(return_value As Integer)
 End
 
 Private PrevValuecTime As Integer = 0 'so that the first value will be used
-Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional NewValuecTime As Integer)
+Public Sub OLD_Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional NewValuecTime As Integer)
   Dim bAvgAdapted As Integer
   If (NewValuecTime - PrevValuecTime >= 10) Then
     If ((NewValuecTime - PrevValuecTime) Mod 5 = 0) Then
@@ -3272,6 +3272,39 @@ Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional Ne
   'mplayer.ShowText(bavg)
   SlideTo(VideoEqualizer.Slider6, (bAvgAdapted))
 End
+
+Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional NewValuecTime As Integer)
+  Dim bAvgAdapted As Integer
+  Dim K As Float
+  
+  If (NewValuecTime - PrevValuecTime >= 10) Then
+    If ((NewValuecTime - PrevValuecTime) Mod 5 = 0) Then
+      global.myDebug("Skipping periodic keyframe, diff = " & (NewValuecTime - PrevValuecTime))
+      PrevValuecTime = NewValuecTime
+      Return
+    Endif
+  Endif
+    
+  PrevValuecTime = NewValuecTime
+  Wait delay
+  global.myDebug("waiting:", delay)
+
+
+  'k=0 -> retta
+  'max sano, circa 4
+  k = 2
+  
+  bAvgAdapted = (255 - bAvg) * ((((255 - bAvg) / 255) ^ K)) 'gamma function
+  bAvgAdapted *= (100 / 255) 'normalized to 0..100
+  bAvgAdapted = bAvgAdapted Div (11 - VideoEqualizer.Slider7.value) 'normalized to user setting
+  global.myDebug("bAvg = " & bAvg, "bAvgAdapted = " & bAvgAdapted)
+  SlideTo(VideoEqualizer.Slider6, (bAvgAdapted))
+End
+
+
+
+
+
 
 Private Sub SlideTo(aSlider As Slider, aTarget As Integer)
   Dim prevosd As String = mplayer.osdlevel
