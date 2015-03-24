@@ -14,7 +14,12 @@ Public Sub Start()
   Args.begin(helpmsg)
     Try global.arg_profile = Args.get("p", "profile", ("Start with the specified profile"), "profilename")
     Try global.arg_append = Args.Has("a", "append", ("Append the file to the playlist of a running instance"))
-    Try global.arg_file = Args.end()[0]
+  Try global.arg_file = Args.end()[0]
+  
+  If Left(global.arg_file) <> "/" Then
+    'convert relative to absolute path
+    global.arg_file = Application.Dir & "/" & global.arg_file
+  Endif
   
   If p_profile <> "" Then 
     Debug "Will switch profile to: " & p_profile
@@ -39,8 +44,6 @@ Public Sub Start()
   FMain.maininit()
 
 End
-
-
 
 
 Public Sub Form_Open()

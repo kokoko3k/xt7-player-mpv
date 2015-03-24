@@ -115,6 +115,9 @@ Public Sub init()
 End
 
 
+
+
+
 Public Function proxyfromenv() As String
 
   If Application.Env["https_proxy"] <> "" Then Return Application.Env["https_proxy"]
