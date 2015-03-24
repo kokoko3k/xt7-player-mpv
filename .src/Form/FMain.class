@@ -1058,6 +1058,10 @@ Public Sub MainInit()
   Try hLock = Lock global.confpath & "/.lock"
   If Error Then
     AlreadyRunning = True
+    If (global.arg_file <> "") Then
+      zzzfake.sock_play(global.arg_file)
+      Quit
+    Endif
   Else
     'as there are no other istances, it's good to remove inputpipes
     Shell "rm " & global.confpath & "/.InputPipes/Xt7Input-* >/dev/null 2>&1" Wait ' To out
@@ -1071,30 +1075,25 @@ Public Sub MainInit()
   Try UpdateProfilesTabList()
 
   If (global.arg_file <> "") Then
-    If alreadyrunning Then
-      'try to play the file to the running xt7-player:
-      zzzfake.sock_play(global.arg_file)
-      Fastquit = True
-      fmain.form_Close()
-    Else
-      AllInit_pre()
-      
-      FirstPlay = True 'used to  avoid playing media at start when togglepls button is toggled
-      Me.mouse = mouse.Wait
-      FMain.LoadFormGeometry()
-      fmain.Show
-      Wait 
-      If (Not global.arg_append) And (global.arg_file <> "") Then 
-        Media_Next_path = DConv(global.arg_file)
-        PlayFromCommandline = True 
-        If Exist(DConv(global.arg_file)) Then SetActivePlayQueue("browse")
-        Play(DConv(global.arg_file))
-      Endif
-      Me.Mouse = mouse.Default
-      havetoshowbrowsetab = True
+
+    AllInit_pre()
+
+    FirstPlay = True 'used to  avoid playing media at start when togglepls button is toggled
+    Me.mouse = mouse.Wait
+    FMain.LoadFormGeometry()
+    fmain.Show
+    Wait 
+    If (Not global.arg_append) And (global.arg_file <> "") Then 
+      Media_Next_path = DConv(global.arg_file)
+      PlayFromCommandline = True 
+      If Exist(DConv(global.arg_file)) Then SetActivePlayQueue("browse")
+      Play(DConv(global.arg_file))
     Endif
-  Endif
-  If global.arg_file = "" Then 
+    Me.Mouse = mouse.Default
+    havetoshowbrowsetab = True
+
+      Else
+
     AllInit_pre()
     FMain.LoadFormGeometry()
     fmain.Show
@@ -6587,7 +6586,6 @@ Public Sub Mysocket_Connection(RemoteHostIP As String)
 End
 
 Public Sub socket_Read()
-
   Dim command As String = ""
   Line Input #Last, command
   Debug "command= " & command
@@ -6595,7 +6593,6 @@ Public Sub socket_Read()
   Mysocket.close
   ExecuteRemote(command)
   Mysocket.Listen(1)
-
 End
 
 Public Sub ExecuteRemote(command As String)

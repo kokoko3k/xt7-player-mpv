@@ -22,7 +22,14 @@ Public Sub Start()
   Endif
   If global.arg_append Then 
     Debug "Will append instead of play"
-    Try Sock_Append(global.arg_profile)
+    If global.arg_file = "" Then
+      Debug "but no URI has been provided!"
+      Quit
+    Endif
+    
+    Stop
+    Try Sock_Append(global.arg_file)
+    Quit
   Endif
   If global.arg_file <> "" Then
     Debug "The file to open is " & global.arg_file
