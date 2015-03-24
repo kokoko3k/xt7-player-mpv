@@ -71,11 +71,9 @@ Public Sub Button1_Click()
   channelfiledata = ""
   scanprocess = Shell scanexe & " -t 3 -A 1 -vv " & " -a " & cardn & " " & ftablefilesorted & " 2>&1" For Read As "scanprocess"
   'scanprocess = Shell "cat /root/Desktop2_kde4/out.scan" For Read As "scanprocess"
-  Debug scanexe & " -t 3 -A 1 -vv " & " -a " & cardn & " " & ftablefilesorted & " 1>&2" 
-  Debug
+  global.myDebug(scanexe & " -t 3 -A 1 -vv " & " -a " & cardn & " " & ftablefilesorted & " 1>&2")
   monprocess = Shell femonexe & " -a " & cardn & " -H" For Read As "monprocess"
-  Debug femonexe & " -a " & cardn & " -H" 
-  Debug
+  global.myDebug(femonexe & " -a " & cardn & " -H")
   Button1.enabled = False
   ComboBox1.enabled = False
   Button5.enabled = True
@@ -88,8 +86,7 @@ Public Sub scanprocess_read()
 
   For Each sLine In scanprocess.Lines
     If sLine Like "*dumping lists*" Then
-      Debug "Headers Done ***********************"
-      Debug
+      global.myDebug("Headers Done ***********************")
       HeadersDone = True
       Textarea1.Insert(Sline & "\n")
       Return
@@ -134,8 +131,7 @@ Public Sub initprogress()
   Dim myline As Integer
   Try tempfile = Split(File.Load(ftablefilesource), "\n", "", True).Sort()
   If Error Then Return
-  Debug "Successfully opened and sorted " & ftablefilesource
-  Debug
+  global.myDebug("Successfully opened and sorted " & ftablefilesource)
   'remove unuseful lines from the sorted file (eg. comments '#')
   For myline = 0 To tempfile.count - 1
     If tempfile[myline] Like "T *" Then
@@ -171,8 +167,7 @@ Public Sub ProcessScanHeaders(stderr As String)
   Dim textstart As Integer
   Dim service, pmt, ac3id, audioid As String
   
-  Debug stderr
-  Debug
+  global.myDebug(stderr)
   Try stderrlines = Split(stderr, "\n", "", True)
 
   For Each stderrline In stderrlines
@@ -326,16 +321,16 @@ Public Sub ParseChannelFile()
           If dualaudio Like "*+*" Then
             Try singleaudio = Split(channel, ":", "", True)[11]
             If Not Error Then
-              Debug channel
+              global.myDebug(channel)
               channel = Replace(channel, ":" & singleaudio & ":", ":" & dualaudio & ":")
-              Debug channel
+              global.myDebug(channel)
             Endif
           Endif
         Endif
       Endif
 
       Try channel = addoffset(channel)
-      Debug channel
+      global.myDebug(channel)
       name = Split(channel, ":", "", True)[0]
       data = Replace(channel, name & ":", "")
       channelsgrid.Rows.count = channelsgrid.Rows.count + 1

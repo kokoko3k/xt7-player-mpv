@@ -151,7 +151,7 @@ Public Sub ConvertandSaveAudio()
     
     TextArea1.text &= ("Done.") & "\n"
     TextArea1.text &= "\n"
-    Debug outstr
+    global.myDebug(outstr)
     
     nextlabel:
     mymplayer.do_stop()

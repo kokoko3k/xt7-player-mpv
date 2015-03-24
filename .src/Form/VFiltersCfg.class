@@ -125,7 +125,7 @@ Public Function ParseFiltersGui(Filtername As String) As String
           parsedfilter = "expand"                       'gbr3 workaround
     Endif
   '   If parsedfilter = "stereo3d" Then
-  '     Debug "Adding scale filter after stereo3d filter to avoid problems"
+  '     global.myDebug( "Adding scale filter after stereo3d filter to avoid problems")
   '     Return ParsedFilter & "=" & TmpString & ",scale"
   '       Else
   '     Return ParsedFilter & "=" & TmpString

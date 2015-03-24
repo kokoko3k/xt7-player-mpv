@@ -656,7 +656,7 @@ Private Function Parse_video_filter(Filtername As String) As String
     '       parsedfilter = "expand"                       'gbr3 workaround
     ' Endif
   '   If parsedfilter = "stereo3d" Then
-  '     Debug "Adding scale filter after stereo3d filter to avoid problems"
+  '     global.myDebug( "Adding scale filter after stereo3d filter to avoid problems")
   '     Return ParsedFilter & "=" & TmpString & ",scale"
   '       Else
   '     Return ParsedFilter & "=" & TmpString
@@ -1226,7 +1226,7 @@ Private Sub AlignObjects()
             If l > max_obj_w Then max_obj_w = l
             align_objs.Add(child)
             If acontainer.name = "ScrollView2" Then
-              Debug child.text, l, max_obj_w
+              global.myDebug(child.text, l, max_obj_w)
             Endif
 
           Endif
@@ -1261,7 +1261,7 @@ Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip)
   While Lower(aTabstrip.Caption) <> driver_name
     Try aTabstrip.index += 1
     If Error Then
-      Debug "Could not find the right tab :( "
+      global.myDebug("Could not find the right tab :( ")
       Return ""
     Endif
   Wend
@@ -1342,7 +1342,7 @@ Public Sub GetAlsaDevices() As String[]
               Break
             Endif
           Next
-         ' Debug acardid, apcmid, acardname, apcminfo
+         ' global.myDebug( acardid, apcmid, acardname, apcminfo)
           adevices.add("plughw:" & acardid & "." & apcmid & tabs & " - " & "[" & acardname & ":" & apcminfo & "]")
         Next
       Endif
@@ -1369,7 +1369,7 @@ Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip)
   While Lower(aTabstrip.Caption) <> driver_name
     Try aTabstrip.index += 1
     If Error Then
-      Debug "Could not find the right tab :( "
+      global.myDebug("Could not find the right tab :( ")
       Return ""
     Endif
   Wend
@@ -1394,7 +1394,7 @@ Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip)
                         Try outline = outline & Split(child.NEXT.text, " ")[0]
                           Else
                         Try outline = outline & child.NEXT.text
-                        If Error Then Debug "an error occurred, please report this message and what you're doing"
+                        If Error Then global.myDebug("an error occurred, please report this message and what you're doing")
                       Endif
                     Endif
                   Endif

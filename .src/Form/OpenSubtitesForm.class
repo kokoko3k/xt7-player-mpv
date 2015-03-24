@@ -50,8 +50,7 @@ Public Sub ButtonSearch_Click()
   token = OpenSubs.TokenFromLogIn("", "", "en", opensubs.defaultagent) '"OS Test User Agent")
   If token = -1 Then 
     Message.Error(("Token error"), "Ok")
-    Debug "Token error"
-    Debug
+    global.myDebug("Token error")
     mywait(False)
     Return
   Endif
@@ -77,7 +76,7 @@ Public Sub ButtonSearch_Click()
     Next 'field
   Next 'mysubs
   subsview.Rows.H = CInt(subsview.Font.TextHeight("Ij|") * 1.5)
-  If token <> "-1" Then Debug "Logging out: " & opensubs.LogOut(token)
+  If token <> "-1" Then global.myDebug("Logging out: " & opensubs.LogOut(token))
   SubsView.Columns[0].Width = -1
   mywait(False)
   

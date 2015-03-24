@@ -19,8 +19,7 @@ Public Function DownloadAsync(URL As String, Optional AsFile As Boolean = False)
   'commandline = "wget " & URL & " -O " & tmpfile & timeouts
   Repeat
     wgetprocess1 = Shell commandline For Output As "wgetprocess1"
-    Debug "trying " & commandline
-    Debug
+    global.myDebug("trying " & commandline)
     While (ProcessRunningOvr(wgetprocess1))
       Wait 0.05
     Wend
@@ -54,7 +53,7 @@ Public Function ExistsUrl(url As String) As Boolean
   tries = 10
 
   Repeat
-    Debug commandline
+    global.myDebug(commandline)
     wgetprocess2 = Shell commandline For Output As "wgetprocess2"
     While (ProcessRunningOvr(wgetprocess2))
       Wait 0.05

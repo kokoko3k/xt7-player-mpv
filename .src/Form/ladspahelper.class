@@ -61,7 +61,7 @@ Next 'lcontrol
   DrawPlugin()
   Return
   exiterror:
-    Debug "Error analyzing plugin, exit."
+    global.myDebug("Error analyzing plugin, exit.")
     PCONTROLS.clear
     cleardraw()  
 End

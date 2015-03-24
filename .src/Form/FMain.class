@@ -236,17 +236,17 @@ Public Sub InitTrayIcon()
   Dim SystemTray As Boolean = True
   Try SystemTray = desktop.HasSystemTray
   If Error Then
-    Debug "Couldn't check if your desktop has a system tray, assuming it has"
+    global.myDebug("Couldn't check if your desktop has a system tray, assuming it has")
   Endif
   If Not SystemTray Then Return
   Try trayicon1 = New Trayicon
-  If Error Then Debug "Cannot Init Trayicon"
+  If Error Then global.myDebug("Cannot Init Trayicon")
   'trayicon1.Picture = picture.Load("trayicon.png")
   trayicon1.Picture = picture.Load("xt7-player-mpv.png")
   'trayicon1.Picture.Image.Stretch(trayicon1.w, trayicon1.h)
   trayicon1.Visible = True
   Try Object.Attach(Trayicon1, Me, "Trayicon1")
-  If Error Then Debug "Cannot Init Trayicon"
+  If Error Then global.myDebug("Cannot Init Trayicon")
 End
 
 Public Sub Form_Open()
@@ -400,8 +400,7 @@ Public Sub AllInit_Pre()
   'Is There where we load generaloptions form settings
   If generaloptions.ShowCoversInListChk.value Then
     covermanager.prebuffer()
-    Debug "the User likes cover, so we prebuffer cover list In background..."
-    Debug
+    global.myDebug("the User likes cover, so we prebuffer cover list In background...")
   Endif
 
   HideGrid(PlaylistGrid)
@@ -415,8 +414,8 @@ End
 
 Public Sub InitEarlyForms()
 
-  Debug "start at: " & Time
-  Debug
+  global.myDebug("start at: " & Time)
+
   Try Last.mouse = mouse.wait
   fmain.mouse = mouse.wait
   global.initearlyformsdone = True
@@ -426,8 +425,8 @@ Public Sub InitEarlyForms()
   GeneralOptions.Init()
   Try Last.mouse = mouse.default
   fmain.mouse = mouse.default
-  Debug "Ends at:" & Time
-  Debug
+  global.myDebug("Ends at:" & Time)
+  global.myDebug("")
 
 End
 
@@ -847,7 +846,7 @@ Public Sub SetStyle_early()
   ' 
   If Trim(generaloptions.BottomPanelImage.text) <> "" Then
     Try picturebox1.Picture = picture.Load(generaloptions.BottomPanelImage.text)
-    If Error Then Debug "sorry, couldn't load the image " & generaloptions.BottomPanelImage.text
+    If Error Then global.myDebug("sorry, couldn 't load the image " & generaloptions.BottomPanelImage.text)
   Endif
   
   StatusLabelLeft.text = ""
@@ -1029,8 +1028,7 @@ Public Sub DelayTimer_Timer()
   
   DelayTimer.stop
   AllInit_Post()
-  Debug "Ended at: " & Timer
-  Debug
+  global.myDebug("Ended at: " & Timer)
 
 End
 
@@ -1108,9 +1106,8 @@ Public Sub MainInit()
     fmain.Show
   Endif
   LeftSideTabs_Click()
-  Debug "Myinit ended at: " & Timer
-  Debug
-  
+  global.myDebug("Myinit ended at: " & Timer)
+
 End
 
 
@@ -1122,14 +1119,12 @@ Public Sub ShowBrowseTabTo(fullpath As String)
   If global.IsNetworkURI(fullpath) Then Return
   Try path = file.Dir(fullpath)
   If Error Then 
-    Debug "error, please report"
-    Debug
+    global.myDebug("Error, please report ")
     Return
   Endif
   Try tabID = Global.TabIndexByName("browse", Leftsidetabs)
   If Error Then 
-    Debug "error, please report"
-    Debug
+    global.myDebug("error, please report")
     Return
   Endif
   Try UrlBox.text = path
@@ -1286,8 +1281,7 @@ Public Sub Form_Close()
   Repeat
     FMain.Mysocket.Close
   Until FMain.Mysocket.status = Net.inactive
-  Debug "closed socket"
-  Debug
+  global.myDebug("closed socket")
   
   Try HotKeys.xbindkeys.kill
   
@@ -1343,8 +1337,7 @@ Public Sub Form_Close()
   Try ladspahelper.hide
   Try FormLyrics.hide
   Try AudioConvert.hide
-  Debug "hidden all forms"
-  Debug
+  global.myDebug("hidden all forms")
 
   If ChooseAspect.visible Then ChooseAspect.CancelBtn_Click
   
@@ -1359,12 +1352,10 @@ Public Sub Form_Close()
     mplayer.do_stop()
     ExecutePostCmd()
   Endif
-  Debug "post command executed"
-  Debug
+  global.myDebug("post command executed")
   MyLibrary.MplayerTag.do_stop()
   MyPlaylist.MplayerTag.do_stop()
-  Debug "mpv stopped"
-  Debug
+  global.myDebug("mpv stopped")
   Try HotKeys.xbindkeys.kill
   Print "xbindkeys killed"
 
@@ -1373,11 +1364,9 @@ Public Sub Form_Close()
     If GeneralOptions.SaveOnExitCHK.value = True Then
       Try Global.SaveAllSettings(global.CurrentProfile)
       If Error Then 
-        Debug "couldn't save all settings at exit as requested..."
-        Debug
+        global.myDebug("couldn't save all settings at exit as requested...")
       Else
-        Debug "All settings saved"
-        Debug
+        global.myDebug("All settings saved")
       Endif
     Else
       global.SaveMandatorySettings(global.CurrentProfile)
@@ -1386,8 +1375,7 @@ Public Sub Form_Close()
 
   If (Not fastquit) Then
     MySettings.WriteLastProfile(Global.confpath, global.CurrentProfile)
-    Debug "wrote last profile"
-    Debug
+    global.myDebug("wrote last profile")
   Endif
   
   'stop any epg scanning instance
@@ -1439,7 +1427,7 @@ Public Sub Form_Close()
   Try FormLyrics.close
   Try AudioConvert.close 
   
-  Debug "time to close = " & CStr(Timer() - t0)
+ global.myDebug("time to close = " & CStr(Timer() - t0))
   Print "Bye"
   Wait 0.5
   Quit
@@ -1843,17 +1831,10 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
   p = mplayer.get_property_mpv("path", True, 1000, True)
   If p = "" Then Return
   ddevice = "/" & dvd_device(p)
-  ' Debug dvd_device("dvd://10/path/to/dvd/device")
-  ' Debug dvd_device("dvd://10//path/to/dvd/device")
-  ' Debug dvd_device("dvd:///path/to/dvd/device")
-  ' Debug dvd_device("dvd://path/to/dvd/device")
-  ' Debug dvd_device("dvd://")
-  ' Debug dvd_device("dvd://1")
-  ' Debug dvd_device("dvd://dev/sr0")
 
   dtl = mplayer.get_property_mpv("=disc_title_list", True, 1000)
   If dtl = "" Then
-    Debug ("Could not get information about the dvd structure")
+    global.myDebug(("Could not get information about the dvd structure"))
     Return
   Endif
   dtl = Replace(dtl, "[", "")
@@ -1869,7 +1850,7 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
     lengths.Add(l)
     Wait 0.005
   Next
-  Debug
+  global.myDebug("")
   treeview1.Clear
   If lengths.count > 1 Then
     Menutitles.Enabled = True
@@ -1974,8 +1955,7 @@ Public Sub TimerMenuHashSearch_timer()
   
   token = OpenSubs.TokenFromLogIn("", "", "en", OpenSubs.defaultagent)
   If token = -1 Then
-    Debug "Sorry, couldn't take the token from opensubtitles.org"
-    Debug
+    global.myDebug("Sorry, couldn't take the token from opensubtitles.org")
     fakemenu.text = ("Token error")
     fakemenu.picture = stock["16/error"]
     Return
@@ -1984,8 +1964,7 @@ Public Sub TimerMenuHashSearch_timer()
   If myopensubs.count = 0 Then
     moviehash = OpenSubs.MovieHash(currentmovie)
     If moviehash = -1 Then
-      Debug "Sorry, couldn't calculate the moviehash"
-      Debug
+      global.myDebug("Sorry, couldn't calculate the moviehash")
       fakemenu.text = ("Hash error")
       fakemenu.picture = stock["16/error"]
       Return
@@ -2004,8 +1983,7 @@ Public Sub TimerMenuHashSearch_timer()
   If myopensubs.count = 0 Then  
     Try filesize = Stat(currentmovie).size
     If Error Then
-      Debug "Sorry, couldn't calculate file size"
-      Debug
+      global.myDebug("Sorry, couldn't calculate file size")
       fakemenu.text = ("File error")
       fakemenu.picture = stock["16/error"]
       Return
@@ -2015,8 +1993,7 @@ Public Sub TimerMenuHashSearch_timer()
   If myopensubs.count = 0 Then 
     myopensubs = OpenSubs.SearchByHash(token, AllLangs, moviehash, filesize)
     If myopensubs.count = 0 Then
-      Debug "Sorry, no hash results from opensubtitles.org"
-      Debug
+      global.myDebug("Sorry, no hash results from opensubtitles.org")
       fakemenu.text = ("No results")
       fakemenu.picture = stock["16/error"]
       Return
@@ -2078,63 +2055,6 @@ Public Sub TreeView1_Activate()
   Endif
 End
 
-
-
-' Public Sub OLD_TreeView1_Activate()
-'   
-'   Dim CurTitle, NextTitle, NextChapter, NextAngle As Integer
-'   Dim MyKey, tmp As String
-'   Stop
-'   tmp = ""
-'   
-'   CurTitle = 0
-'   NextTitle = 0
-'   'CurChapter = 0 non calcolabile
-'   NextChapter = 0
-'   'CurAngle = 0 non calcolabile
-'   NextAngle = 0
-'   
-'   MyKey = treeview1.Item.key
-'   
-'   Try CurTitle = mplayer.FindTagValue("ID_DVD_CURRENT_TITLE")
-'   'find next title:
-'   NextTitle = Replace(Split(mykey, "_", "", True)[0], "Title", "")
-'   If Not (mykey Like "*Chapters*") Then
-'     If mykey Like "*Chapter*" Then NextChapter = Replace(Split(mykey, "_", "", True)[1], "Chapter", "")
-'   Endif
-'   If Not (mykey Like "*Angles*") Then
-'     If mykey Like "*Angle*" Then NextAngle = Replace(Split(mykey, "_", "", True)[1], "Angle", "")
-'   Endif
-'   
-'   Debug "CurTitle= " & Curtitle
-'   Debug "NextTitle= " & NextTitle
-'   Debug "NextChapter= " & NextChapter
-'   Debug "NextAngle= " & NextAngle
-'   Debug
-'   'SWITCH_ANGLE (di slave mode) non funziona come dovrebbe, (bug mplayer)quindi al cambio di angolo, 
-'   'occorre riavviare il player.
-'   
-'   If NextAngle <> 0 Then tmp = " -dvdangle " & NextAngle
-'   If NextChapter <> 0 Then tmp = tmp & " -chapter " & nextchapter
-'   
-'   If mplayer.ProcessRunningOvr() Then
-'     If (CurTitle <> NextTitle) Then
-'       Play("dvd://" & NextTitle, tmp)
-'       fmain.VideoBox.setfocus
-'     Else 'il titolo non varia
-'       If NextAngle <> 0 Then
-'         mplayer.do_restart(mplayer.getP("fullpath"), mplayer.CurrentOptions & tmp)
-'         fmain.VideoBox.setfocus
-'       Else If NextChapter <> 0 Then
-'         mplayer.Send("seek_chapter " & NextChapter & " 1")
-'       Endif
-'     Endif
-'   Else 'not processrunningovr
-'     Play("dvd://" & NextTitle, tmp)
-'     fmain.VideoBox.setfocus
-'   Endif
-'   
-' End
 
 Public Sub TreeView1_KeyPress()
   
@@ -2230,14 +2150,12 @@ Public Sub ExportDbusProperties()
   If Not DbusAlreadyRegistered Then
     Try DBus.Name = "org.mpris.MediaPlayer2.xt7"
     If Error Then 
-      Debug "Error setting up dbus"
-      Debug
+     global.myDebug("Error setting up dbus")
       Return
     Endif
     Try DBus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player", "org.mpris.MediaPlayer2.TrackList", "org.mpris.MediaPlayer2.Playlists", "org.freedesktop.Dbus.Properties", "org.freedesktop.Dbus.Introspectable"])
     If Error Then 
-      Debug "Error setting up dbus"
-      Debug
+      global.myDebug("Error setting up dbus")
       Return
     Endif
   Endif
@@ -2336,7 +2254,7 @@ Public Sub user_options(fullpath As String) As Collection
   'if exists a set of cached options for the current profile
   ' And we haven't initializaed newchains yet, use the cache:
   If global.exist_cached_options(global.CurrentProfile) And (Not NewChains.initdone) Then 
-    Debug "Found cached options, using it"
+    global.myDebug("Found cached options, using it")
     opts = global.get_cached_options(global.currentprofile)
       Else
     'parse the chain if we have not a cache
@@ -2457,8 +2375,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   
   myopensubs.clear 
   If fullpath = "" Then 
-    Debug "Nothing to play :/"
-    Debug
+    global.myDebug("Nothing to play :/")
     Goto returnlabel
   Endif
   LASTAUDIOID = -1
@@ -2531,7 +2448,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
 
     timeA = Timer()
     mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value)
-    Debug "mplayer.get_mediainfo()", Timer() - timeA
+    global.myDebug("mplayer.get_mediainfo()", Timer() - timeA)
     If Not mplayer.ProcessRunningOvr() Then 
       If mplayer.return_value <> 0 Then 'try to use youtube-dl 
         mplayer.set_option("ytdl", "yes")
@@ -2657,8 +2574,7 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0")
     If Not (Exist(global.historyfile)) Then file.Save(global.historyfile, "")
     Try history = file.Load(global.Historyfile) 
     If Error Then 
-      Debug "Error: could not access " & global.historyfile & ""
-      Debug
+      global.myDebug("Error: could not access " & global.historyfile & "")
       Return
     Endif
     For Each entry In Split(history, "\n", "", True)
@@ -3035,7 +2951,7 @@ Public Sub UpdateVolumeSlider(volume As String)
   If Error Then Goto ReturnLabel
   
   LASTVOLUME = newvolume
-  Debug newvolume
+  global.myDebug(newvolume)
   ReturnLabel:
   Try SaveVolumeSlider.tag = "user"
 
@@ -3050,9 +2966,8 @@ Public Sub UpdateStreamsMenu()
   mplayer.Send("get_property switch_audio")
   tmpsub = mplayer.CurrentSubStream
   tmpaudio = mplayer.CurrentAudioStream
-  Debug "tmpsub= " & tmpsub
-  Debug "tmpaudio= " & tmpaudio
-  Debug
+  global.myDebug("tmpsub= " & tmpsub)
+  global.myDebug("tmpaudio= " & tmpaudio)
   Repeat
   Until Streamsaudiomenu
   
@@ -3304,19 +3219,17 @@ Public Sub Mplayer_mykill(return_value As Integer)
   'delete export file
      Try Kill mymeters.exportfile
       If TogglePls.value And (Not mplayer.user_stopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) Then
-          Debug "end of media reached, playing next video..."
-          Debug
-          
+          global.myDebug("end of media reached, playing next video...")
+
           SelectNext(True, GetActivePlayQueue())
           PlaylistFinished = Not global.IsNextSelected
           If (Shutdown = "PLS") And PlaylistFinished And (Not ShufflePls.value) Then CountDown.engage
-          Debug "mpv was off, so hit PLAY from here"
-          Debug
+          global.myDebug("mpv was off, so hit PLAY from here")
+
           If Not (mplayer.ProcessRunningOvr()) Then
             Play(Media_Next_path)
               Else
-            Debug "Not hitting PLay from here because ButtonNext did it first"
-            Debug
+            global.myDebug("Not hitting PLay from here because ButtonNext did it first")
           Endif
           
       Else
@@ -3338,10 +3251,9 @@ End
 Private PrevValuecTime As Integer = 0 'so that the first value will be used
 Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional NewValuecTime As Integer)
   Dim bAvgAdapted As Integer
-  Debug 
   If (NewValuecTime - PrevValuecTime >= 10) Then
     If ((NewValuecTime - PrevValuecTime) Mod 5 = 0) Then
-      Debug "Skipping periodic keyframe, diff = " & (NewValuecTime - PrevValuecTime)
+      global.myDebug("Skipping periodic keyframe, diff = " & (NewValuecTime - PrevValuecTime))
       PrevValuecTime = NewValuecTime
       Return
     Endif
@@ -3349,7 +3261,7 @@ Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional Ne
     
   PrevValuecTime = NewValuecTime
   Wait delay
-  Debug "waiting:", delay
+  global.myDebug("waiting:", delay)
   'bAvgAdapted = CInt(bAvg * (100 / 255)) 'es: 64 -> 25
   bAvgAdapted = CInt(bAvg * (100 / 255)) 'es: 64 -> 25
   bAvgAdapted = 100 - bAvgAdapted 'es: 25 -> 75
@@ -3487,12 +3399,12 @@ Public Sub VersionCheck()
   
   Try cfruser = UserMajor & UserMinor & Userminiminor
   If Error Then 
-    Debug "Couldn't check required version"
+    global.myDebug("Couldn't check required version")
     Return
   Endif
   Try cfrrequired = RequiredMajor & RequiredMinor & RequiredMiniminor
   If Error Then 
-    Debug "Couldn't check required version"
+    global.myDebug("Couldn't check required version")
     Return
   Endif
   If cfruser >= cfrrequired Then Return
@@ -3571,17 +3483,11 @@ End
 
 
 Public Sub GetOptionsFromGui()
-  
-  Debug "STUBSTUBSTUBSTUBSTUB"
-  Debug "STUBSTUBSTUBSTUBSTUB"
-  Debug "STUBSTUBSTUBSTUBSTUB"
-  Debug "STUBSTUBSTUBSTUBSTUB"
-  Debug "STUBSTUBSTUBSTUBSTUB"
-  Debug "STUBSTUBSTUBSTUBSTUB"
-  Debug "STUBSTUBSTUBSTUBSTUB"
-  Debug "STUBSTUBSTUBSTUBSTUB"
-  Debug "STUBSTUBSTUBSTUBSTUB"
-  
+  global.myDebug("STUBSTUBSTUBSTUBSTUB")
+  global.myDebug("STUBSTUBSTUBSTUBSTUB")
+  global.myDebug("STUBSTUBSTUBSTUBSTUB")
+  global.myDebug("STUBSTUBSTUBSTUBSTUB")
+  global.myDebug("STUBSTUBSTUBSTUBSTUB")
 End
 
 
@@ -3638,7 +3544,7 @@ Public Sub ProgressFrame_MouseUp()
   'seekbar.value = mouse.x / seekbar.w
   seekbar.value = mouse.x / Last.w
   
-  Debug "seeking"
+  global.myDebug("seeking")
   SeekBar_Change()
   SetProgress(seekbar.value)
 End
@@ -3723,8 +3629,7 @@ Public Sub FsCommandsExec(Fullscreen As Boolean, fps As String)
   
   If fullscreen Then
     If Exist(fscommand) Then 
-      Debug "Executing " & fscommand & " " & fps
-      Debug
+      global.myDebug("Executing " & fscommand & " " & fps)
       If Not mplayer.Paused() Then 'pause the video before swhitching fullscreen
         mplayer.do_pause()
         WasPaused = False
@@ -3737,20 +3642,18 @@ Public Sub FsCommandsExec(Fullscreen As Boolean, fps As String)
         If mplayer.Paused() Then mplayer.do_leave_pause()
       Endif
     Else
-      Debug "!!!"
-      Debug ("Hint: create (and make executable) a script named") & " " & fscommand 
-      Debug ("xt7 will execute it with and pass fps argument when switching to fullscreen")
-      Debug ("Eg: xrandr --rate \"$1\" ")
-      Debug "!!!"
-      Debug
+      global.myDebug("!!!")
+      global.myDebug(("Hint: create (and make executable) a script named") & " " & fscommand)
+      global.myDebug(("xt7 will execute it with and pass fps argument when switching to fullscreen"))
+      global.myDebug(("Eg: xrandr --rate \"$1\" "))
+      global.myDebug("!!!")
     Endif
     Goto ReturnLabel
   Endif
   
   'if windowed
   If Exist(windowcommand) Then
-    Debug "Executing " & windowcommand 
-    Debug
+    global.myDebug("Executing " & windowcommand)
     If Not mplayer.Paused() Then 'pause the video before swhitching fullscreen
       mplayer.do_pause()
       WasPaused = False
@@ -3762,11 +3665,10 @@ Public Sub FsCommandsExec(Fullscreen As Boolean, fps As String)
       If mplayer.Paused() Then mplayer.do_leave_pause()
     Endif
   Else
-    Debug "!!!"
-    Debug ("Hint: create (and make executable) a script named ") & " " & windowcommand
-    Debug ("xt7 will execute it when switching from fullscreen to window mode")
-    Debug "!!!"
-    Debug
+    global.myDebug("!!!")
+    global.myDebug(("Hint: create (and make executable) a script named ") & " " & windowcommand)
+    global.myDebug(("xt7 will execute it when switching from fullscreen to window mode"))
+    global.myDebug("!!!")
   Endif
   Goto ReturnLabel
   
@@ -3799,7 +3701,7 @@ Public Function Screenbypos(x As Integer, y As Integer) As Screen
   Next
 
   'still no screen found? return the first.
-  Debug "Couldn 't get the matching screen (!)"
+  global.myDebug("Couldn 't get the matching screen (!)")
   Return Screens[0]
   
 End
@@ -3846,7 +3748,7 @@ Public Sub FullScreenSwitch()
       If GeneralOptions.NoEffectsCheckbox.value Then
         Try KdeEffectsWereActive = DisableKDECompositing()
         If Error Then
-          Debug "Unable to disable kde effects, are you sure use kwin window manager?"
+          global.myDebug("Unable to disable kde effects, are you sure use kwin window manager?")
           KdeEffectsWereActive = False
         Endif
       Endif
@@ -4163,8 +4065,7 @@ Public Sub LibraryGrid_Drop()
   
   dragdata = Drag.Paste("text/uri-list")
   droppedfiles = Split(dragdata, "\n\r", "", True)
-  Debug "Start at: " & Time
-  Debug
+  global.myDebug("Start at: " & Time)
   'prepare the progressbar
   MyLibraryProgressBar.visible = True
   MyLibraryProgressBar.h = 32
@@ -4198,11 +4099,10 @@ Public Sub LibraryGrid_Drop()
   Next
   MyLibrary.SyncSortedTable() '<-necessary for MyLibrary.isdupe() function
   Try MyAlbumsLib.Init(mylibrary, AlbumGridView, searchfieldalbums.text)
-  If Error Then Debug "Error while initializing albums view"
+  If Error Then global.myDebug("Error while initializing albums view")
   Try MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, albumviewtexlen)
-  If Error Then Debug "Error while Arranging albums view"
-  Debug "End at: " & Time
-  Debug
+  If Error Then global.myDebug("Error while Arranging albums view")
+  global.myDebug("End at: " & Time)
   'reset the progressbar
   MyLibraryProgressBar.h = 0
   MyLibraryProgressBar.visible = False
@@ -4472,7 +4372,7 @@ Public Sub HotKeyToMplayer(HotKey As String)
   Dim n As String
   Action = Lower(HotKeys.ActionRelatedTo(Hotkey))
   
-  Debug Action
+  global.myDebug(Action)
   
   If Action Like "seek*" Then
     If global.IsImgFile(mplayer.getP("fullpath")) Then
@@ -4544,7 +4444,7 @@ Public Sub HotKeyToMplayer(HotKey As String)
           If MyQuestion.Ask(("Are you sure you want to delete:") & "\n" & currentfile & "\n" & ("from disc?"), ("Delete"), ("Don't delete")) = 1 Then
             If DeleteFromActiveQueue(currentfile) Then
               Play(Media_Next_path)
-              Debug
+              global.myDebug("")
                 Else
               message.Error(("Couldn't delete the file"))
             Endif
@@ -4734,7 +4634,7 @@ Public Sub VideoAreaGroup_DblClick()
     If (timenow - LastClickTime) < 0.25 Then 
       Wait 0.1
       mplayer.Send("pause") ' keep the pausing state when switching fullscreen mode
-      Debug timenow - LastClickTime
+      global.myDebug(timenow - LastClickTime)
     Endif
     FullScreenSwitch()
   Endif
@@ -4800,8 +4700,7 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
     Wait 0.025
     If mplayerwasrunning Then 'Or (TogglePls.value) Then
       Try customtitle = youtubetree.Current.text
-      Debug "mpv was off so hit play from here"
-      Debug
+      global.myDebug("mpv was off so hit play from here")
       Play(Media_Next_path)
     Endif
   
@@ -4923,8 +4822,7 @@ Public Sub ButtonPrev_Click()
     Wait 0.025
     If mplayerwasrunning Then 
       Try customtitle = youtubetree.Current.text
-      Debug "mpv was off so hit play from here"
-      Debug
+      global.myDebug("mpv was off so hit play from here")
       Play(Media_Next_path)
     Endif
   Else If TabSelectedShoutcast() Then
@@ -5247,8 +5145,7 @@ Public Sub RefreshVisibleCovers(mygrid As Gridview)
   FirstC = 0
   LastC = MyGrid.Columns.Count - 1
   
-  Debug "Doing from " & FirstR & " - to " & LastR
-  Debug
+  global.myDebug("Doing from " & FirstR & " - to " & LastR)
   If Lower(mygrid.name) = "playlistgrid" Then
     Try PlaylistGrid.refresh
   Else
@@ -5267,7 +5164,6 @@ Public Sub UpdateSearchResults(MyLibrary As PlaylistClass, LibraryGrid As Gridvi
   Endif
   LibraryGrid.clear
   MyLibrary.Search(LibraryGrid, Searchterm)
-  Debug
   If autosize Then
     MyLibrary.AutoSizeColumns(LibraryGrid)
     ' [GB2:FNTH] LibraryGrid.Rows.h = LibraryGrid.Font.Textheight("^_") + global.rowpadding
@@ -5652,18 +5548,16 @@ Public Sub MenuLibraryUpdate_Click()
     GeneralOptions.NOPARSEVBox2.enabled = False
     Wait 0.1
     FMain.MenuLibraryUpdate_Click()
-    Debug "Started at: " & Time
-    Debug
+    global.myDebug("Started at: " & Time)
     'ask user if he wants to delete non existend files
     'AnswerRemove = Message.Question(("Do you also want to remove non existent files from library?"), ("Remove"), ("Don't remove"))
     AnswerRemove = MyQuestion.Ask(("Do you also want to remove non existent files from library?"), ("Remove"), ("Don't remove"))
     If AnswerRemove = 1 Then
       'remove non existing files
       removedfiles = MyLibrary.RemoveNonExisting()
-      Debug "Removing old video thumbnails"
+      global.myDebug("Removing old video thumbnails")
       CleanVideoThumbs()
-      Debug "Done"
-      Debug
+      global.myDebug("Done")
     Endif
     
     For i = 0 To GeneralOptions.NoParseWatchedListbox.count - 1
@@ -5711,11 +5605,10 @@ Public Sub MenuLibraryUpdate_Click()
     GeneralOptions.NOPARSEVBox2.enabled = True
     
     Try MyAlbumsLib.Init(mylibrary, AlbumGridView, searchfieldalbums.text)
-    If Error Then Debug "Error while initializing albums view"
+    If Error Then global.myDebug("Error while initializing albums view")
     Try MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, albumviewtexlen)
-    If Error Then Debug "Error while Arranging albums view"
-    Debug "Ended at: " & Time
-    Debug
+    If Error Then global.myDebug("Error while Arranging albums view")
+    global.myDebug("Ended at: " & Time)
   Endif
   
 End
@@ -5735,15 +5628,12 @@ Public Sub SearchLabel_DblClick()
 End
 
 Public Sub MenuItemsUpdate_Click()
-
-  Debug "start at " & Time
+  global.myDebug("start at " & Time)
   If LibraryGrid.Rows.count > 0 Then
     MyLibrary.UpdateSelected(LibraryGrid)
     'UpdateSearchResults(MyLibrary, LibraryGrid, fmain.FullyLoaded, Searchfield.text)
   Endif
-  Debug "end at " & Time
-  Debug
-
+  global.myDebug("end at " & Time)
 End
 
 Public Sub MenuItemsUpdatePls_Click()
@@ -6588,8 +6478,7 @@ End
 Public Sub socket_Read()
   Dim command As String = ""
   Line Input #Last, command
-  Debug "command= " & command
-  Debug
+  global.myDebug("command= " & command)
   Mysocket.close
   ExecuteRemote(command)
   Mysocket.Listen(1)
@@ -6600,20 +6489,17 @@ Public Sub ExecuteRemote(command As String)
   Dim parameter As String
   
   parameter = Mid(command, InStr(command, " ") + 1)
-  Debug "command= " & command
-  Debug "parameter= " & parameter
-  Debug
+  global.myDebug("command= " & command)
+  global.myDebug("parameter= " & parameter)
   If command Like "append *" Then
     parameter = NoQuotes(parameter)
-    Debug "URI= " & parameter
-    Debug
+    global.myDebug("URI= " & parameter)
     MyPlaylist.AddFile(playlistgrid, parameter, MyPlaylist.ISURI(parameter), MyPlaylist.ISURI(parameter))
     MyPlaylist.AutoSizeColumns(playlistgrid)
     GridRefreshWorkaround(playlistgrid)
   Else If command Like "play *" Then
     parameter = NoQuotes(parameter)
-    Debug "URI= " & parameter
-    Debug
+    global.myDebug("URI= " & parameter)
     ButtonStop_Click()
     
     If Not global.IsAudioFile(parameter) Then 'raise xt7 only on video files
@@ -7244,8 +7130,7 @@ Public Function ObjectByName(Objectname As String) As Object
   
   For Each obj In Me.Controls
     If Upper(obj.name) = Upper(Objectname) Then
-      Debug "found" & objectname
-      Debug
+      global.myDebug("found" & objectname)
       Return obj
     Else
       Print Upper(objectname) & " differ from " & Upper(obj.name)
@@ -7614,7 +7499,7 @@ Public Sub ProfileLoadBTN_Click()
   ReLoadCurrentProfile()
   UpdateProfilesTabList()
   MySettings.WriteLastProfile(Global.confpath, global.CurrentProfile)
-  Debug "wrote last profile"
+  global.myDebug("wrote last profile")
 
 End
 
@@ -8547,7 +8432,7 @@ End
 
 Public Sub ButtonRefresh_Click()
   fileview1.UnselectAll()
-  Debug fileview1.dir
+  global.myDebug(fileview1.dir)
   fileview1Myreload()
 End
 
@@ -8633,16 +8518,16 @@ Public Sub ItemsFromBrowseTo(theplaylist As Playlistclass, thegrid As Gridview, 
       Endif
     Endif
   Next 'selecteditem
-  Debug Timer() - t1
+  global.myDebug(Timer() - t1)
 End
 
 Public Sub menubrowseaddtolibrary_Click()
 
   Try MyAlbumsLib.Init(mylibrary, AlbumGridView, searchfieldalbums.text)
   ItemsFromBrowseTo(mylibrary, librarygrid, Searchfield.text)
-  If Error Then Debug "Error while initializing albums view"
+  If Error Then global.myDebug("Error while initializing albums view")
   Try MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, albumviewtexlen)
-  If Error Then Debug "Error while Arranging albums view"
+  If Error Then global.myDebug("Error while Arranging albums view")
 
 End
 
@@ -8948,8 +8833,7 @@ Public Sub youtubeappendmenu_Click()
     Try youtubetree.MoveTo(tmptmpkey)
     If Error Then Goto ReturnLabel
   Endif
-  Debug youtubetree.Current.key
-  Debug
+  global.myDebug(youtubetree.Current.key)
   youtubetree.moveparent()
   Try youtubetree.Remove(tmpkey)
   fmain.mouse = mouse.wait
@@ -9005,8 +8889,7 @@ Public Sub NEW_OK_youtubeappendmenu_Click()
     Try youtubetree.MoveTo(tmptmpkey)
     If Error Then Goto ReturnLabel
   Endif
-  Debug youtubetree.Current.key
-  Debug
+  global.myDebug(youtubetree.Current.key)
   youtubetree.moveparent()
   Try youtubetree.Remove(tmpkey)
   fmain.mouse = mouse.wait
@@ -9055,8 +8938,7 @@ Public Sub OLDyoutubeappendmenu_Click()
     If Error Then Return
     Try youtubetree.Item.selected = True
   Endif
-  Debug youtubetree.Current.key
-  Debug
+  global.myDebug(youtubetree.Current.key)
   Try youtubetree.Remove(tmpkey)
   If Not ischild Then
     fmain.mouse = mouse.wait
@@ -9185,8 +9067,7 @@ Public Sub StreamDownload(url As String, Optional suggestname As String = "")
     If commandline Like "*aria2c *" Then commandline = commandline & " --load-cookies=" & Youtube.Cookiesfile
   Endif
   
-  Debug commandline
-  Debug
+  global.myDebug(commandline)
   Shell commandline
   
 End
@@ -9872,8 +9753,7 @@ Public Sub RenameGridItem(mygrid As Gridview, myrow As Integer, myplaylist As Pl
     If myplaylist.AreEquivalentRows(myplaylist.PTable[i], myplaylist.SearchTable[myrow]) Then Break
   Next
   If i > imax Then 
-    Debug "cannot rename, couldn't find searchtable element into ptable (!?)"
-    Debug
+    global.myDebug("cannot rename, couldn't find searchtable element into ptable (!?)")
     Return
   Else
     myplaylist.SearchTable[myrow] = Replace(myplaylist.SearchTable[myrow], sep & oldname & sep, sep & newname & sep)
@@ -9944,9 +9824,8 @@ Private Sub StopDumping(destfile As String)
       Else
     destfile &= ".ts"
   Endif
-  Debug "mv " & dumpfile & " " & Shell(destfile)
+  global.myDebug("mv " & dumpfile & " " & Shell(destfile))
   Shell "mv " & dumpfile & " " & Shell(destfile)
-  Debug
   mymsg = (("Moving $(dumpfile) \nTo: \n$(destfile)"))
   mymsg = Replace(mymsg, "$(dumpfile)", dumpfile)
   mymsg = Replace(mymsg, "$(destfile)", destfile)
@@ -10676,19 +10555,16 @@ Public Sub FileView1_KeyPress()
   Endif
   If Key.code = Key.BackSpace Then
     ButtonUp_Click()
-    Debug
     Return
   Endif
 
   If Key.code = Key.Delete Then
     MenuBrowseDelete_Click()
-    Debug
     Return
   Endif
 
   If Key.code = Key.f5 Then
     ButtonRefresh_Click()
-    Debug
     Return
   Endif
   
@@ -10711,7 +10587,7 @@ Private Function SelectFileviewFromKey(akey As String) As Boolean
       Else
     currentindex = -1
   Endif
-  Debug currentindex
+  global.myDebug(currentindex)
   toselect = fileview1.Selection.Find(aKey & "*", gb.like, currentindex + 1)
   If toselect >= 0 Then 
     fileview1.current = fileview1.Selection[toselect]
@@ -10899,7 +10775,7 @@ End
 
 ' Public Sub textboxdata_Activate()
 ' Stop
-'     Debug mplayer.GetProperty("pause")
+'     global.myDebug( mplayer.GetProperty("pause"))
 ' 
 ' End
 
@@ -10907,7 +10783,7 @@ End
 
 
 Public Sub textboxdata_Activate()
-  Debug mplayer.send(Last.text)
+  global.myDebug(mplayer.send(Last.text))
 End
 
 Public Sub textboxdata_KeyPress()
@@ -10973,8 +10849,7 @@ Public Sub ABLoopButton_mouseup()
     If timeout <> 0 Then
       ABLoopB -= Round((Timer() - starttime), 1)
       If ABLoopA >= ABLoopB Then
-        Debug
-        Debug "Loop Point A >= Loop Point B, and cannot loop backwards, please retry."
+        global.myDebug("Loop Point A >= Loop Point B, and cannot loop backwards, please retry.")
         ABLoopB = ABLoopInitValue
         Return
       Endif
@@ -10996,8 +10871,7 @@ Public Sub ABLoopTimer_Timer()
     mptime = mplayer.CurrentTimeFloat()
   Until mptime <> 99999.99999 Or (timeout = 0)
   If timeout = 0 Then
-    Debug
-    Debug "Couldn't get current time -> cannot loop!"
+    global.myDebug("Couldn't get current time -> cannot loop!")
      ABLoopTimer.delay = 1000 'safe value
     Return
   Endif

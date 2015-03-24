@@ -41,7 +41,7 @@ Public Function do_IdlePlay(filename As String) As Boolean
     options &= " --cache=" & "no"
     options &= " --term-status-msg=" & status_msg
     commandline = executable(600) & options
-    Debug commandline
+    global.myDebug( commandline)
     playerprocess = Shell commandline For Read Write As "idleprocess"
   Endif
 
@@ -113,7 +113,7 @@ Public Sub get_mediainfo(Optional idleplay As Boolean = False)
 ' '     If metadatacount > 0 Then
 ' '       For i = 0 To metadatacount - 1
 ' '         metadataname = GetPropertympv("metadata/list/" & i & "/key")
-' '         Debug metadataname, GetPropertympv("metadata/by-key/" & metadataname)
+' '         global.myDebug( metadataname, GetPropertympv("metadata/by-key/" & metadataname))
 ' '       Next
 ' '     Endif
 ' '   ''
@@ -164,8 +164,8 @@ Public Sub get_mediainfo(Optional idleplay As Boolean = False)
       Endif
       setP("audio-Channels", media_taglib.Channels)
       setP("=audio-samplerate", media_taglib.Samplerate)
-      Debug "got info from taglib on " & getP("FullPath") & " --"
-      Debug
+      global.myDebug( "got info from taglib on " & getP("FullPath") & " --")
+      global.myDebug("")
        media_taglib.tlFree()
         Else  'there was a problem with TagLib Class initialization, fallback to mplayer
               'or was a network uri or a cddb 
@@ -173,7 +173,7 @@ Public Sub get_mediainfo(Optional idleplay As Boolean = False)
       
       If global.IsCddb(getP("FullPath")) Then
         'fixmempv cddbtrack
-        Debug "FILLING CDDB TRACKS IS STUB BECAUSE MPV DOES NOT SUPPORT CDDB."
+        global.myDebug( "FILLING CDDB TRACKS IS STUB BECAUSE MPV DOES NOT SUPPORT CDDB.")
         ' Try cddbtrack = Split(Media_FullPath, "/ ", "", True, False)[1]
         ' Try Media_Artist = FindTagValue("ID_CDDB_INFO_ARTIST")
         ' Try Media_Author = FindTagValue("ID_CDDB_INFO_ARTIST")
@@ -255,8 +255,8 @@ Public Sub ABLoopButton_mouseup()
     If timeout <> 0 Then
       ABLoopB -= Round((Timer() - starttime), 1)
       If ABLoopA >= ABLoopB Then
-        Debug
-        Debug "Loop Point A >= Loop Point B, and cannot loop backwards, please retry."
+        global.myDebug("")
+        global.myDebug( "Loop Point A >= Loop Point B, and cannot loop backwards, please retry.")
         ABLoopB = ABLoopInitValue
         Return
       Endif
@@ -319,7 +319,7 @@ Public Sub ABLoopButton_mouseup()
   If Not abloop_b_is_set Then  'B loop not set -> get loop point B
     b = mplayer.CurrentTimeFloat() 'just for displaying purposes; not 100% exact
     If a >= b Then
-      Debug "Loop Point A >= Loop Point B, and cannot loop backwards, please retry."
+      global.myDebug( "Loop Point A >= Loop Point B, and cannot loop backwards, please retry.")
       abloop_b_is_set = False
       Return
     Endif

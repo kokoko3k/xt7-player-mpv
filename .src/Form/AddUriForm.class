@@ -25,9 +25,9 @@ Public Sub btnOK_Click()
       If .MyLibrary.AddFile(fmain.LibraryGrid, URItoadd, quickmode, True, Trim(textbox1.text)) Then
         .UpdateSearchResults(fmain.MyLibrary, .LibraryGrid, fmain.FullyLoaded, fmain.Searchfield.text)
         Try fmain.MyAlbumsLib.Init(fmain.mylibrary, fmain.AlbumGridView, fmain.searchfieldalbums.text)
-        If Error Then Debug "Error while initializing albums view"
+        If Error Then global.myDebug("Error while initializing albums view")
         Try fmain.MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, fmain.albumviewtexlen)
-        If Error Then Debug "Error while Arranging albums view"
+        If Error Then global.myDebug("Error while Arranging albums view")
         FMain.searchfield.text = ""
       Endif
       ComboHistory.SaveHistory(UriInsCombobox, global.confpath & "/" & global.CurrentProfile)
@@ -46,9 +46,9 @@ Public Sub btnOK_Click()
         If .MyLibrary.AddFile(.LibraryGrid, URItoadd, quickmode, True) Then
           .UpdateSearchResults(fmain.MyLibrary, fmain.LibraryGrid, fmain.FullyLoaded, fmain.Searchfield.text)
           Try fmain.MyAlbumsLib.Init(fmain.mylibrary, fmain.AlbumGridView, fmain.searchfieldalbums.text)
-          If Error Then Debug "Error while initializing albums view"
+          If Error Then global.myDebug("Error while initializing albums view")
           Try fmain.MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, fmain.albumviewtexlen)
-          If Error Then Debug "Error while Arranging albums view"
+          If Error Then global.myDebug("Error while Arranging albums view")
           FMain.searchfield.text = ""
         Endif
     Endif

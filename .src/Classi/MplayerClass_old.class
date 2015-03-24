@@ -222,8 +222,7 @@ Private Function GetAllTags(Optional idleplay As Boolean = False)
         If Media_AudioBitrate = 0 Then Try Media_AudioBitrate = FindTagValue("ID_AUDIO_BITRATE")
         Media_Channels = media.Channels
         Media_AudioRate = media.Samplerate
-        Debug "got info from taglib on " & Media_FullPath & " --"
-        Debug
+        global.myDebug("got info from taglib on " & Media_FullPath & " --")
         media.tlFree()
           Else  'there was a problem with TagLib Class initialization, fallback to mplayer
                 'or was a network uri or a cddb 
@@ -285,8 +284,7 @@ Private Function GetAllTags(Optional idleplay As Boolean = False)
 End
 
 Public Sub Renice(nice As Integer, Optional JustThePlayer As Boolean = False)
-  Debug "nice=" & nice
-  Debug
+  global.myDebug("nice=" & nice)
   If (Not JustThePlayer) Then RenicerProcess = Shell "renice " & nice & " -p " & Application.id  'renice the whole application to 'nice'
   RenicerProcess = Shell "renice " & (nice - 1) & " -p " & playerprocess.id 
 End
@@ -406,8 +404,7 @@ Public Sub playerprocess_read(Optional injected As String = "")
     If IsNetworkURI Then
       If (Playeroutput Like "*ICY Info*") Then
         ICY = playeroutput
-        Debug "ICY= " & ICY
-        Debug
+        global.myDebug("ICY= " & ICY)
         ICYStreamTitle = Get_ICYStreamTitle(ICY)
         'Debug "return from 5"
         If GotHeaders Then Return
@@ -421,8 +418,7 @@ Public Sub playerprocess_read(Optional injected As String = "")
         If playeroutput Like "*%*" Then
           tmp = Trim(playeroutput)
           currentcache = Trim(Right(playeroutput, 4))
-          ' Debug "currentcache=" & currentcache
-          ' Debug
+          ' global.myDebug("currentcache=" & currentcache)
         Endif
       Endif
     Endif
@@ -462,8 +458,7 @@ Public Sub playerprocess_read(Optional injected As String = "")
            tmp = Split(tmp, ".", "", True, False)[0]
            currentcache = Trim(tmp) & "%"
         'currentcache = tmpout
-        Debug currentcache
-        Debug
+        global.myDebug(currentcache)
         Return
       Endif
     Endif
@@ -496,8 +491,7 @@ Private Function WaitForHeaders() As Boolean
       'Debug "waiting headers on " & Media_FullPath
     Wend
     If (maxwait = 0) Or (MediaHeaders.count >= maxheaders) Then
-      Debug "Timeout! or maxheaders reached on Media_FullPath=" & Media_FullPath
-      Debug
+      global.myDebug("Timeout! or maxheaders reached on Media_FullPath=" & Media_FullPath)
       ' if the player is in idle mode (used to sync library) then 
       ' stop it to clear the pipe, so that it wont interfree with next media
       If ImIdlePlaying Then
@@ -509,8 +503,7 @@ Private Function WaitForHeaders() As Boolean
     Endif
   Endif
   If (mediaheaders.count < 2) And (Not QUICK) Then
-    Debug "mediaheaders.count= " & mediaheaders.count
-    Debug
+    global.myDebug("mediaheaders.count= " & mediaheaders.count)
   Endif
   Return True
 
@@ -587,16 +580,13 @@ Public Sub stucktimer_timer()
 
   Silences = silences + 1
   If (ProcessRunningOvr() And (silences >= 2) And (Not paused)) Then
-    Debug "WARNING: Not receiving any output from mpv which is not paused... did it freezed?"
-    Debug
+    global.myDebug("WARNING: Not receiving any output from mpv which is not paused... did it freezed?")
     If StuckRestartedTimes <= 3 Then
-      Debug "WARNING: Trying to restart it..."
-      Debug
+      global.myDebug("WARNING: Trying to restart it...")
       do_restart(Media_FullPath_Playing, mplayeroptions, False)
       StuckRestartedTimes = StuckRestartedTimes + 1
     Else
-      Debug "WARNING: Giving up..."
-      Debug
+     global.myDebug("WARNING: Giving up...")
     Endif
   Else
     StuckRestartedTimes = 0
@@ -673,10 +663,10 @@ Public Function do_play(filename As String, options As String, Optional restart 
 
   If filename Like "https://*" Then
     filename = Replace(filename, "https://", "http://")
-    Debug "Warning: Using http instead of https!"
+    global.myDebug("Warning: Using http instead of https!")
       Else If filename Like "HTTPS://*" Then 
         filename = Replace(filename, "HTTPS://", "http://")
-        Debug "Warning: Using http instead of https!"
+        global.myDebug("Warning: Using http instead of https!")
   Endif
 
   IsNetworkURI = Global.IsNetworkURI(filename) ' on network streams we'll try to guess "ICY:" information (webradios tag)
@@ -733,37 +723,36 @@ Public Function do_play(filename As String, options As String, Optional restart 
       
       
       If (commandline Like "*-vo vaapi*") Or (commandline Like "*-vo *,vaapi*") Or (commandline Like "*-vo xvmc*") Or (commandline Like "*-vo *,xvmc*") Then
-        Debug ("found vaapi output driver on enabled video driver list, disabling all video filters by appending -vf-clr")
+        global.myDebug(("found vaapi output driver on enabled video driver list, disabling all video filters by appending -vf-clr"))
         commandline = commandline & " -vf-clr "
-        Debug
+        global.myDebug("")
       Endif
       
       If (commandline Like "*ffmpeg12vdpau*") Or (commandline Like "*ffwmv3vdpau*") Or (commandline Like "*ffvc1vdpau*") Or (commandline Like "*ffh264vdpau*") Or (commandline Like "*ffodivxvdpau*") Then
-        Debug ("found an ff*vdpau forced codec on enabled video codec list, disabling all video filters by appending -vf-clr")
+        global.myDebug(("found an ff*vdpau forced codec on enabled video codec list, disabling all video filters by appending -vf-clr"))
         commandline = commandline & " -vf-clr "
-        Debug
+        global.myDebug("")
       Endif
       
       
       If (commandline Like "*-vo xvmc*") Or (commandline Like "*-vo *,xvmc*") Then
-        Debug ("found xvmc output driver on enabled video driver list, disabling all video filters by appending -vf-clr")
+        global.myDebug(("found xvmc output driver on enabled video driver list, disabling all video filters by appending -vf-clr"))
         commandline = commandline & " -vf-clr "
-        Debug
+        global.myDebug("")
       Endif
   
       If commandline Like "*-dumpfile *" Then
-        Debug "-dumpfile option found in the command line, probably you will not be able to dump streams using the rec button"
-        Debug
+        global.myDebug("-dumpfile option found in the command line, probably you will not be able to dump streams using the rec button")
+        global.myDebug("")
           Else
         If (Not ImIdlePlaying) Then commandline = commandline & " -capture -dumpfile " & dumpfile
       Endif
       
       
       If (commandline Like "*-ac *hwac3*") Or (commandline Like "*-ac *hwdts*") Or (commandline Like "*-ac *hwmpa*") Or (commandline Like "*-afm *hwmpa*") Or (commandline Like "*-afm *hwmpa*") Then
-        Debug ("found one of (-ac,af) hwac3,hwdts or hwmpa audio passthrough options in the commandline")
-        Debug ("Disabling any audio filters in chain by appending -af-clr")
+        global.myDebug(("found one of (-ac,af) hwac3,hwdts or hwmpa audio passthrough options in the commandline"))
+        global.myDebug(("Disabling any audio filters in chain by appending -af-clr"))
           commandline = commandline & " -af-clr "
-        Debug 
       Endif
       
       commandline = commandline & " " & cookieopts
@@ -782,9 +771,8 @@ Public Function do_play(filename As String, options As String, Optional restart 
         If global.IsImgFile(filename) Then commandline &= " -fps 0.1 -nocache"
       Endif
    
-      Debug "Starting mpv now:"
-      Debug "commandline=" & commandline
-      Debug
+      global.myDebug("Starting mpv now:")
+      global.myDebug("commandline=" & commandline)
       playerprocess = Shell commandline For Read As "playerprocess"
   
   
@@ -940,14 +928,13 @@ Public AudioSwitched As Boolean = False
 Public Function Send(command As String) As Boolean
   Dim mystream As File
   If pausing Then 
-    Debug "Not sending " & command & " because Of pausing."  
-    Debug
+    global.myDebug("Not sending " & command & " because Of pausing.")
     Return
   Endif
   If ProcessRunningOvr() And (Exist(inputpipe)) Then
     If Stat(inputpipe).type = gb.pipe Then
       mystream = Open inputpipe For Write
-      If command Like "*af_*" Then Debug command
+      If command Like "*af_*" Then global.myDebug(command)
       If inputpipe <> "" Then 
         Print #mystream, command
       Endif
@@ -1007,15 +994,14 @@ Public Function do_pause_insist() As Boolean 'crea problemi...
   Dim interval As Float = 0.1
   Dim totalwait As Float = maxwait * interval
   'WaitForHeaders()  <-- removed fixme, is it still needed?
-  Debug "trying to pause, will insist for " & CStr(totalwait) & " seconds"
-  Debug
+  global.myDebug("trying to pause, will insist for " & CStr(totalwait) & " seconds")
   Repeat
     Wait interval / 2 
     If (Not paused) Then send("pause")
     MaxWait = MaxWait - 1
     Wait interval / 2 
   Until paused Or (MaxWait = 0)
-  If maxwait = 0 Then Debug "Doh, mpv didn't paused in" & CStr(totalwait) & " seconds"
+  If maxwait = 0 Then global.myDebug("Doh, mpv didn't paused in" & CStr(totalwait) & " seconds")
 End
 
 
@@ -1266,20 +1252,13 @@ Public Sub SubtitleAdd(SubFilePath As String)
   Next
   
   'TotalFileSubtitles = subtitletracks.count
-  Debug "TotalSubtitles= " & TotalFileSubtitles
-  Debug
+  global.myDebug("TotalSubtitles= " & TotalFileSubtitles)
   LastSubId = CInt(TotalFileSubtitles) - 1
   Send("pausing_keep sub_load '" & SubFilePath & "'") 'NOTE THE Triple quotes ( "'subfile'", mplayer bug)
-  Debug "Send()" & "sub_load \"" & SubFilePath & "\""
-  Debug
-  ' Send("sub_select " & CStr(LastSubId + 1))
-  ' Debug "selecting sub id " & (LastSubId + 1)
-  'Send("sub_file '" & CStr(LastSubId + 1) & "'")
+  global.myDebug("Send()" & "sub_load \"" & SubFilePath & "\"")
+
   subfile = SubFilePath
   subtitletracks.Add(CStr(lastsubid + 1) & " - " & file.Name(subfilepath) & " (File)")
-
-
-
 
   'when you insert an external sub file into a file that embeds other subtitles like mkv,
   'all other subtitles gets shifted and the file is inserted before them
@@ -1288,8 +1267,7 @@ Public Sub SubtitleAdd(SubFilePath As String)
   
   'All this should not be necessary, but it seems that mplayer mess sub_delay with sub_step :(
   'send("sub_step +1")
-  '
-  '
+
 End
 
 Public Function get_screenshot(DeleteFILE As Boolean) As Picture
@@ -1316,8 +1294,7 @@ Public Function get_screenshot(DeleteFILE As Boolean) As Picture
     timeout = timeout - 1
   Wend
   If timeout = 0 Then
-    Debug "Timeout Error: Screenshot file does not exists!"
-    Debug
+    global.myDebug("Timeout Error: Screenshot file does not exists!")
     If Deletefile Then Try Kill lastscreenshot
     Takingscreenshot = False
     Return picture["null.png"]
@@ -1523,7 +1500,7 @@ Public Function GetListOf(TheType As String) As String[]
   Dim list, mpline As String
   Dim outlist As New String[]
   Shell executable() & "  -noconfig all -" & TheType & " help" To List
-  Debug Timer
+  global.myDebug(Timer)
   For Each mpline In Split(list, "\n", "", True)
     outlist.Add(Lower(Split(mpline, " \t", "", True)[0]))
   Next 'mpline
@@ -1538,8 +1515,7 @@ End
 Public Function QueryCDDB(CdromDevice As String)
   Dim cmdline As String
   cmdline = "mplayer  -noconfig all cddb:// -identify -endpos 0 -v -v -v -v -cdrom-device " & CdromDevice & " </dev/null"
-  Debug cmdline
-  Debug
+  global.myDebug(cmdline)
   cddbqueryprocess = Shell cmdline For Read As "cddbqueryprocess"
 End
 
@@ -1547,15 +1523,12 @@ Public Sub cddbqueryprocess_read()
   Dim tmpout As String
   'Debug cddbqueryprocess.ReadLine()
    Try Read #playerprocess, tmpout, -1024
-   If Not Error Then Debug tmpout
+   If Not Error Then global.myDebug(tmpout)
 End
 
 Public Function cddbqueryprocess_error(stderr As String)
-  
-  Debug stderr
-  Debug
+    global.myDebug(stderr)
 End
-
 
 Public thumbprocess As Process
 Private newfilenamepriv As String
@@ -1589,8 +1562,7 @@ Public Sub savethumb(fullpath As String, newfilename As String, Optional width A
   outdirpriv = outdir
   Thumbfullpathpriv = fullpath
   widthpriv = width
-  Debug cmdline
-  Debug
+  global.myDebug(cmdline)
   thumbprocess = Shell cmdline For Input As "thumbprocess" 
 End
 
@@ -1615,8 +1587,7 @@ Public Sub thumbprocess_kill()
     If ShortMovieChecked Then 
       Raise ThumbErrorFor(Thumbfullpathpriv, gridpriv, rowpriv, columnpriv)
         Else 'maybe the movie was very short, try to get a screen at 5th second:
-      Debug "Couldn't get a thumb, retrying with an earlier time"
-      Debug
+      global.myDebug("Couldn't get a thumb, retrying with an earlier time")
       ShortMovieChecked = True
       savethumb(Thumbfullpathpriv, newfilenamepriv, widthpriv, 150, gridpriv, rowpriv, columnpriv)
     Endif
@@ -1680,7 +1651,7 @@ Public Sub Analyze(videofile As String)
     Print #mystream, "pause"
     cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 0  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -vf scale=64:64:0:3,scale=16:16:0:3,smartblur=5:1:0,scale -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
     'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 3  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
-    Debug cmd
+    global.myDebug(cmd)
     mpanalyze = Shell cmd
     Repeat
       If stopob Then Goto lEnd
@@ -1721,7 +1692,7 @@ Public Sub Analyze(videofile As String)
         timeout -= 1
       Wend
       If timeout = 0 Then 
-        Debug "No Pics, restarting analyzer"
+        global.myDebug("No Pics, restarting analyzer")
         Try mpanalyze.Kill
         Goto lStart
       Endif
@@ -1739,7 +1710,7 @@ Public Sub Analyze(videofile As String)
         'Shell "mv  " & (tmpdir & Dir(tmpdir, "*.jpg")[0]) & " /tmp/tmp/" & ctime & ".jpg" Wait
         If Not Error Then 
           bavg = Color[i.Pixels[0]].value 
-          Debug "time", ctime, "AVG:", bavg
+          global.myDebug("time", ctime, "AVG:", bavg)
           'barray index represents the integer part of the time, so we store the float part with the average picture brightness value in the array cell
           'and set a delay afterwards for near pefect timing
           Try barray[cTimei] = bAvg & ":" & ctimef
@@ -1786,53 +1757,8 @@ Public Sub TimerAnalize_timer()
     delay = CFloat("0." & Split(barray[ctime], ":")[1])
     delay = delay - (CFloat(CurrentTimeFloat()) - cTime)
     Try Raise AnalyzerNewValue(bAvg, delay, cTime)
-    Debug "NewValue"
+    global.myDebug("NewValue")
     If Not stopob Then TimerAnalyze.start
-      'Else
-    'Debug "missing value in barray"
   Endif
 End
 
-
-' Public Sub OLDImageRange(aImage As Image, ByRef bMin As Integer, ByRef bMax As Integer, ByRef bAvg As Integer)
-'   Dim ih As ImageHistogram
-'   Dim i, b, t, it As Integer
-'   'Dim h As New Integer[]
-'   bMin = 255
-'   bMax = 0
-'   iH = aImage.histogram()
-'   t = 0
-'   it = 0
-'   For i = 0 To 255 Step 1
-'     b = Max((Max(iH[Image.red, i], iH[Image.green, i])), iH[Image.blue, i])
-'     'b = (CInt((iH[Image.red, i] + iH[Image.green, i] + iH[Image.blue, i]) / 3))
-'     If b <= 255 Then
-'       'h.add(b)
-'       If bMin > b Then bMin = b
-'       If bMax < b Then bMax = b
-'       t += b
-'       it += 1
-'      ' Debug "b: ", b
-'     Endif
-'   Next 'i
-'   If iT = 0 Then
-'     bMin = 0 
-'     bMax = 255
-'     bAvg = 255
-'     Return
-'   Endif
-'   bAvg = t Div it
-' End
-
-' Public Sub ImageRange(aImage As Image, ByRef bMin As Integer, ByRef bMax As Integer, ByRef bAvg As Integer)
-'   Dim i, b As Integer
-'   'Dim c As Colorinfo
-'   'b = 0
-'   ' For i = 0 To aImage.Pixels.max Step 1
-'   '   b += Color[aImage.Pixels[i]].value 
-'   ' Next
-'   
-'   'bAvg = b Div (i - 1) 'range -17043521 -> -1
-'   bavg = Color[aImage.Pixels[i]].value 
-'   Debug bavg
-' End

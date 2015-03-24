@@ -145,8 +145,8 @@ End
 
 
 Public Sub Renice(nice As Integer, Optional JustThePlayer As Boolean = False)
-  Debug "nice=" & nice
-  Debug
+  global.myDebug("nice=" & nice)
+  
   If (Not JustThePlayer) Then RenicerProcess = Shell "renice " & nice & " -p " & Application.id  'renice the whole application to 'nice'
   RenicerProcess = Shell "renice " & (nice - 1) & " -p " & playerprocess.id 
 End
@@ -189,7 +189,6 @@ Public Sub playerprocess_read(Optional injected As String = "")
 End
 
 Public Sub playerprocess_error(err As String)
-Stop
   stderr &= err & "\n"
 End
 
@@ -273,7 +272,7 @@ Public Sub set_option(name As String, data As String)
     name = " " & name 'prefix white spaces to use multiple options with the same name
   Wend
   mpvOptions[name] = data
-  Debug name, data
+  global.myDebug(name, data)
 End
 
 Private Function set_options() As String
@@ -281,10 +280,10 @@ Private Function set_options() As String
   For Each data In mpvoptions
     If data <> Chr(8) Then 'chr(8) is used instead of null because the collection doesn't keep null values
       out &= "--" & Trim(mpvoptions.Key) & "=" & data & " " 'trim is needed because we use white spaces to have multiple options with the same name
-      Debug "Add option:", mpvoptions.Key, "=", data
+      global.myDebug("Add option:", mpvoptions.Key, "=", data)
         Else
       out &= "--" & mpvoptions.Key & " "
-      Debug "Add option:", mpvoptions.Key 
+      global.myDebug("Add option:", mpvoptions.Key)
     Endif
   Next
   Return out  
@@ -429,7 +428,7 @@ Public Function do_play(filename As String, Optional string_options As String = 
   Next
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)
-  Debug commandline, commandline
+  global.myDebug(commandline, commandline)
   last_media = filename
   
   stdout = ""
@@ -454,7 +453,7 @@ Public Function do_play(filename As String, Optional string_options As String = 
   Chmod killer_script To "rwxr-xr-x"
 
   Shell killer_script & " " & Application.id & " " & playerprocess.id
-  Debug killer_script & " " & Application.id & " " & playerprocess.id              
+  global.myDebug(killer_script & " " & Application.id & " " & playerprocess.id)
   Return True
 End
 
@@ -493,7 +492,7 @@ Public Sub get_cdda_info(device As String, Optional cddb As Boolean = True)
   Endif
 
   dcl = get_property_mpv("=chapter_list", True, 1000)
-  Debug dcl
+  global.myDebug(dcl)
   
   dcl = Replace(dcl, "[", "")
   dcl = Replace(dcl, "]", "")
@@ -550,12 +549,12 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
 ' '     If metadatacount > 0 Then
 ' '       For i = 0 To metadatacount - 1
 ' '         metadataname = GetPropertympv("metadata/list/" & i & "/key")
-' '         Debug metadataname, GetPropertympv("metadata/by-key/" & metadataname)
+' '         global.myDebug( metadataname, GetPropertympv("metadata/by-key/" & metadataname))
 ' '       Next
 ' '     Endif
 ' '   ''
   If Not waitplayback(3000) Then
-    Debug "EE", "Playback didn't started or timeout waiting for it to start"
+    global.myDebug("EE", "Playback didn't started or timeout waiting for it to start")
     do_stop()
     Return False
   Endif
@@ -605,8 +604,8 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
       If getP("=Audio-channels") = 0 Then properties.add("=audio-channels")
       setP("=audio-samplerate", media_taglib.Samplerate)
       If getP("=Audio-samplerate") = 0 Then properties.add("=audio-samplerate")
-      Debug "got info from taglib on " & getP("FullPath") & " --"
-      Debug
+      global.myDebug("got info from taglib on " & getP("FullPath") & " --")
+      
        media_taglib.tlFree()
         Else  'there was a problem with TagLib Class initialization, fallback to mplayer
               'or was a network uri or a cddb 
@@ -745,24 +744,6 @@ End
 
 Public AudioSwitched As Boolean = False
 
-' Public Function Send(command As String) As Boolean
-'   Dim mystream As File
-'   If pausing Then 
-'     Debug "Not sending " & command & " because Of pausing."  
-'     Debug
-'     Return
-'   Endif
-'   If ProcessRunningOvr() And (Exist(inputpipe)) Then
-'     If Stat(inputpipe).type = gb.pipe Then
-'       mystream = Open inputpipe For Write
-'       If command Like "*af_*" Then Debug command
-'       If inputpipe <> "" Then 
-'         Print #mystream, command
-'       Endif
-'     Endif
-'   Endif
-'   If Lower(command) Like "switch_audio*" Then AudioSwitched = True
-' End
 
 Private SUPPORTEDAUDIOFILTERS As New String[] 
 Public Sub afclr() 'fixmempv
@@ -929,7 +910,7 @@ Public Function get_screenshot(DeleteFILE As Boolean) As Picture
 
   errorlabel:
     If Deletefile Then Try Kill picfile
-    Debug "Timeout Error: Screenshot file does not exists!"
+    global.myDebug("Timeout Error: Screenshot file does not exists!")
     Return picture["null.png"]
 End
 
@@ -1096,7 +1077,7 @@ Public Function GetListOf(TheType As String) As String[]
   Dim list, mpline As String
   Dim outlist As New String[]
   Shell executable() & "  --config=no -" & TheType & " help" To List
-  Debug Timer
+  global.myDebug(Timer)
   For Each mpline In Split(list, "\n", "", True)
     outlist.Add(Lower(Split(mpline, " \t", "", True)[0]))
   Next 'mpline
@@ -1137,8 +1118,8 @@ Public Sub savethumb(fullpath As String, newfilename As String, Optional width A
   outdirpriv = outdir
   Thumbfullpathpriv = fullpath
   widthpriv = width
-  Debug cmdline
-  Debug
+  global.myDebug(cmdline)
+  global.myDebug("")
   thumbprocess = Shell cmdline For Input As "thumbprocess" 
 End
 
@@ -1166,8 +1147,7 @@ Public Sub thumbprocess_kill()
     If ShortMovieChecked Then 
       Raise ThumbErrorFor(Thumbfullpathpriv, gridpriv, rowpriv, columnpriv)
         Else 'maybe the movie was very short, try to get a screen at 5th second:
-      Debug "Couldn't get a thumb, retrying with an earlier time"
-      Debug
+      global.myDebug("Couldn't get a thumb, retrying with an earlier time")
       ShortMovieChecked = True
       savethumb(Thumbfullpathpriv, newfilenamepriv, widthpriv, 150, gridpriv, rowpriv, columnpriv)
     Endif
@@ -1232,7 +1212,7 @@ Public Sub Analyze(videofile As String)
     'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 0  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -vf scale=64:64:0:3,scale=16:16:0:3,smartblur=5:1:0,scale -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
     cmd = executable() & " --term-status-msg='${=time-pos}' --config=no --no-sub --osd-level=0 --vd-lavc-skiploopfilter=all --speed 0.01 --input-file=" & tmpdir & "/fifo --vf=scale=16:16  --no-audio --vo=image:format=png:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
     'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 3  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
-    Debug cmd
+    global.myDebug(cmd)
     mpanalyze = Shell cmd
     Repeat
       If stopob Then Goto lEnd
@@ -1276,7 +1256,7 @@ Public Sub Analyze(videofile As String)
         timeout -= 1
       Wend
       If timeout = 0 Then 
-        Debug "No Pics, restarting analyzer"
+        global.myDebug("No Pics, restarting analyzer")
         Try mpanalyze.Kill
         Goto lStart
       Endif
@@ -1299,7 +1279,7 @@ Public Sub Analyze(videofile As String)
         If Not Error Then 
           bavg = c_mean(i)
           'bavg = Color[i.Pixels[0]].value 
-          Debug "time", ctime, "AVG:", bavg
+          global.myDebug("time", ctime, "AVG:", bavg)
           'barray index represents the integer part of the time, so we store the float part with the average picture brightness value in the array cell
           'and set a delay afterwards for near pefect timing
           Try barray[cTimei] = bAvg & ":" & ctimef
@@ -1357,7 +1337,7 @@ Public Sub TimerAnalize_timer()
     delay = delay - (CFloat(CurrentTimeFloat()) - cTime)
 
     Try Raise AnalyzerNewValue(bAvg, delay, cTime)
-    Debug "NewValue"
+    global.myDebug("NewValue")
     If Not stopob Then TimerAnalyze.start
       'Else
     'Debug "missing value in barray"
@@ -1376,7 +1356,7 @@ Private Function SetUpInputPipe() As String
     Shell "rm '" & inputpipe & "' &>/dev/null" Wait
   Endif
   mystream = Pipe inputpipe For Write
-  Debug "inputpipe=", inputpipe
+  global.myDebug("inputpipe=", inputpipe)
 
   Return inputpipe
 End
@@ -1405,7 +1385,6 @@ Public Function set_property_mpv(name As String, data As String, Optional osd As
   data = Replace(data, q, s & q)        'replace " with \"
   data = Replace(data, s & s & q, s & q) 'replace \\" with \" (in case we quoted an already quoted string)
   If osd Then 
-    Debug 
     mpv_command(["osd-msg", "set", name, data])
       Else
     mpv_command(["no-osd", "set", name, data])
@@ -1451,10 +1430,10 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
       If getP(name) <> Null Then Return getP(name)
       timeoutcentisecs -= 1
       send(dataout)
-      ' Debug "asking ", dataout
+      ' global.myDebug( "asking ", dataout)
       Wait 0.01
     Wend
-    'Debug name & " --> " & getP(name)
+    'global.myDebug( name & " --> " & getP(name))
     Return getP(name)
   Endif
 End
@@ -1491,7 +1470,7 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
       Endif
       got = (got And (p <> Null))
       If Not got Then 
-        Debug "waiting", name
+        global.myDebug("waiting", name)
       Endif
     Next
   Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
@@ -1513,7 +1492,7 @@ End
 '     sbuf = Left(sbuf, -2)
 '   sbuf &= "] }" & "\n" '<-serve l'accapo finale? il send già lo manda
 ' 
-'   Debug sbuf
+'   global.myDebug( sbuf)
 '   send(sbuf)
 ' End
 
@@ -1583,256 +1562,6 @@ End
 
 
 
-
-' Public Sub apply(newc As Collection)
-'   Dim oldc As New Collection
-'   Dim name, data As String
-'   Dim k As String
-' 
-'   Debug "--------------------------------------------------", Timer
-'   
-'   For Each data In mpvOptions
-'     name = mpvoptions.key
-'     oldc[name] = data
-'   Next
-' 
-' 
-'   For Each data In newc
-'     k = newc.key
-'     If oldc.Exist(k) Then
-'       If oldc[k] <> newc[k] Then 
-'         Debug "existing option changed", k, oldc[k], newc[k]
-'       Endif
-'     Endif
-'     
-'     If Not (oldc.Exist(k)) Then
-'        Debug "New option added", k, newc[k]
-'     Endif
-'   Next
-' 
-'   For Each data In oldc
-'     k = oldc.key
-'     If Not (newc.Exist(k)) Then
-'        Debug "Old option removed", k, oldc[k]
-'     Endif
-' 
-'   Next
-' 
-' Debug "--------------------------------------------------", Timer
-'   
-' End 
-
-
-
-
-' 
-' Private Function data(name As String, opts As MpvOption[]) As String
-'   Dim opt As Mpvoption
-'   For Each opt In opts
-'     If opt.name = name Then Return opt.data
-'   Next
-'   Return Null
-' End
-' 
-' Private Function delete_option(name As String, opts As MpvOption[])
-'   Dim opt As MpvOption
-'   Dim i As Integer
-'   For i = opts.count - 1 DownTo 0
-'     If opts[i].name = name Then opts.Delete(i)
-'   Next
-' End
-' 
-' 
-' Private options_onthefly As String[] = ["af", "vf", "cache"]
-' 
-' 
-' Public Sub apply(new_opts As MpvOption[])
-'   Dim opt As New Mpvoption
-'   Dim new_opt As New MpvOption
-'   Dim old_opt As New MpvOption
-'   Dim old_opts As MpvOption[] = mpvoptions.Copy()
-'   Dim changed_opt As New MpvOption
-'   Dim changed_opts As New MpvOption[]
-'   Dim o As Mpvoption
-'   Dim sched_restart As Boolean = False
-'   Dim i As Integer
-' 
-'   'find options that matches and trash them
-' Stop
-'   For Each new_opt In new_opts
-'     If new_opt.name
-'     
-'     If new_opt.data = data(new_opt.name, old_opts) Then
-'       delete_option(new_opt.name, new_opts)
-'       delete_option(old_opt.name, old_opts)
-'     Endif
-'   Next
-'   
-'      For Each changed_opt In changed_opts
-'      Debug "option changed", changed_opt.name, changed_opt.data
-'    Next
-' 
-'   
-'   For Each old_opt In old_opts
-'     If old_opt.data = data(old_opt.name, new_opts) Then
-'       delete_option(new_opt.name, new_opts)
-'       delete_option(old_opt.name, old_opts)
-'     Endif
-'   Next
-'   
-'    For Each opt In old_opts
-'      Debug "option old:", opt.name, opt.data
-'    Next
-' 
-'    For Each opt In new_opts
-'      Debug "option new:", opt.name, opt.data
-'    Next
-' 
-' 
-'   
-' '   'compare new options with old ones
-' '   For i = new_opts.count - 1 DownTo 0
-' '     new_opt = new_opts[i]
-' '     If data(new_opt.name, old_opts) <> new_opt.data Then
-' '       changed_opts.Add(new_opts.Extract(i)[0])
-' '       delete_option(new_opt.name, old_opts)
-' '     Endif
-' '   Next
-' '   'compare old options with old ones
-' '   For i = old_opts.count - 1 DownTo 0
-' '     old_opt = old_opts[i]
-' '     If data(old_opt.name, new_opts) <> old_opt.data Then
-' '       changed_opts.Add(new_opts.Extract(i)[0])
-' '     Endif
-' '   Next
-' ' 
-' '   For Each new_opt In changed_opts
-' '     Debug "option changed", new_opt.name, new_opt.data
-' '   Next
-' ' Stop
-' 
-' 
-' 
-'   ' 
-'   ' For Each new_opt In new_opts
-'   '   If data(new_opt.name, old_opts) <> new_opt.data Then 
-'   ' 
-'   '   Endif
-'   ' Next  
-'   ' 
-'   ' For Each old_opt In old_opts
-'   '   If data(old_opt.name, new_opts) <> old_opt.data Then changed_opts.Add(old_opt)
-'   ' Next
-'   ' 
-'   
-'   
-'   ' For Each opt In new_opts
-'   '   If data(opt.name, mpvoptions) <> opt.data
-'   '     Debug data(opt.name, mpvoptions)
-'   '     Debug "OPTION CHANGED:", opt.name, data(opt.name, mpvoptions), opt.data
-'   '     If options_onthefly.Find(opt.name) = -1 Then 
-'   '       sched_restart = True
-'   '       Debug "need restart"
-'   '       Stop
-'   '     Endif
-'   '   Endif
-'   ' Next
-'   ' 
-'   ' For Each opt In mpvoptions
-'   '   If data(opt.name, new_opts) <> opt.data
-'   '     Debug data(opt.name, mpvoptions)
-'   '     Debug "OPTION CHANGED:", opt.name, data(opt.name, mpvoptions), opt.data
-'   '     If options_onthefly.Find(opt.name) = -1 Then 
-'   '       sched_restart = True
-'   '       Debug "need restart"
-'   '       Stop
-'   '     Endif
-'   '   Endif
-'   ' Next
-' 
-' 
-' 
-' End
-
-
-
-
-' Public Sub apply(opts As MpvOption[])
-'   Dim opt As MpvOption
-'   Dim oldopt As Mpvoption
-'   Dim opts_str As String
-'   Dim fullpath As String
-'   Dim timepos As Float
-' 
-'   If mpvoptions_before_apply.count = 0 Then
-'     For Each opt In opts
-'       mpvoptions_before_apply[opt.name] = get_property_mpv("options/" & opt.name)
-'     Next
-'   Endif
-' 
-'   For Each opt In mpvoptions_before_apply
-' 
-'   For Each opt In opts
-'     If mpvoptions_before_apply.Exist(opt.name) Then
-'       If mpvoptions_before_apply[opt.name] = opt.data Then
-'         set_property_mpv("options/" & opt.name, opt.data)
-'       Endif
-'     Endif
-'   Next 'opt
-'   Stop 
-'   
-'   
-'   fullpath = getP("fullpath")
-'   timepos = get_property_mpv("=time-pos", True)
-'   mpv_command(["no-osd", "loadfile", fullpath, "replace", "start=" & timepos])
-'   
-' End
-  
-
-
-
-' Public Sub apply(opts As MpvOption[])
-'   Dim opt As MpvOption
-'   Dim timepos As Float
-'   Dim fullpath As String
-'   Dim opts_str As String
-'   Dim q As String = "\\\""
-'   Dim i As Integer = 0
-'             'fullpath = getP("fullpath")
-'             'mpv_command(["no-osd", "loadfile", fullpath, "replace", "vf=" & q & "scale=100:100" & q])
-'   
-'   
-'   
-'   For Each opt In opts
-'     Debug opt.name
-'     If i = 28 Then Stop
-'     If Left(opt.data) = "\"" And Right(opt.data) = "\"" Then
-'       'opt.data = Mid(opt.data, 2, Len(opt.data) - 2) funge per singoli argomenti quotati
-'       opt.data = "'" & Mid(opt.data, 2, Len(opt.data) - 2) & "'"
-'     Endif
-'     opts_str &= opt.name & "=" & q & opt.data & q & ","
-'     '20 ok
-'     '21 ok
-'     '22 ok dopo unquote
-'     '27 si
-'     '28 no
-'     If i = 28 Then Break
-'     i = i + 1
-'   Next
-'   Debug i
-'   
-'   fullpath = getP("fullpath")
-'   timepos = get_property_mpv("=time-pos", True)
-'   
-'  ' opts_str &= "osd-font=" & q & "BitStream Vera Sans" & q & ","
-'   
-'   opts_str &= "start" & "=" & timepos  
-'   'opts_str &= "start" & "=" & "5.24"
-' 
-'   mpv_command(["no-osd", "loadfile", fullpath, "replace", opts_str])
-'   
-' End
-
 Private Function merge_collections(c1 As Collection, c2 As Collection) As Collection
   'merge c1 with c2
   'c2 overwrites keys of c1
@@ -1865,13 +1594,13 @@ Private Function what_changes(oldc As Collection, newc As Collection) As Collect
     k = Trim(newc.key)
     If oldc.Exist(k) Then
       If deQuote(oldc[k]) <> deQuote(newc[k]) Then 
-        Debug "old option changed", k, oldc[k], newc[k]
+        global.myDebug("old option changed", k, oldc[k], newc[k])
         out[k] = newc[k]
       Endif
     Endif
 
   If Not (oldc.Exist(k)) Then
-       Debug "New option added", k, newc[k]
+       global.myDebug("New option added", k, newc[k])
        out[k] = newc[k]
     Endif
   Next
@@ -1879,7 +1608,7 @@ Private Function what_changes(oldc As Collection, newc As Collection) As Collect
   For Each data In oldc
     k = Trim(oldc.key)
     If Not (newc.Exist(k)) Then
-       Debug "old option removed", k, oldc[k]
+       global.myDebug("old option removed", k, oldc[k])
        out[k] = "|(removed)|"
     Endif
   Next
@@ -1910,10 +1639,10 @@ Public Sub do_apply(new_opts As Collection)
   For Each changed_opts
     name = changed_opts.Key
     data = changed_opts[changed_opts.Key]
-    Debug "changed/added/removed option:", name, data
+    global.myDebug("changed/added/removed option:", name, data)
     If realtime_opts.Find(name) = -1 Then
       If ignore_opts.find(name) = -1 Then
-        Debug "option changed/removed/added: " & name, "requires restart"
+        global.myDebug("option changed/removed/added: " & name, "requires restart")
         do_apply_restart(new_opts)
         Return
       Endif
@@ -2037,7 +1766,7 @@ Private Sub do_apply_restart(new_opts As Collection)
   'so check if the answer is different from "(unavailable")
   'and don't spend too much time anyway waiting for the property.
     For Each properties_changed_runtime
-      Debug "Try to restore Property:", name, data
+      global.myDebug("Try to restore Property:", name, data)
       timerA = Timer()
       Repeat
         name = properties_changed_runtime.key
@@ -2051,7 +1780,7 @@ Private Sub do_apply_restart(new_opts As Collection)
       'is it possible that newdata is available but still with an unset value, wo, just to be sure, restore it one more time.
       Wait 0.01
       set_property_mpv(name, data, False)
-      Debug "Restore property:", name, newdata, data
+      global.myDebug("Restore property:", name, newdata, data)
     Next
 
   restarting = False
@@ -2066,7 +1795,7 @@ Public Function search_man(search_for As String) As String
   Dim st, help_str As String
   Dim s_pos As Integer
   If man_page = "" Then
-    Debug "Getting mpv man..."
+    global.myDebug("Getting mpv man...")
     Shell "man mpv|col -bx" To man_page
   Endif
 

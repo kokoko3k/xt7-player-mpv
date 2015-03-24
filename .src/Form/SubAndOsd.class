@@ -154,7 +154,7 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
   
   
   For Each opt In opts
-    Debug opt.name & "=" & opt.data
+    global.myDebug(opt.name & "=" & opt.data)
   Next
 
  Return opts

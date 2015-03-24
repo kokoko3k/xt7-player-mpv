@@ -105,9 +105,9 @@ Private Sub DrawFiltersGui()
     AllParams.Add(["ROCHOOSE", ("Output Channels"), "2 - Stereo", "4 - Surround", "6 - Full 5.1", "8 - Full 7.1", "audio000channels", ""])
     Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Request the number of playback channels (default: 2).\n This is usually only important when playing videos with AC-3 audio (like DVDs).\n mpv option: audio-channels"))
     Try Object.SetProperty(Me["audio000channels.CheckBox"], "value", True)
-    If Error Then Debug "EE: Cannot set default value audio000channels.CheckBox = true" 
+    If Error Then global.myDebug("EE: Cannot set default value audio000channels.CheckBox = true")
     Try Object.SetProperty(Me["audio000channels.ComboBox"], "text", "2 - Stereo")
-    If Error Then Debug "EE: Cannot set default value audio000channels.Combobox = 2 - Stereo" 
+    If Error Then global.myDebug("EE: Cannot set default value audio000channels.Combobox = 2 - Stereo")
     AllParams.Clear
     
   '-softvol
@@ -1104,7 +1104,7 @@ Public Sub NopParseAudioDeviceCombo_Enter()
     Shell fmain.mplayer.executable(5) & " --audio-device=help " To ad
     For Each d In Split(ad, "\n", "", True)
       Try NopParseAudioDeviceCombo.Add(Split(d, "'", "", True)[1])
-      Try Debug Split(d, "'", "", True)[1]
+      Try global.myDebug(Split(d, "'", "", True)[1])
     Next
   Endif
   Last.text = t
@@ -1231,7 +1231,7 @@ Private Sub AlignObjects()
             If l > max_obj_w Then max_obj_w = l
             align_objs.Add(child)
             If acontainer.name = "ScrollView2" Then
-              Debug child.text, l, max_obj_w
+              global.myDebug(child.text, l, max_obj_w)
             Endif
 
           Endif

@@ -9,8 +9,7 @@ Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings f
 Public Sub xbindkeys_read()
   Dim comando As String
   Line Input #xbindkeys, comando
-    Debug "Remote Command = " & comando
-    Debug
+    global.myDebug("Remote Command = " & comando)
 
     Select Case Lower(comando)
       Case "start play"
@@ -502,8 +501,7 @@ End
 
 Public Sub RestartXbindKeys(xbindkeysfilename As String)
   If FMain.closing Then Return
-  Debug "Hotkeys: RestartXbindKeys()"
-  Debug
+  global.myDebug("Hotkeys: RestartXbindKeys()")
     Try xbindkeys.Kill
     If Stat(xbindkeysfilename).Size > 0 Then
       xbindkeys = Shell Global.XbindkeysBIN & " -n -f " & xbindkeysfilename For Read As "xbindkeys"

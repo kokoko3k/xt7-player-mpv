@@ -47,7 +47,7 @@ Public Sub init(pparent As Object, platency As Integer, Maxheight As Integer, pe
   
   Try Object.Detach(timer1)
   global.myDebug("Made new meters timer")
-  Debug
+  global.myDebug("")
   timer1 = New Timer As "timer1"
   timer1.delay = 1000 Div fps
   global.myDebug("meters initialized at " & fps & " fps")

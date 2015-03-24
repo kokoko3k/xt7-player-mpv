@@ -521,7 +521,7 @@ Public Sub ReallyLoadAllSettings()
   Dim TheForm As Object
   Dim WasVisible As Boolean = False
   global.myDebug("Start at: " & Time)
-  Debug
+  global.myDebug("")
   Try fmain.mouse = Mouse.wait
   If (Not global.initearlyformsdone) Then
     fmain.InitEarlyForms()
@@ -544,7 +544,7 @@ Public Sub ReallyLoadAllSettings()
   Next
   Try fmain.mouse = Mouse.default
   global.myDebug("Ends at: " & Time)
-  Debug
+  global.myDebug("")
 End
 
 

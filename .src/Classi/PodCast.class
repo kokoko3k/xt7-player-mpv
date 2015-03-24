@@ -149,7 +149,7 @@ Private Sub SetchannelInfo(PodCastUrl As String, PodcastTree As Treeview)
   Try channelcover = image.Load(tmpfile)
 
   If Not Error Then
-    Debug "loaded " & tmpfile
+    global.myDebug("loaded " & tmpfile)
     Try channelcover = channelcover.Stretch(32, 32)
     Try PodcastTree[podcasturl].Picture = channelcover.Picture
       Else

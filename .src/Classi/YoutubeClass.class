@@ -30,8 +30,7 @@ Public Sub GetFeed(feed As String, tree As Treeview, Optional resizew As Integer
    'http://yp.shoutcast.com/sbin/newxml.phtml?genre=Trance
    'remove all child items
   Dim AskUrl As String = "http://gdata.youtube.com/feeds/api/standardfeeds/"
-  Debug "region = " & region
-  Debug
+  global.myDebug("region = " & region)
   If Trim(region) <> "" Then askurl = askurl & region & "/"
   askurl = askurl & feed
   askurl = askurl & "?&max-results=" & Str(maxresults + 1)
@@ -162,7 +161,7 @@ Public Sub DownloadAndParse(url As String, tree As Treeview, feedname As String,
   'Download the feed
   If myappend Then url = url & "&start-index=" & CStr(tree.Item.Children + 1)
   url = "'" & url & "'"
-  Debug url
+  global.myDebug(url)
   feed = Split(wget.DownloadAsync(url), "<", "", True)
   If feed.count = 0 Then 
     Message.Error("Could not download the feed")
@@ -515,7 +514,7 @@ Public Function realvideourl(sourceurl As String, maxformat As String) As String
 
   videoid = getvideoid(sourceurl)
   currentvideoid = videoid
-  Debug videoid
+  global.myDebug(videoid)
 
 If GeneralOptions.Get3dYT.value = True Then
   fSorted.Add("720,84,mp4")
@@ -574,12 +573,12 @@ Endif
   For i = fsorted.max DownTo 0 
     If CInt(Split(fsorted[i], ",")[0]) > CInt(Replace(maxformat, "p", "")) Then 
       useless = fsorted.Extract(i)[0]
-      Debug "dropping " & useless
+      global.myDebug("dropping " & useless)
     Endif
   Next
   
   Cookiesfile = Temp(Rnd(0, 1000) & "ytcookie")
-  Debug "cookiesfile: " & cookiesfile
+  global.myDebug("cookiesfile: " & cookiesfile)
 
   'search for the code of the exact resolution in mp4:
   For Each fmt In fsorted
@@ -589,7 +588,7 @@ Endif
   Next
   'the space is intentional to play videoid(s) which begins with a "-"
   ytdlprocess = Shell "youtube-dl ' " & videoid & "' --get-format --get-url --all-formats --prefer-insecure  --cookies " & Cookiesfile & " >" & ytdlout
-  Debug "youtube-dl ' " & videoid & "' --get-format --get-url --all-formats --prefer-insecure --cookies " & Cookiesfile & " >" & ytdlout
+  global.myDebug("youtube-dl ' " & videoid & "' --get-format --get-url --all-formats --prefer-insecure --cookies " & Cookiesfile & " >" & ytdlout)
 Debug videoid
   Repeat
     Wait 0.02
@@ -615,7 +614,7 @@ Debug videoid
     Try fmtresult = UrlAndFormats[fmtcode]
     If Not Error Then
       If fmtresult Like "*http*" Then
-        Debug fmtresult
+        global.myDebug(fmtresult)
         Return Trim(fmtresult)
       Endif
     Endif
@@ -636,7 +635,7 @@ Public urlexists As Integer = -1
 Public Function IsYoutubeLink(url As String) As Boolean
   'return true if the url is a youtube link that needs to be decoded.
   Dim needsdecoding As Boolean = True
- ' Debug url
+ ' global.myDebug(url)
   url = Lower(url)
   needsdecoding = needsdecoding And ((url Like "http://*.youtube.*/*") Or (url Like "https://*.youtube.*/*") Or (url Like "http://*.googlevideo.*/*") Or (url Like "https://*.googlevideo.*/*"))
   needsdecoding = needsdecoding And (Not (url Like "*t=*"))
@@ -701,10 +700,10 @@ Public Sub AvailableSubs(VideoId As String) As String[]
       out = trackname & ":" & langcode
       If (outarray.Find(out) = -1) Then outarray.Add(out)
     Endif
-    Debug out
+    global.myDebug(out)
 
   Next 'linea
-  Debug
+  global.myDebug("")
   Return outarray.Sort()
 End
 
@@ -724,8 +723,7 @@ Public Function GetSub(VideoId As String, trackname As String, langcode As Strin
   suburl = "'" & suburl & "'"
   TimedText = wget.DownloadAsync(SubUrl)
   If Trim(TimedText) = "" Then
-    Debug "Could not download subtitle with LangCode " & Langcode & " for video id " & VideoId
-    Debug
+    global.myDebug("Could not download subtitle with LangCode " & Langcode & " for video id " & VideoId)
     Return ""
   Endif
   Tmp = TimedText

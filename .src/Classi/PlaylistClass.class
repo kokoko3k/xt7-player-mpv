@@ -70,8 +70,7 @@ End
 '   If Not (MplayerTag.ProcessRunningOvr()) Then
 '     mplayertag = New Mplayerclass
 '     MplayerTag.do_play("", "-idle -ao null -vo null -channels 6", restart)
-'     Debug "(Re)starting player"
-'     Debug
+'     global.myDebug("(Re)starting player")
 '     Wait 0.5
 '   Endif
 ' End
@@ -107,8 +106,7 @@ Public Sub OLD_Load(myplaylist As Gridview, profilename As String)
   Endif
   myplaylist.Rows.count = myplaylist.Rows.count + PTable.count
   InitSearchTable()
-  Debug "Load()at: " & Time
-  Debug
+  global.myDebug("Load()at: " & Time)
 End
 
 Public Sub Load(mygrid As Gridview, ConfDir As String)
@@ -143,8 +141,7 @@ Public Sub LoadTable(ByRef table As String[], filename As String, mygrid As Grid
   Endif
   'mygrid.Rows.count = mygrid.Rows.count + Table.count 'why i've wrote this, it is not an append
   mygrid.Rows.count = Table.count
-  Debug "Load()at: " & Time
-  Debug
+  global.myDebug("Load()at: " & Time)
 End
 
 
@@ -168,8 +165,7 @@ Public Sub LoadFile(Filename As String, Grid As Gridview, Optional Appendit As B
 
   Dim ext As String
   Loading = True
-  Debug "PlaylistClass: Load()at: " & Time
-  Debug
+  global.myDebug("PlaylistClass: Load()at: " & Time)
   ext = Upper(file.ext(filename))
   If (Not Appendit) Then Ptable.Resize(0)
   If ext = "M3U" Then
@@ -749,10 +745,8 @@ Public Sub DeleteThumbsOf(myrow As String)
 
   Dim p As String
   Try p = GetValue(myrow, "Full Path")
-  If Error Then
-    Debug "couldn't delete thumbnails"
-    Debug 
-  Endif
+  If Error Then global.myDebug("couldn't delete thumbnails")
+  
   album = GetValue(myrow, "Album")
   Artist = GetValue(myrow, "Artist")
   CoverManager.DeleteThumbsBy(album, artist, p)
@@ -778,10 +772,9 @@ Public Sub UpdateSelected(G As Gridview)
         sRow = TableRowByPath(p, searchtable)       'poi tramite il path p trova gli elementi da aggiornare
         pRow = TableRowByPath(p, Ptable)            '...in ptable e searchtable
         If (sRow = -1) Or (pRow = -1) Then
-          Debug "UpdateSelected failed to find the row to update (!?)"
-          Debug "sRow= " & sRow
-          Debug "pRow= " & pRow
-          Debug
+          global.myDebug("UpdateSelected failed to find the row to update (!?)")
+          global.myDebug("sRow= " & sRow)
+          global.myDebug("pRow= " & pRow)
           Return
         Endif
         Searchtable[sRow] = UpdateTableRow(Searchtable[sRow]) 'aggiornali in searchtable
@@ -836,8 +829,7 @@ Public Sub AddDir(LibraryGrid As Gridview, DirToAdd As String, ExcludeList As Li
   For i = 0 To ExcludeList.count - 1
     If (DirToAdd = ExcludeList[i].text) Or (DirToAdd & "/" = ExcludeList[i].text) Then
       MatchExcluded = True
-      Debug "Excluded item: " & DirToAdd
-      Debug
+      global.myDebug("Excluded item: " & DirToAdd)
       Break
     Endif
   Next 'i
@@ -1011,7 +1003,7 @@ Public Sub DeleteFromPath(fullpath As String, grid As Gridview)
     FullPathName = Mid(ptable[i], MidPos + 1, endpos - midpos - 1)
     If fullpathname = fullpath Then
       ptable.Remove(i)
-      Debug "PlaylistClass: Deletefrompath(): Deleted: " & FullPathName
+      global.myDebug("PlaylistClass: Deletefrompath(): Deleted: " & FullPathName)
     Endif
     i = i - 1
   Wend
@@ -1024,7 +1016,7 @@ Public Sub DeleteFromPath(fullpath As String, grid As Gridview)
     FullPathName = Mid(SearchTable[i], MidPos + 1, endpos - midpos - 1)
     If fullpathname = fullpath Then
       SearchTable.Remove(i)
-      Debug "PlaylistClass: Deletefrompath(): Deleted: " & FullPathName
+      global.myDebug("PlaylistClass: Deletefrompath(): Deleted: " & FullPathName)
     Endif
     i = i - 1
   Wend
@@ -1134,8 +1126,7 @@ Dim fileUtf8 As String
       tl.tlFree()
     Endif
       Else 'but fallback to mplayertag if needed
-    Debug "TagLib doesnt support " & f & ",fallback to mpv routines..."
-    Debug
+    global.myDebug("TagLib doesnt support " & f & ",fallback to mpv routines...")
     'CheckPlayerAlive()
     MplayerTag.quick = quick
     If Not quick Then MplayerTag.do_idleplay(f)
@@ -1276,14 +1267,12 @@ Public Sub CheckAndFixBloat()
   fields.add("File Size")
   fields.add("Added on")
 
-  Debug "Checking for dupe fields into pTable..."
-  Debug ""
+  global.myDebug("Checking for dupe fields into pTable...")
   If pTable.Count > 0 Then
     For Each field In fields
       If occurrences(TableSeparator & field & TableSeparator, pTable[0]) > 1 Then
-        Debug PTable[0]
-        Debug "Dupe fields found, fixing pTable"
-        Debug
+        global.myDebug(PTable[0])
+        global.myDebug("Dupe fields found, fixing pTable")
         FixBloat(fields)
         Break
       Endif
@@ -1505,8 +1494,7 @@ Public Sub AutoSizeColumns(MyGrid As GridView)
     Try MyGrid.Columns[0].w = MyGrid.Columns[0].w + Mygrid[0, 0].Picture.W
 
     t1 = Timer()
-    Debug "AutosizeColumns, total time: " & CStr((t1 - t0))
-    Debug
+    global.myDebug("AutosizeColumns, total time: " & CStr((t1 - t0)))
 End
 
 
@@ -1553,7 +1541,7 @@ Public Function PtableFromSearch(searchexp As String, Optional fields As String[
           If (fline <> "") And (fline Like "*" & searchterm & "*") Then 
             outlist.add(ptable[i])
              '  Else
-             ' If (fline <> "") Then Debug searchterm & " <> " & "*" & fline & "*"
+             ' If (fline <> "") Then global.myDebug(searchterm & " <> " & "*" & fline & "*")
           Endif
         Next 'field
       Endif

@@ -66,8 +66,7 @@ Stop
   Endif
   
   If ((HttpClient1.status < 0) Or hastimedout) Then
-    Debug "Error: Covermanager: Button1_Click() HTTP ERROR Doing Prerequest to signing proxy"
-    Debug
+    global.myDebug("Error: Covermanager: Button1_Click() HTTP ERROR Doing Prerequest to signing proxy")
     Return
   Endif
   If Lof(HttpClient1) Then Read #HttpClient1, buffer, Lof(HttpClient1)
@@ -89,14 +88,13 @@ Stop
   Endif
 
   If ((HttpClient1.status < 0) Or hastimedout) Then
-    Debug "Covermanager: HTTP ERROR while contacting Amazon"
+    global.myDebug("Covermanager: HTTP ERROR while contacting Amazon")
     Return
   Endif
 
   If Lof(HttpClient1) Then Read #HttpClient1, buffer, Lof(HttpClient1)
   Splitted = Split(buffer, "<", "", True)
-  Debug "CoverManaer: Button1_Click(): Check dupes"
-  Debug
+  global.myDebug("CoverManaer: Button1_Click(): Check dupes")
   For Each myline In Splitted
     If (myline Like "*http://*") And (myline Like "*.jpg") Then
       ImageUrl = Split(myline, ">")[1]
@@ -111,8 +109,8 @@ Stop
   Try Shell "rm -R " & global.confpath & "/covertmp/* >/dev/null 2>&1" Wait
   Try Shell "mkdir -p " & global.confpath & "/covertmp/ >/dev/null 2>&1" Wait
   'PRINT buffer
-  Debug "CoverManaer: Button1_Click(): Start downloading covers Now"
-  Debug
+  global.myDebug("CoverManaer: Button1_Click(): Start downloading covers Now")
+  global.myDebug("")
   For Each ImageUrl In ImagesURL
     If (Imageurl Like "http://*") And (Not HitCancel) Then
       HttpClient1.Async = True
@@ -193,8 +191,7 @@ Public Sub GetCoversFromGoogle(query As String)
   options &= "iar:s,ift:jpg"
   url &= options
   
-  Debug url
-  Debug
+  global.myDebug(url)
   
   HttpClient1 = New HttpClient
   HttpClient1.async = True
@@ -338,7 +335,7 @@ Public Sub RemoveCoverCache(coverfile As String, Optional RemoveSourceToo As Boo
     CoverCacheList.Movefirst
     Repeat
       If CoverCacheList.Item.key Like cachefile & "*" Then
-        Debug "invalidating memory cache: " & CoverCacheList.Item.key
+        global.myDebug("invalidating memory cache: " & CoverCacheList.Item.key)
         CoverCacheList.Item.delete
         Try CoverCacheList.MoveFirst ' ci si muove all'inizio, perchè dopo la cancellazione
                                       ' l'item corrente non è più valido, quindi non ha un successivo
@@ -579,12 +576,10 @@ Public Function LookForJpgB64(filename As String, Optional saveto As String = ""
       If Error Then Return
       Wait
     Until jpgend > 0
-    Debug "Found a potential jpeg of " & (jpgend - jpgstart - 1) & " bytes for " & filename
-    Debug
+    global.myDebug("Found a potential jpeg of " & (jpgend - jpgstart - 1) & " bytes for " & filename)
     Wait
     If (jpgend - jpgstart) > 307200 '307200 Then
-      Debug "jpg is >300KB, probably corrupted, skipping"
-      Debug
+      global.myDebug("jpg is >300KB, probably corrupted, skipping")
       Return False
     Endif
 
@@ -683,12 +678,9 @@ Public Function LookForJpg(filename As String, Optional saveto As String = "", O
     jpgend = Seek(mystream) - 4096 + jpgend + 1
 
     If jpgend > 0 Then
-      Debug "Found a potential jpeg of " & (jpgend - jpgstart) & " bytes for " & filename
-      Debug
+      global.myDebug("Found a potential jpeg of " & (jpgend - jpgstart) & " bytes for " & filename)
       If (jpgend - jpgstart) > 307200 '307200 Then
-        Debug "jpg is >300KB, probably corrupted, skipping"
-        Debug
-        'Return Null
+        global.myDebug("jpg is >300KB, probably corrupted, skipping")
         Return False
       Endif
     Endif
@@ -768,11 +760,9 @@ Public Function LookForJpgHeuristic(filename As String, Optional saveto As Strin
     jpgend = Seek(mystream) - 4096 + jpgend + 1
 
     If jpgend > 0 Then
-      Debug "Found a potential jpeg of " & (jpgend - jpgstart) & " bytes for " & filename
-      Debug
+      global.myDebug("Found a potential jpeg of " & (jpgend - jpgstart) & " bytes for " & filename)
       If (jpgend - jpgstart) > 307200 '307200 Then
-        Debug "jpg is >300KB, probably corrupted, skipping"
-        Debug
+        global.myDebug("jpg is >300KB, probably corrupted, skipping")
         Return False
       Endif
     Endif
@@ -1020,8 +1010,7 @@ Public Sub CoversLookerTimer_timer()
 
 
  If CoverQueue.count = 0 Then
-   ' Debug "stopping coverlookertimer"
-   ' Debug
+   'global.myDebug("stopping coverlookertimer")
    CoversLookerTimer.Stop
    Return
  Endif
@@ -1048,8 +1037,7 @@ Public Sub CoversLookerTimer_timer()
      Else 'file not (yet?) marked as not found
    If Not global.IsNetworkURI(fullpath) Then
      If Not Exist(fullpath) Then
-       Debug "Missing file! " & fullpath
-       Debug
+       global.myDebug("Missing file! " & fullpath)
        FileNotFoundAdd(fullpath)
         'mygrid[row, 0].picture = picture["icon:/" & (rowheight -global.rowpadding) & "/error"]
         mygrid[row, column].text = ""
@@ -1240,7 +1228,7 @@ Public Sub makevideothumb(fullpath As String, coverfilepath As String, mygrid As
   If Exist(coverfilepath) Then Return
   mplayerthumb = New Mplayerclass As "thumbnailer"
   runningthumblers += 1
-  Debug runningthumblers
+  global.myDebug(runningthumblers)
   mplayerthumb.savethumb(fullpath, coverfilepath,,, mygrid, row, column)
 End
 
@@ -1252,9 +1240,7 @@ Public Sub thumbnailer_ThumbAvailableFor(fullpath As String, g As Gridview, r As
   Try g[r, c].clear
    g.refresh
    Wait
-  'FMain.NewThumbReadyFor(fullpath)
-  
-  Debug runningthumblers
+  global.myDebug(runningthumblers)
 End
 
 Public Sub thumbnailer_ThumbErrorFor(fullpath As String, g As Gridview, r As Integer, c As Integer)

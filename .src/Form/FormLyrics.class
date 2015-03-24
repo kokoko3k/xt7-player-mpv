@@ -91,7 +91,7 @@ Private Sub GetAndShow(artist As String, song As String)
   Me.mouse = Mouse.wait
   'lyrics wikia returns only a snippet that we  will use for a text search on google :P
   ' wikiaurl = "http://lyrics.wikia.com/api.php?artist=" & artist & "&song=" & song & "&fmt=text"
-  ' Debug wikiaurl
+  ' global.myDebug( wikiaurl)
   ' snippet = httpget(wikiaurl)
   ' snippet = artist & " " & CGI.Encode(plainsong) & " " & Left(snippet, InStr(snippet, "[") - 1) 
   ' snippet = Replace(snippet, "\n", " ")
@@ -116,7 +116,7 @@ Private Sub GetAndShow(artist As String, song As String)
   'googleurl = "http://www.google.com/search?q=" & snippet & "+lyrics" & "&num=50"
   'googleurl = "https://duckduckgo.com/html/?q=site:lyrics.wikia.com " & snippet & "+lyrics" & "&num=50"
   'gresults = httpget(googleurl)
- ' Debug googleurl
+ ' global.myDebug( googleurl)
   'Debug gresults
   
 
@@ -125,7 +125,7 @@ Private Sub GetAndShow(artist As String, song As String)
     
   googleurl = "https://duckduckgo.com/html/?q=" & snippet
   gresults &= httpget(googleurl, "/tmp/debug")
-  Debug googleurl
+  global.myDebug(googleurl)
   Try resultlines = Split(gresults, "<", "", True)
   If Error Then
     Message.Error(("Ambiguous results"))
@@ -138,8 +138,8 @@ Private Sub GetAndShow(artist As String, song As String)
       For Each blackdomain In Split(blackdomains, ";") 'strip out black domains
         If myline Like "*" & blackdomain & "*" Then
           blackfound = True
-          ' Debug "blackdomain found: " & blackdomain
-          ' Debug "Into this line: " & myline
+          ' global.myDebug( "blackdomain found: " & blackdomain)
+          ' global.myDebug( "Into this line: " & myline)
           Break
         Endif
       Next 'blackdomain
@@ -212,7 +212,7 @@ Public Sub NextBTN_MouseDown()
     'webcontent = strip(webcontent, "<form ", "</form>")
     
     'webcontent = Replace(webcontent, "�", " ")
-    Debug myurl
+    global.myDebug(myurl)
 
     textlabel1.text = webcontent
     TextLabel1.adjust
@@ -236,7 +236,6 @@ Private Function strip(content As String, stag As String, etag As String) As Str
     rcontent &= Right(content, Len(content) - eend - Len(etag) + 1)
     content = rcontent
   Until (InStr(content, stag) * InStr(content, etag)) = 0 'strip all
-  Debug
   Return content
 End
 

@@ -62,7 +62,7 @@ Public Function Ask(TheQuestionString As String, TheButton1String As String, The
     Me.Show()
     Me.Refresh()
     Wait
-    Debug vbox1.w
+    global.myDebug(vbox1.w)
     'Me.w = Max((QuestionLabel.w + MyIcon.w), (Button1.W + Button2.W + vbox2.w + vbox1.w)) + (Me.padding * 3)
     Me.w = Max((QuestionLabel.w + MyIcon.w), (Button1.W + Button2.W)) + (Me.padding * 3)
     Me.h = Button1.h + Max(questionlabel.Font.TextHeight("|"), MyIcon.h) + (Me.padding * 3)

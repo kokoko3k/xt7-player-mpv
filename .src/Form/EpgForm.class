@@ -36,13 +36,10 @@ End
 
 Public Sub Init()
   StartDate = DateAdd(Now(), gb.hour, -2) 'start from 2 hours before now
-'  StartDate = Date(2012, 5, 14, 9, 1, 1) 'ufficio
   StartDate = Date(Year(StartDate), Month(StartDate), Day(StartDate), Hour(StartDate)) 'round to hour.
-  ' Debug DateToMinutes(Now()) 'DateDiff("23:00:00", Now(), gb.Day)
   epgview.Proxy = pictureshadeup
   pictureshadeup.proxy = pictureshadelow
   dvbsnoop = New Dvbsnoop_class As "dvbsnoop"
-  'dvbsnoop.Init("/home/root/Desktop2_kde4/dvbsnoop", ChannelsFile)
   dvbsnoop.Init("dvbsnoop", ChannelsFile)
   dvbsnoop.Startit()
   FillGrid()
@@ -178,23 +175,23 @@ Dim EpgButton As Button
   
   Try moffset = DateDiff(StartDate, MyEventInfo.Start_time_date, gb.Minute)
   If Error Then 
-    Debug "could not make datediff:"
-    Debug "DateDiff(" & StartDate & "," & MyEventInfo.Start_time_date & "," & gb.Minute & ")"
-    Debug "dropping Event!"
+    global.myDebug("could not make datediff:")
+    global.myDebug("DateDiff(" & StartDate & "," & MyEventInfo.Start_time_date & "," & gb.Minute & ")")
+    global.myDebug("dropping Event!")
   Endif
   If moffset < 0 Then
-    Debug "Event scheduled for the past, dropping"
+    global.myDebug("Event scheduled for the past, dropping")
     Return
   Endif
   gOffset = mOffset * (timelabelw Div 60)
   mDuration = (Hour(MyEventInfo.Duration_date) * 60) + Minute(MyEventInfo.Duration_date)
   If mDuration = 0 Then 
-    Debug "Missing duration, assuming 5 minutes."
+    global.myDebug("Missing duration, assuming 5 minutes.")
     mDuration = 5
   Endif
 
   If mOffset > 10080 Then
-    Debug "Event scheduled more than a week in the future, dropping"
+    global.myDebug("Event scheduled more than a week in the future, dropping")
     Return
   Endif
 
@@ -224,7 +221,7 @@ Dim EpgButton As Button
     EpgButton.tag = MyEventInfo
     EpgButton.background = ColorFromDuration(mDuration)
 
-    Debug "New event: ", MyEventInfo.ServiceID, MyEventInfo.EventID, MyEventInfo.ChannelName, MyEventInfo.event_name, MyEventInfo.Start_time_date
+    global.myDebug("New event: ", MyEventInfo.ServiceID, MyEventInfo.EventID, MyEventInfo.ChannelName, MyEventInfo.event_name, MyEventInfo.Start_time_date)
   Endif
 End
 
@@ -588,7 +585,7 @@ Public Sub ButtonRefreshAll_Click()
   Endif
 
   
-  Debug "Scan start at" & Now()
+  global.myDebug("Scan start at" & Now())
   EpgScanProcess.Value = 0
   epgscanprocess.Show()
   channels = Split(File.Load(ChannelsFile), "\n")
@@ -605,7 +602,7 @@ Public Sub ButtonRefreshAll_Click()
 
   For Each uchannel In uChannels
     NoEventsTimeout = NoEventsTimeoutStart
-    Debug i & "/" & uChannels.count, "Mux: " & muxers[i - 1], "Tuning to " & uchannel
+    global.myDebug(i & "/" & uChannels.count, "Mux: " & muxers[i - 1], "Tuning to " & uchannel)
     dvbsnoop.Stopit()
     dvbsnoop.Startit()
     'tunercmd = "timeout " & TimePerChannel & " mplayer -tsprobe 1 \"dvb://" & uchannel & "\" -dumpstream -dumpfile /dev/null " & "< /dev/null &>/dev/null"
@@ -621,14 +618,14 @@ Public Sub ButtonRefreshAll_Click()
       'ButtonRefreshAll.text = dvbsnoop.EventDB.count
       If dvbsnoop.EventDB.count = prevcount Then
         Inc t1
-        Debug t1
+        global.myDebug(t1)
           Else
         t1 = 0
         NoEventsTimeout = NoEventsTimeoutEnd
       Endif
       If wantstop Then Goto ButtonStopPressed
       If t1 > NoEventsTimeout Then
-        Debug "No new events received in " & NoEventsTimeout & " seconds, going next..."
+        global.myDebug("No new events received in " & NoEventsTimeout & " seconds, going next...")
         t1 = 0
         Repeat
           Try tunerprocess.Kill()
@@ -648,7 +645,7 @@ Public Sub ButtonRefreshAll_Click()
     Try epgscanprocess.value = i / uChannels.count
   Next 'channel
 
-  Debug "Scan finish  at" & Now()
+  global.myDebug("Scan finish  at" & Now())
   epgscanprocess.Hide()
   
   
@@ -720,11 +717,6 @@ End
 
 
 Public Sub Button1_Click()
-  Debug "Now:  ", dvbsnoop.WhatsNow("italia1").Start_time_date
-  Debug "Now:  ", dvbsnoop.WhatsNow("italia1").event_name
-  Debug "Next: ", dvbsnoop.WhatsNext("italia1").Start_time_date
-  Debug "Next: ", dvbsnoop.WhatsNext("italia1").event_name
-  Sleep 3
 End
 
 

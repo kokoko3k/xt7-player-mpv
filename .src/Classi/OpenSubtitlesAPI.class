@@ -86,12 +86,10 @@ Public Function TokenFromLogIn(Username As String, Password As String, Language 
   If answer = "-1" Then Return "-1"
   status = StringFromName(answer, "status", False)
   If status Like "200 *" Then
-    Debug "Ok, got token from opensubtitles"
-    Debug
+    global.myDebug("Ok, got token from opensubtitles")
     Return StringFromName(answer, "token", False)
       Else
-    Debug "Error status= " & status
-    Debug
+    global.myDebug("Error status= " & status)
     Return "-1"
   Endif
 End
@@ -150,8 +148,7 @@ Public Function SearchByTag(token As String, Language As String, myquery As Stri
     mysubs.Add(mysub)
   Until Not (mysubs[mysubs.count - 1].Exist("SubFileName")) 'exit as soon as a no filename has been added
   mysubs = removenullitems(mysubs)
-  Debug "results: " & mysubs.count
-  Debug
+  global.myDebug("results: " & mysubs.count)
   Return mysubs
 End
 
@@ -216,7 +213,7 @@ Public Function SearchByQuery(token As String, Language As String, myquery As St
   Until Not (mysubs[mysubs.count - 1].Exist("SubFileName")) 'exit as soon as a no filename has been added
   If Trim(mysub["SubDownloadLink"]) <> "" Then mysubs.Add(mysub)
   mysubs = removenullitems(mysubs)
-  Debug "results: " & mysubs.count
+  global.myDebug("results: " & mysubs.count)
   Return mysubs
 End
 
@@ -285,8 +282,7 @@ Public Function MovieHash(filename As String) As String
 
   Try Copy "Hash.py" To tmp & "/Hash.py"
   If Error Then 
-    Debug "error on copying hash.py"
-    Debug
+    global.myDebug("error on copying hash.py")
     Return
   Endif
   Shell "python " & tmp & "/Hash.py " & filename To out 
@@ -297,8 +293,7 @@ Public Function MovieHash(filename As String) As String
   Endif
 
   If Trim(out) = "" Then 
-    Debug "Hash.py failed"
-    Debug
+    global.myDebug("Hash.py failed")
     Return "-1"
       Else
     Return Trim(out)

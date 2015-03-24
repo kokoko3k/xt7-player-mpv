@@ -138,8 +138,7 @@ Public Sub dvbsnoop_read()
   Line Input #Last, sLine
   'Debug sline
   If SidChanTable.count = 0 Then 
-    Debug "ServiceId <-> Channel still missing, ignoring input"
-    Stop
+    global.myDebug("ServiceId <-> Channel still missing, ignoring input")
     Return 'ignore everything until we have
   Endif
   
@@ -181,7 +180,7 @@ Private Sub ParseService(s As String[])
     Wend
     Try ServiceID = Trim(Split(Split(s[i], ":")[1], " ", "", True)[0])
     ' If ServiceID = "3" Then
-    '   Debug
+    '   global.myDebug("")
     ' Endif
     If Error Then Return
     Repeat
@@ -289,8 +288,8 @@ Private Sub ParseEvent(e As String[], ChannelName As String, EventID As String, 
       m = 59
       s = 59
       Try Duration_date = Date(0, 0, 0, h, m, s)
-      Debug "cant determine duration, setting, arbitrary 1h)"
-        Duration_date = Date(0, 0, 0, 1, 0, 0)
+      global.myDebug("cant determine duration, setting, arbitrary 1h)")
+      Duration_date = Date(0, 0, 0, 1, 0, 0)
     Endif
   Endif
 
@@ -315,7 +314,7 @@ Private Sub ParseEvent(e As String[], ChannelName As String, EventID As String, 
   Return
   '------------------------------------------------------------------
   DateSplitError:
-    Debug "Error splitting date components or general error on date managment"
+    global.myDebug("Error splitting date components or general error on date managment")
     Return
 End
 
@@ -347,8 +346,7 @@ Public Sub dvbsnoopcMap_read()
   If Lower(sLine) Like "*service_name: *" Then 
     If LastSid <> "" Then
       Try SidChanTable[LastSid] = Trim(Split(sline, "\"", "", True)[1])
-      Debug "Got channel name for service " & LastSid, SidChanTable[LastSid]
-
+      global.myDebug("Got channel name for service " & LastSid, SidChanTable[LastSid])
       LastSid = ""
     Endif
   Endif

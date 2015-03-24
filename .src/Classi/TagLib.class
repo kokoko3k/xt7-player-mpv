@@ -87,13 +87,11 @@ Public Function Init(AudioFileName As String) As Boolean
   Channels = 0
   Try TagLibFileP = taglib_file_new(AudioFileName)
   If Error Then
-    Debug "Error while initializing, is taglib installed?"
-    Debug
+    global.myDebug("Error while initializing, is taglib installed?")
     Return False
   Endif
   If (TagLibFileP = Null) Then 
-    Debug "Error while initializing"
-    Debug
+    global.myDebug("Error while initializing")
     Return False
   Endif
   If taglib_file_is_valid(TagLibFileP) Then
@@ -123,16 +121,16 @@ End
 
 Public Function Save() As Boolean
   If Not (Init_OK) Then 
-    Debug "TagLib not Initialized, use .init()"
-    Debug
+    global.myDebug("TagLib not Initialized, use .init()")
+    global.myDebug("")
     Return False
   Endif
   If taglib_file_save(TagLibFileP) Then 
     If tlFree() Then
       Return True
     Endif
-    Debug "Successfully saved but couldn't free the resource"
-    Debug
+    global.myDebug("Successfully saved but couldn't free the resource")
+    global.myDebug("")
     Return False
   Endif
   Return True
@@ -144,8 +142,7 @@ Public Function tlFree() As Boolean
   If Not (Init_OK) Then Return False
   Try taglib_file_free(TagLibFileP)
   If Error Then 
-    Debug "Error, couldn't Free()"
-    Debug
+    global.myDebug("Error, couldn't Free()")
     Return False
   Endif
   Return True
@@ -162,8 +159,7 @@ End
 
 Public Function WriteTags(FullPath As String, Album As String, Artist As String, Title As String, MyYear As String, Genre As String, TrackNo As String, Comment As String) As Boolean
   If Not (Init_OK) Then 
-    Debug "TagLib not Initialized, use .init()"
-    Debug
+    global.myDebug("TagLib not Initialized, use .init()")
     Return False
   Endif
   If Not (SetAlbum(album)) Then Return False
@@ -179,16 +175,14 @@ End
 
 Public Function SetTitle(titlex As String) As Boolean
   If Not (Init_OK) Then 
-    Debug "TagLib not Initialized, use .init()"
-    Debug
+    global.myDebug("TagLib not Initialized, use .init()")
     Return False
   Endif
   If titlex = "" Then Return True
   DesktopToIso88591(ByRef titlex)
   Try taglib_tag_set_title(TagLibTagP, titlex)
   If Error Then 
-    Debug "Error"
-    Debug
+    global.myDebug("Error")
     Return False
   Endif
   Iso88591ToDesktop(ByRef titlex)
@@ -198,16 +192,14 @@ End
 
 Public Function SetArtist(artistx As String) As Boolean
   If Not (Init_OK) Then 
-    Debug "TagLib not Initialized, use .init()"
-    Debug
+    global.myDebug("TagLib not Initialized, use .init()")
     Return False
   Endif
   If artistx = "" Then Return True
   DesktopToIso88591(ByRef artistx)
   Try taglib_tag_set_artist(TagLibTagP, artistx)
   If Error Then 
-    Debug "Error"
-    Debug
+    global.myDebug("Error")
     Return False
   Endif
   Iso88591ToDesktop(ByRef artistx)
@@ -217,16 +209,14 @@ End
 
 Public Function SetAlbum(albumx As String) As Boolean
   If Not (Init_OK) Then 
-    Debug "TagLib not Initialized, use .init()"
-    Debug
+    global.myDebug("TagLib not Initialized, use .init()")
     Return False
   Endif
   If albumx = "" Then Return True
   DesktopToIso88591(ByRef albumx)
   Try taglib_tag_set_album(TagLibTagP, albumx)
   If Error Then 
-    Debug "Error"
-    Debug
+    global.myDebug("Error")
     Return False
   Endif
   Iso88591ToDesktop(ByRef albumx)
@@ -236,16 +226,14 @@ End
 
 Public Function SetComment(commentx As String) As Boolean
   If Not (Init_OK) Then 
-    Debug "TagLib not Initialized, use .init()"
-    Debug
+    global.myDebug("TagLib not Initialized, use .init()")
     Return False
   Endif
   If commentx = "" Then Return True
   DesktopToIso88591(ByRef commentx)
   Try taglib_tag_set_comment(TagLibTagP, commentx)
   If Error Then 
-    Debug "Error"
-    Debug
+    global.myDebug("Error")
     Return False
   Endif
   Iso88591ToDesktop(ByRef commentx)
@@ -255,16 +243,14 @@ End
 
 Public Function SetGenre(genrex As String) As Boolean
   If Not (Init_OK) Then 
-    Debug "TagLib not Initialized, use .init()"
-    Debug
+    global.myDebug("TagLib not Initialized, use .init()")
     Return False
   Endif
   If genrex = "" Then Return True
   DesktopToIso88591(ByRef genrex)
   Try taglib_tag_set_genre(TagLibTagP, genrex)
   If Error Then 
-    Debug "Error"
-    Debug
+    global.myDebug("Error")
     Return False
   Endif
   Iso88591ToDesktop(ByRef genrex)
@@ -274,14 +260,12 @@ End
 
 Public Function SetYear(Yearx As Integer) As Boolean
   If Not (Init_OK) Then 
-    Debug "TagLib not Initialized, use .init()"
-    Debug
+    global.myDebug("TagLib not Initialized, use .init()")
     Return False
   Endif
   Try taglib_tag_set_year(TagLibTagP, Yearx)
   If Error Then 
-    Debug "Error"
-    Debug
+    global.myDebug("Error")
     Return False
   Endif
   MyYear = yearx
@@ -290,14 +274,12 @@ End
 
 Public Function SetTrack(trackx As Integer) As Boolean
   If Not (Init_OK) Then 
-    Debug "TagLib not Initialized, use .init()"
-    Debug
+    global.myDebug("TagLib not Initialized, use .init()")
     Return False
   Endif
   Try taglib_tag_set_track(TagLibTagP, trackx)
   If Error Then 
-    Debug "Error"
-    Debug
+    global.myDebug("Error")
     Return False
   Endif
   track = trackx

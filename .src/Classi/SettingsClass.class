@@ -288,7 +288,7 @@ Public Sub Load(TheForm As Object, Filename As String)
         If subsettings <> Null Then  'if that object has some settings saved
           Try Reconfigure(myobj, Subsettings, TheForm)
           ' If Error Then 
-          '   Debug Error.Text
+          '   global.myDebug(Error.Text)
           '   Stop
           ' Endif
         Endif
@@ -299,11 +299,9 @@ Public Sub Load(TheForm As Object, Filename As String)
   
   'check if there is something that needs to be reparented
   If TheForm.tag = "reparents" Then
-    Debug "Timer = " & Timer
-    Debug
+    global.myDebug("Timer = " & Timer)
     ReparentAndSort(Theform, thesettings)
-    Debug "Timer = " & Timer
-    Debug
+    global.myDebug("Timer = " & Timer)
   Endif
   
   If Upper(theform.name) <> "GENERALOPTIONS" Then
@@ -342,7 +340,7 @@ Public Sub OLD_Load(TheForm As Object, Filename As String)
       'then we load it's properties:
       'extract name and properties from Settings array and pass them to reconfigure sub
       ' If myobj.name Like "*extrastereo*" Then
-      '   Debug
+      '   global.myDebug("")
       ' Endif
       Subsettings = NameAndProperties(myobj.name, thesettings)
       Try Reconfigure(myobj, Subsettings, TheForm)
@@ -351,15 +349,13 @@ Public Sub OLD_Load(TheForm As Object, Filename As String)
   
   'check if there is something that needs to be reparented
   If TheForm.tag = "reparents" Then
-    Debug "Timer = " & Timer
-    Debug
+    global.myDebug("Timer = " & Timer)
     ReparentAndSort(Theform, thesettings)
-    Debug "Timer = " & Timer
-    Debug
+    global.myDebug("Timer = " & Timer)
   Endif
   
   If Upper(theform.name) <> "GENERALOPTIONS" Then
-    Debug theform.name
+    global.myDebug(theform.name)
     Try TheForm.AlreadyLoaded = True
   Endif
   If Lower(TheForm.name) = "fmain" Then LoadLeftSideTabsVisibility(FileName)
