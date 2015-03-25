@@ -10910,8 +10910,7 @@ Public Sub ABLoopTimer_Timer()
   Endif
 
   If mptime >= ABLoopB Then 
-
-    mplayer.Send("seek " & CStr(ABLoopA) & " 2")
+    mplayer.Send("seek " & CStr(ABLoopA) & " 2", False)
     CInt((ABloopB - ABLoopA) * 100 / 4) 'be light on this
     Return
   Endif
@@ -11029,4 +11028,5 @@ Public Sub Button6_Click()
     Object.SetProperty(Me, "boh", "dkok")
 
 End
+
 
