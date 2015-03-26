@@ -1,0 +1,70 @@
+' Gambas class file
+
+
+Public Sub Button1_Click()
+  Desktop.Open("https://github.com/kokoko3k/xt7-player-mpv/issues/new")
+End
+
+Public Sub Button2_Click()
+  Desktop.Open("http://xt7-player.sourceforge.net/xt7forum/qazxswedcvfrtgbnhyujm.php?mode=post&f=3")
+End
+
+Public Sub Form_Open()
+
+End
+
+Public Already_shown As Boolean = False
+
+
+Public Sub Fill_system_info(Optional bta As String[] = Null, Optional crashed As Boolean = False)
+  Dim msg As String
+  Dim mpv As New MplayerClass
+  Dim mpv_v As String
+  Dim bt As String
+  Dim caption As String
+
+  caption = ""
+  If crashed Then 
+    Already_shown = True
+    caption &= "<center>Oops, xt7 just crashed.<br></center>"
+    caption &= "You can close this window to exit the program or submit a bug report <br>"
+    caption &= "by using one of the following choices: <br>"
+      Else
+    caption &= "You can submit a bug report by using one of the following choices: <br>"
+  Endif
+
+  caption &= "<br>"
+  caption &= "<b>&nbsp; xt7 forums on sourceforge.net: <br></b>"
+  caption &= "&nbsp;&nbsp; &bull; free posting without the need to register <br>"
+  caption &= "<br>"
+  caption &= "<b>&nbsp; xt7 project page on GitHub.com: <br></b>"
+  caption &= "&nbsp;&nbsp; &bull; requires an account to post <br>"
+  caption &= "&nbsp;&nbsp; &bull; much better bug managment. <br>"
+
+  textlabel1.text = caption
+  
+  Try Shell mpv.executable() & " --version " To mpv_v
+  
+  msg &= Application.name & ": " & Application.Version & "\n\n"
+  msg &= "System.fullversion: " & System.fullversion & "\n\n"
+  msg &= "System.Architecture: " & System.Architecture & "\n\n"
+  
+  msg &= "mpv: " & "\n" & mpv_v & "\n"
+  
+  If bta <> Null Then
+    msg &= "System.backtrace:" & "\n"
+    For Each bt In bta
+      msg &= bt & "\n"
+    Next
+  Endif
+  
+  TextArea1.text = msg
+
+End
+
+Public Sub Button3_Click()
+
+  Me.close
+
+End
+

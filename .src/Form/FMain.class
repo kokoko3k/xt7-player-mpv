@@ -1610,7 +1610,7 @@ End
 
 
 Public Sub ButtonStop_Click()
-  'Dim a As Integer = 1 / 0
+  Dim a As Integer = 1 / 0
   global.mouse_wait(fmain, False)
   InitABLoop()
   Stopmthumbler()
@@ -9381,12 +9381,12 @@ End
 ' End
 
 Public Sub MenuBug_Click()
-
-  If MyQuestion.Ask(("Thank you,\nyou will be taken to the \nbug reporting web page."), ("Submit the bug"), ("Not now")) = 1 Then
-    Desktop.Open("http://xt7-player.sourceforge.net/xt7forum/qazxswedcvfrtgbnhyujm.php?mode=post&f=3")
-  Endif
-
+  BugReport.fill_system_info()
+  global.Center(Me, bugreport)
+  bugreport.show
 End
+
+
 
 Public Sub FileView1_Select()
   Try Media_Next_path = FileView1.dir & "/" & FileView1.Selection[0]

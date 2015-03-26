@@ -1,0 +1,67 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,76,80)
+  Text = ("Bug Report")
+  Icon = Picture["icon:/small/error"]
+  Persistent = True
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { TextLabel1 TextLabel
+    MoveScaled(2,1,73,26)
+    Background = Color.ButtonBackground
+    Padding = 4
+    AutoResize = True
+    Text = ("<center>Oops, xt7 just crashed.<br></center>\n\nYou can  this window to exit the program or submit a bug report <br>\nby using one of the following choices: <br>\n<br>\n<b>&nbsp; xt7 forums on sourceforge.net: <br></b>\n&nbsp;&nbsp; &bull; free posting without the need to register <br>\n<br>\n<b>&nbsp; xt7 project page on GitHub.com: <br></b>\n&nbsp;&nbsp; &bull; requires an account to post <br>\n&nbsp;&nbsp; &bull; much better bug managment. <br>\n")
+    Border = Border.Sunken
+  }
+  { Separator1 Separator
+    MoveScaled(3,28,71,1)
+  }
+  { Panel1 Panel
+    MoveScaled(3,31,64,25)
+    Expand = True
+    Arrangement = Arrange.Vertical
+    Spacing = True
+    Margin = True
+    { Label1 TextLabel
+      MoveScaled(2,1,60,5)
+      Padding = 4
+      AutoResize = True
+      Text = ("When you submit a bug report, please write what you were doing when the crash happened and include the following in your report.")
+    }
+    { TextArea1 TextArea
+      MoveScaled(2,9,60,13)
+      Font = Font["Monospace"]
+      Expand = True
+      ReadOnly = True
+    }
+  }
+  { HBox1 HBox
+    MoveScaled(2,58,73,5)
+    AutoResize = True
+    Spacing = True
+    { VBox1 VBox
+      MoveScaled(3,1,5,3)
+      Expand = True
+    }
+    { Button1 Button
+      MoveScaled(15,0,21,5)
+      AutoResize = True
+      Text = ("GitHub.com")
+      Picture = Picture["icon:/small/html"]
+    }
+    { Button2 Button
+      MoveScaled(38,0,17,5)
+      AutoResize = True
+      Text = ("Sourceforge.net")
+      Picture = Picture["icon:/small/html"]
+    }
+    { Button3 Button
+      MoveScaled(56,0,16,5)
+      Text = ("Cancel")
+      Picture = Picture["icon:/small/quit"]
+    }
+  }
+}

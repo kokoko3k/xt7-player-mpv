@@ -17,20 +17,19 @@ Static Public Sub ProcessSignals(Doit As Boolean)
 End
 
 
-
-
-
 Static Public Sub Application_error()
-  Dim e As String
-  If Error.Backtrace <> Null Then
-    For Each e In Error.Backtrace  
-      global.myDebug(e)
-      Stop
-    Next
-  Endif
+  Dim bt As String[]
+  Dim et As String
+  If BugReport.Already_shown Then Return
+  bt = Error.Backtrace
+  et = Error.Text
   global.kill_players()
-
-  Try FMain.form_close()
+  BugReport.fill_system_info(bt, True)
+  BugReport.Show()
+  BugReport.Center()
+  While BugReport.Visible
+    Wait 0.1
+  Wend
 End
 
 Static Public Sub main()
