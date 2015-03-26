@@ -1353,8 +1353,7 @@ Public Sub Form_Close()
     ExecutePostCmd()
   Endif
   global.myDebug("post command executed")
-  MyLibrary.MplayerTag.do_stop()
-  MyPlaylist.MplayerTag.do_stop()
+  global.kill_players()
   global.myDebug("mpv stopped")
   Try HotKeys.xbindkeys.kill
   Print "xbindkeys killed"
@@ -1607,7 +1606,11 @@ Public Sub GridRefreshWorkaround(librarygrid As Gridview)
   Object.SetProperty(librarygrid.parent, "Padding", Object.GetProperty(librarygrid.parent, "Padding") - 1)
 End
 
+
+
+
 Public Sub ButtonStop_Click()
+  'Dim a As Integer = 1 / 0
   global.mouse_wait(fmain, False)
   InitABLoop()
   Stopmthumbler()
@@ -10920,6 +10923,8 @@ Public Sub ABLoopTimer_Timer()
   ABLoopTimer.delay = newdelay
 
 End
+
+
 
 
 

@@ -298,6 +298,9 @@ Public Function IsPlaylist(filename As String) As Boolean
 End
 
 
+
+
+
 Public Function IsAudioFile(filename As String) As Boolean
 'will return true if filename extension is in audio one
   Dim fileExt As String = "." & File.Ext(filename)
@@ -1140,5 +1143,17 @@ End
 Public Sub mousewait_timer_timer()
   If mouse_waiting_obj.mouse = Mouse.wait Then Return
   Try mouse_waiting_obj.mouse = Mouse.wait
+End
+
+
+Public Sub kill_players()
+  Try fmain.mplayer.do_stop()
+  Try fmain.querymp.do_stop()
+  Try fmain.mthumbler.do_stop()  
+  Try fmain.mylibrary.mplayertag.do_stop()
+  Try fmain.myplaylist.mplayertag.do_stop()
+  Try fmain.mydvbtlist.mplayertag.do_stop()
+  Try audioconvert.mymplayer.do_stop()
+  Try covermanager.mplayerthumb.do_stop()
 End
 

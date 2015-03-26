@@ -17,6 +17,22 @@ Static Public Sub ProcessSignals(Doit As Boolean)
 End
 
 
+
+
+
+Static Public Sub Application_error()
+  Dim e As String
+  If Error.Backtrace <> Null Then
+    For Each e In Error.Backtrace  
+      global.myDebug(e)
+      Stop
+    Next
+  Endif
+  global.kill_players()
+
+  Try FMain.form_close()
+End
+
 Static Public Sub main()
   'quicktest()
   ProcessSignals(True)
