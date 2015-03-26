@@ -436,7 +436,14 @@ Public Function do_play(filename As String, Optional string_options As String = 
   modules_out = ""
   
   playerprocess = Shell commandline For Read Write As "playerprocess"
-  
+
+  'The following will be a script that will kill mpv if xt7 crashes:
+    Copy "killer.sh" To killer_script
+    Chmod killer_script To "rwxr-xr-x"
+
+    Shell killer_script & " " & Application.id & " " & playerprocess.id
+    global.myDebug(killer_script & " " & Application.id & " " & playerprocess.id)
+
   watched_properties_old_data.Resize(watched_properties.count)
   event_loop = New Timer As "event_loop"
   event_loop.delay = 500
@@ -448,12 +455,7 @@ Public Function do_play(filename As String, Optional string_options As String = 
   ' File.Save(heartbeat_script, heartbeat_cmd)
   ' Chmod heartbeat_script To "-rwxr-xr-x"
   
-  'The following will be a script that will kill mpv if xt7 crashes:
-  Copy "killer.sh" To killer_script
-  Chmod killer_script To "rwxr-xr-x"
 
-  Shell killer_script & " " & Application.id & " " & playerprocess.id
-  global.myDebug(killer_script & " " & Application.id & " " & playerprocess.id)
   Return True
 End
 
