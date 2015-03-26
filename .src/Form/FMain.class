@@ -10910,7 +10910,7 @@ Public Sub ABLoopTimer_Timer()
   Endif
 
   If mptime >= ABLoopB Then 
-    mplayer.Send("seek " & CStr(ABLoopA) & " 2", False)
+    mplayer.do_seek_to(CStr(ABLoopA), True, False)
     CInt((ABloopB - ABLoopA) * 100 / 4) 'be light on this
     Return
   Endif
