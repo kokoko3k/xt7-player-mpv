@@ -118,13 +118,9 @@ End
 
 
 Public Sub myDebug(Optional a As String = "", Optional b As String = "", Optional c As String = "", Optional d As String = "", Optional e As String = "")
-  'Use a trick of generate an error and catch it to get the backtrace
-  'and so print the caller debug line.
   Dim Caller As String = "Unknown caller"
   If Not arg_debug Then Return
-  Print 0 / 0 'generate an error
-  Catch
-  Try caller = Error.Backtrace[1] 
+  Try caller = System.Backtrace[1]
   Print caller & ": " & a, b, c, d, e
   Print 
 End
