@@ -1,10 +1,11 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,47,45)
+  MoveScaled(0,0,47,50)
   Text = ("Video Equalizer")
   Icon = Picture["icon:/16/color"]
   Persistent = True
+  Resizable = False
   Stacking = Window.Above
   Arrangement = Arrange.Vertical
   AutoResize = True
@@ -41,7 +42,6 @@
     { ApplyEqCheckbox CheckBox
       MoveScaled(0,0,25,4)
       ToolTip = ("Note that this can conflicts with Eq2 and hue filter settings")
-      Expand = True
       AutoResize = True
       Text = ("Auto apply those values")
     }
@@ -202,37 +202,10 @@
     Text = ("OverBright strength")
     Alignment = Align.Center
   }
-  { HBox7 HBox
-    MoveScaled(1,31,45,4)
-    ToolTip = ("Dynamic overbright strength:\nWhen usinng dynamic overbright, this slider controls\nhow much you want the video to be altered by it.")
-    Expand = True
-    AutoResize = True
-    Spacing = True
-    { CheckDynamicOverbright CheckBox
-      MoveScaled(1,0,13,4)
-      AutoResize = True
-      Text = ("Dynamic")
-    }
-    { Slider7 Slider
-      MoveScaled(15,0,19,3)
-      Tag = "saturation"
-      Expand = True
-      MinValue = 1
-      MaxValue = 10
-      Value = 3
-    }
-    { SpinBox7 SpinBox
-      MoveScaled(36,0,7,4)
-      MinValue = 1
-      MaxValue = 10
-      Value = 3
-    }
-  }
   { HBox6 HBox
-    MoveScaled(1,36,45,4)
+    MoveScaled(1,30,45,4)
     ToolTip = ("Overbright:\nPush contrast trying to preserve color details.\nUseful for low contrast videos or low contrast displays.\nMay produce clipping/saturation artifacts.\n\nWorks best with Xv and GL video drivers.")
     Expand = True
-    AutoResize = True
     Spacing = True
     { PictureBox6 PictureBox
       MoveScaled(1,1,3,3)
@@ -254,6 +227,64 @@
     }
   }
   { Separator2 Separator
-    MoveScaled(1,41,44,1)
+    MoveScaled(0,35,44,1)
+  }
+  { HBox7 HBox
+    MoveScaled(1,37,45,4)
+    ToolTip = ("Dynamic overbright strength:\nWhen usinng dynamic overbright, this slider controls\nhow much you want the video to be altered by it.")
+    Expand = True
+    Spacing = True
+    { CheckDynamicOverbright CheckBox
+      MoveScaled(4,0,13,4)
+      AutoResize = True
+      Text = ("Dynamic")
+    }
+    { Slider7 Slider
+      MoveScaled(17,0,19,3)
+      Tag = "saturation"
+      Expand = True
+      MinValue = 1
+      MaxValue = 10
+      Value = 3
+    }
+    { SpinBox7 SpinBox
+      MoveScaled(37,0,7,4)
+      MinValue = 1
+      MaxValue = 10
+      Value = 8
+    }
+  }
+  { HBox8 HBox
+    MoveScaled(1,41,45,4)
+    ToolTip = ("Threshold:\nOverbright will be altered only if the next \noverbright value is less than threshold.\n\nGamma exponent:\nWith high values, more overbright will be \napplied to dark scenes and\nless overbright to bright scenes.\nA value of 0 will switch to linear adjustments.\n(dark and bright scenes are treated equally)\n")
+    Expand = True
+    Spacing = True
+    { VBox1 VBox
+      MoveScaled(0,0,3,3)
+      Expand = True
+    }
+    { Label2 Label
+      MoveScaled(8,0,8,3)
+      AutoResize = True
+      Text = ("Threshold")
+    }
+    { SpinBoxThreshold SpinBox
+      MoveScaled(16,0,7,4)
+      MaxValue = 30
+      Value = 10
+    }
+    { Label3 Label
+      MoveScaled(24,1,12,3)
+      AutoResize = True
+      Text = ("Gamma exponent")
+    }
+    { SpinBoxGammaExp SpinBox
+      MoveScaled(37,0,7,4)
+      MaxValue = 5
+      Value = 2
+    }
+  }
+  { Separator3 Separator
+    MoveScaled(2,46,44,1)
   }
 }

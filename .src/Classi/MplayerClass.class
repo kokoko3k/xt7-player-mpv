@@ -1281,7 +1281,7 @@ Public Sub Analyze(videofile As String)
         If Not Error Then 
           bavg = c_mean(i)
           'bavg = Color[i.Pixels[0]].value 
-          global.myDebug("time", ctime, "AVG:", bavg)
+          'global.myDebug("time", ctime, "AVG:", bavg)
           'barray index represents the integer part of the time, so we store the float part with the average picture brightness value in the array cell
           'and set a delay afterwards for near pefect timing
           Try barray[cTimei] = bAvg & ":" & ctimef

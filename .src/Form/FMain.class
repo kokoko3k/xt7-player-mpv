@@ -3252,34 +3252,12 @@ Public Sub Mplayer_mykill(return_value As Integer)
 End
 
 Private PrevValuecTime As Integer = 0 'so that the first value will be used
-Public Sub OLD_Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional NewValuecTime As Integer)
-  Dim bAvgAdapted As Integer
-  If (NewValuecTime - PrevValuecTime >= 10) Then
-    If ((NewValuecTime - PrevValuecTime) Mod 5 = 0) Then
-      global.myDebug("Skipping periodic keyframe, diff = " & (NewValuecTime - PrevValuecTime))
-      PrevValuecTime = NewValuecTime
-      Return
-    Endif
-  Endif
-    
-  PrevValuecTime = NewValuecTime
-  Wait delay
-  global.myDebug("waiting:", delay)
-  'bAvgAdapted = CInt(bAvg * (100 / 255)) 'es: 64 -> 25
-  bAvgAdapted = CInt(bAvg * (100 / 255)) 'es: 64 -> 25
-  bAvgAdapted = 100 - bAvgAdapted 'es: 25 -> 75
-  bAvgAdapted = bAvgAdapted Div (11 - VideoEqualizer.Slider7.value) 'es 75 -> 7
-  ' bAvgAdapted = bAvg + -17043521 'range 0 -> 17043520
-  ' bAvgAdapted = CInt(bAvgAdapted * (100 / 17043520)) 'range 0 - > 100
-  'Debug "bavg:", bavg, "Adapted:", bAvgAdapted
-  'mplayer.ShowText(bavg)
-  SlideTo(VideoEqualizer.Slider6, (bAvgAdapted))
-End
+
 
 Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional NewValuecTime As Integer)
   Dim bAvgAdapted As Integer
   Dim K As Float
-  
+
   If (NewValuecTime - PrevValuecTime >= 10) Then
     If ((NewValuecTime - PrevValuecTime) Mod 5 = 0) Then
       global.myDebug("Skipping periodic keyframe, diff = " & (NewValuecTime - PrevValuecTime))
@@ -3287,21 +3265,22 @@ Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional Ne
       Return
     Endif
   Endif
-    
-  PrevValuecTime = NewValuecTime
-  Wait delay
-  global.myDebug("waiting:", delay)
 
+  PrevValuecTime = NewValuecTime
+  Wait delay - (0.04 * 2)
 
   'k=0 -> retta
   'max sano, circa 4
-  k = 2
+  'k = 2
+  k = VideoEqualizer.SpinBoxGammaExp.value
   
   bAvgAdapted = (255 - bAvg) * ((((255 - bAvg) / 255) ^ K)) 'gamma function
   bAvgAdapted *= (100 / 255) 'normalized to 0..100
   bAvgAdapted = bAvgAdapted Div (11 - VideoEqualizer.Slider7.value) 'normalized to user setting
+  bAvgAdapted = CInt(bAvgAdapted * (1 + (VideoEqualizer.Slider7.value / 10)))
+  If bAvgAdapted > 100 Then bAvgAdapted = 100
+  SlideTo(VideoEqualizer.Slider6, (bAvgAdapted), VideoEqualizer.SpinBoxThreshold.value)
   global.myDebug("bAvg = " & bAvg, "bAvgAdapted = " & bAvgAdapted)
-  SlideTo(VideoEqualizer.Slider6, (bAvgAdapted))
 End
 
 
@@ -3309,51 +3288,45 @@ End
 
 
 
-Private Sub SlideTo(aSlider As Slider, aTarget As Integer)
+Public Sub SlideTo(aSlider As Slider, aTarget As Integer, Optional aThreshold As Integer = 7)
   Dim prevosd As String = mplayer.osdlevel
   Dim wasdisabled As Boolean = True
-  'Dim bdiff As Integer
-  'Dim aThreshold As Integer = 7 'do not move slider under this threshold. If you plan not to use threshold, dont change the code, but set it to 0.
-  Dim aThreshold As Integer = 4 'do not move slider under this threshold. If you plan not to use threshold, dont change the code, but set it to 0.
-  Dim waittime As Float = 0.01
+  Dim tvalue As Integer = aSlider.value
+  Dim waittime As Float = 0.005
   Dim paused As Boolean
-  
-  'If (fmain.mplayer.VideoOut_Driver = "vaapi") Then aThreshold = 2 'fixmempv
+
   VideoEqualizer.NoOsd = True
-  If (mplayer.pausing Or mplayer.Paused()) Then Return
-  mplayer.send("osd 0")
+
   If aSlider.enabled = False Then
     wasdisabled = True
     aSlider.Enabled = True
     Wait
   Endif
-  If Abs(aSlider.value - aTarget) < aThreshold Then Goto lEnd
-  'If bdiff = 0 Then Goto lEnd
+  
+  If Abs(aSlider.value - aTarget) <= aThreshold Then 
+    global.myDebug("Abs(aSlider.value - aTarget) <= aThreshold)")
+    global.myDebug("Abs(" & aSlider.value & "-" & aTarget & ")==" & Abs(aSlider.value - aTarget) & " <= " & aThreshold)
+    Goto lEnd
+  Endif
 
-  'waittime = 1 / bdiff - 0.06 
-  'If waittime < 0 Then waittime = 0
-  'If waittime > 0.06 Then waittime = 0.06
-  'Debug waittime
-  paused = (mplayer.get_property_mpv("paused", True, 100, True) = "yes")
   If aSlider.value < aTarget Then
     Repeat
-      If (mplayer.pausing Or Paused) Then Return
-      aSlider.value += 1 
+      tvalue += 1
+      Try aSlider.value = tvalue
       Sleep waittime
-    Until aSlider.value >= aTarget
+    Until (tvalue >= aTarget) 
       Else
     Repeat
-      If (mplayer.pausing Or Paused) Then Return
-     aSlider.value -= 1
+     tvalue -= 1
+     Try aSlider.value = tvalue
      Sleep waittime
-    Until aSlider.value <= aTarget
+    Until (tvalue <= aTarget) 
     If wasdisabled Then aSlider.Enabled = False
   Endif
   
   lEnd:
   VideoEqualizer.NoOsd = False
-  If (mplayer.pausing Or mplayer.Paused()) Then Return
-  mplayer.send("osd " & prevosd)
+
 End
 
 

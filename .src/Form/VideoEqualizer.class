@@ -207,3 +207,14 @@ Public Sub CheckDynamicOverbright_Click()
     FMain.mplayer.StopOverbrightAnalyze()
   Endif
 End
+
+Public Sub Button2_Click()
+  Dim i As Integer
+  For i = 0 To 100 Step 7
+    fmain.slideto(Me.Slider6, i)
+    Wait 1
+  Next
+
+End
+
+
