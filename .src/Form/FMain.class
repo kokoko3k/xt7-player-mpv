@@ -1070,6 +1070,11 @@ Public Sub MainInit()
 
   If global.currentprofile = "" Then
     global.CurrentProfile = MySettings.GetLastProfile(global.confpath)
+    If Not (Exist(global.confpath & "/" & global.currentprofile & ".profile")) Then
+      global.myDebug("(WW) profile: \"" & global.currentprofile & "\" not found, creating it...")
+      InitEarlyForms()
+      ReallySaveAllSettings(global.currentprofile, False) 'before loading user settings, make a profile with factory values.
+    Endif
   Endif
 
   Try UpdateProfilesTabList()
