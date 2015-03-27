@@ -3091,8 +3091,8 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   Endif
   'If Trim(pretext) <> "" Then
   'If mplayer.maxcache = "" Then Return
-
   fmain.caption = pretext
+  
   If cachevalue <> "" Then
     Try cache_size = mplayer.getP("=cache-size")
     If cache_size = "(unavailable)" Then cache_size = "0"
@@ -3105,10 +3105,11 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
       MaxCacheHuman = cache_size & "KB"
     Endif
     If maxcachehuman <> "0KB" Then 
-      fmain.caption = fmain.caption & " [ cache: " & cachevalue & "%" & (" of: ") & MaxCacheHuman & " ]"
+      fmain.caption &= " - [ cache: " & cachevalue & "%" & (" of: ") & MaxCacheHuman & " ]"
     Else
-      fmain.caption = fmain.caption & " [ cache: " & cachevalue & "% (Auto) ]"
+      fmain.caption &= " [ cache: " & cachevalue & "% (Auto) ]"
     Endif
+    fmain.caption &= " - " & global.AppName
     cachebar.w = (cachevalue / 100) * Rightsidepanel.w
     prevcache = cachevalue
   Endif
