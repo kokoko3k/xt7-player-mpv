@@ -14,6 +14,7 @@ Public Sub Start()
   Args.begin(helpmsg)
     Try global.arg_profile = Args.get("p", "profile", ("Start with the specified profile"), "profilename")
     Try global.arg_append = Args.Has("a", "append", ("Append the file to the playlist of a running instance"))
+    Try global.arg_new_instance = Args.Has("n", "new-instance", ("Play in a new instance even if one is already running"))
     Try global.arg_debug = Args.Has("v", "verbose", ("Enable debug output"))
   Try global.arg_file = Args.end()[0]
   

@@ -61,7 +61,7 @@ Public arg_profile As String = "" 'cmdline argument: user wants to switch profil
 Public arg_file As String = "" 'cmdline argument: user wants to play this
 Public arg_append As Boolean = False 'cmdline argument: the user want to append an uri to a running instance
 Public arg_debug As Boolean = False 
-
+Public arg_new_instance As Boolean = False 
 
 Public Sub init()
   'FixFormNames() 'needed with gambas 3.4.1; form names arent set by default!

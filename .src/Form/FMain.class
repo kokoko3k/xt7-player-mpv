@@ -1057,8 +1057,10 @@ Public Sub MainInit()
   If Error Then
     AlreadyRunning = True
     If (global.arg_file <> "") Then
-      zzzfake.sock_play(global.arg_file)
-      Quit
+      If Not global.arg_new_instance Then
+        zzzfake.sock_play(global.arg_file)
+        Quit
+      Endif
     Endif
   Else
     'as there are no other istances, it's good to remove inputpipes
@@ -1100,11 +1102,8 @@ Public Sub MainInit()
   DelayTimer.delay = 1000
   DelayTimer.Start
   
-  'If (Application.Args.count = 1) Or ((Application.Args.count > 1) And (Not alreadyrunning)) Then
-  If (global.arg_file = "") Or ((global.arg_file <> "") And (Not alreadyrunning)) Then
-    'FMain.LoadFormGeometry()
-    fmain.Show
-  Endif
+  If (alreadyrunning Or (global.arg_file <> "") Or global.arg_new_instance) Then fmain.Show
+
   LeftSideTabs_Click()
   global.myDebug("Myinit ended at: " & Timer)
 
@@ -3267,7 +3266,7 @@ Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional Ne
   Endif
 
   PrevValuecTime = NewValuecTime
-  Wait delay - (0.04 * 2)
+  Wait delay - 0.04
 
   'k=0 -> retta
   'max sano, circa 4
