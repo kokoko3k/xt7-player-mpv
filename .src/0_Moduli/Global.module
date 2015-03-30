@@ -371,7 +371,7 @@ End
 
 
 
-Public Sub SaveMandatorySettings(Profilename As String) 
+Public Sub SaveMandatorySettings(Profilename As String, Optional with_grids As Boolean = True) 
   Dim MySettings As New SettingsClass
 
   MySettings.Save(Fmain, global.confpath & "/" & Profilename)
@@ -392,14 +392,15 @@ Public Sub SaveMandatorySettings(Profilename As String)
   ComboHistory.SaveHistory(Fmain.Searchfieldalbums, Global.confpath & "/" & ProfileName)
   ComboHistory.SaveHistory(Fmain.Urlbox, Global.confpath & "/" & ProfileName)
   ComboHistory.SaveHistory(Fmain.youSearchfield, Global.confpath & "/" & ProfileName)
-
-  'library and playlist are profile indipendant
-  fmain.MyLibrary.Save(fmain.LibraryGrid, global.confpath)
-  fmain.MyPlaylist.Save(fmain.PlaylistGrid, global.confpath)
-  fmain.MyDVBTList.Save(Fmain.dvbtgrid, global.confpath)
-  Try fmain.mypodcast.SavePods(global.confpath & "/mypods.txt", fmain.PodcastTree)
-
-  Try covermanager.flushUncoveredFile()
+  
+  If with_grids Then
+    'library and playlist are profile indipendant
+    fmain.MyLibrary.Save(fmain.LibraryGrid, global.confpath)
+    fmain.MyPlaylist.Save(fmain.PlaylistGrid, global.confpath)
+    fmain.MyDVBTList.Save(Fmain.dvbtgrid, global.confpath)
+    Try fmain.mypodcast.SavePods(global.confpath & "/mypods.txt", fmain.PodcastTree)
+    Try covermanager.flushUncoveredFile()
+  Endif
 
   global.myDebug("Mandatory settings saved")
 
@@ -407,10 +408,10 @@ End
 
 
 
-Public Sub SaveAllSettings(ProfileName As String, Optional WithLibraryAndPls As Boolean = True)
+Public Sub SaveAllSettings(ProfileName As String, Optional with_grids As Boolean = True)
   Dim MySettings As New SettingsClass
 
-  SaveMandatorySettings(Profilename)
+  SaveMandatorySettings(Profilename, with_grids)
 
   NewChains.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
