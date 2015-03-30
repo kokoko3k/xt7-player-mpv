@@ -3259,11 +3259,11 @@ Public Sub Mplayer_mykill(return_value As Integer)
 
     StatusLabelLeft.text = (" Stopped")
     StatusLabelRight.text = ""
-    
+
     SeekBar.value = 0
     SetProgress(seekbar.value)
     Fmain.caption = global.AppName
-
+    ShowAudioPanel(False)
 End
 
 Private PrevValuecTime As Integer = 0 'so that the first value will be used
