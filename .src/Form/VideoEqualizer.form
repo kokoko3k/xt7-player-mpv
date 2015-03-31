@@ -256,7 +256,7 @@
   }
   { HBox8 HBox
     MoveScaled(1,41,45,4)
-    ToolTip = ("Threshold:\nOverbright will be altered only if the next \noverbright value is less than threshold.\n\nGamma exponent:\nWith high values, more overbright will be \napplied to dark scenes and\nless overbright to bright scenes.\nA value of 0 will switch to linear adjustments.\n(dark and bright scenes are treated equally)\n")
+    ToolTip = ("Threshold:\nOverbright will be altered only if the next \noverbright value differs from the previous one\nby less than the threshold.\n\nGamma exponent:\nWith high values, more overbright will be \napplied to dark scenes and\nless overbright to bright scenes.\nA value of 0 will switch to linear adjustments.\n(dark and bright scenes are treated equally)\n")
     Expand = True
     Spacing = True
     { VBox1 VBox

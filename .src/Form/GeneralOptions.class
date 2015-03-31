@@ -101,6 +101,12 @@ Private Sub DrawFiltersGui()
     ' Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Specify the hardware video decoding API that should be used if possible.\nWhether hardware decoding is actually done depends on the video  codec.\nIf hardware decoding is not possible, mpv will fall back on software decoding.  \n mpv option: hwdec"))
     ' AllParams.Clear
 
+  '-ad-lavc-ac3drc=<level>
+    AllParams.Add(["ROCHOOSE", ("AC3 dynamic range compression"), "1.0 - full compression", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0.0 - no compression", "ad000lavc000ac3drc", "AC-3 audio streams only: make loud passages more silent and vice versa"])
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Select  the  Dynamic  Range Compression level for AC-3 audio streams.\n<level> is a float value ranging from 0 to 1, where 0 means no compression\nand 1 means full compression (make loud passages more silent and vice versa).\nThis option only shows an effect if the AC-3 stream contains\nthe required range compression information.\nmpv option: --ad-lavc-ac3drc=<level>"))
+    Try Object.SetProperty(Me["ad000lavc000ac3drc.CheckBox"], "value", True)
+    AllParams.Clear
+    
   '-channels <number> (also see -af channels) 
     AllParams.Add(["ROCHOOSE", ("Output Channels"), "2 - Stereo", "4 - Surround", "6 - Full 5.1", "8 - Full 7.1", "audio000channels", ""])
     Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Request the number of playback channels (default: 2).\n This is usually only important when playing videos with AC-3 audio (like DVDs).\n mpv option: audio-channels"))
