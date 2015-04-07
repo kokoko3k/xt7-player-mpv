@@ -2956,7 +2956,7 @@ Private LASTVOLUME As String = -2 'remember the exit volume so that we can set i
 Public Sub UpdateVolumeSlider(volume As String)
   Dim ctime As Float = 0
   Dim newvolume As Integer
-  Return
+
   'If mplayer.getP("percent-pos") = "0" Then Return 'do not update volume if the media playback is not started.
   Try ctime = mplayer.get_property_mpv("=time-pos", True, 100, True)
   If ctime <= 0 Then Goto ReturnLabel
@@ -3356,10 +3356,7 @@ Private Sub UpdateVolumeTooltip()
   Endif
   If overboost = Null Then overboost = "100"
   If Not mplayer.ProcessRunningOvr() Then Return
-  'volume = CInt(SaveVolumeSlider.value * (overboost / SaveVolumeSlider.MaxValue))
-
-  volume = CInt(mplayer.get_property_mpv("volume", True))
-
+  volume = CInt(CInt(mplayer.get_property_mpv("volume", True)) / 100 * overboost)
   tip = "   Volume: " & CStr(volume) & "% "
   If volume > 100 Then 
     StatusLabelright.Foreground = color.red
@@ -4377,11 +4374,12 @@ Public Sub Show_runtime_infos()
 End
 
 Public Sub volume_add(percent As String)
-  mplayer.add_property_mpv("volume", percent, fsform.fullscreen)
+  mplayer.add_property_mpv("volume", percent, True) 'fsform.fullscreen)
   If VolumeFocused Then UpdateVolumeTooltip()
+  UpdateVolumeTooltip()
 End
 Public Sub volume_set(value As String)
-  mplayer.set_property_mpv("volume", value, fsform.fullscreen)
+  mplayer.set_property_mpv("volume", value, True) 'fsform.fullscreen)
   If VolumeFocused Then UpdateVolumeTooltip()
 End
 
