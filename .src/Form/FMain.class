@@ -3271,12 +3271,13 @@ Private PrevValuecTime As Integer = 0 'so that the first value will be used
 Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional NewValuecTime As Integer)
   Dim bAvgAdapted As Integer
   Dim K As Float
+  Dim threshold As Integer = VideoEqualizer.SpinBoxThreshold.value
 
   If (NewValuecTime - PrevValuecTime >= 10) Then
     If ((NewValuecTime - PrevValuecTime) Mod 5 = 0) Then
-      global.myDebug("Skipping periodic keyframe, diff = " & (NewValuecTime - PrevValuecTime))
+      global.myDebug("Periodic keyframe, diff = " & (NewValuecTime - PrevValuecTime) & " ;raising threshold")
+      threshold = 1 + CInt((VideoEqualizer.Slider7.value * 10) / 4) 
       PrevValuecTime = NewValuecTime
-      Return
     Endif
   Endif
 
@@ -3293,7 +3294,7 @@ Public Sub Mplayer_AnalyzerNewValue(bAvg As Integer, delay As Float, Optional Ne
   bAvgAdapted = bAvgAdapted Div (11 - VideoEqualizer.Slider7.value) 'normalized to user setting
   bAvgAdapted = CInt(bAvgAdapted * (1 + (VideoEqualizer.Slider7.value / 10)))
   If bAvgAdapted > 100 Then bAvgAdapted = 100
-  SlideTo(VideoEqualizer.Slider6, (bAvgAdapted), VideoEqualizer.SpinBoxThreshold.value)
+  SlideTo(VideoEqualizer.Slider6, (bAvgAdapted), threshold)
   global.myDebug("bAvg = " & bAvg, "bAvgAdapted = " & bAvgAdapted)
 End
 
