@@ -301,14 +301,28 @@ End
 
 Private Function fix_options()
   Dim data As String
+
   'handle corner cases where an option could conflict with another
   For Each data In mpvOptions
-    If data Like "*lavcac3enc*" Then 
-      global.myDebug("found audio filter lavcac3enc; searching and unsetting --audio-channels")
-      unset_option("audio-channels")
-      Return
-    Endif
+    Select Case data
+      Case Like "*lavcac3enc*"
+        If mpvoptions.Key Like "*af*" Then
+          Print "found audio filter lavcac3enc; searching and unsetting --audio-channels"
+          Print
+          unset_option("audio-channels")
+        Endif
+      Case Like "*spdif*"
+        If mpvoptions.Key Like "*ad" Then
+          Print "it seems spdif passthrough is requested; disable any audio filter"
+          Print
+          unset_option("af")
+          unset_option("af-add")
+          unset_option("af-pre")
+          set_option("af-clr", Chr(8))
+        Endif
+    End Select
   Next
+  Stop
 End
 
 
