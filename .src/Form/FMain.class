@@ -2231,10 +2231,11 @@ Public needytcookie As Boolean = False
 Private dumpfile As String
 
 Public Function Initialvolume() As String
-  'initialvolume
-  If lastvolume = -2 Then lastvolume = (SaveVolumeSlider.value)
-  'If lastvolume = 0 Then lastvolume = 1 'mplayer's softvol has problems with volume=0 'mpv seems ok.
-  Return lastvolume 
+  ' 'initialvolume
+  ' If lastvolume = -2 Then lastvolume = (SaveVolumeSlider.value)
+  ' 'If lastvolume = 0 Then lastvolume = 1 'mplayer's softvol has problems with volume=0 'mpv seems ok.
+  ' Return lastvolume 
+  Return SaveVolumeSlider.value
 End
 
 
@@ -2951,26 +2952,25 @@ End
 Public customtitle As String = ""
 
 
-Private LASTVOLUME As String = -2 'remember the exit volume so that we can set it when opening new medias
+'Private LASTVOLUME As String = -2 'remember the exit volume so that we can set it when opening new media
 
 Public Sub UpdateVolumeSlider(volume As String)
   Dim ctime As Float = 0
   Dim newvolume As Integer
 
-  'If mplayer.getP("percent-pos") = "0" Then Return 'do not update volume if the media playback is not started.
-  Try ctime = mplayer.get_property_mpv("=time-pos", True, 100, True)
-  If ctime <= 0 Then Goto ReturnLabel
-  global.myDebug(ctime)
   Try newvolume = Split(volume, ",.", "", True)[0]
-  If Error Then Goto ReturnLabel
-  Object.lock(SaveVolumeSlider)
-  Try SaveVolumeSlider.Value = newvolume
-  Object.unlock(SaveVolumeSlider)
-  If Error Then Goto ReturnLabel
-
-  LASTVOLUME = newvolume
+  If Error Then Return
   global.myDebug(newvolume)
-  ReturnLabel:
+
+  Object.lock(SaveVolumeSlider)
+    Try SaveVolumeSlider.Value = newvolume
+    If Error Then Return
+  Object.unlock(SaveVolumeSlider)
+
+  ' 'do not update volume if the media playback is not started.
+  ' Try ctime = mplayer.get_property_mpv("=time-pos", True, 100, True)
+  ' If ctime > 0 Then LASTVOLUME = newvolume
+
 End
 
 Public Sub UpdateStreamsMenu()
@@ -3356,7 +3356,8 @@ Private Sub UpdateVolumeTooltip()
   Endif
   If overboost = Null Then overboost = "100"
   If Not mplayer.ProcessRunningOvr() Then Return
-  volume = CInt(CInt(mplayer.get_property_mpv("volume", True)) / 100 * overboost)
+  Try volume = CInt(CInt(mplayer.get_property_mpv("volume", True)) / 100 * overboost)
+  If Error Then Return
   tip = "   Volume: " & CStr(volume) & "% "
   If volume > 100 Then 
     StatusLabelright.Foreground = color.red
@@ -10451,7 +10452,6 @@ Public Sub ActivateThumbler()
   mthumbler.set_option("vd-lavc-skiploopfilter", "all")
   mthumbler.set_option("wid", thumblevideo.handle)
   mthumbler.set_option("vo", "xv,x11") 'mpv has issues when using opengl over opengl (no pip with opengl :( )
-  
 
   mthumbler.do_play(fullpath)
   While Not mthumbler.ProcessRunningOvr()
