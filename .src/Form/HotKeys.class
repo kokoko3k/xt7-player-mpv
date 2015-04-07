@@ -29,9 +29,9 @@ Public Sub xbindkeys_read()
       Case "seek -10sec"
         FMain.mplayer.do_seek_by("-10", FsForm.fullscreen)
       Case "volume +"
-        FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+        fmain.volume_add("+2")
       Case "volume -"
-        FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+        fmain.volume_add("-2")
       Case "mute/unmute"
         FMain.mplayer.Send("cycle mute")
     End Select
@@ -53,8 +53,8 @@ Private Sub FillGridHeaders()
   HotKeysGrid.Rows[0].text = "switch fullscreen"
   HotKeysGrid.Rows[1].text = "pause"
   HotKeysGrid.Rows[2].text = " "
-  HotKeysGrid.Rows[3].text = "volume +0.5"
-  HotKeysGrid.Rows[4].text = "volume -0.5"
+  HotKeysGrid.Rows[3].text = "volume +1"
+  HotKeysGrid.Rows[4].text = "volume -1"
   HotKeysGrid.Rows[5].text = "add balance +0.1"
   HotKeysGrid.Rows[6].text = "add balance -0.1"
   HotKeysGrid.Rows[7].text = "cycle mute"

@@ -129,9 +129,9 @@ End
 
 Function org_mpris_MediaPlayer2_Player_Volume_Write(p As Float)
   If p <= 0 Then
-    FMain.SaveVolumeSlider.value = 0
+    FMain.volume_set("0")
       Else
-    FMain.SaveVolumeSlider.value = p * FMain.SaveVolumeSlider.MaxValue
+    FMain.volume_set(CStr(p * 100))
   Endif
 End
 

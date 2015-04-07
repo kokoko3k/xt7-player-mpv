@@ -170,33 +170,33 @@ End
 
 Public Sub Form_MouseWheel()
     If mouse.delta > 0 Then
-      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+      fmain.volume_add("+2")
         Else
-      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+      fmain.volume_add("-2")
     Endif
 End
 
 Public Sub PictureBox1_MouseWheel()
     If mouse.delta > 0 Then
-      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+      fmain.volume_add("+2")
         Else
-      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+      fmain.volume_add("-2")
     Endif
 End
 
 Public Sub Label1_MouseWheel()
       If mouse.delta > 0 Then
-      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+      fmain.volume_add("+2")
         Else
-      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+      fmain.volume_add("-2")
     Endif
 End
 
 Public Sub HBox1_MouseWheel()
       If mouse.delta > 0 Then
-      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value + 1
+      fmain.volume_add("+2")
         Else
-      FMain.SaveVolumeSlider.value = FMain.SaveVolumeSlider.value - 1
+      fmain.volume_add("-2")
     Endif
 End
 

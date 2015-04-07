@@ -2232,7 +2232,7 @@ Private dumpfile As String
 
 Public Function Initialvolume() As String
   'initialvolume
-  If lastvolume = -2 Then lastvolume = (SaveVolumeSlider.value * 4)
+  If lastvolume = -2 Then lastvolume = (SaveVolumeSlider.value)
   'If lastvolume = 0 Then lastvolume = 1 'mplayer's softvol has problems with volume=0 'mpv seems ok.
   Return lastvolume 
 End
@@ -2956,22 +2956,21 @@ Private LASTVOLUME As String = -2 'remember the exit volume so that we can set i
 Public Sub UpdateVolumeSlider(volume As String)
   Dim ctime As Float = 0
   Dim newvolume As Integer
+  Return
   'If mplayer.getP("percent-pos") = "0" Then Return 'do not update volume if the media playback is not started.
-  Try ctime = CFloat(mplayer.getP("=time-pos"))
+  Try ctime = mplayer.get_property_mpv("=time-pos", True, 100, True)
   If ctime <= 0 Then Goto ReturnLabel
-  
-  Try SaveVolumeSlider.tag = "timer"          'this will avoid seekbar to send volume to mplayer
-
+  global.myDebug(ctime)
   Try newvolume = Split(volume, ",.", "", True)[0]
   If Error Then Goto ReturnLabel
-  Try SaveVolumeSlider.Value = newvolume Div 4
+  Object.lock(SaveVolumeSlider)
+  Try SaveVolumeSlider.Value = newvolume
+  Object.unlock(SaveVolumeSlider)
   If Error Then Goto ReturnLabel
-  
+
   LASTVOLUME = newvolume
   global.myDebug(newvolume)
   ReturnLabel:
-  Try SaveVolumeSlider.tag = "user"
-
 End
 
 Public Sub UpdateStreamsMenu()
@@ -3357,7 +3356,10 @@ Private Sub UpdateVolumeTooltip()
   Endif
   If overboost = Null Then overboost = "100"
   If Not mplayer.ProcessRunningOvr() Then Return
-  volume = CInt(SaveVolumeSlider.value * (overboost / SaveVolumeSlider.MaxValue))
+  'volume = CInt(SaveVolumeSlider.value * (overboost / SaveVolumeSlider.MaxValue))
+
+  volume = CInt(mplayer.get_property_mpv("volume", True))
+
   tip = "   Volume: " & CStr(volume) & "% "
   If volume > 100 Then 
     StatusLabelright.Foreground = color.red
@@ -3438,15 +3440,7 @@ Public Sub VersionCheck()
 End
 
 Public Sub SaveVolumeSlider_Change()
-
-  'OneSecTimer.delay = OneSecTimer.delay * 100
-  If Not (SaveVolumeSlider.tag = "timer") Then
-    mplayer.do_SetVolume(SaveVolumeSlider.value * (100 Div SaveVolumeSlider.MaxValue), fsform.FullScreen) ' + 1) 'don't allow volume=0 as it has problems with softvol
-    If VolumeFocused Then UpdateVolumeTooltip()
-  Endif
-  'OneSecTimer.delay = OneSecTimer.delay Div 100
-  'Call GetProperty"volume" now, so onesectimer will found the answer
-
+    volume_set(SaveVolumeSlider.value)
 End
 
 Public SeekingRestarting As Boolean = False
@@ -3548,9 +3542,9 @@ End
 
 Public Sub ShowVolBtn_MouseWheel()
   If Mouse.delta > 0 Then
-    SaveVolumeSlider.value = SaveVolumeSlider.value + 1
+    volume_add("+2")
   Else
-    SaveVolumeSlider.value = SaveVolumeSlider.value - 1
+    volume_add("-2")
   Endif
 End
 
@@ -4382,9 +4376,14 @@ Public Sub Show_runtime_infos()
 
 End
 
-
-
-
+Public Sub volume_add(percent As String)
+  mplayer.add_property_mpv("volume", percent, fsform.fullscreen)
+  If VolumeFocused Then UpdateVolumeTooltip()
+End
+Public Sub volume_set(value As String)
+  mplayer.set_property_mpv("volume", value, fsform.fullscreen)
+  If VolumeFocused Then UpdateVolumeTooltip()
+End
 
 Public Sub HotKeyToMplayer(HotKey As String)
 
@@ -4435,10 +4434,10 @@ Public Sub HotKeyToMplayer(HotKey As String)
       'mplayer.Send(Action)
       ButtonStop_Click()
       If fsform.FullScreen Then FullScreenSwitch()
-    Case "volume +0.5"
-      SaveVolumeSlider.value = SaveVolumeSlider.value + 1
-    Case "volume -0.5"
-      SaveVolumeSlider.value = SaveVolumeSlider.value - 1
+    Case "volume +1"
+      volume_add("+2")
+    Case "volume -1"
+      volume_add("-2")
     Case "brightness +1"
       VideoEqualizer.slider1.value += 1
     Case "brightness -1"
@@ -4644,9 +4643,6 @@ Public Sub VideoAreaGroup_MouseWheel()
   HotKey = HotKeyGrab.GetMouse(True)
   IgnoreMouse = True
   HotKeyToMplayer(HotKey)
-  
-  UpdateVolumeTooltip()
-  Wait 0.5
 End
 
 '/HotKeys Handling *******************************************
@@ -7121,9 +7117,9 @@ End
 Public Sub TrayIcon1_MouseWheel()
 
   If mouse.delta > 0 Then
-    SaveVolumeSlider.value = SaveVolumeSlider.value + 1
+    volume_add("+2")
   Else
-    SaveVolumeSlider.value = SaveVolumeSlider.value - 1
+    volume_add("-2")
   Endif
 
 End

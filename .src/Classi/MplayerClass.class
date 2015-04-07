@@ -826,6 +826,11 @@ Public Function do_SetVolume(Percentual As String, Optional osd As Boolean = Fal
 End
 
 
+Public Function do_volume_add(Percentual As String, Optional osd As Boolean = False) As Boolean
+  If Not ProcessRunningOvr() Then Return
+  set_property_mpv("volume", Percentual, osd)
+End
+
 '######################### Media Properties Section
 
 
@@ -1395,6 +1400,23 @@ Public Function set_property_mpv(name As String, data As String, Optional osd As
 
 End
 
+Public Function add_property_mpv(name As String, data As String, Optional osd As Boolean = False) 
+  'mpv_command(["set_property_string", name, data])
+  Dim s As String = "\\"
+  Dim q As String = "\""
+
+  data = Replace(data, q, s & q)        'replace " with \"
+  data = Replace(data, s & s & q, s & q) 'replace \\" with \" (in case we quoted an already quoted string)
+  If osd Then 
+    mpv_command(["osd-msg", "add", name, data])
+      Else
+    mpv_command(["no-osd", "add", name, data])
+  Endif
+  properties_changed_runtime[name] = data
+
+End
+
+
 Private available_options As New String[]
 
 Public Sub list_options() As String[]
@@ -1555,14 +1577,12 @@ End
 
 Public Function send(data As String, Optional osd As Boolean = True)
   If Not ProcessRunningOvr() Then Return
-
   If osd Then 
     Try Write #mystream, data & "\n"
       Else
     Try Write #mystream, "no-osd " & data & "\n"
   Endif
 End
-
 
 
 Private Function merge_collections(c1 As Collection, c2 As Collection) As Collection
