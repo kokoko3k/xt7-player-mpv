@@ -265,7 +265,6 @@ End
 
 Public mpvoptions As New Collection
 
-
 Public Sub set_option(name As String, data As String)
  'chr(8) is used instead of null because the collection doesn't keep null values
   While mpvoptions.Exist(name)
@@ -273,6 +272,15 @@ Public Sub set_option(name As String, data As String)
   Wend
   mpvOptions[name] = data
   global.myDebug(name, data)
+End
+
+Public Sub unset_option(name As String)
+  Dim tName As String = name
+  While mpvoptions.Exist(tName)
+    mpvOptions.Remove(tName)
+    tName = " " & tName 'prefix white spaces to use multiple options with the same name
+    global.myDebug(tName)
+  Wend
 End
 
 Private Function set_options() As String
@@ -285,9 +293,24 @@ Private Function set_options() As String
       out &= "--" & mpvoptions.Key & " "
       global.myDebug("Add option:", mpvoptions.Key)
     Endif
+    next_opt:
   Next
   Return out  
 End
+
+
+Private Function fix_options()
+  Dim data As String
+  'handle corner cases where an option could conflict with another
+  For Each data In mpvOptions
+    If data Like "*lavcac3enc*" Then 
+      global.myDebug("found audio filter lavcac3enc; searching and unsetting --audio-channels")
+      unset_option("audio-channels")
+      Return
+    Endif
+  Next
+End
+
 
 Public Function get_option(name As String) As String
   Try Return mpvoptions[name]
@@ -426,6 +449,7 @@ Public Function do_play(filename As String, Optional string_options As String = 
   For Each data In internal_opts
     mpvOptions[internal_opts.key] = data
   Next
+  fix_options()
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)
   global.myDebug(commandline, commandline)
@@ -450,27 +474,8 @@ Public Function do_play(filename As String, Optional string_options As String = 
   event_loop.start
   setP("fullpath", filename)
 
-  'compile a littel script that will kill mpv if xt7 crashes
-  ' heartbeat_cmd = generate_heartbeat_cmd()
-  ' File.Save(heartbeat_script, heartbeat_cmd)
-  ' Chmod heartbeat_script To "-rwxr-xr-x"
-  
-
   Return True
 End
-
-' Private Function generate_heartbeat_cmd() As String
-'   Dim out As String
-'   Dim mpv_pid As Integer = playerprocess.id
-'   Dim xt7_pid As Integer = Application.id
-'   Dim xt7_cmd As String
-'   'this will assure us that we are killing the right process
-'   xt7_cmd = File.Load("/proc/" & xt7_pid & "/cmdline")
-'   
-'   
-'   
-'   Return out
-' End
 
 
 Public Struct CDINFO
