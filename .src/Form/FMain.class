@@ -1624,6 +1624,8 @@ End
 
 
 Public Sub ButtonStop_Click()
+
+  
   ' Dim a As Integer = 1 / 0
   global.mouse_wait(fmain, False)
   InitABLoop()
@@ -3783,6 +3785,92 @@ End
 Private winmax As Boolean 
 
 Public Sub SwitchToFS()
+ Dim i As Integer
+  'save the windowed information
+  videobox.hide
+  Wait 0.1
+  OuterBox.Mouse = mouse.blank
+  VideoBox.Mouse = mouse.blank
+  Object.Lock(hsplit1)
+  winmax = fmain.Maximized
+  fmain.hide
+  cachebar.hide
+  If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
+
+  Maintoolbar.Reparent(FsForm)
+  FsForm.Background = color.black
+  FsForm.x = fmain.ScreenX
+  FsForm.y = fmain.screeny
+  FsForm.FullScreen = True
+  FsForm.Background = color.Default
+
+  'Wait 1
+  
+ 
+  
+  'execute shell commands
+  If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
+  
+  'invert the HSplit with a vSplit
+  fmain.HSplit1.Reparent(zzzFake)
+  zzzFake.VSplit1.Reparent(FsForm)
+  
+  'populate the New VSplit1 With controls
+  Leftsidepanel.Reparent(zzzFake.vsplit1)
+  rightsidepanel.Reparent(zzzFake.VSplit1)
+
+  'restore the form position
+  LeftsideWasVisible = LeftsidePanel.Visible 
+  
+  'hide the upper controls
+  Leftsidepanel.hide()
+  
+  'let the bottom panel adapts to the new size:
+  Wait '<-this wait has to come before ConstrainFormSizes()
+  CostrainFormSizes()
+  bottomvbox.Hide
+  BottomVbox.Reparent(rightsidepanel)
+  toolbarbackground.hide
+  cachebar.raise
+  Wait '<-this wait has to come just after ConstrainFormSizes()
+  
+  'start the timer 
+  TimerFullScreen.start
+  
+  RightSidePanel.SetFocus()
+
+  
+  If zzzfake.PanelNowNext.visible Then 
+    PanelNowNextArrange()
+  Endif
+  
+  'show all
+  Object.unLock(hsplit1)
+  
+  If statusbar1.visible Then 
+    statusbar1.ignore = True
+    statusbar1.y = statusbar1.Parent.h - statusbar1.h
+  Endif
+  bottomvbox.ignore = True
+  controlframe.ignore = True
+  bottomvbox.w = Screenbypos(fmain.screenx, fmain.screeny).Width
+  controlframe.w = bottomvbox.W
+  CostrainFormSizes()
+
+  Maintoolbar.hide
+
+  videobox.Show
+  FsForm.show
+
+  For i = 1 To 10
+    CorrectAreaAspect()
+    Wait 0.01
+  Next 'i
+
+End
+
+Public Sub OLD_SwitchToFS()
+  Dim timeout_fs As Integer = 20
   'save the windowed information
   videobox.hide
   Wait 0.1
@@ -3800,8 +3888,9 @@ Public Sub SwitchToFS()
   
   FsForm.FullScreen = True
   Repeat
-    Wait 0.05
-  Until fsform.w >= Screenbypos(fmain.screenx, fmain.screeny).Width
+     Wait 0.05
+     timeout_fs -= 1
+  Until (fsform.w >= Screenbypos(fmain.screenx, fmain.screeny).Width) Or timeout_fs = 0
 
   FsForm.Background = color.Default
   
@@ -10766,14 +10855,15 @@ Public Sub Initprogress()
  
   'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
   progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
+  progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
   progress.Move(0, 0, 0, progress.parent.h)
   'ProgressGlow.Move(0, 0, 0, progress.Parent.h)
   ProgressFrame.proxy = progress
 End
 
 Public Sub SetProgress(newset As Float)
-  Dim border As Integer = 0
-  Dim bor As Integer = 0
+  Dim border As Integer = 4
+  Dim bor As Integer = 2
   ' Dim newpos As Integer = CInt(progress.parent.clientw * newset)
   ' progress.Move(ProgressFrame.clientx, ProgressFrame.clienty, newpos, progress.Parent.clienth)
   ' ProgressGlow.Move(Progressframe.clientx, ProgressFrame.clienty, newpos, progress.Parent.clienth)
@@ -10783,6 +10873,7 @@ Public Sub SetProgress(newset As Float)
    If newpos < border Then newpos = border
    'progress.Move(0, 0, newpos, progressframe.h)
     'progress.Move(progressframe.clientx, progressframe.clienty, newpos, progressframe.clienth)
+    'progress.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)
     progress.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)
    'ProgressGlow.Move(progresscontainer.clientx, progresscontainer.clienty, newpos, progressframe.clienth)
   'Debug seekbar.visible

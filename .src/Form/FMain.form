@@ -2041,11 +2041,10 @@
               Padding = 6
               { ProgressFrame DrawingArea
                 MoveScaled(1,1,53,16)
-                Background = &H000000&
                 Expand = True
-                Border = Border.Sunken
+                Border = Border.Plain
                 { Progress PictureBox
-                  MoveScaled(6,1,14,4)
+                  MoveScaled(2,0,14,4)
                   Picture = Picture["barglow.png"]
                   Stretch = True
                 }
