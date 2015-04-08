@@ -3861,10 +3861,9 @@ Public Sub SwitchToFS()
 
   videobox.Show
   FsForm.show
-
   For i = 1 To 10
     CorrectAreaAspect()
-    Wait 0.01
+    Wait 0.1
   Next 'i
 
 End
