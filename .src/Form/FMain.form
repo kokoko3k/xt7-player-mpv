@@ -2035,16 +2035,16 @@
               Picture = Picture["media-playback-stop.png"]
             }
             { Panel9 Panel
-              MoveScaled(16,1,54,17)
+              MoveScaled(15,1,54,17)
               Expand = True
               Arrangement = Arrange.Fill
-              Padding = 6
+              Padding = 8
               { ProgressFrame DrawingArea
-                MoveScaled(1,1,53,16)
+                MoveScaled(0,1,53,16)
                 Expand = True
                 Border = Border.Plain
                 { Progress PictureBox
-                  MoveScaled(2,0,14,4)
+                  MoveScaled(10,0,14,4)
                   Picture = Picture["barglow.png"]
                   Stretch = True
                 }
@@ -2070,7 +2070,7 @@
               Picture = Picture["media-seek-backward.png"]
             }
             { Buttonfwd ToolButton
-              MoveScaled(33,0,4.4286,4)
+              MoveScaled(34,0,4.4286,4)
               Font = Font["6"]
               ToolTip = ("Speedup")
               Picture = Picture["media-seek-forward.png"]

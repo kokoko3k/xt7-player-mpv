@@ -974,7 +974,8 @@ Public Sub SetStyle_early()
   Label2.Font.bold = True
   PlayListSelInfo.Foreground = Color.black
   LibrarySelInfo.Foreground = Color.black
-  progressframe.background = Color.rgb(0, 0, 0, 215)
+  progressframe.background = Color.rgb(0, 0, 0, 210)
+  'progressframe.background = Color.SetAlpha(Color.Darker(Color.Darker(Color.SelectedBackground)), 200)
   Initprogress()
 End
 
@@ -10853,16 +10854,23 @@ Public Sub Initprogress()
   progress.picture = Picture.Load("barglow.png")
  
   'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
-  progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
-  progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
+  ' ' progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
+  ' ' progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
+
+  'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.8).brightness(0.1).picture
+  progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.7).picture
+  'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.15).picture
+
+
+
   progress.Move(0, 0, 0, progress.parent.h)
   'ProgressGlow.Move(0, 0, 0, progress.Parent.h)
   ProgressFrame.proxy = progress
 End
 
 Public Sub SetProgress(newset As Float)
-  Dim border As Integer = 4
-  Dim bor As Integer = 2
+  Dim border As Integer = 0 '2
+  Dim bor As Integer = 0 '1
   ' Dim newpos As Integer = CInt(progress.parent.clientw * newset)
   ' progress.Move(ProgressFrame.clientx, ProgressFrame.clienty, newpos, progress.Parent.clienth)
   ' ProgressGlow.Move(Progressframe.clientx, ProgressFrame.clienty, newpos, progress.Parent.clienth)
