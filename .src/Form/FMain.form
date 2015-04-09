@@ -823,6 +823,7 @@
         Tag = "1"
         Expand = True
         Arrangement = Arrange.Vertical
+        Spacing = True
         Margin = True
         Padding = 4
         Count = 13
@@ -917,6 +918,7 @@
         }
         { HBox10 HBox
           MoveScaled(2,4,33,4)
+          AutoResize = True
           Spacing = True
           Margin = True
           Padding = 1
@@ -1005,6 +1007,7 @@
         }
         { HBox14 HBox
           MoveScaled(1,5,33,4)
+          AutoResize = True
           Spacing = True
           Margin = True
           Padding = 1
@@ -1312,6 +1315,7 @@
         { HBox13 HBox
           MoveScaled(2,32,38,4)
           ToolTip = (" ")
+          Spacing = True
           { buttonopts Button
             MoveScaled(0,0,4,4)
             ToolTip = ("Show advanced search options")
@@ -1356,8 +1360,7 @@
         { sidepanelYTSearchoptions Panel
           MoveScaled(0,36,32,17)
           Visible = False
-          Arrangement = Arrange.Row
-          AutoResize = True
+          Arrangement = Arrange.Vertical
           Spacing = True
           Margin = True
           Padding = 2
@@ -1365,78 +1368,62 @@
           { HBox15 HBox
             MoveScaled(0,0,33,4)
             ToolTip = ("only valid for searches")
-            AutoResize = True
             { Label3 Label
               MoveScaled(0,1,11,3)
               Tag = "orderby"
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(7,0,17,4)
+              MoveScaled(9,0,18,4)
+              Expand = True
               ReadOnly = True
               List = [("relevance"), ("published"), ("viewCount"), ("rating")]
               Text = ("relevance")
-            }
-            { VBox5 VBox
-              MoveScaled(25,0,3,4)
-              Expand = True
             }
           }
           { HBox16 HBox
             MoveScaled(-1,4,30,4)
             ToolTip = ("Only valid for standard feeds")
-            AutoResize = True
             { Label4 Label
               MoveScaled(0,0,11,3)
               Tag = "region"
               Text = ("Region")
             }
             { ComboBoxRegion ComboBox
-              MoveScaled(10,0,14,4)
+              MoveScaled(10,0,18,4)
+              Expand = True
               ReadOnly = True
               List = [("Any: "), ("Argentina:AR"), ("Australia:AU"), ("Brazil:BR"), ("Canada:CA"), ("Czec Republic:CZ"), ("France:FR"), ("Germany:DE"), ("Great Britain:BG"), ("Hong Kong:HK"), ("India:IN"), ("Ireland:IE"), ("Israel:IL"), ("Italy:IT"), ("Japan:JP"), ("Mexico:MX"), ("Netherlands:NL"), ("New Zeland:NZ"), ("Poland:PL"), ("Russia:RU"), ("South Africa:ZA"), ("South Korea:KR"), ("Spain:ES"), ("Sweden:SE"), ("Taiwan:TW"), ("United States:US")]
               Text = ("Any:")
-            }
-            { VBox6 VBox
-              MoveScaled(27,1,3,4)
-              Expand = True
             }
           }
           { HBox17 HBox
             MoveScaled(1,9,33,4)
             ToolTip = ("only valid for searches")
-            AutoResize = True
             { Label5 Label
               MoveScaled(0,1,11,3)
               Tag = "time"
               Text = ("Time")
             }
             { ComboBoxtime ComboBox
-              MoveScaled(8,0,14,4)
+              MoveScaled(8,0,18,4)
               Tag = "time"
+              Expand = True
               ReadOnly = True
               List = [("today"), ("this_week"), ("this_month"), ("all_time")]
               Text = ("all_time")
-            }
-            { VBox7 VBox
-              MoveScaled(24,1,6,3)
-              Expand = True
             }
           }
           { HBox18 HBox
             MoveScaled(1,13,30,4)
             ToolTip = ("only valid for searches")
-            AutoResize = True
             { Label6 Label
-              MoveScaled(1,1,11,3)
+              MoveScaled(0,1,11,3)
               Tag = "safeSearch"
               Text = ("Uploader")
             }
             { TextBoxUploader TextBox
-              MoveScaled(12,0,14,4)
-            }
-            { VBox8 VBox
-              MoveScaled(27,0,2,4)
+              MoveScaled(8,0,18,4)
               Expand = True
             }
           }

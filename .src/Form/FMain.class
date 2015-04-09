@@ -11116,3 +11116,9 @@ Public Sub Button6_Click()
 End
 
 
+
+Public Sub sidepanelYTSearchoptions_BeforeArrange()
+  Dim lastc As Object = sidepanelYTSearchoptions.Children[sidepanelYTSearchoptions.Children.count - 1]
+  sidepanelYTSearchoptions.h = lastc.y + lastc.h + Desktop.scale
+
+End
