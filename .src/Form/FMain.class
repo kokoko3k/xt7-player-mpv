@@ -10300,7 +10300,7 @@ End
 
 Public Sub VideoAreaGroup_MouseMove()
 
-   videobox.SetFocus()  
+   If mplayer.ProcessRunningOvr() Then videobox.SetFocus()  
    outerbox.mouse = Mouse.default
    videobox.mouse = Mouse.default
   ' If Mouse.screenx < (outerbox.screenx + 10) Then UseFakeSplit()
