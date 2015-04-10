@@ -10841,6 +10841,7 @@ End
 
 
 Public Sub Initprogress()
+  Dim mycolor As Integer
   'Dim barpicture As New Picture
   'barpicture.Resize(10, 10)
   'barpicture.Fill(Color.red) 'Selectedbackground)
@@ -10856,8 +10857,15 @@ Public Sub Initprogress()
   ' ' progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
 
   'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.8).brightness(0.1).picture
-  progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.7).picture
-  'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.15).picture
+'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.7).picture
+
+  mycolor = Color.SelectedBackground
+  While Color.Desaturate(mycolor) < (Color.white / 3)
+    mycolor = Color.Merge(mycolor, Color.white, 0.1)
+  Wend
+
+
+  progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.3).brightness(0.15).Contrast(0.7).picture
 
 
 
