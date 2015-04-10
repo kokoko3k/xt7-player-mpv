@@ -4,7 +4,6 @@
 ' Gambas class file
 
 Public Sub Start()
-  Dim p_profile As String = ""
   Dim helpmsg As String
 
   global.init()
@@ -12,7 +11,8 @@ Public Sub Start()
   helpmsg &= "[options] [file|protocol://]"
   
   Args.begin(helpmsg)
-    Try global.arg_profile = Args.get("p", "profile", ("Start with the specified profile"), "profilename")
+    Try global.arg_profile_default = Args.get("P", "profile-default", ("Use the specified profile as default"), "profilename")
+    Try global.arg_profile = Args.get("p", "profile-temp", ("Use specified profile only for this session"), "profilename")
     Try global.arg_append = Args.Has("a", "append", ("Append the file to the playlist of a running instance"))
     Try global.arg_new_instance = Args.Has("n", "new-instance", ("Play in a new instance even if one is already running"))
     Try global.arg_debug = Args.Has("v", "verbose", ("Enable debug output"))
@@ -25,9 +25,11 @@ Public Sub Start()
     Endif
   Endif
   
-  If p_profile <> "" Then 
-    global.myDebug("Will switch profile to: " & p_profile)
-    global.arg_profile
+  If global.arg_profile <> "" Then 
+    global.myDebug("Will switch profile to: " & global.arg_profile)
+  Endif
+  If global.arg_profile_default <> "" Then 
+    global.myDebug("Will switch and set default profile: " & global.arg_profile_default)
   Endif
   If global.arg_append Then 
     global.myDebug("Will append instead of play")

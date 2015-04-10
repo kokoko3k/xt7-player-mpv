@@ -430,9 +430,9 @@ Private Function IsSafeToReparent(TheObject As Object) As Boolean
   
 End
 
-Public Sub WriteLastProfile(confpath As String, currentprofile As String)
+Public Sub WriteLastProfile(confpath As String, profile As String)
   Dim myfilename As String = confpath & "/" & lastprofilefile
-  File.Save(myfilename, currentprofile)
+  File.Save(myfilename, profile)
 End
 
 Public Sub SaveLeftSideTabsVisibility(ProfilePath As String)
@@ -478,6 +478,7 @@ Public Function GetLastProfile(confpath As String) As String
 
   Dim myfilename As String = confpath & "/" & lastprofilefile
   If global.arg_profile <> "" Then Return global.arg_profile
+  If global.arg_profile_default <> "" Then Return global.arg_profile_default
   Try Return Trim(File.Load(myfilename))
 
 End

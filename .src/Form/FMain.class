@@ -508,11 +508,9 @@ Public Sub AllInit_Post()
   If GeneralOptions.ToolTipsCHKDBUS.value Then Try ExportDbusProperties()
   updaterecentfiles()
   'we created a "default" empty profile, copy the factory settings to it
-  If FirstTimeXt7 Then 
-    ReallySaveAllSettings("default", False)
-    global.currentprofile = "default"
-    Try UpdateProfilesTabList()
-  Endif
+  ' If FirstTimeXt7 Then 
+  '   Try UpdateProfilesTabList()
+  ' Endif
   Try MakeProfileMenu()
   Try GetLastVersion()
   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
@@ -626,7 +624,7 @@ End
 
 Public Sub MakeProfilePath()
 
-  Dim DefaultProfilepath As String = global.confpath & "/default.profile"
+  Dim DefaultProfilepath As String = global.confpath '& "/default.profile"
   'Try to make some profile folders
   If Not Exist(file.Dir(DefaultProfilepath), True) Then
     Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(DefaultProfilepath)))))
@@ -1034,7 +1032,6 @@ Public Sub DelayTimer_Timer()
 End
 
 Private FirstTimeXt7 As Boolean = True ' has the user ever used xt7?
-Private fastquit As Boolean = False
 Public havetoshowbrowsetab As Boolean = False
 Private PlayFromCommandline As Boolean = False
 
@@ -1069,24 +1066,20 @@ Public Sub MainInit()
     Shell "rm " & global.confpath & "/.ExportFiles/* >/dev/null 2>&1" Wait ' To out
   Endif
 
-  If global.currentprofile = "" Then
-    global.CurrentProfile = MySettings.GetLastProfile(global.confpath)
-    If Not (Exist(global.confpath & "/" & global.currentprofile & ".profile")) Then
-      global.myDebug("(WW) profile: \"" & global.currentprofile & "\" not found, using a copy of the 'default' profile instead.")
-      global.currentprofile = "default"
-      If Not (Exist(global.confpath & "/" & global.currentprofile & ".profile")) Then
-        global.myDebug("(WW) profile: \"" & global.currentprofile & "\" not found, using a copy of the first available profile instead.")
-        global.currentprofile = ""
-        For Each global.currentprofile In Dir(global.confpath & "/", "*.profile")
-          If global.currentprofile <> "Factory_Defaults.profile" Then Break
-        Next
-        If global.currentprofile = "" Then global.myDebug("(EE) Could not find an usable profile, making a new one.")
-      Endif
-      global.currentprofile = MySettings.GetLastProfile(global.confpath)
-      If (Not global.initearlyformsdone) Then InitEarlyForms()
-      ReallySaveAllSettings(global.currentprofile, False) 'before loading user settings, make a profile with factory values.
-    Endif
+  global.CurrentProfile = MySettings.GetLastProfile(global.confpath)
+
+  If Not (Exist(global.confpath & "/" & global.currentprofile & ".profile")) Then
+    global.myDebug("(WW) profile: \"" & global.currentprofile & "\" not found, using a copy of the factory default profile instead.")
+
+    If global.CurrentProfile = "" Then global.CurrentProfile = "default"
+
+    ReallySaveAllSettings(global.currentprofile, False) 'before loading user settings, make a profile with factory values.
+    global.myDebug("Made a new profile: '" & global.CurrentProfile & "' as a copy of the factory default one")
+
   Endif
+
+  If (Not global.initearlyformsdone) Then InitEarlyForms()
+
 
   Try UpdateProfilesTabList()
 
@@ -1305,15 +1298,15 @@ Public Sub Form_Close()
   Try trayicon1.Delete
   Closing = True
   
-  If (Not fastquit) Then
-    fmain.SaveFormGeometry()
-    Me.hide
-    If mplayer.ProcessRunningOvr() Then
-      If Not (global.IsNetworkURI(mplayer.getP("fullpath"))) Then
-        AddHistory(mplayer.getP("fullpath"), mplayer.CurrentTime()) 
-      Endif
+
+  fmain.SaveFormGeometry()
+  Me.hide
+  If mplayer.ProcessRunningOvr() Then
+    If Not (global.IsNetworkURI(mplayer.getP("fullpath"))) Then
+      AddHistory(mplayer.getP("fullpath"), mplayer.CurrentTime()) 
     Endif
   Endif
+
   ButtonStop_Click() 'don't remove me.
   
   Try AFiltersCfg.hide
@@ -1373,25 +1366,31 @@ Public Sub Form_Close()
   Try HotKeys.xbindkeys.kill
   Print "xbindkeys killed"
 
-  If Not fastquit Then
-    
-    If GeneralOptions.SaveOnExitCHK.value = True Then
-      Try Global.SaveAllSettings(global.CurrentProfile)
-      If Error Then 
-        global.myDebug("couldn't save all settings at exit as requested...")
-      Else
-        global.myDebug("All settings saved")
-      Endif
+  If GeneralOptions.SaveOnExitCHK.value = True Then
+    Try Global.SaveAllSettings(global.CurrentProfile)
+    If Error Then 
+      global.myDebug("couldn't save all settings at exit as requested...")
     Else
-      global.SaveMandatorySettings(global.CurrentProfile)
+      global.myDebug("All settings saved")
     Endif
+  Else
+    global.SaveMandatorySettings(global.CurrentProfile)
   Endif
 
-  If (Not fastquit) Then
-    MySettings.WriteLastProfile(Global.confpath, global.CurrentProfile)
-    global.myDebug("wrote last profile")
+
+  If global.arg_profile_default <> "" Then
+    'save the profile the user want as default (--profile-default)
+    MySettings.WriteLastProfile(Global.confpath, global.arg_profile_default) 
+    global.myDebug("wrote last profile", global.arg_profile_default)
+      'save the current profile only if it differs from the temporary profile the user selected with --profile
+      Else If (global.arg_profile <> global.CurrentProfile) Then
+        MySettings.WriteLastProfile(Global.confpath, global.currentprofile) 
+        global.myDebug("wrote last profile", global.currentprofile)
   Endif
-  
+
+
+
+
   'stop any epg scanning instance
   epgform.StopScan()
   

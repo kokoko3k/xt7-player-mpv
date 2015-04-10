@@ -57,7 +57,8 @@ Public NOsoftvolmessagefile As String
 
 Public UserPlaylistsDir As String
 
-Public arg_profile As String = "" 'cmdline argument: user wants to switch profile
+Public arg_profile As String = "" 'cmdline argument: user wants to start with this profile
+Public arg_profile_default As String = "" 'cmdline argument: user wants to start with this profile and set is as default
 Public arg_file As String = "" 'cmdline argument: user wants to play this
 Public arg_append As Boolean = False 'cmdline argument: the user want to append an uri to a running instance
 Public arg_debug As Boolean = False 
