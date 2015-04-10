@@ -10842,35 +10842,18 @@ End
 
 Public Sub Initprogress()
   Dim mycolor As Integer
-  'Dim barpicture As New Picture
-  'barpicture.Resize(10, 10)
-  'barpicture.Fill(Color.red) 'Selectedbackground)
-  'barpicture.Fill(Color.Selectedbackground)
-  'Progress.Picture = barpicture
-  'Progress.Picture = Picture.Load("shadow.png")
-  'progress.Picture = progress.Picture.Image.Desaturate().Colorize(Color.selectedbackground).picture
-  'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.75).brightness(-0.10).picture
+
   progress.picture = Picture.Load("barglow.png")
- 
-  'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
-  ' ' progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
-  ' ' progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.5).brightness(-0.20).picture
 
-  'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.8).brightness(0.1).picture
-'progress.Picture = progress.Picture.Image.Colorize(Color.lightBackground).Contrast(0.7).picture
-
+  'fix for dark themes
   mycolor = Color.SelectedBackground
   While Color.Desaturate(mycolor) < (Color.white / 3)
     mycolor = Color.Merge(mycolor, Color.white, 0.1)
   Wend
 
-
   progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.3).brightness(0.15).Contrast(0.7).picture
 
-
-
   progress.Move(0, 0, 0, progress.parent.h)
-  'ProgressGlow.Move(0, 0, 0, progress.Parent.h)
   ProgressFrame.proxy = progress
 End
 
@@ -10890,7 +10873,6 @@ Public Sub SetProgress(newset As Float)
     progress.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)
    'ProgressGlow.Move(progresscontainer.clientx, progresscontainer.clienty, newpos, progressframe.clienth)
   'Debug seekbar.visible
-
 End
 
 
