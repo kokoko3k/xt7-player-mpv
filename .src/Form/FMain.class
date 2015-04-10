@@ -476,7 +476,7 @@ Public Sub AllInit_Post()
   Mysocket.path = global.confpath & "/.localsocket"
   Mysocket.Listen(1)
   InitGenresTag()
-  Wait 0.5
+  Wait 0.1
   SetStyle_later()
   HotKeys.init()
   Try HotKeys.LoadHotKeys(global.confpath & "/" & global.CurrentProfile)
@@ -515,8 +515,7 @@ Public Sub AllInit_Post()
   Endif
   Try MakeProfileMenu()
   Try GetLastVersion()
-
-  fsform.Move(0, 0, Screens[fmain.screen].w, Screens[fmain.screen].H)
+  fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
 End
 
 Private Sub MakeProfileMenu()
@@ -3801,8 +3800,7 @@ Public Sub SwitchToFS()
 
   Maintoolbar.Reparent(FsForm)
   FsForm.Background = color.black
-  FsForm.x = fmain.ScreenX
-  FsForm.y = fmain.screeny
+  fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
   FsForm.FullScreen = True
   FsForm.Background = color.Default
 
