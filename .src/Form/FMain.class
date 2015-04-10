@@ -431,7 +431,7 @@ Public Sub InitEarlyForms()
 End
 
 Public Sub AllInit_Post()
-  
+  Dim cscreen As Screen  
   Dim savefileview1path As String
   Hsplit1ResizeDelayed = New Timer As "Hsplit1ResizeDelayed" 'used to delay the hsplit resize and better performance
   Hsplit1ResizeDelayed.delay = 300
@@ -516,6 +516,7 @@ Public Sub AllInit_Post()
   Try MakeProfileMenu()
   Try GetLastVersion()
 
+  fsform.Move(0, 0, Screens[fmain.screen].w, Screens[fmain.screen].H)
 End
 
 Private Sub MakeProfileMenu()
