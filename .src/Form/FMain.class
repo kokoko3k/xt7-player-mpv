@@ -10854,7 +10854,16 @@ Public Sub Initprogress()
   progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.60).brightness(0.15).Contrast(1.4).picture
 
   progress.Move(0, 0, 0, progress.parent.h)
+
+  
   ProgressFrame.proxy = progress
+  
+  Progress.proxy = progressshadow
+  
+  progress.raise
+  
+  
+  
 End
 
 Public Sub SetProgress(newset As Float)
@@ -10873,6 +10882,7 @@ Public Sub SetProgress(newset As Float)
     progress.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)
    'ProgressGlow.Move(progresscontainer.clientx, progresscontainer.clienty, newpos, progressframe.clienth)
   'Debug seekbar.visible
+
 End
 
 
@@ -11108,5 +11118,11 @@ End
 Public Sub sidepanelYTSearchoptions_BeforeArrange()
   Dim lastc As Object = sidepanelYTSearchoptions.Children[sidepanelYTSearchoptions.Children.count - 1]
   sidepanelYTSearchoptions.h = lastc.y + lastc.h + Desktop.scale
+
+End
+
+Public Sub Panel9_Arrange()
+
+    progressshadow.Move(0, 0, progress.Parent.w, progress.parent.h Div 4)
 
 End
