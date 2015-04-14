@@ -1,5 +1,5 @@
 # Gambas Project File 3.0
-# Compiled with Gambas 3.6.2
+# Compiled with Gambas 3.7.1
 Title=xt7-player
 Startup=StartClass
 Icon=xt7-player-mpv.png
@@ -31,6 +31,7 @@ ControlPublic=1
 ModulePublic=1
 SourcePath=/root/Desktop2_kde4/xt7d
 Maintainer=Antonio Orefice
+Vendor=AntonioOrefice
 Address=xt7player@gmail.com
 Url=http://xt7-player.sourceforge.net/
 License=General Public Licence
@@ -62,3 +63,8 @@ Groups=suse:"Productivity/Multimedia/Video/Players"
 Menus=ubuntu:"Applications/Video"
 Categories=ubuntu:"Video"
 Groups=ubuntu:"video"
+Tags=AudioVideo,Audio,Qt,Video,Tuner,Multimedia,Player
+Dependencies=mpv,taglib_c,youtube-dl,wget
+GambasVersion=3.6
+WebSite=http://xt7-player.sourceforge.net/
+CreateMenu=1
