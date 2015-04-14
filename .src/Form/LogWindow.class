@@ -107,7 +107,7 @@ Public Sub Searchterm_Keyrelease()
     Return
   Endif
 
-  Wait 0.5
+  'Wait 0.5 'fixme, this used to work in the past, now slows down.
   If previous_search <> searchterm.text Then Return
   HighLight(logarea, searchterm)
 End
@@ -119,7 +119,8 @@ Public Sub Searchterm2_Keyrelease()
     ScrollTo(searchterm2.text, ModulesArea)
     Return
   Endif
-  Wait 0.5
+  
+  'Wait 0.5 'fixme, this used to work in the past, now slows down.
   If previous_search <> searchterm2.text Then Return
   HighLight(ModulesArea, searchterm2)
 End

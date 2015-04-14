@@ -707,4 +707,13 @@ Il font "predefinito" delle liste di sinistra, in realtà non è quello di Siste
 in quanto se viene cambiato dalle impostazioni di sistema, xt7 non lo sa.
 servwe un modo per capire se il font è stato cambiato oppure no.
 
+il trucchetto di metter un wait al keyrelease per evitare ricerche inutili non funziona più.
+anzi, rallenta.
+              fmain:
+                Public Sub SearchField_KeyRelease()
+                Public Sub SearchFieldPLS_KeyRelease()
+                Public Sub SearchFieldAlbums_KeyRelease()
+              logwindow:
+                Public Sub Searchterm_Keyrelease()
+                Public Sub Searchterm2_Keyrelease()
 

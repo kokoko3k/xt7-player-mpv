@@ -5304,8 +5304,8 @@ Public Sub SearchField_KeyRelease()
   If (Key.code < Key.space) Or (Key.code > Key.delete) Then Return
   If key.code = key.tab Then Return
   previous_search = Searchfield.text
-  'If ((Len(Searchfield.text) > 2) Or (Len(Searchfield.text) = 0)) Then
-  Wait 0.5
+
+  'Wait 0.5 'fixme, this used to work in the past, now slows down.
   If previous_search = Searchfield.text Then
     UpdateSearchResults(MyLibrary, LibraryGrid, fmain.FullyLoaded, Searchfield.text)
   Else
@@ -5322,8 +5322,8 @@ Public Sub SearchFieldPLS_KeyRelease()
   If (Key.code < Key.space) Or (Key.code > Key.delete) Then Return
   If key.code = key.tab Then Return
   previous_search = Searchfieldpls.text
-  'If ((Len(Searchfieldpls.text) > 2) Or (Len(Searchfieldpls.text) = 0)) Then
-  Wait 0.5
+  
+  'Wait 0.5 'fixme, this used to work in the past, now slows down.
   If previous_search = Searchfieldpls.text Then
     UpdateSearchResults(MyPlayList, PlayListGrid, fmain.FullyLoaded, SearchfieldPLS.text)
   Else
@@ -9997,8 +9997,8 @@ Public Sub SearchFieldAlbums_KeyRelease()
   If (Key.code < Key.space) Or (Key.code > Key.delete) Then Return
   If key.code = key.tab Then Return
   previous_search = searchfieldalbums.text
-  'If ((Len(Searchfieldpls.text) > 2) Or (Len(Searchfieldpls.text) = 0)) Then
-    Wait 0.5
+  
+  'Wait 0.5 'fixme, this used to work in the past, now slows down.
     If previous_search = searchfieldalbums.text Then
       'UpdateSearchResults(MyPlayList, PlayListGrid, fmain.FullyLoaded, SearchfieldPLS.text)
       MyAlbumsLib.Init(mylibrary, AlbumGridView, searchfieldalbums.text)
