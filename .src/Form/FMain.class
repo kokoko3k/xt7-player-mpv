@@ -10851,7 +10851,7 @@ Public Sub Initprogress()
     mycolor = Color.Merge(mycolor, Color.white, 0.1)
   Wend
 
-  progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.3).brightness(0.15).Contrast(0.7).picture
+  progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.60).brightness(0.15).Contrast(1.4).picture
 
   progress.Move(0, 0, 0, progress.parent.h)
   ProgressFrame.proxy = progress
