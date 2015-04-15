@@ -1457,6 +1457,7 @@ Public Sub CorrectAreaAspect()
   Dim dW As Integer = 4
   Dim dH As Integer = 3
   Dim AR As Float = 1.333
+  Dim ARv As Float = videobox.w / videobox.h
   Dim NoBarResize As Float
 
   Dim no_video As Boolean = True
@@ -1473,7 +1474,11 @@ Public Sub CorrectAreaAspect()
   Try dH = mplayer.getP("video-params/dh")
   AR = dW / dH
 
-  NoBarResize = (videobox.h / (VideoBox.w / AR)) - 1
+  If AR > ARv Then
+    NoBarResize = (videobox.h / (VideoBox.w / AR)) - 1
+      Else
+    NoBarResize = ((videobox.w / ar) / VideoBox.h) - 1
+  Endif
 
   'apply the zoom factor:
   Select Case ForcedZoomRT
