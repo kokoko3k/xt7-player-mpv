@@ -3624,7 +3624,6 @@ End
 Public Function EnableKDECompositing() As Boolean
   
   Dim wasinactive As Boolean = False
-  
   If Not (DBus["org.kde.kwin"]["/KWin"].compositingActive()) Then 
     wasinactive = True
     Shell "dbus-send --type=method_call --dest=org.kde.kwin /KWin org.kde.KWin.toggleCompositing"
@@ -3756,16 +3755,18 @@ Public Sub FullScreenSwitch()
   If fsform.fullscreen Then
     SwitchToWindow()
     If global.IsImgFile(mplayer.getP("fullpath")) Then mplayer.do_seek(0)
-    Wait 0.1
     If GeneralOptions.NoEffectsCheckbox.value Then
-      If KdeEffectsWereActive Then EnableKDECompositing()
+      If KdeEffectsWereActive Then 
+        Wait 1 'workaround possible driver bugs
+        EnableKDECompositing()
+      Endif
     Endif
   Else
     SwitchToFS()
     If global.IsImgFile(mplayer.getP("fullpath")) Then mplayer.do_seek(0)
-    Wait 0.1
     'Disable kde effects?
       If GeneralOptions.NoEffectsCheckbox.value Then
+        Wait 1 'workaround possible driver bugs
         Try KdeEffectsWereActive = DisableKDECompositing()
         If Error Then
           global.myDebug("Unable to disable kde effects, are you sure use kwin window manager?")
@@ -4426,7 +4427,7 @@ Public Sub Show_runtime_infos()
   prop["------"] = " "
   
   prop["audio codec"] = "audio-codec"
-  prop["audio bitrate (packet)"] = "packet-audio-bitrate"
+  prop["audio bitrate (packet)"] = "packet-audio-bitrate" 
   prop["audio channels"] = "audio-channels"
   prop["------"] = " "
 
@@ -4451,7 +4452,7 @@ Public Sub Show_runtime_infos()
     max_screen_lines = CInt((screen_h / osd_font_size)) 
     max_screen_lines = CInt((screen_h / (osd_font_size * (screen_h / 720)))) 
     If max_screen_lines < prop.count Then
-      scale_new = CStr(max_screen_lines / (prop.count + 5)) 
+      scale_new = CStr(max_screen_lines / (prop.count + 10)) 
       Try scale_old = mplayer.get_property_mpv("osd-scale")
       mplayer.set_property_mpv("osd-scale", scale_new)
     Endif
