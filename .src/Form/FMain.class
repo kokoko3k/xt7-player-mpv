@@ -10457,6 +10457,8 @@ Public Sub ActivateThumbler()
   mthumbler.set_option("vd-lavc-skiploopfilter", "all")
   mthumbler.set_option("wid", thumblevideo.handle)
   mthumbler.set_option("vo", "xv,x11") 'mpv has issues when using opengl over opengl (no pip with opengl :( )
+  mthumbler.set_option("ao", "null")
+  mthumbler.set_option("no-audio", Chr(8))
 
   mthumbler.do_play(fullpath)
   While Not mthumbler.ProcessRunningOvr()

@@ -1594,7 +1594,6 @@ Public Sub Search(LibraryGrid As GridView, SearchExp As String)
     Next 'r
   Endif
   SyncGrid(LibraryGrid, SearchTable, 0, 0)
-  Stop
 End
 
 Public Sub UpdateTableAndGridTags(LibraryGrid As Gridview, FullPath As String, Album As String, Artist As String, Title As String, MyYear As String, Genre As String, TrackNo As String, Comment As String)
