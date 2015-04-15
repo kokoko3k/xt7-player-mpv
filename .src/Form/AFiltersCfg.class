@@ -290,7 +290,6 @@ Public Function ParseFiltersGui(Filtername As String) As String
         Endif
       Next
     Next
-    Stop
     If (Right(tmpstring) = ":") Then
       TmpString = Left(Tmpstring, - 1)
     Endif

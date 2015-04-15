@@ -1316,7 +1316,6 @@ Dim skiprows As Integer = img.Pixels.count Div 8
     s += Color[img.Pixels[i]].value
   Next
   Return CInt(s / (img.Pixels.count - (skiprows * 2))) * 3
-  Stop
 End
 
 Public TimerAnalyzePre As Timer

@@ -543,6 +543,7 @@ Public Sub updaterecentfiles()
   Dim historyarray As String[]
   Dim sep As String = Chr(8)
   Dim HaveToSeek As String = ""
+  Dim opts As New Collection
 
   Try history = file.Load(global.Historyfile)
   If Error Then Return
@@ -574,13 +575,14 @@ Public Sub updaterecentfiles()
   RecentFileEntry.name = "menuclearrecent"
   RecentFileEntry.caption = "Clear History"
   RecentFileEntry.picture = picture["icon:/medium/delete"]
-  
+
   'restore the previous media
   If GeneralOptions.RestorePlayCHK.value Then
     If HaveToPlay <> "" Then 
       If HaveToSeek <> "" Then
         If Not (PlayFromCommandline) Then 
-          Play(HaveToPlay, " -ss " & HaveToSeek)
+          opts["start"] = havetoseek
+          Play(HaveToPlay, opts)
         Endif
       Endif
     Endif
@@ -1832,7 +1834,7 @@ Public Function dvd_device(fullpath As String) As String
   'dvd://menu//path/to/something -> "/path/to/something"
   Dim t As String
   Dim ret As String
-  Stop
+
   Try t = Split(fullpath, "/", "", True)[1] ' dvd://24//path/to/dvd/device -> 24
                                             ' dvd:// -> ""
                                             ' dvd:///path/to/dvd/device -> path
@@ -2365,7 +2367,7 @@ Public Sub file_options(fullpath As String) As Collection
 
 End
 
-Public Function Play(fullpath As String, Optional OtherOptions As String, Optional theradiolabel As String = "") As Boolean 
+Public Function Play(fullpath As String, Optional OtherOptions As Collection, Optional theradiolabel As String = "") As Boolean 
   Dim MkvSubsWorkaround As Boolean
   Dim cookieopts As String = ""
   'Dim cachingbox As MovieBox 'show an animation while caching...
@@ -2458,6 +2460,16 @@ Public Function Play(fullpath As String, Optional OtherOptions As String, Option
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next  
+
+  If OtherOptions <> Null Then
+    If OtherOptions.count > 0 Then
+      opts = OtherOptions
+      For Each data In opts
+        mplayer.set_option(opts.key, data)
+      Next        
+    Endif
+  Endif
+  
   mplayer.set_option("volume", Initialvolume())
 
   If Lower(fullpath) = "dvd://" Then fullpath = "dvd:///" & generaloptions.DVDDeviceText.text

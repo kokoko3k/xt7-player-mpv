@@ -52,7 +52,6 @@ Public Sub GetCoversFromAmazon(query As String)
 
   Keyword = Chr(34) & Replace(query, " ", "%20") & Chr(34)
   Keyword = WebFriendly(keyword)
-Stop
   PreRequest = "http://xt7-player.sourceforge.net/xt7forum/hmac.php?keywords=" & Keyword
   Print PreRequest
   HttpClient1.url = PreRequest
@@ -105,7 +104,7 @@ Stop
       Return 
     Endif
   Next 'myline
-  Stop
+
   Try Shell "rm -R " & global.confpath & "/covertmp/* >/dev/null 2>&1" Wait
   Try Shell "mkdir -p " & global.confpath & "/covertmp/ >/dev/null 2>&1" Wait
   'PRINT buffer
