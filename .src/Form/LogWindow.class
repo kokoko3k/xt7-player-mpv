@@ -99,30 +99,34 @@ Public Sub searchterm2_Click()
   ScrollTo(Last.text, ModulesArea)
 End
 
-
-Public Sub Searchterm_Keyrelease()
+Public Sub Searchterm_change()
   Dim previous_search As String = searchterm.text
-  If (key.code = Key.return) Or (Key.code = Key.enter) Then
-    ScrollTo(searchterm.text, logarea)
-    Return
-  Endif
-
-  'Wait 0.5 'fixme, this used to work in the past, now slows down.
+  Wait 0.5 'fixme, this used to work in the past, now slows down.
   If previous_search <> searchterm.text Then Return
   HighLight(logarea, searchterm)
 End
 
 
+Public Sub Searchterm_Keyrelease()
+  If (key.code = Key.return) Or (Key.code = Key.enter) Then
+    ScrollTo(searchterm.text, logarea)
+    Return
+  Endif
+End
+
+Public Sub Searchterm2_change()
+ Dim previous_search As String = searchterm2.text
+ Wait 0.5
+ If previous_search <> searchterm2.text Then Return
+ HighLight(ModulesArea, searchterm2)
+End
+
+
 Public Sub Searchterm2_Keyrelease()
-  Dim previous_search As String = searchterm2.text
   If (key.code = Key.return) Or (Key.code = Key.enter) Then
     ScrollTo(searchterm2.text, ModulesArea)
     Return
   Endif
-  
-  'Wait 0.5 'fixme, this used to work in the past, now slows down.
-  If previous_search <> searchterm2.text Then Return
-  HighLight(ModulesArea, searchterm2)
 End
 
 

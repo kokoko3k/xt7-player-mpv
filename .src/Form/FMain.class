@@ -4393,7 +4393,7 @@ Public Sub Show_runtime_infos()
   Dim scale_new As String
   Dim scale_old As String = "1"
   Dim msg_time As Integer = 4000
-  
+
   prop["Filepath"] = "path"
   prop["---"] = " "
   
@@ -4428,7 +4428,7 @@ Public Sub Show_runtime_infos()
   prop["audio bitrate (packet)"] = "packet-audio-bitrate"
   prop["audio channels"] = "audio-channels"
   prop["------"] = " "
-  
+
   
   For Each prop
     name = prop.Key
@@ -4455,9 +4455,11 @@ Public Sub Show_runtime_infos()
       mplayer.set_property_mpv("osd-scale", scale_new)
     Endif
   Endif
-  
+
   mplayer.ShowText(msg, msg_time)
+
   Wait (msg_time / 900)
+
   mplayer.set_property_mpv("osd-scale", scale_old)
 
 End
@@ -5298,40 +5300,30 @@ Public Sub UpdateSearchResults(MyLibrary As PlaylistClass, LibraryGrid As Gridvi
 
 End
 
-Public Sub SearchField_KeyRelease()
-
+Public Sub searchfield_change()
   Dim previous_search As String
-  If (Key.code < Key.space) Or (Key.code > Key.delete) Then Return
-  If key.code = key.tab Then Return
   previous_search = Searchfield.text
-
-  'Wait 0.5 'fixme, this used to work in the past, now slows down.
+  Wait 0.5
   If previous_search = Searchfield.text Then
     UpdateSearchResults(MyLibrary, LibraryGrid, fmain.FullyLoaded, Searchfield.text)
   Else
     Return
   Endif
-  'Endif
   MenuLibraryZapSelected.enabled = (LibraryGrid.row > 0)
-
 End
 
-Public Sub SearchFieldPLS_KeyRelease()
 
+
+  Public Sub SearchFieldPLS_change()
   Dim previous_search As String
-  If (Key.code < Key.space) Or (Key.code > Key.delete) Then Return
-  If key.code = key.tab Then Return
   previous_search = Searchfieldpls.text
-  
-  'Wait 0.5 'fixme, this used to work in the past, now slows down.
+  Wait 0.5
   If previous_search = Searchfieldpls.text Then
     UpdateSearchResults(MyPlayList, PlayListGrid, fmain.FullyLoaded, SearchfieldPLS.text)
   Else
     Return
   Endif
-  'Endif
   MenuPlaylistZapSelected.enabled = (PlaylistGrid.row > 0)
-
 End
 
 Public Sub SearchField_Activate()
@@ -9991,28 +9983,22 @@ Public Sub AlbumGridView_change()
   MyAlbumsLib.SelectCell(AlbumGridView.row, AlbumGridView.Column)
 End
 
-Public Sub SearchFieldAlbums_KeyRelease()
+Public Sub SearchFieldAlbums_change()
   Dim previous_search As String
   If Not fmain.fullyloaded Then Return
-  If (Key.code < Key.space) Or (Key.code > Key.delete) Then Return
-  If key.code = key.tab Then Return
   previous_search = searchfieldalbums.text
-  
-  'Wait 0.5 'fixme, this used to work in the past, now slows down.
+  Wait 0.5
     If previous_search = searchfieldalbums.text Then
-      'UpdateSearchResults(MyPlayList, PlayListGrid, fmain.FullyLoaded, SearchfieldPLS.text)
       MyAlbumsLib.Init(mylibrary, AlbumGridView, searchfieldalbums.text)
       MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, albumviewtexlen)
         Else
       Return
     Endif
-
 End
 
 Public Sub SearchFieldAlbums_Activate()
   ComboHistory.AddHistory(Searchfieldalbums, Searchfieldalbums.text)
 End
-
 
 
 Public Sub AlbumGridView_Activate()
