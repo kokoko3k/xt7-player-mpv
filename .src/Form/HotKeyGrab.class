@@ -35,10 +35,11 @@ Public Function GetMouseModifiers() As String
   Return mods
 End
 
-Public Function GetLastKey() As String
+Public Function GetLastKey(Optional aKeyCode As Integer = -1) As String
   Dim i As Integer
   Dim RetKey As String = ""
-   Select Case Key.code
+  If aKeyCode < 0 Then aKeyCode = Key.code
+   Select Case aKeyCode
     Case Key.Left
       RetKey = "left"
     Case Key.Right
@@ -106,7 +107,7 @@ Public Function GetLastKey() As String
     Case Else
       For i = 32 To 126
       'FOR i = 0 TO 255
-        If Key.code = Key[Chr(i)] Then
+        If aKeyCode = Key[Chr(i)] Then
           RetKey = Lower(Chr(i))
           Break
         Endif
@@ -116,14 +117,13 @@ Public Function GetLastKey() As String
 End
 
 
-Public Function GetKey() As String
-
-
+Public Function GetKey(Optional aKeyCode As Integer = -1) As String
   Me.hide
-  lastkey = GetLastKey()
+  If aKeyCode < 0 Then aKeyCode = Key.code
+  lastkey = GetLastKey(aKeycode)
   LastMouseButton = 0
   LastMouseWheel = "NONE"
-  LastMod = GetKeyModifiers()
+  'LastMod = GetKeyModifiers()
   Return AllGrabbedData()
 End
 
@@ -179,9 +179,6 @@ End
 
 
 Public Sub Form_KeyPress()
-  'DIM Modifier AS Boolean = (Key.shift) OR (Key.alt) OR (Key.control)
-
-
   If ModifiersOnly() Then Return 'skip modifiers
   'find which key has been pressed by testing all printable ascii characters:
   If Not (Key.code = Key.capslock) Then GetKey()

@@ -493,6 +493,7 @@ Public Sub AllInit_Post()
     Youtube_Select()
   Endif
   global.AddUserExtensions(GeneralOptions.KnownExtensions.text)
+  VideoAreaGroup_keypress_timer = New Timer As "VideoAreaGroup_keypress_timer"
   FullyLoaded = True
   ShowGrid(librarygrid)
   ShowGrid(playlistgrid)
@@ -4687,14 +4688,30 @@ Public Sub PanelNowNextArrange(Optional Exdended As Boolean = False)
 
 End
 
+Public VideoAreaGroup_keypress_timer As New Timer 
+Private VideoAreaGroup_keypress_timer_keycode As Integer
 Public Sub VideoAreaGroup_KeyPress() 
-
-  Dim HotKey As String
-  If ((Key.code = Key.space) And (Key.control) And (Key.shift) And (Key.alt)) Then Xt7Egg.show
-  HotKey = HotKeyGrab.GetKey()
-  HotKeyToMplayer(HotKey)
-  
+  ' Dim HotKey As String
+  ' If ((Key.code = Key.space) And (Key.control) And (Key.shift) And (Key.alt)) Then Xt7Egg.show
+  ' HotKey = HotKeyGrab.GetKey()
+  ' HotKeyToMplayer(HotKey)
+  VideoAreaGroup_keypress_timer_keycode = Key.code
+  HotKeyGrab.LastMod = HotKeyGrab.GetKeyModifiers()
+  If ((VideoAreaGroup_keypress_timer_keycode = Key.space) And (Key.control) And (Key.shift) And (Key.alt)) Then VideoAreaGroup_keypress_timer_keycode = -9999
+  VideoAreaGroup_keypress_timer.trigger
 End
+
+Public Sub VideoAreaGroup_keypress_timer_timer()
+  Dim HotKey As String
+  If VideoAreaGroup_keypress_timer_keycode = -9999 Then 
+    Xt7Egg.show
+    Return
+  Endif
+  HotKey = HotKeyGrab.GetKey(VideoAreaGroup_keypress_timer_keycode)
+  HotKeyToMplayer(HotKey)  
+End
+
+
 
 Private LastClickTime As Float
 
