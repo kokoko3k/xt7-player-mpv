@@ -706,17 +706,3 @@ dvb_set_channel non è implementato
 Il font "predefinito" delle liste di sinistra, in realtà non è quello di Sistema
 in quanto se viene cambiato dalle impostazioni di sistema, xt7 non lo sa.
 servwe un modo per capire se il font è stato cambiato oppure no.
-
-il trucchetto di metter un wait al keyrelease per evitare ricerche inutili non funziona più.
-anzi, rallenta.
-              fmain:
-                Public Sub SearchField_KeyRelease()
-                Public Sub SearchFieldPLS_KeyRelease()
-                Public Sub SearchFieldAlbums_KeyRelease()
-              logwindow:
-                Public Sub Searchterm_Keyrelease()
-                Public Sub Searchterm2_Keyrelease()
-
-  Anzi, nel log ho questo:
-    gb.qt4: warning: calling the event loop during a keyboard event handler is ignored
-    e l'utilizzo cpu schizza (visibilissimo in fmain_show.runtime_infos)

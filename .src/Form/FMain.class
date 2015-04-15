@@ -842,7 +842,7 @@ Public Sub SetStyle_early()
   Dim backcolor As String = GeneralOptions.backcolorChooseBTN1.Background
   Dim forecolor As String = GeneralOptions.ColorChooseBTN1.Background
   Dim Userfont As Font = GeneralOptions.FontChooseBTN1.font
-  ' 
+
   If Trim(generaloptions.BottomPanelImage.text) <> "" Then
     Try picturebox1.Picture = picture.Load(generaloptions.BottomPanelImage.text)
     If Error Then global.myDebug("sorry, couldn 't load the image " & generaloptions.BottomPanelImage.text)
@@ -865,7 +865,7 @@ Public Sub SetStyle_early()
   Endif
 
   ArrangeCpl(9)
-  
+
   If audioform.AudioPanel.parent = Rightsidepanel Then
     If (Not mplayer.ProcessRunningOvr()) Then ShowAudioPanel(False) 
     SetSubControlsStyles(Fmain)
@@ -885,7 +885,7 @@ Public Sub SetStyle_early()
       Endif
     Next 'TheForm
   Endif
-  
+
   audioform.Label1.Foreground = &HFFFF00&
   audioform.Label1.Font.Italic = True
   Audioform.Label1.Font.size = Audioform.Label2.Font.size + 4
@@ -903,7 +903,7 @@ Public Sub SetStyle_early()
   'Panel2.background = Librarygrid.Background
   
   Global.Alternatecolor = GeneralOptions.backcolorChooseBTN2.Background
-  
+
   dvbtgrid.font = Userfont
   dvbtgrid.Foreground = forecolor
   dvbtgrid.Background = backcolor
@@ -928,7 +928,6 @@ Public Sub SetStyle_early()
   CDDAGrid.Foreground = forecolor
   CDDAGrid.Background = backcolor
   'panel4.Background = backcolor
-  
   treeview1.font = Userfont
   treeview1.Foreground = forecolor
   treeview1.Background = backcolor
@@ -963,7 +962,7 @@ Public Sub SetStyle_early()
   ShutResultGrid.Foreground = forecolor
   ShutResultGrid.Background = backcolor
   'panel6.Background = backcolor
-  
+
   SearchField.Font.size = zzzFake.Font.size
   SearchFieldPLS.Font.size = zzzFake.Font.size
   SearchFieldalbums.Font.size = zzzFake.Font.size
@@ -973,7 +972,11 @@ Public Sub SetStyle_early()
   Label2.Font.bold = True
   PlayListSelInfo.Foreground = Color.black
   LibrarySelInfo.Foreground = Color.black
-  progressframe.background = Color.rgb(0, 0, 0, 210)
+  If progressframe.tag = Null Then
+    progressframe.background = Color.rgb(0, 0, 0, 210)
+    progressframe.tag = True
+  Endif
+
   'progressframe.background = Color.SetAlpha(Color.Darker(Color.Darker(Color.SelectedBackground)), 200)
   Initprogress()
 End
@@ -10763,6 +10766,9 @@ End
 Public Sub Initprogress()
   Dim mycolor As Integer
 
+  If progress.tag <> Null Then Return
+  progress.tag = True
+
   progress.picture = Picture.Load("barglow.png")
 
   'fix for dark themes
@@ -10775,15 +10781,10 @@ Public Sub Initprogress()
 
   progress.Move(0, 0, 0, progress.parent.h)
 
-  
   ProgressFrame.proxy = progress
-  
+
   Progress.proxy = progressshadow
-  
-  progress.raise
-  
-  
-  
+
 End
 
 Public Sub SetProgress(newset As Float)
