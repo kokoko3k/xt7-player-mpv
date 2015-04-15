@@ -494,24 +494,24 @@ Public Sub AllInit_Post()
   Endif
   global.AddUserExtensions(GeneralOptions.KnownExtensions.text)
   VideoAreaGroup_keypress_timer = New Timer As "VideoAreaGroup_keypress_timer"
+
   FullyLoaded = True
   ShowGrid(librarygrid)
   ShowGrid(playlistgrid)
   ShowGrid(DVBTGrid)
+  
   If tabselectedbrowse() Then 
     FileView1_Arrange()
       Else
     shadeup.visible = True
   Endif
+
   If global.arg_file <> "" Then
     If Exist(global.arg_file) Then fmain.ShowBrowseTabTo(global.arg_file)
   Endif
   If GeneralOptions.ToolTipsCHKDBUS.value Then Try ExportDbusProperties()
   updaterecentfiles()
-  'we created a "default" empty profile, copy the factory settings to it
-  ' If FirstTimeXt7 Then 
-  '   Try UpdateProfilesTabList()
-  ' Endif
+
   Try MakeProfileMenu()
   Try GetLastVersion()
   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
@@ -4688,7 +4688,7 @@ Public Sub PanelNowNextArrange(Optional Exdended As Boolean = False)
 
 End
 
-Public VideoAreaGroup_keypress_timer As New Timer 
+Public VideoAreaGroup_keypress_timer As Timer 
 Private VideoAreaGroup_keypress_timer_keycode As Integer
 Public Sub VideoAreaGroup_KeyPress() 
   ' Dim HotKey As String
@@ -10351,12 +10351,10 @@ Public Sub ProgressFrame_MouseDrag()
       Else
         If relative > 1 Then relative = 1
   Endif
-  'Debug relative
+
   msg = (" seek to:") & " " & mplayer.FormatTime(CInt(mplayer.getP("=length") * relative))
-  'msg = ("seek to:") & " " & mplayer.getP("length")
-   'seekbar.value = mouse.x / seekbar.w
-   seekbar.value = mouse.x / Last.w
-   SetProgress(seekbar.value)
+  seekbar.value = mouse.x / Last.w
+  SetProgress(seekbar.value)
   StatusLabelLeft.text = msg
   mplayer.ShowText(msg, 1000)
 End
@@ -10391,84 +10389,6 @@ Public Sub FileView1_Arrange()
   Next
 End
 
-' Public fakesplit As New Panel(zzzfake) As "Fakesplit"
-' 
-' Public Sub Fakesplit_Enter()
-'   Last.mouse = mouse.SplitH
-' End
-' 
-' Public Sub Fakesplit_Leave()
-'   Last.mouse = mouse.default
-'   fakesplit.hide
-' End
-' 
-' Public Sub Fakesplit_MouseMove()
-'   Dim delta As Integer
-'   delta = fakesplit.screenx - fakesplit.x 
-'   fakesplit.x = mouse.screenx - delta
-' End
-' 
-' Public Sub Fakesplit_DblClick()
-'   Dim splitterw As Integer = hsplit1.w - (hsplit1.Layout[0] + hsplit1.Layout[1])
-'   Dim tmplayout As Integer[] = hsplit1.layout
-'   If hsplit1.Layout[0] > 20 Then
-'   tmplayout[1] = (hsplit1.w - splitterw)
-'   tmplayout[0] = (hsplit1.w - tmplayout[1] - splitterw)
-'   Else
-'   tmplayout[0] = (fmain.w Div 3)
-'   tmplayout[1] = hsplit1.w - tmplayout[0] - splitterw
-'   Endif
-'   hsplit1.Layout = tmplayout
-'   Hsplit1_MyRefresh()
-'   fakesplit.lower
-'   fakesplit.visible = False
-'   Object.Detach(fakesplit)
-' End
-' 
-' Public Sub UseFakeSplit()
-'   If SwitchingFullScreen Then Return
-'   If (fakesplit.parent.name <> Me.name) Then fakesplit.Reparent(fmain)
-'   Object.Attach(fakesplit, fmain, "fakesplit")
-'   fakesplit.Background = color.selectedbackground
-'   fakesplit.Ignore = True
-'   Try fakesplit.x = Leftsidepanel.w - 5 'Mouse.screenx - fmain.screenx - 5  'hsplit1.Layout[0]
-'   If Error Then Return
-'   fakesplit.border = border.none
-'   fakesplit.w = 10 'hsplit1.w - (hsplit1.Layout[0] + hsplit1.Layout[1])
-'   If fmain.menus.visible Then
-'     fakesplit.y = hsplit1.screeny - fmain.screeny - fmain.font.TextHeight("|JIq") - desktop.scale
-'       Else
-'     fakesplit.y = hsplit1.screeny - fmain.screeny - 1
-'   Endif
-' 
-'   fakesplit.h = hsplit1.h
-'   fakesplit.raise
-'   fakesplit.visible = True
-'   fakesplit.SetFocus()
-' End
-' 
-' 
-' Public Sub LeftSidePanel_MouseMove()
-'   If Mouse.x > Last.w - 10 Then UseFakeSplit()
-' End
-' Public Sub RightSidePanel_MouseMove()
-'   If Mouse.x < 10 Then UseFakeSplit()
-' End
-' 
-' Public Sub FakeSplitRefresh()
-' Dim splitterw As Integer = hsplit1.w - (hsplit1.Layout[0] + hsplit1.Layout[1])
-' Dim tmplayout As Integer[] = hsplit1.layout
-'   tmplayout[1] = (hsplit1.w - fakesplit.x - splitterw)
-'   tmplayout[0] = (hsplit1.w - tmplayout[1] - splitterw)
-'   hsplit1.Layout = tmplayout
-'   Hsplit1_MyRefresh()
-' End
-
-
-
-' Public Sub Fakesplit_MouseUp()
-'    FakeSplitRefresh()
-' End
 
 Public Sub UrlBox_Change()
   If Not fmain.fullyloaded Then Return
@@ -10477,14 +10397,8 @@ Public Sub UrlBox_Change()
   FileView1_Arrange()
 End
 
-
-
-
-
 Public Sub volumecontainer_Arrange()
-
   SaveVolumeSlider.w = Last.w
-
 End
 
 Public Sub textlabel1_MouseWheel()
@@ -11126,6 +11040,6 @@ End
 
 Public Sub Panel9_Arrange()
 
-    progressshadow.Move(0, 0, progress.Parent.w, progress.parent.h Div 4)
+    progressshadow.Move(0, 0, progress.Parent.w, progress.parent.h Div 5)
 
 End

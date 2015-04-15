@@ -8,6 +8,10 @@ Public Sub AddHistory(TheComboBox As ComboBox, Item As String)
 Dim MaxItems As Integer = 15
 Dim i As Integer
 Dim TempList As New String[0]
+Object.Lock(FMain.SearchField)
+Object.Lock(FMain.SearchFieldAlbums)
+Object.Lock(FMain.SearchFieldDVB)
+Object.Lock(FMain.SearchFieldPLS)
   For i = 0 To TheComboBox.List.Count - 1
     Try TempList.Add(DConv(TheComboBox[i].text))
   Next 'i
@@ -16,6 +20,11 @@ Dim TempList As New String[0]
   For i = 0 To TempList.count - 1
     If (item <> TempList[i]) And (i < MaxItems) Then TheComboBox.Add(TempList[i])
   Next 'i
+Object.unLock(FMain.SearchField)
+Object.unLock(FMain.SearchFieldAlbums)
+Object.unLock(FMain.SearchFieldDVB)
+Object.unLock(FMain.SearchFieldPLS)
+
 End
 
 
