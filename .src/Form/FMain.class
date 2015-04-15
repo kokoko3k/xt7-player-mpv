@@ -8623,7 +8623,7 @@ Public Sub ActivateFile(fullpathitem As String)
     urlbox.text = Replace(FileView1.dir, "//", "/")
     If String.Right(urlbox.text, 1) = "/" Then urlbox.text = String.Left(urlbox.text, Len(urlbox.text) - 1)
   Else
-    ComboHistory.AddHistory(urlbox, FileView1.dir)
+    If Not global.isimgfile(fullpathitem) Then ComboHistory.AddHistory(urlbox, FileView1.dir)
     Try fileview1.current = selecteditem
     Play(fullpathitem)
     SetActivePlayQueue("browse")
