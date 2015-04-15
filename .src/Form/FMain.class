@@ -440,6 +440,7 @@ Public Sub AllInit_Post()
   FileView1.dir = "non/esistent/dir/i/am/very/sure/of/this/1234432100/don/t/you"
   FileView1.visible = True
   FileView1.dir = savefileview1path
+  FileView1_Arrange()
   fileview1Myreload()
   Leftsidepanel.mouse = mouse.wait
   InitLibrary(MyLibrary, LibraryGrid, True)
@@ -1143,6 +1144,7 @@ Public Sub ShowBrowseTabTo(fullpath As String)
   Endif
   Try UrlBox.text = path
   Try FileView1.dir = path
+  FileView1_Arrange()
   FileView1.ShowDetailed = True
   
   Leftsidetabs.Index = Tabid
@@ -2488,8 +2490,11 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     Wait
 
     timeA = Timer()
-    mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value)
-    global.myDebug("mplayer.get_mediainfo()", Timer() - timeA)
+    If Not global.IsImgFile(fullpath) Then
+      mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value)
+      global.myDebug("mplayer.get_mediainfo()", Timer() - timeA)
+    Endif
+
     If Not mplayer.ProcessRunningOvr() Then 
       If mplayer.return_value <> 0 Then 'try to use youtube-dl 
         mplayer.set_option("ytdl", "yes")
@@ -3599,33 +3604,62 @@ End
 
 
 Public Sub VideoAreaGroup_MouseDrag()
-  
+  Dim panstep As Float = 0.05
+  Dim threshold As Integer = videobox.w Div 20
   Dim NewX, NewY As Integer
+
   Dim isimgfile As Boolean = global.IsImgFile(mplayer.getP("fullpath")) 
-  
+  global.myDebug(" ")
   If (Not fsform.FullScreen) And (Not isimgfile) Then
     If SwitchingFullScreen Then Return
     If mouse.left Then
-      GuiDragging = True
+     GuiDragging = True
       fmain.Move(fmain.screenx + (mouse.x - mouse.StartX), fmain.screeny + (mouse.y - mouse.Starty))
     Endif
   Else
+    global.myDebug(" ")
     If GeneralOptions.PanTagCHK.value Or isimgfile Then
       If isimgfile Then mplayer.do_seek(0)
       'Allow Dragging image if it is panned:
-      If mouse.left And (ResizeFactor > 1) Then
+      global.myDebug(resizefactor)
+      'If mouse.left And (ResizeFactor > 1) Then
+      If mouse.left Then
         GuiDragging = True
-        NewX = VideoBox.screenx + (mouse.x - mouse.StartX) - outerbox.screenx
-        NewY = VideoBox.screeny + (mouse.y - mouse.Starty) - outerbox.screeny
-        If (NewX < (Desktop.w Div 2)) And (NewY < (Desktop.h Div 2)) Then
-          If (NewX + VideoBox.w) > (Desktop.w Div 2) And (Newy + VideoBox.h) > (Desktop.h Div 2) Then
-            VideoBox.Move(NewX, NewY)
-          Endif
-        Endif
+        ' NewX = VideoBox.screenx + (mouse.x - mouse.StartX) - outerbox.screenx
+        ' NewY = VideoBox.screeny + (mouse.y - mouse.Starty) - outerbox.screeny
+        ' If (NewX < (Desktop.w Div 2)) And (NewY < (Desktop.h Div 2)) Then
+        '   If (NewX + VideoBox.w) > (Desktop.w Div 2) And (Newy + VideoBox.h) > (Desktop.h Div 2) Then
+        '     VideoBox.Move(NewX, NewY)
+        '   Endif
+        ' Endif
+
+        mplayer.send("no-osd set pause yes")
+         If (Mouse.x - Mouse.startx) > threshold Then 
+           mplayer.send("no-osd add video-align-x -0.01")
+           Goto returnlabel
+         Endif
+         If (Mouse.StartX - Mouse.x) > threshold Then
+           mplayer.send("no-osd add video-align-x +0.01")
+           Goto returnlabel
+         Endif
+
+         global.mydebug(Mouse.Starty - Mouse.y)
+         If (Mouse.y - Mouse.starty) > threshold Then
+           mplayer.send("no-osd add video-align-y -0.01") 
+           global.myDebug("-Y")
+           Goto returnlabel
+         Endif
+         If (Mouse.Starty - Mouse.y) > threshold Then 
+           mplayer.send("no-osd add video-align-y +0.01")
+           global.myDebug("+Y")
+           Goto returnlabel
+         Endif
+         
       Endif
     Endif
   Endif
-  
+  returnlabel:
+  Return
 End
 
 Public Function DisableKDECompositing() As Boolean
@@ -8564,6 +8598,7 @@ Public Sub ButtonUp_Click()
   If String.Right(FileView1.dir, 1) = "/" Then FileView1.dir = String.Left(FileView1.dir, Len(FileView1.dir) - 1)
   FileView1.dir = File.dir(FileView1.dir)
   urlbox.text = Replace(FileView1.dir, "//", "/")
+  FileView1_Arrange()
   Object.unLock(urlbox)
 End
 
@@ -8584,6 +8619,7 @@ Public Sub ActivateFile(fullpathitem As String)
   Try selecteditem = FileView1.Selection[0]
   If IsDir(fullpathitem) Then
     FileView1.dir = fullpathitem
+    FileView1_Arrange()
     urlbox.text = Replace(FileView1.dir, "//", "/")
     If String.Right(urlbox.text, 1) = "/" Then urlbox.text = String.Left(urlbox.text, Len(urlbox.text) - 1)
   Else
@@ -8605,6 +8641,7 @@ Public Sub Urlbox_KeyPress()
   If (key.code = key.enter) Or (key.code = key.Return) Then
     If Urlbox.text <> FileView1.dir Then
       FileView1.dir = Urlbox.text
+      FileView1_Arrange()
     Endif
   Endif
   
@@ -8621,12 +8658,6 @@ Public Sub FileView1_Icon(Path As String)
 
 End
 
-Public Sub ButtonHome_Click()
-  
-  FileView1.dir = User.Home
-  urlbox.text = User.Home
-  
-End
 
 Public Sub ItemsFromBrowseTo(theplaylist As Playlistclass, thegrid As Gridview, filterstring As String)
 
@@ -8700,7 +8731,7 @@ Public Sub UrlBox_Click()
   
   If Trim(Urlbox.text) = "" Then Urlbox.text = "/"
   FileView1.dir = Urlbox.text
-  
+  FileView1_Arrange()
 End
 
 Public Sub MenuAddToHistory_Click()
@@ -11060,7 +11091,62 @@ Public Sub sidepanelYTSearchoptions_BeforeArrange()
 End
 
 Public Sub Panel9_Arrange()
-
     progressshadow.Move(0, 0, progress.Parent.w, progress.parent.h Div 5)
-
 End
+
+Public Sub UrlBox_Enter()
+  Last.tooltip = Last.text
+End
+
+
+Public Sub Button_mounts_Click()
+  Dim mounted As String[]
+  Dim menu_mounts As New Menu(fmain)
+  Dim menu_mountpoint As Menu
+  Dim mountpoint As String
+
+  Try mounted = global.get_mounted_fss()
+  If Error Then 
+    Message.Error(("could not get a list of mounted filesystems!"))
+  Endif
+
+  menu_mountpoint = New Menu(menu_mounts)
+
+  menu_mountpoint = New Menu(menu_mounts) As "menu_mountpoint"
+  menu_mountpoint.text = User.home
+  menu_mountpoint.Picture = Picture["icon:/small/home"]
+
+  menu_mountpoint = New Menu(menu_mounts) As "menu_mountpoint"
+  menu_mountpoint.text = Desktop.Path
+  menu_mountpoint.Picture = Picture["icon:/small/desktop"]
+
+  menu_mountpoint = New Menu(menu_mounts) As "menu_mountpoint"
+  menu_mountpoint.Enabled = False
+    menu_mountpoint = New Menu(menu_mounts) As "menu_mountpoint"
+    menu_mountpoint.text = ("Mountpoints")
+    menu_mountpoint.Enabled = False
+  menu_mountpoint = New Menu(menu_mounts) As "menu_mountpoint"
+  menu_mountpoint.Enabled = False
+
+
+  For Each mountpoint In mounted
+    menu_mountpoint = New Menu(menu_mounts) As "menu_mountpoint"
+    menu_mountpoint.text = mountpoint
+    menu_mountpoint.Picture = Picture["icon:/small/directory"]
+  Next
+        'FileView1.dir = Urlbox.text
+
+  menu_mounts.popup
+  
+End
+
+Public Sub menu_mountpoint_Click()
+  urlbox.text = Last.text
+  FileView1.dir = Urlbox.text
+  FileView1_Arrange()
+End
+
+
+
+
+

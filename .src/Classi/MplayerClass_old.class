@@ -681,7 +681,7 @@ Public Function do_play(filename As String, options As String, Optional restart 
       SetUpInputPipe()
       
       ClearMediaProperties()
-  
+
     If global.IsImgFile(filename) And Not (filename Like "mf://*") Then
       filename = "mf://" & filename & "," & filename
     Endif

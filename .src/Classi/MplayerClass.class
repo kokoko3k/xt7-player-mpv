@@ -451,6 +451,11 @@ Public Function do_play(filename As String, Optional string_options As String = 
   For Each data In internal_opts
     mpvOptions[internal_opts.key] = data
   Next
+  
+  If global.IsImgFile(filename) Then
+    mpvOptions["fps"] = "0.1"
+  Endif
+  
   fix_options()
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)

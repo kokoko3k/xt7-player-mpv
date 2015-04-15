@@ -1011,29 +1011,29 @@
           Spacing = True
           Margin = True
           Padding = 1
+          { Button_mounts Button
+            MoveScaled(1,0,4,4)
+            ToolTip = ("Mounted devices")
+            Picture = Picture["icon:/16/computer"]
+          }
           { ButtonUp Button
-            MoveScaled(0,0,4,4)
+            MoveScaled(10,0,4,4)
             ToolTip = ("Parent")
             Picture = Picture["icon:/16/up"]
           }
-          { ButtonRefresh Button
-            MoveScaled(3,0,4,4)
-            ToolTip = ("Refresh")
-            Picture = Picture["icon:/16/refresh"]
-          }
-          { ButtonHome Button
-            MoveScaled(7,0,4,4)
-            ToolTip = ("Home Folder")
-            Picture = Picture["icon:/16/home"]
-          }
           { UrlBox ComboBox
-            MoveScaled(11,0,7,4)
+            MoveScaled(15,0,7,4)
             ToolTip = ("Enter a path to browse it")
             Expand = True
             Text = ("/")
           }
           { Separator1 Separator
-            MoveScaled(19,1,2,4)
+            MoveScaled(23,0,2,4)
+          }
+          { ButtonRefresh Button
+            MoveScaled(24,0,4,4)
+            ToolTip = ("Refresh")
+            Picture = Picture["icon:/16/refresh"]
           }
           { ButtonHidden Button
             MoveScaled(29,0,4,4)
