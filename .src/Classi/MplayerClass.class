@@ -98,7 +98,7 @@ Public Function FillMultitracks()
   Dim id, name, lang, tmp, codec As String
   Dim properties As New String[]
   Dim video_ok As Boolean = False
-  
+
   If getP("fullpath") = "" Then Return
   
   Try prop["audiotracks"].Clear
@@ -136,7 +136,6 @@ Public Function FillMultitracks()
   video_ok = (get_property_mpv("vo-configured") = "yes")
   video_ok = video_ok And (get_property_mpv("current-vo") <> "(unavailable)")
   setP("audioonly", (Not video_ok))
-
 End
 
 Public Function get_length() As String
@@ -567,12 +566,13 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
 ' '       Next
 ' '     Endif
 ' '   ''
+
   If Not waitplayback(3000) Then
     global.myDebug("EE", "Playback didn't started or timeout waiting for it to start")
     do_stop()
     Return False
   Endif
-
+  
 
   'fixmempv: questa procedura sotto, cosa fa esattamente? mi sembra solo il trim (?)
     Try fileUtf8 = DConv(getP("fullpath")) 'from system charset to utf8
@@ -658,7 +658,7 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
       Endif
 
   Endif
-  
+
   get_properties_mpv(properties)
   
   If getP("length") = "" Then setP("length", "00:00:00")
