@@ -1,6 +1,3 @@
-[Bookmarks]
-FMain=[]
-
 [Breakpoints]
 Count=0
 
@@ -633,7 +630,10 @@ Geometry=[47,-3,210,210]
 Geometry=[0,41,344,344]
 
 [DebugWindow/Screens]
-Geometry=[1280,0,210,210]
+Geometry=[436,246,224,280]
+
+[DebugWindow/Screens[0]]
+Geometry=[660,246,224,280]
 
 [DebugWindow/Screenshot]
 Geometry=[44,0,344,344]
@@ -691,6 +691,9 @@ Geometry=[44,-3,210,210]
 
 [DebugWindow/Split(Mid(s, InStr(s, llabel & ":") + 1), ":")]
 Geometry=[44,-3,210,210]
+
+[DebugWindow/Split(aLine, " x+", "", True)]
+Geometry=[1280,0,224,280]
 
 [DebugWindow/Split(ad, "\n", "", True)]
 Geometry=[44,0,210,210]
@@ -760,6 +763,9 @@ Geometry=[1194,534,816,385]
 
 [DebugWindow/Split(sline, ":", "", TRUE)]
 Geometry=[0,0,344,344]
+
+[DebugWindow/Split(xrandr_output, "\n", "", True)]
+Geometry=[79,341,821,656]
 
 [DebugWindow/Splitted]
 Geometry=[0,0,301,301]
@@ -948,6 +954,9 @@ Geometry=[51,0,210,210]
 [DebugWindow/WorkingCover["mygrid"]]
 Geometry=[1276,-3,210,210]
 
+[DebugWindow/X]
+Geometry=[170,192,665,280]
+
 [DebugWindow/XConfigureVideoDriver.vaapiBTN]
 Geometry=[44,0,210,210]
 
@@ -968,6 +977,9 @@ Geometry=[14,14,344,344]
 
 [DebugWindow/XmlFields]
 Geometry=[51,0,210,210]
+
+[DebugWindow/Xreturn]
+Geometry=[1280,0,224,280]
 
 [DebugWindow/Youtube.AvailableSubs(VideoId)]
 Geometry=[0,0,344,344]
@@ -1928,7 +1940,7 @@ Geometry=[47,-3,210,210]
 Geometry=[1280,0,210,210]
 
 [DebugWindow/splitted]
-Geometry=[0,0,210,210]
+Geometry=[44,0,224,280]
 
 [DebugWindow/spps]
 Geometry=[0,0,301,301]
@@ -2076,6 +2088,9 @@ Geometry=[0,0,344,344]
 [DebugWindow/xml.Root]
 Geometry=[116,387,813,653]
 
+[DebugWindow/xrandr_output_splitted]
+Geometry=[44,-3,1236,1004]
+
 [DebugWindow/youtubeTree.current]
 Geometry=[44,-3,490,476]
 
@@ -2111,7 +2126,7 @@ File[2]=".src/Form/GeneralOptions.form"
 File[3]=".src/Form/GeneralOptions.class:68.2"
 File[4]=".src/Form/FMain.form"
 Active=26
-File[5]=".src/Form/FMain.class:2504.0"
+File[5]=".src/Form/FMain.class:650.12"
 File[6]=".src/Classi/SettingsClass.class:476.2"
 File[7]=".src/0_Moduli/Global.module:310.0"
 File[8]=".src/Form/EpgForm.form"
@@ -2132,7 +2147,7 @@ File[22]=".src/Form/LogWindow.form"
 File[23]=".src/Form/LogWindow.class:102.32"
 File[24]=".src/Form/HotKeys.form"
 File[25]=".src/Form/HotKeys.class:503.47"
-File[26]="AA_ToDo:722.3"
+File[26]="AA_ToDo:713.7"
 File[27]=".src/Form/AddUriForm.form"
 File[28]=".src/Form/AFiltersCfg.form"
 File[29]=".src/Form/RealtimeForm.form"
@@ -2153,7 +2168,7 @@ File[43]=".src/Form/VideoEqualizer.form"
 File[44]=".src/Form/OpenSubtitesForm.form"
 File[45]=".src/Classi/FlashClass.class:80.30"
 File[46]=".src/Classi/PlaylistClass.class:1596.0"
-File[47]=".src/Classi/mpris.class:205.34"
+File[47]=".src/Classi/mpris.class:6.0"
 File[48]=".src/Form/AFiltersCfg.class:292.0"
 File[49]=".src/Form/DVBTuner.class:332.29"
 File[50]=".src/Form/EpgForm.class:691.16"
@@ -2172,7 +2187,7 @@ File[62]="media-loop-ab.png"
 File[63]="media-loop-a.png"
 File[64]="media-playback-start.png"
 File[65]="media-playback-pause.png"
-File[66]=".src/Form/zzzFake.class:51.3"
+File[66]=".src/Form/zzzFake.class:6.23"
 File[67]=".src/Form/zzzFake.form"
 File[68]="Hash.py:1.14"
 File[69]=".src/Classi/CDDB.class:108.19"
@@ -2191,8 +2206,9 @@ File[81]=".src/Form/BugReport.form"
 File[82]=".src/Form/Xt7Egg.form"
 File[83]="barglow.png"
 File[84]=".src/Form/FormLyrics.form"
-Count=85
+Count=86
 File[85]=".src/0_Moduli/ComboHistory.module:25.9"
+File[86]=".src/Classi/randr.class:165.23"
 
 [Watches]
 Count=5

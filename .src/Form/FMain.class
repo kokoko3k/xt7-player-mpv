@@ -1637,7 +1637,7 @@ End
 
 Public Sub ButtonStop_Click()
 
-  
+  ' randr.test()
   ' Dim a As Integer = 1 / 0
   global.mouse_wait(fmain, False)
   InitABLoop()
@@ -10913,8 +10913,9 @@ Public Sub Initprogress()
   While Color.Desaturate(mycolor) < (Color.white / 3)
     mycolor = Color.Merge(mycolor, Color.white, 0.1)
   Wend
-
-  progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.60).brightness(0.15).Contrast(1.4).picture
+  progressshadow.Picture = progressshadow.Picture.Image.Opacity(0.8).picture
+  'progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.60).brightness(0.15).Contrast(1.4).picture
+  progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.625).brightness(0.175).Contrast(1.375).picture
 
   progress.Move(0, 0, 0, progress.parent.h)
 
@@ -10927,51 +10928,21 @@ End
 Public Sub SetProgress(newset As Float)
   Dim border As Integer = 0 '2
   Dim bor As Integer = 0 '1
-  ' Dim newpos As Integer = CInt(progress.parent.clientw * newset)
-  ' progress.Move(ProgressFrame.clientx, ProgressFrame.clienty, newpos, progress.Parent.clienth)
-  ' ProgressGlow.Move(Progressframe.clientx, ProgressFrame.clienty, newpos, progress.Parent.clienth)
+  Dim newpos As Integer = CInt(ProgressFrame.clientw * newset - ProgressFrame.padding)
+  
+  If newpos < border Then newpos = border
+  progress.Raise
+  progress.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)
 
-   'Dim newpos As Integer = CInt(ProgressFrame.clientw * newset - ProgressFrame.padding)
-   Dim newpos As Integer = CInt(ProgressFrame.clientw * newset - ProgressFrame.padding)
-   If newpos < border Then newpos = border
-   'progress.Move(0, 0, newpos, progressframe.h)
-    'progress.Move(progressframe.clientx, progressframe.clienty, newpos, progressframe.clienth)
-    'progress.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)
-    progress.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)
-   'ProgressGlow.Move(progresscontainer.clientx, progresscontainer.clienty, newpos, progressframe.clienth)
-  'Debug seekbar.visible
-Debug ControlPanel.w ' ok
-Debug Panel9.w
 End
-
-
-
-
-' Public Sub textboxdata_Activate()
-' Stop
-'     global.myDebug( mplayer.GetProperty("pause"))
-' 
-' End
-
-
 
 
 Public Sub textboxdata_Activate()
   global.myDebug(mplayer.send(Last.text))
 End
 
-Public Sub textboxdata_KeyPress()
-
-  
-
-End
-
-
-
-
 
 Private ABLoopInitValue As Float = 99999.99999
-
 Private ABLoopA As Float = ABLoopInitValue
 Private ABLoopB As Float = ABLoopInitValue
 
