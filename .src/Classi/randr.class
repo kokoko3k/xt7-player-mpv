@@ -190,9 +190,9 @@ Public Sub test()
       w = CInt(Split(mode, "|", "", True)[2])
       h = CInt(Split(mode, "|", "", True)[3])
       r = CFloat(Split(mode, "|", "", True)[4])
-      If Abs((w / h) - (s_w / s_h)) < (w / h) * 0.05 Then
-        Mod
-      Endif
+'      If Abs((w / h) - (s_w / s_h)) < (w / h) * 0.05 Then
+'        Mod
+'      Endif
     Endif
   Next
   
