@@ -424,7 +424,7 @@ Private Function internal_options() As Collection
   'with the previous one. But singe the changed options are set from the outside,
   'which has no clue about those internal_options. we say to do_apply to ignore
   'the following:
-  ignore_opts = ["input-file", "msg-color", "msg-level", "term-status-msg", "start"]
+  ignore_opts = ["input-file", "msg-color", "msg-level", "term-status-msg", "start", "volume"]
 
   Return out
 End
