@@ -606,8 +606,9 @@ Public Sub ButtonRefreshAll_Click()
     dvbsnoop.Stopit()
     dvbsnoop.Startit()
     'tunercmd = "timeout " & TimePerChannel & " mplayer -tsprobe 1 \"dvb://" & uchannel & "\" -dumpstream -dumpfile /dev/null " & "< /dev/null &>/dev/null"
-    'fixmempv tunercmd
-    tunercmd = "mplayer -tsprobe 1 \"dvb://" & uchannel & "\" -dumpstream -dumpfile /dev/null " & "< /dev/null &>/dev/null"
+    'fixmempv tunercmd 'modificato senza testarlo con una scheda dvbt, dovrebbe funzionare.
+    'tunercmd = "mplayer -tsprobe 1 \"dvb://" & uchannel & "\" -dumpstream -dumpfile /dev/null " & "< /dev/null &>/dev/null"
+    tunercmd = "mpv --demuxer-lavf-probesize=32 \"dvb://" & uchannel & "\" --stream-dump=/dev/null " & "< /dev/null &>/dev/null"
     
     tunerprocess = Shell tunercmd '"sh -c '" & tunercmd & "'"
     'tunerprocess = Shell "mplayer -tsprobe 1 \"dvb://" & uchannel & "\" -dumpstream -dumpfile /dev/null " & "< /dev/null &>/dev/null"
