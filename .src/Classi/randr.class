@@ -89,12 +89,15 @@ Public Function output_from_screen(s As Screen) As Xoutput
               For j = i + 1 To xrandr_output_splitted.max
                 aLine = xrandr_output_splitted[j]
                 If InStr(aLine, "*") > 0 Then
+                  Stop
                   'found the mode, search which refresh ends with "*"
                   For Each element In Split(aLine, " ", "", True)
-                    Try r = CFloat(Split(element, "*", "", True)[0])
-                    If Not Error Then
-                      mode_name = Split(aLine, " ", "", True)[0]
-                      Break
+                    If Right(element) = "*" Then
+                      Try r = CFloat(Left(element, -1))
+                      If Not Error Then
+                        mode_name = Split(aLine, " ", "", True)[0]
+                        Break
+                      Endif
                     Endif
                   Next
                 Endif
@@ -152,20 +155,21 @@ Public Sub Xoutput_from_obj(o As Object) As Xoutput
   Return output_from_screen(s)
 End
 
-Public Sub change_mode(output_name As String, mode As String, r As Float)
-  Shell "xrandr --output " & output_name & " --mode " & mode & " --rate " & r
+Public Sub change_mode(output_name As String, mode As String, rate As Float)
+  Dim xrandr_cmd As String = "xrandr --output " & output_name & " --mode " & mode & " --rate " & rate
+  global.myDebug(xrandr_cmd)
+  Shell xrandr_cmd
 End
 
 
-
-
-
-Public Sub test()
+Public Function find_mode(s_output_name As String, s_w As Integer, s_h As Integer, s_fps As Integer, Optional AR_ERROR As Float = -1, Optional HZ_ERROR As Float = -1) As String
   'given an output-name
   'given a source resolution
   'given the source fps
+  'Given an output name
   
   'search for a mode that
+  '* has the same output name of the source
   '* has the same aspect ratio of the source resolution +/- 5%
   '* has a resolution >= than the source resolution
   '* has a refresh rate multiple of the (requested fps +/- 5%)
@@ -173,29 +177,93 @@ Public Sub test()
   Dim modes_db As New String[] ' '[outputname|modename|w|h|refresh],..,[outputname|modename|w|h|refresh]'
   Dim mode As String
   Dim mode_name As String
-  Dim s_output_name As String = "DVI-I-3"
-  Dim s_w As Integer = 1280
-  Dim s_h As Integer = 720
-  Dim s_fps As Float = 23.976
 
+  Dim output_name As String
   Dim w, h As Integer
   Dim r As Float
   Dim i As Integer
-  
+
+  Dim t As Float
+  Dim t_int As Integer
+  Dim t_float As Float
+
+  If AR_error < 0 Then AR_error = 0.05
+  If Hz_error < 0 Then Hz_error = 0.05
+
   modes_db = get_sizes()
 
   For Each mode In modes_db
-    If Split(mode, "|", "", True)[0] = s_output_name Then
+    output_name = Split(mode, "|", "", True)[0]
+    If output_name = s_output_name Then
       mode_name = Split(mode, "|", "", True)[1] 
       w = CInt(Split(mode, "|", "", True)[2])
       h = CInt(Split(mode, "|", "", True)[3])
       r = CFloat(Split(mode, "|", "", True)[4])
-'      If Abs((w / h) - (s_w / s_h)) < (w / h) * 0.05 Then
-'        Mod
-'      Endif
+
+      If Abs((w / h) - (s_w / s_h)) < (w / h) * AR_error Then
+        global.mydebug("candidate:", mode, "\nHas the same aspect of the source +/- " & AR_ERROR)
+        'check refresh
+        ' come si fa a capire che una frequenza destinazione va bene?
+        ' 
+        ' divido la frequenza del monitor per quella del filmato, ad esempio
+        ' 75 hz / 23.976
+        ' esce 3.1281281
+        ' poi divido la sua parte decimale per la sua parte intera:
+        ' 0.1281281 / 3 = 0.0427
+        ' se il numero che esce è inferiore a 0.05 (che rappresenta il mio 5%) allora va bene.
+
+        t = r / s_fps
+        t_int = CInt(t)
+        t_float = t - t_int
+        If t_float / t_int <= Hz_error Then
+          Return mode
+        Endif
+        
+      Endif
     Endif
   Next
-  
+  Return ""
+End
 
+
+
+Public Sub test()
+  Dim Xo As Xoutput
+  Dim mode As String
+  Dim mode_info As String[]
+  Dim output_name, mode_name, w, h, refresh As String
+  Dim message_text As String
+  Dim rate As String
+  Xo = Xoutput_from_obj(Fmain)
+  mode = find_mode(Xo.output_name, Xo.w, Xo.h, 25, 0.05, 0.05)
+  If mode = "" Then
+    global.mydebug("No appropriate mode found")
+    Return
+  Endif
+  
+  '[outputname|modename|w|h|refresh]
+  mode_info = Split(mode, "|")
+  output_name = mode_info[0]
+  mode_name = mode_info[1]
+  w = mode_info[2]
+  h = mode_info[3]
+  rate = mode_info[4]
+  
+  message_text &= "\n"
+  message_text &= ("Switch monitor resolution to:") & "\n"
+  message_text &= ("output name: ") & output_name & "\n"
+  message_text &= ("mode name: ") & mode_name & "\n"
+  message_text &= ("resolution: ") & w & "x" & h & "\n"
+  message_text &= ("refresh: ") & rate & "\n"
+  
+  If MyQuestion.Ask(message_text, "Switch", "Keep current") = 1 Then
+    change_mode(output_name, mode_name, rate)
+  Endif
+  
+  Stop
+  
+  change_mode(Xo.output_name, Xo.mode_name, Xo.r)
+  
+  
 End
 
