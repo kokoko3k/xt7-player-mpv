@@ -118,11 +118,11 @@ Public Sub init()
 End
 
 
-Public Sub myDebug(Optional a As String = "", Optional b As String = "", Optional c As String = "", Optional d As String = "", Optional e As String = "")
+Public Sub myDebug(Optional a As String = "", Optional b As String = "", Optional c As String = "", Optional d As String = "", Optional e As String = "", Optional f As String = "", Optional g As String = "", Optional h As String = "", Optional i As String = "", Optional j As String = "")
   Dim Caller As String = "Unknown caller"
   If Not arg_debug Then Return
   Try caller = System.Backtrace[1]
-  Print caller & ": " & a, b, c, d, e
+  Print caller & ": " & a, b, c, d, e, f, g, h, i, j
   Print 
 End
 
