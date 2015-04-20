@@ -64,8 +64,8 @@ Public Function Ask(TheQuestionString As String, TheButton1String As String, The
     Wait
     global.myDebug(vbox1.w)
     'Me.w = Max((QuestionLabel.w + MyIcon.w), (Button1.W + Button2.W + vbox2.w + vbox1.w)) + (Me.padding * 3)
-    Me.w = Max((QuestionLabel.w + MyIcon.w), (Button1.W + Button2.W)) + (Me.padding * 3)
-    Me.h = Button1.h + Max(questionlabel.Font.TextHeight("|"), MyIcon.h) + (Me.padding * 3)
+    Me.w = Max((QuestionLabel.w + MyIcon.w), (Button1.W + Button2.W)) + (Desktop.scale * 8)
+    Me.h = Button1.h + Max(questionlabel.Font.TextHeight("|"), MyIcon.h) + (Desktop.scale * 4)
     If Checkbox1.visible Then Me.h += Checkbox1.h
     Me.Hide()
     Me.ShowModal()

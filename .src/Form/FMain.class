@@ -1629,8 +1629,7 @@ End
 
 
 Public Sub ButtonStop_Click()
-
-'randr.test()
+  
   ' Dim a As Integer = 1 / 0
   global.mouse_wait(fmain, False)
   InitABLoop()
@@ -1657,6 +1656,7 @@ Public Sub ButtonStop_Click()
   ArrangeCpl()
   'UpdateSeekSlider() 'fixmempv cambiati header
   'SeekBar_Change() 'fixmempv cambiati header
+  randr.Xmode_from_obj_restore()
 End
 
 Public Sub Buttonfwd_Click()
@@ -2368,11 +2368,12 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   Dim doanalyze As Boolean = False
   Dim timeA As Float = 0
-  Dim n As Integer
+  Dim w, h, n As Integer
   Dim exportfile As String
   Dim opt As Mpvoption
   Dim opts As New Collection
   Dim data As String
+  Dim fps As Float
 
   global.mouse_wait(fmain, True)
   
@@ -2450,6 +2451,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next  
+
   opts = user_options(fullpath)
   For Each data In opts
     mplayer.set_option(opts.key, data)
@@ -2463,6 +2465,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
       Next        
     Endif
   Endif
+
+
   
   mplayer.set_option("volume", Initialvolume())
 
@@ -2515,6 +2519,15 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
       Else
     CorrectAreaAspect() 
     ShowAudioPanel(False)
+    
+    If generaloptions.NOPARSE_SwitchresChk.Value = True Then
+      Try fps = CFloat(mplayer.getP("fps"))
+      If Not Error Then Try w = CInt(mplayer.getP("width"))
+      If Not Error Then Try h = CInt(mplayer.getP("height"))
+      If Not Error Then switch_res(w, h, fps)
+    Endif
+
+    
   Endif
 
   aspectmenu.visible = Not (mplayer.getP("audioonly") Or fsform.FullScreen)
@@ -11193,6 +11206,67 @@ Public Sub menu_mountpoint_Click()
 End
 
 
+Public Struct Xmode
+  output_name As String
+  mode_name As String
+  w As Integer
+  h As Integer
+  x As Integer
+  y As Integer
+  r As Float
+End Struct
+
+Public Sub switch_res(w As Integer, h As Integer, fps As Float, Optional AR_ERROR_MAX As Float = 0.02, Optional HZ_ERROR_MAX As Float = 0.03)
+  global.Center(fmain, randr)
+  randr.update(w, h, fps)
+  randr.show
+
+
+'   Dim good_mode As String[]  '[outputname|modename|w|h|refresh|Refresh_error|Aspect_error]
+'   Dim Xmode_current As Xmode
+'   Dim output_name, mode_name, w, h, rate As String
+'   Dim AR_ERROR, HZ_ERROR As String
+'   Dim message_text As String
+' Return
+'   Xmode_current = randr.Xmode_from_obj(fmain)
+' 
+'   good_mode = Split(randr.find_mode(Xmode_current.output_name, Xmode_current.w, Xmode_current.h, fps, AR_ERROR_MAX, HZ_ERROR_MAX), "|", "", True)
+' 
+'   If good_mode.count > 0 Then 
+' 
+'     'switch mode
+'     output_name = good_mode[0]
+'     mode_name = good_mode[1]
+'     w = good_mode[2]
+'     h = good_mode[3]
+'     rate = good_mode[4]
+' 
+'     ''controlla che il good_mode non sia il mio modo (!)
+'     If (w <> Xmode_current.w) Or (h <> Xmode_current.h) Or (rate <> Xmode_current.r) Then
+'   
+'       randr.Xmode_from_obj_store(fmain)      
+'       
+'       HZ_ERROR = good_mode[5]
+'       AR_ERROR = good_mode[6]
+'   
+'       message_text &= ("Switch ") & output_name & (" to: ") & "\n"
+'       message_text &= "\n"
+'       message_text &= ("mode name: ") & mode_name & "\n"
+'       message_text &= ("resolution: ") & w & "x" & h & "\n"
+'       message_text &= ("refresh: ") & rate & "\n"
+'       message_text &= ("\n")
+'       message_text &= ("refresh rate error: ") & CFloat(Left(HZ_ERROR, 8) * 100) & "%"
+'       message_text &= "\n"
+'       
+'       If MyQuestion.Ask(message_text, "Switch", "Keep current") = 1 Then
+'         randr.change_mode(output_name, mode_name, rate)
+'       Endif
+'   
+'       'randr.Xmode_from_obj_restore()
+'     Endif
+'   Endif
+
+End
 
 
 

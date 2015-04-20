@@ -48,7 +48,7 @@
       Index = 0
       Text = ("Video")
       { ScrollView1 ScrollView
-        MoveScaled(3,8,52,44)
+        MoveScaled(3,8,52,54)
         Tag = "video"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -91,17 +91,21 @@
             Value = CheckBox.True
           }
         }
+        { NOPARSE_SwitchresChk CheckBox
+          MoveScaled(1,17,49,4)
+          Text = ("Find the best video mode (experimental)")
+        }
         { NOPARSE_Separator1 Separator
-          MoveScaled(0,17,47,2)
+          MoveScaled(-1,21,47,2)
         }
         { NOPARSE_Label26 Label
-          MoveScaled(1,18,19,4)
+          MoveScaled(1,25,19,4)
           AutoResize = True
           Text = ("Gpu decoding")
           Alignment = Align.TopLeft
         }
         { NoParseBox123 Panel
-          MoveScaled(1,23,47,4.5714)
+          MoveScaled(1,30,47,4.5714)
           ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
           Arrangement = Arrange.Horizontal
           Spacing = True
@@ -122,7 +126,7 @@
           }
         }
         { Panel3 HBox
-          MoveScaled(2,29,47,4)
+          MoveScaled(2,37,47,4)
           ToolTip = ("Using vdpau overlay surface may lead to instability problems under some circumstances \nlike heavy cpu load or switching to/from fullscreen.\n\nNOT using vdpau overlay may cause tearing.\n\nIf you experience tearing, try to disable this option, if you experience instability,\ntry to check it.\n\nThis option disable the overlay surface by setting the environment variable:\nVDPAU_NVIDIA_NO_OVERLAY=1")
           Spacing = True
           Indent = True
@@ -136,7 +140,7 @@
           }
         }
         { NOPARSE_Separator2 Separator
-          MoveScaled(0,34,47,1)
+          MoveScaled(0,42,47,1)
         }
       }
       Index = 1
