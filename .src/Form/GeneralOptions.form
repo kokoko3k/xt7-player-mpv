@@ -306,6 +306,7 @@
         }
         { adevicehbox HBox
           MoveScaled(0,38,50,4)
+          ToolTip = ("Select an audio driver and an audio device at once.\nNote that any audio driver explicitaly selected in the chains window\nwill override this setting.\n\nmpv option: --audio-device")
           Spacing = True
           { audio000device CheckBox
             MoveScaled(1,0,19,4)
