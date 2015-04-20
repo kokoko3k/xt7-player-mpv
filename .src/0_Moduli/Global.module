@@ -535,8 +535,7 @@ Public Sub ReallyLoadAllSettings()
   MyForms.Add(SubAndOsd)
   MyForms.Add(GeneralOptions)
   MyForms.Add(VideoEqualizer) 
-  MyForms.Add(VFiltersCfg)
-  MyForms.Add(AFiltersCfg)
+
   For Each TheForm In MyForms
     WasVisible = TheForm.visible
     TheForm.hide
@@ -578,8 +577,6 @@ Public Sub DelayLoadStates_Timer()
   If Not GeneralOptions.AlreadyLoaded Then MyForms.Add(GeneralOptions)  'viene caricato in allinit_pre, perchè è necessario anche qui? sembra che non carichi le relative impostazioni...
   'searchfields is an early form... MyForms.Add(SearchFields) 
   ' If Not VideoEqualizer.AlreadyLoaded Then MyForms.Add(VideoEqualizer) credo serva solo in fase di play, quindi lo faccio lì
-  If Not VFiltersCfg.AlreadyLoaded Then MyForms.Add(VFiltersCfg)
-  If Not AFiltersCfg.AlreadyLoaded Then MyForms.Add(AFiltersCfg)
 
   For Each TheForm In MyForms
     WasVisible = TheForm.visible
@@ -635,7 +632,7 @@ End
 
 
 
-' VfiltersCfg, AFiltersCfg and GeneralOptions related functions --------------------------------------
+
 
 Public Sub FilterListFromTab(TheTabStrip As Tabstrip, FilterList As Listbox)
   'find the current tab caption in the filter list
@@ -978,7 +975,7 @@ End
 
 
 
-'/ VfiltersCfg and AFiltersCfg related functions --------------------------------------
+
 
 
 Public Function MouseInside(Obj As Object) As Boolean
@@ -1055,24 +1052,16 @@ End
 
 
 Public Sub ResetApplyBtnColor()
-  Try AFiltersCfg.ApplyBTN.Background = color.Default
   Try NewChains.ApplyBTN.Background = color.Default
   Try GeneralOptions.ApplyBTN.Background = color.Default
-  Try VFiltersCfg.ApplyBTN.Background = color.Default
-  ' Try XConfigureAudioDriver.ApplyBTN.Background = color.Default
-  ' Try XConfigureVideoDriver.ApplyBTN.Background = color.Default  
   Try SubAndOsd.ApplyBTN.Background = color.default
 End
 
 
 
 Public Sub RedApplyBtnColor()
-  Try AFiltersCfg.ApplyBTN.Background = color.red
   Try NewChains.ApplyBTN.Background = color.red
   Try GeneralOptions.ApplyBTN.Background = color.red
-  Try VFiltersCfg.ApplyBTN.Background = color.red
-  ' Try XConfigureAudioDriver.ApplyBTN.Background = color.red
-  ' Try XConfigureVideoDriver.ApplyBTN.Background = color.red
   Try SubAndOsd.ApplyBTN.Background = color.red
 End
 

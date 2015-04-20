@@ -207,8 +207,6 @@ Public Sub TestBTN_Click()
    prevfilter = parentcontainer.text
    Button1_Click()
    parentcontainer.text = TextBox1.text
-   AFiltersCfg.ApplyBTN_Click() 
-   'Wait 1
    parentcontainer.text = prevfilter 'restore the previous value
  Endif
 End

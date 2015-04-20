@@ -420,8 +420,6 @@ Public Sub InitEarlyForms()
   fmain.mouse = mouse.wait
   global.initearlyformsdone = True
   SubAndOsd.Init()
-  VFiltersCfg.Init()
-  AFiltersCfg.Init()
   GeneralOptions.Init()
   Try Last.mouse = mouse.default
   fmain.mouse = mouse.default
@@ -986,7 +984,6 @@ End
 Public Sub SetStyle_later()
   
   SetSubControlsStyles(AddUriForm)
-  SetSubControlsStyles(AfiltersCfg)
   SetSubControlsStyles(AskName)
   SetSubControlsStyles(NewChains)
   SetSubControlsStyles(CountDown)
@@ -995,9 +992,6 @@ Public Sub SetStyle_later()
   SetSubControlsStyles(HotKeys)
   SetSubControlsStyles(SearchFields)
   SetSubControlsStyles(TextDialog)
-  SetSubControlsStyles(VfiltersCfg)
-  ' SetSubControlsStyles(XConfigureAudioDriver)
-  ' SetSubControlsStyles(XConfigureVideoDriver)
   
   covermanager.ResizeShadowTemplate(generaloptions.IconWidthCombobox.text)
   
@@ -1317,7 +1311,6 @@ Public Sub Form_Close()
 
   ButtonStop_Click() 'don't remove me.
   
-  Try AFiltersCfg.hide
   Try AddUriForm.hide
   Try AskName.hide
   Try AudioForm.hide
@@ -1341,7 +1334,7 @@ Public Sub Form_Close()
   Try SubAndOsd.hide
   Try TextDialog.hide
   Try TranslationNeeded.hide
-  Try VFiltersCfg.hide
+  Try Newchains.hide
   Try VideoEqualizer.hide
   ' Try XConfigureAudioDriver.hide
   ' Try XConfigureVideoDriver.hide
@@ -1410,7 +1403,6 @@ Public Sub Form_Close()
   fmain.close
   zzzFake.Close
   
-  Try AFiltersCfg.close
   Try AddUriForm.close
   Try AskName.close
   Try AudioForm.close
@@ -1434,7 +1426,7 @@ Public Sub Form_Close()
   Try SubAndOsd.close
   Try TextDialog.close
   Try TranslationNeeded.close
-  Try VFiltersCfg.close
+  Try NewChains.close
   Try VideoEqualizer.close
   ' Try XConfigureAudioDriver.close
   ' Try XConfigureVideoDriver.close
@@ -5223,16 +5215,7 @@ Public Sub Librarygrid_Keypress()
 
 End
 
-'-----------------------------------
 
-
-' Public Sub ConfigureChainsBTN_click()
-'   
-'   Chains.show
-'   
-' End
-
-'-----------------------------------
 Public Sub PlayListGrid_DblClick()
 
   Dim SelectedPath As String
