@@ -1079,12 +1079,13 @@ Public Sub MainInit()
 
     If global.CurrentProfile = "" Then global.CurrentProfile = "default"
 
+    If (Not global.initearlyformsdone) Then InitEarlyForms()
     ReallySaveAllSettings(global.currentprofile, False) 'before loading user settings, make a profile with factory values.
     global.myDebug("Made a new profile: '" & global.CurrentProfile & "' as a copy of the factory default one")
 
   Endif
 
-  If (Not global.initearlyformsdone) Then InitEarlyForms()
+
 
 
   Try UpdateProfilesTabList()
