@@ -31,14 +31,21 @@ End Struct
 Public EventDB As New EventInfo[]
 Event GotInfo(MyEventInfo As EventInfo)
 
-Public Sub Init(Dvbsnoop_Exe As String, Channels_conf_file As String)
+Public Function Init(Dvbsnoop_Exe As String, Channels_conf_file As String) As Boolean
 
   Dim LTZ As String
   Dim LTZdiff As Integer
 
 
   DvbsnoopExe = Dvbsnoop_Exe ' = "/home/root/Desktop2_kde4/dvbsnoop"
-  channels = Split(File.Load(channels_conf_file), "\n")
+  Try channels = Split(File.Load(channels_conf_file), "\n")
+  If Error Then 
+    If Message.Error(("No channel file found.\nDo you want to tune some channels?"), ("Tune"), ("Cancel")) = 1 Then
+      DVBTuner.Show()
+      global.Center(Dvbtuner, fmain)
+    Endif
+    Return False
+  Endif
   FillCategories()
 
   ' get the local system timezone
@@ -47,7 +54,7 @@ Public Sub Init(Dvbsnoop_Exe As String, Channels_conf_file As String)
   ltzdiff = Val(Mid(LTZ, 2, 2)) * 3600 + Val(Mid(LTZ, 5, 2)) * 60 + Val(Mid(LTZ, 8, 2))
   If Mid(LTZ, 1, 1) = "-" Then ltzdiff = ltzdiff * -1
   utcoffset = ltzdiff
-
+  Return True
 
 End
 

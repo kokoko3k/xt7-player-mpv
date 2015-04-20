@@ -40,10 +40,15 @@ Public Sub Init()
   epgview.Proxy = pictureshadeup
   pictureshadeup.proxy = pictureshadelow
   dvbsnoop = New Dvbsnoop_class As "dvbsnoop"
-  dvbsnoop.Init("dvbsnoop", ChannelsFile)
-  dvbsnoop.Startit()
-  FillGrid()
-  InitDone = True
+  If dvbsnoop.Init("dvbsnoop", ChannelsFile) Then
+    dvbsnoop.Startit()
+    FillGrid()
+    InitDone = True
+      Else
+    EpgForm.Persistent = False
+    EpgForm.Close()
+    EpgForm.Persistent = True
+  Endif
 End
 
 Public Sub FillGrid()
