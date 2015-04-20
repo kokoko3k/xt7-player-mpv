@@ -1,0 +1,66 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,53,58)
+  Text = ("Best matching modes")
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { Grid_modes GridView
+    MoveScaled(0,1,51,29)
+    Expand = True
+    Mode = Select.Single
+    Grid = False
+    Padding = 4
+    Header = GridView.Horizontal
+  }
+  { Panel1 Panel
+    MoveScaled(1,32,50,15)
+    Arrangement = Arrange.Vertical
+    AutoResize = True
+    Spacing = True
+    Margin = True
+    Border = Border.Etched
+    { CheckBox1 CheckBox
+      MoveScaled(0,0,45,4)
+      AutoResize = True
+      Text = ("Compensate rate errors by changing speed")
+      Value = CheckBox.True
+    }
+    { CheckBox3 CheckBox
+      MoveScaled(1,4,50,4)
+      AutoResize = True
+      Text = ("Keep audio pitch (not implemented)")
+    }
+    { CheckBox2 CheckBox
+      MoveScaled(1,9,50,4)
+      AutoResize = True
+      Text = ("Encode an AC3 file to the spdif output (not implemented)")
+    }
+  }
+  { ButtonTimeout Button
+    MoveScaled(1,48,50,4)
+  }
+  { HBox2 HBox
+    MoveScaled(1,53,50,4)
+    Spacing = True
+    { HBox3 HBox
+      MoveScaled(6,0,5,4)
+      Expand = True
+    }
+    { ApplyBTN Button
+      MoveScaled(15,0,14,4)
+      ToolTip = ("Use new settings without save")
+      AutoResize = True
+      Text = Shortcut(("Use"), "U")
+      Picture = Picture["icon:/16/redo"]
+    }
+    { OkBTN Button
+      MoveScaled(32,0,14,4)
+      ToolTip = ("Close the window")
+      AutoResize = True
+      Text = ("Close")
+      Picture = Picture["icon:/16/cancel"]
+    }
+  }
+}
