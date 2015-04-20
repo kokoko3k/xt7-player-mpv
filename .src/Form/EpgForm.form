@@ -3,6 +3,7 @@
 { Form Form
   MoveScaled(0,0,129,79)
   Foreground = &HFFFFFF&
+  Picture = Picture["video-television.png"]
   Persistent = True
   Arrangement = Arrange.Vertical
   { Separator3 Separator
@@ -50,7 +51,7 @@
         MoveScaled(38,1,48,7)
         AutoResize = True
         { ClockLabel2 TextLabel
-          MoveScaled(-4.2857,0.2857,48,7)
+          MoveScaled(-5.2857,0.2857,48,7)
           Font = Font["Bold,18"]
           Foreground = &H000000&
           Text = ("EPG GUIDE")
