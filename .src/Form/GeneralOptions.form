@@ -326,6 +326,8 @@
         }
       }
       Index = 2
+      Text = ("Screen")
+      Index = 3
       Text = ("Library")
       { ScrollView6 ScrollView
         MoveScaled(1,2,56,57)
@@ -436,7 +438,7 @@
           MoveScaled(2,51,50,1)
         }
       }
-      Index = 3
+      Index = 4
       Text = ("Tweaks")
       { ScrollView5 ScrollView
         MoveScaled(1,1,52,44)
@@ -520,8 +522,8 @@
           }
         }
       }
-      Index = 4
-      Text = ("Audio CD")
+      Index = 5
+      Text = ("CD/DVD")
       { ScrollView10 ScrollView
         MoveScaled(3,2,58,52)
         Tag = "Audio CD"
@@ -578,23 +580,31 @@
             Text = ("Use CDDB")
           }
         }
-      }
-      Index = 5
-      Text = ("DVD")
-      { ScrollView7 ScrollView
-        MoveScaled(1,3,57,47)
-        Tag = "dvd"
-        Expand = True
-        Arrangement = Arrange.Vertical
-        Spacing = True
-        Margin = True
-        Padding = 6
+        { Hbox444 HBox
+          MoveScaled(1,20,48,4)
+          ToolTip = ("Set the cache for DVD playback.\nNote that enabling it may lead to problems.")
+          Spacing = True
+          { cdda000speed CheckBox notifyobj
+            Name = "cdda000speed"
+            MoveScaled(1,0,23,4)
+            AutoResize = True
+            Text = ("Limit Drive Speed to")
+          }
+          { cdda000speedSpinbox SpinBox notifyobj
+            Name = "cdda000speedSpinbox"
+            MoveScaled(27,0,11,4)
+            MaxValue = 32
+          }
+        }
+        { NOPARSESeparator34 Separator
+          MoveScaled(2,28,52,1)
+        }
         { NoParse13 HBox
-          MoveScaled(1,1,48,4)
+          MoveScaled(2,30,48,4)
           ToolTip = ("Select your Dvd device (es /dev/dvd, /dev/cdrom, /dev/sr2...).")
           Spacing = True
           { NoParseLabel10 Label
-            MoveScaled(1,1,14,3)
+            MoveScaled(2,0,14,3)
             AutoResize = True
             Text = ("DVD Device")
           }
@@ -609,7 +619,7 @@
           }
         }
         { NoParse24 HBox
-          MoveScaled(1,6,48,4)
+          MoveScaled(2,35,48,4)
           ToolTip = ("Set the cache for DVD playback.\nNote that enabling it may lead to problems.")
           Spacing = True
           { DvdCacheCheckbox CheckBox notifyobj
@@ -627,7 +637,7 @@
           }
         }
         { NoParse45 HBox
-          MoveScaled(0,11,50,4)
+          MoveScaled(1,40,50,4)
           ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           { CacheMinCheckbox2 CheckBox notifyobj
@@ -647,6 +657,22 @@
             MoveScaled(38,0,11,4)
             AutoResize = True
             Text = ("KBytes")
+          }
+        }
+        { Hbox1 HBox
+          MoveScaled(1,46,48,4)
+          ToolTip = ("Set the cache for DVD playback.\nNote that enabling it may lead to problems.")
+          Spacing = True
+          { dvd000speed CheckBox notifyobj
+            Name = "dvd000speed"
+            MoveScaled(1,0,23,4)
+            AutoResize = True
+            Text = ("Limit Drive Speed to")
+          }
+          { dvd000speedSpinbox SpinBox notifyobj
+            Name = "dvd000speedSpinbox"
+            MoveScaled(27,0,11,4)
+            MaxValue = 32
           }
         }
       }

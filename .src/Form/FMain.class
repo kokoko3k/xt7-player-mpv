@@ -2290,7 +2290,7 @@ Public Sub user_options(fullpath As String) As Collection
     opts["vf-add"] = NewChains.parse_filters(False)
     opts["af-add"] = NewChains.parse_filters(True)
   Endif
-  
+
   For Each opt In generaloptions.Parse()
     If opt.data = "" Then opt.data = Chr(8)
     While opts.Exist(opt.name)
@@ -2407,7 +2407,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   LASTAUDIOID = -1
   global.ResetApplyBtnColor()
 
-  
+
   ' TooMuchCache = False
   alreadypaused = True
   'LogWindow.clearlogs()
@@ -2453,6 +2453,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Next  
 
   opts = user_options(fullpath)
+
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next  
@@ -8211,7 +8212,7 @@ Public Function PopupCddaError() As Boolean
   
   If MyQuestion.Ask(("Cannot access a valid cd audio or Cd device"), "Configure it", "Never mind") = 1 Then
     GeneralOptions.Show
-    GeneralOptions.TabStrip1.index = Global.TabIndexByName(("Audio CD"), GeneralOptions.TabStrip1)
+    GeneralOptions.TabStrip1.index = Global.TabIndexByName(("CD/DVD"), GeneralOptions.TabStrip1)
   Endif
   
 End
@@ -8220,7 +8221,7 @@ Public Function PopupDVDError() As Boolean
   
   If MyQuestion.Ask(("Cannot access a valid dvd device"), "Configure it", "Never mind") = 1 Then
     GeneralOptions.Show
-    GeneralOptions.TabStrip1.index = Global.TabIndexByName(("DVD"), GeneralOptions.TabStrip1)
+    GeneralOptions.TabStrip1.index = Global.TabIndexByName(("CD/DVD"), GeneralOptions.TabStrip1)
   Endif
   
 End

@@ -73,18 +73,18 @@ End
 
 Public Sub Init()
   If initdone Then Return
-  Try Optionslist.Add("Video", ("Video"), Stock["32/video"])
-  Try Optionslist.Add("Audio", ("Audio"), Stock["32/audio"])
-  Try Optionslist.Add("Library", ("Library"), Stock["32/book"])
-  Try Optionslist.Add("Tweaks", ("Tweaks"), Stock["32/wizard"])
-  Try Optionslist.Add("Audio CD", ("Audio CD"), Stock["32/cdrom"])
-  Try Optionslist.Add("DVD", ("DVD"), Stock["32/cdrom"])
-  Try Optionslist.Add("Network", ("Network"), Stock["32/network"])
+  Try Optionslist.Add("Video", ("Video"), Stock["large/video"])
+  Try Optionslist.Add("Audio", ("Audio"), Stock["large/audio"])
+  Try Optionslist.Add("Screen", ("Screen"), Stock["large/screen"])
+  Try Optionslist.Add("Library", ("Library"), Stock["large/book"])
+  Try Optionslist.Add("Tweaks", ("Tweaks"), Stock["large/wizard"])
+  Try Optionslist.Add("CD/DVD", ("CD/DVD"), Stock["large/cdrom"])
+  Try Optionslist.Add("Network", ("Network"), Stock["large/network"])
   Try Optionslist.Add("DVB-T", ("DVB-T"), Picture["GeneralDVBT.png"])
-  Try Optionslist.Add("Language", ("Language"), Stock["32/language"])
-  Try Optionslist.Add("Misc", ("Misc"), Stock["32/options"])
-  Try Optionslist.Add("User options", ("User options"), Stock["32/terminal"])
-  Try Optionslist.Add("Style", ("Style"), Stock["32/color"])
+  Try Optionslist.Add("Language", ("Language"), Stock["large/language"])
+  Try Optionslist.Add("Misc", ("Misc"), Stock["large/options"])
+  Try Optionslist.Add("User options", ("User options"), Stock["large/terminal"])
+  Try Optionslist.Add("Style", ("Style"), Stock["large/color"])
   DrawFiltersGui()
   InitDone = True
 End
@@ -238,16 +238,16 @@ Private Sub DrawFiltersGui()
     Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Set first field for interlaced content\n mpv option: -field-dominance"))
     AllParams.Clear
     
-  '-dvd-speed
-    AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "dvd000speed", ("")])
-    Global.DrawGui(AllParams, ("DVD"), Tabstrip1, Switchable, ("Try to limit DVD speed. 0 means no change.\nNote that you need write access to dvd device\n mpv option: -dvd-speed"))
-    AllParams.Clear
-    
-  '-cdda speed=
-    'AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "cdda00998Aspeed=", ("X")])
-    AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "cdda000speed", ("")])
-    Global.DrawGui(AllParams, ("Audio CD"), Tabstrip1, Switchable, ("Try to limit cdrom speed. 0 means no change.\nNote that you need write access to dvd device\n mpv option: -cdda speed=x"))
-    AllParams.Clear
+  ' '-dvd-speed
+  '   AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "dvd000speed", ("")])
+  '   Global.DrawGui(AllParams, ("CD/DVD"), Tabstrip1, Switchable, ("Try to limit DVD speed. 0 means no change.\nNote that you need write access to dvd device\n mpv option: -dvd-speed"))
+  '   AllParams.Clear
+  '   
+  ' '-cdda speed=
+  '   'AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "cdda00998Aspeed=", ("X")])
+  '   AllParams.add(["RANGE", ("Limit Drive Speed to"), "0", "0", "32", "cdda000speed", ("")])
+  '   Global.DrawGui(AllParams, ("CD/DVD"), Tabstrip1, Switchable, ("Try to limit cdrom speed. 0 means no change.\nNote that you need write access to dvd device\n mpv option: -cdda speed=x"))
+  '   AllParams.Clear
 
   '-hr-mp3-seek
     AllParams.add(["ROCHOOSE", ("High resolution seek"), "no", "absolute", "yes", "hr-seek", ("Hi-res MP3 seeking")])
@@ -283,7 +283,6 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Dim hwdec_choice As String
   Dim myopts As New MpvOption[]
   Dim pt As String
-
   Previndex = Tabstrip1.index
   For i = 0 To TabStrip1.count - 1
     TabStrip1.index = i
@@ -1170,7 +1169,6 @@ Private Sub AlignObjects()
   containers.Add(ScrollView6)
   containers.Add(ScrollView5)
   containers.Add(ScrollView10)
-  containers.Add(ScrollView7)
   containers.Add(ScrollView4)
   containers.Add(ScrollView11)
   containers.Add(ScrollView8)
