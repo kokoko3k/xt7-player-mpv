@@ -400,13 +400,14 @@
         }
         { NoparseHbox9 HBox
           MoveScaled(2,27,52,4)
+          Enabled = False
           ToolTip = ("If you have an AC3 capable decoder connected\nto the spdif output, check this.\n\nSince changing playing speed is not supported on \naudio passthrough configurations, the only way to\nhave multichannel/surround sound over SPDIF is\nto encode an AC3 stream on the fly.")
           Spacing = True
           Indent = True
           { switchres_ac3_combobox CheckBox
             MoveScaled(3,0,39,4)
             AutoResize = True
-            Text = ("Encode an ac3 stream to the spdif output")
+            Text = ("Encode an ac3 stream to the spdif output (not implemented)")
           }
         }
       }
