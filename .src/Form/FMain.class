@@ -9340,15 +9340,15 @@ Public Sub YtRefresh_Click()
   
 End
 
-Public Sub buttonopts_MouseDown()
-  
-  sidepanelYTSearchoptions.visible = Not sidepanelYTSearchoptions.visible
-  
-End
 
 Public Sub buttondetail_Click()
+  Dim t As Integer
+  Dim numlines As Integer = 10 'how many lines to show in yt panel?
   scrollviewyt.visible = Not scrollviewyt.visible
   YouVideoInfo.w = scrollviewyt.w - 64
+  t = Round((YouVideoInfo.Font.TextHeight("|") * numlines * 1.3) / vsplit1.h * 100)
+  vsplit1.layout = [100 - t, t]
+
 End
 
 Public Sub youtubetree_KeyPress()
@@ -11270,3 +11270,8 @@ End
 
 
 
+Public Sub Leftsidetabs_Arrange()
+
+   sidepanelYTSearchoptions.visible = True
+
+End

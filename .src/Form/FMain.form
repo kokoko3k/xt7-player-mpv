@@ -1316,36 +1316,23 @@
           MoveScaled(2,32,38,4)
           ToolTip = (" ")
           Spacing = True
-          { buttonopts Button
-            MoveScaled(0,0,4,4)
-            ToolTip = ("Show advanced search options")
-            Picture = Picture["icon:/16/zoom-fit"]
-          }
-          { blinktimer #Timer
-            Delay = 100
-          }
           { buttondetail Button
-            MoveScaled(4,0,4,4)
+            MoveScaled(0,0,4,4)
             ToolTip = ("Show youtube video information")
             Picture = Picture["icon:/16/info"]
           }
-          { YtSearchlabel Label
-            MoveScaled(8,0,5,4)
-            AutoResize = True
-            Text = ("Search")
-          }
           { YouSearchfield ComboBox
-            MoveScaled(13,0,10,3)
+            MoveScaled(5,0,10,3)
             ToolTip = ("Enter some search terms.\nSpecial character \"|\" means \"OR\",\nso you can type: Bach|Mozart ")
             Expand = True
           }
           { MaxLabel Label
-            MoveScaled(23,0,5,4)
+            MoveScaled(16,0,5,4)
             AutoResize = True
             Text = ("Results")
           }
           { SpinBoxmaxresults SpinBox
-            MoveScaled(26,0,7,4)
+            MoveScaled(24,0,7,4)
             ToolTip = ("How many results to get.")
             MinValue = 1
             MaxValue = 49
@@ -1354,11 +1341,15 @@
           { buttonstartytsearch Button
             MoveScaled(35,0,4,4)
             ToolTip = ("Search now")
-            Text = (">>")
+            Picture = Picture["icon:/small/find"]
           }
         }
+        { blinktimer #Timer
+          #MoveScaled(29,37)
+          Delay = 100
+        }
         { sidepanelYTSearchoptions Panel
-          MoveScaled(0,36,32,17)
+          MoveScaled(2,39,32,18)
           Visible = False
           Arrangement = Arrange.Vertical
           Spacing = True
