@@ -1162,8 +1162,9 @@ Private Sub AlignObjects()
   Dim c, l, checkbox_no_text_width, max_obj_w As Integer
   Dim acheckbox As Checkbox
   Dim alabel As Label
+  Dim indented As Boolean = False
 
-  
+  containers.Add(ScrollView7)
   containers.Add(ScrollView1)
   containers.Add(ScrollView2)
   containers.Add(ScrollView6)
@@ -1189,9 +1190,7 @@ Private Sub AlignObjects()
   checkbox_no_text_width = acheckbox.w - alabel.w 'acheckbox.w * 3.1 
   acheckbox.Delete
   alabel.delete
-
   For Each acontainer In containers
-   
     max_obj_w = 0
     align_objs.clear
     For Each aBox In acontainer.children
@@ -1208,17 +1207,21 @@ Private Sub AlignObjects()
             If acontainer.name = "ScrollView2" Then
               global.myDebug(child.text, l, max_obj_w)
             Endif
-
           Endif
         Endif
       Endif
     Next 'abox
 
     'align labels
-
     For Each child In align_objs
+      indented = False
+      Try indented = (child.Parent.indent = 1)
       Try Object.SetProperty(child, "autoresize", False)
-      Try Object.SetProperty(child, "w", max_obj_w)
+      If indented Then 
+        Try Object.SetProperty(child, "w", max_obj_w)
+          Else
+        Try Object.SetProperty(child, "w", max_obj_w + Desktop.scale)
+      Endif
     Next
     
     
@@ -1226,3 +1229,21 @@ Private Sub AlignObjects()
 End
 
 
+
+Public Sub Switchres_use_CheckBox_Click()
+  EnableDisableSwitchResCheckboxes
+End
+
+Public Sub ScrollView7_Arrange()
+  EnableDisableSwitchResCheckboxes
+End
+
+Public Sub switchres_compensate_checkbox_Click()
+  EnableDisableSwitchResCheckboxes
+End
+
+Public Sub EnableDisableSwitchResCheckboxes()
+  NoparseHbox9.enabled = Switchres_compensate_CheckBox.value
+  NoparseHbox6.enabled = Switchres_use_CheckBox.value
+  NoparseHbox7.enabled = Switchres_use_CheckBox.value  
+End

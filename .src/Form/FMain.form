@@ -695,31 +695,23 @@
       Visible = False
       Font = Font["1"]
     }
-    { ShowVolBtn2 ToolButton DynaGuiToolbar
-      Name = "ShowVolBtn2"
-      MoveScaled(12,0,4.5714,4.5714)
-      Font = Font["1"]
-      ToolTip = ("Open a file")
-      AutoResize = True
-      Picture = Picture["icon:/22/open"]
-    }
-    { OpenNetworkBTN ToolButton DynaGuiToolbar
-      Name = "OpenNetworkBTN"
-      MoveScaled(17,0,4.5714,4.5714)
-      Font = Font["1"]
-      ToolTip = ("Open an URI/Network stream")
-      AutoResize = True
-      Picture = Picture["icon:/22/network"]
-    }
     { ConfigureBTN MenuButton DynaGuiToolbar
       Name = "ConfigureBTN"
-      MoveScaled(24,0,7,5)
+      MoveScaled(13,0,7,5)
       Font = Font["1"]
       ToolTip = ("Configuration toolbox")
       AutoResize = True
       Picture = Picture["icon:/22/tools"]
       Border = False
       Menu = "alloptionsmenu"
+    }
+    { switchresBTN MenuButton
+      MoveScaled(21,0,8,5)
+      Font = Font["1"]
+      ToolTip = ("Video Equalizer")
+      AutoResize = True
+      Picture = Picture["icon:/22/screen"]
+      Border = False
     }
     { TagEditorBtn ToolButton DynaGuiToolbar
       Name = "TagEditorBtn"

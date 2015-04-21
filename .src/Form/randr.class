@@ -3,14 +3,9 @@
 Create Static
 
 
-
-
 Public Sub Form_Open()
   buttontimeout.hide
 End
-
-
-
 
 Public Struct Xmode
   output_name As String
@@ -254,7 +249,78 @@ Public Function find_mode(s_output_name As String, s_w As Integer, s_h As Intege
   Return ""
 End
 
-Public Function find_modes(s_output_name As String, s_w As Integer, s_h As Integer, s_fps As Float, Optional AR_ERROR_max As Float = -1, Optional HZ_ERROR_max As Float = -1) As String[]
+Public Function find_modes(s_output_name As String, min_h As Integer, s_fps As Float, Optional HZ_ERROR_max As Float = 0) As String[]
+  'given an output-name
+  'given a minimum height
+  'given the source fps
+  'Given an output name
+  
+  'search for a mode that
+  '* has the same output name of the source
+  '* has at least an height of min_h
+  '* has a refresh rate multiple of the (requested fps +/- a little error%)
+  
+  'And Return it In this form:  outputname|modename|w|h|refresh|Refresh_error
+  
+  Dim output_modes As New String[]
+  Dim modes_db As New String[] ' '[outputname|modename|w|h|refresh],..,[outputname|modename|w|h|refresh]'
+  Dim mode As String
+  Dim mode_name As String
+
+  Dim output_name As String
+  Dim w, h As Integer
+  Dim r As Float
+  Dim i As Integer
+
+  Dim t As Float
+  Dim t_int As Integer
+  Dim perfect_refresh As Float
+  Dim compensation As Float
+
+
+  Dim Hz_error As Float
+
+  modes_db = get_sizes()
+
+  For Each mode In modes_db
+    output_name = Split(mode, "|", "", True)[0]
+    If output_name = s_output_name Then
+      mode_name = Split(mode, "|", "", True)[1] 
+      w = CInt(Split(mode, "|", "", True)[2])
+      h = CInt(Split(mode, "|", "", True)[3])
+      r = CFloat(Split(mode, "|", "", True)[4])
+      If (h >= min_h) Then
+        'check refresh
+        ' come si fa a capire che una frequenza destinazione va bene?
+        ' 
+        ' divido la frequenza del monitor per quella del filmato, ad esempio
+        ' 75 hz / 23.976
+        ' esce 3.1281281
+        ' poi divido la sua parte decimale per la sua parte intera:
+        ' 0.1281281 / 3 = 0.0427
+        ' se il numero che esce è inferiore a 0.05 (che rappresenta il mio 5%) allora va bene.
+
+        Try t = r / s_fps
+        If Error Then Return Null
+        t_int = Round(t)
+        perfect_refresh = s_fps * t_int
+        Try compensation = r / perfect_refresh
+        If Error Then Return Null
+        Hz_error = 1 - compensation 
+        If Abs(Hz_error) <= Hz_error_max Then
+          global.myDebug("Mode found: " & mode)
+          output_modes.Add(mode & "|" & Hz_error)
+        Endif
+      Endif
+    Endif
+  Next
+  'Stop
+  'global.myDebug("No mode found")
+  Return output_modes
+End
+
+
+Public Function OLD_find_modes(s_output_name As String, s_w As Integer, s_h As Integer, s_fps As Float, Optional AR_ERROR_max As Float = -1, Optional HZ_ERROR_max As Float = -1) As String[]
   'given an output-name
   'given a source resolution
   'given the source fps

@@ -280,10 +280,6 @@ Public Sub DynaGuiToolbar_Click()
     Try ButtonName = Last.name
     If (Not Error ) Then
       Select Case ButtonName
-        Case "ShowVolBtn2"
-          ShowVolBtn2_Click()
-        Case "OpenNetworkBTN"
-          OpenNetworkBTN_Click()
         ' Case "ConfigureChainsBTN"
         '   If (Not global.initearlyformsdone) Then InitEarlyForms()
         '   ConfigureChainsBTN_Click()
@@ -1629,7 +1625,7 @@ End
 
 
 Public Sub ButtonStop_Click()
-  
+ 
   ' Dim a As Integer = 1 / 0
   global.mouse_wait(fmain, False)
   InitABLoop()
@@ -2368,12 +2364,11 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   Dim doanalyze As Boolean = False
   Dim timeA As Float = 0
-  Dim w, h, n As Integer
+  Dim n As Integer
   Dim exportfile As String
   Dim opt As Mpvoption
   Dim opts As New Collection
   Dim data As String
-  Dim fps As Float
 
   global.mouse_wait(fmain, True)
   
@@ -2520,15 +2515,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
       Else
     CorrectAreaAspect() 
     ShowAudioPanel(False)
-    
-    If generaloptions.NOPARSE_SwitchresChk.Value = True Then
-      Try fps = CFloat(mplayer.getP("fps"))
-      If Not Error Then Try w = CInt(mplayer.getP("width"))
-      If Not Error Then Try h = CInt(mplayer.getP("height"))
-      If Not Error Then switch_res(w, h, fps)
-    Endif
-
-    
   Endif
 
   aspectmenu.visible = Not (mplayer.getP("audioonly") Or fsform.FullScreen)
@@ -6115,15 +6101,7 @@ Public Sub LeftSideTabs_KeyRelease()
 End
 
 Public Sub MenuAddUri_Click()
-  
   AddUriForm.show
-  
-End
-
-Public Sub OpenNetworkBTN_Click()
-  
-  AddUriForm.show
-  
 End
 
 Public Sub MenuOpenUri_Click()
@@ -6598,11 +6576,7 @@ Public Sub MenuLibCopyToClipboard_Click()
   
 End
 
-Public Sub ShowVolBtn2_Click()
-  
-  ButtonOpen_Click
-  
-End
+
 
 Public Sub SwitchSubBtn_Click()
   If Not (mplayer.ProcessRunningOvr()) Then Return
@@ -11280,3 +11254,115 @@ Public Sub Leftsidetabs_Arrange()
    sidepanelYTSearchoptions.visible = True
 
 End
+
+Public Sub switchresBTN_Click()
+  If (Not global.initearlyformsdone) Then InitEarlyForms()
+  If generaloptions.Switchres_use_CheckBox.value = False Then
+    If MyQuestion.Ask(("SwitchRes is disabled, do you want to configure it now?"), "Yes", "No") = 1 Then
+      GeneralOptions.Show()
+      GeneralOptions.OptionsList["Screen"].selected = True
+      Return
+        Else
+      Return
+    Endif
+  Endif
+  Make_modes_menu()
+  menu_modes.popup
+End
+
+Public menu_modes As Menu
+
+Public Sub Make_modes_menu()
+  Dim Xm As Xmode
+  Dim min_h As Integer = 0
+  Dim HZ_ERROR_MAX As Float
+  Dim fps As Float = -1
+  Dim selected_modes As New String[]
+  Dim menu_mode As Menu
+  Dim mode As String
+  Dim mode_splitted As String[]
+  Dim output_name, mode_name, w, h, hz, err As String
+  
+  If generaloptions.Switchres_height_CheckBox.value Then 
+    min_h = Left(generaloptions.Switchres_height_Combobox.text, -1)
+  Endif
+  
+  If generaloptions.Switchres_refresh_checkbox.value Then 
+    HZ_ERROR_MAX = CFloat(Left(generaloptions.Switchres_refresh_error_combobox.text, -1)) / 100
+  Endif 
+  
+  menu_modes = New Menu(fmain)
+  menu_mode = New Menu(menu_modes) As "menu_mode_configure"
+  menu_mode.text = ("Configure...")
+  menu_mode.picture = Picture["icon:/small/options"]
+
+  If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then
+    Try fps = CFloat(mplayer.getP("fps"))
+    menu_mode = New Menu(menu_modes) 
+    menu_mode.text = ("Matching modes")
+    menu_mode.Enabled = False
+      Else
+    menu_mode = New Menu(menu_modes) 
+    menu_mode.text = ("All modes")
+    menu_mode.Enabled = False
+    'just produce a list of all modes:
+    fps = 30
+    min_h = 0
+    HZ_ERROR_MAX = 99999
+  Endif
+  menu_mode = New Menu(menu_modes) 
+  menu_mode.text = ("")
+
+  
+  Xm = randr.Xmode_from_obj(fmain)
+  If fps >= 0 Then 
+    selected_modes = randr.find_modes(Xm.output_name, min_h, fps, HZ_ERROR_MAX)
+  Endif
+  If selected_modes = Null Then Return
+  
+  If selected_modes.count > 0 Then
+    For Each mode In selected_modes
+      mode_splitted = Split(mode, "|")
+      'outputname|modename|w|h|refresh|Refresh_error
+      output_name = mode_splitted[0]
+      w = mode_splitted[2]
+      h = mode_splitted[3]
+      hz = mode_splitted[4]
+      err = Round(CFloat(mode_splitted[5]), -3)
+      menu_mode = New Menu(menu_modes) As "menu_mode"
+      menu_mode.tag = mode
+      menu_mode.text = output_name & ": " & w & "x" & h & "@" & hz & "hz"
+      If min_h <> 0 Then menu_mode.text &= " (err: " & err & ")"
+    Next 'mode
+  Endif
+
+End
+
+Public Sub menu_mode_Click()
+  Dim mode_splitted As String[]
+  Dim output_name, mode_name As String
+  Dim err, rate As Float
+  
+  Dim speed_compensation As Float
+  
+  mode_splitted = Split(Last.tag, "|", "", True)
+  output_name = mode_splitted[0]
+  mode_name = mode_splitted[1]
+  rate = CFloat(mode_splitted[4])
+  err = mode_splitted[5]
+  randr.change_mode(output_name, mode_name, rate)
+  
+  If mplayer.ProcessRunningOvr() Then 
+    If Not mplayer.getP("audioonly") Then
+      speed_compensation = 1 - CFloat(err)
+      fmain.mplayer.set_property_mpv("speed", speed_compensation)
+      fmain.mplayer.ShowText("New speed: " & speed_compensation)
+    Endif
+  Endif
+End
+
+Public Sub menu_mode_configure_Click()
+  GeneralOptions.Show()
+  GeneralOptions.OptionsList["Screen"].selected = True
+End
+
