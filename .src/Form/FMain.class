@@ -9344,7 +9344,11 @@ End
 Public Sub buttondetail_Click()
   Dim t As Integer
   Dim numlines As Integer = 10 'how many lines to show in yt panel?
-  scrollviewyt.visible = Not scrollviewyt.visible
+  If scrollviewyt.visible Then 
+    scrollviewyt.visible = False
+    Return
+  Endif
+  scrollviewyt.visible = True
   YouVideoInfo.w = scrollviewyt.w - 64
   t = Round((YouVideoInfo.Font.TextHeight("|") * numlines * 1.3) / vsplit1.h * 100)
   vsplit1.layout = [100 - t, t]
