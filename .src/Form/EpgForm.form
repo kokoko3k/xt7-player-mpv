@@ -1,46 +1,48 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,129,79)
+  MoveScaled(0,0,129,82.8571)
   Foreground = &HFFFFFF&
   Icon = Picture["video-television.png"]
   Persistent = True
   Arrangement = Arrange.Vertical
   { Separator3 Separator
-    MoveScaled(17,1,53,2)
+    MoveScaled(17,1,53,1.4286)
     Background = &H0B3A72&
   }
   { VBox1 VBox
-    MoveScaled(-23,7,122,70)
+    MoveScaled(-23,4,122,74)
     Background = &H0B3A72&
     Expand = True
     Margin = True
     { HBox1 HBox
-      MoveScaled(27,3,87,9)
+      MoveScaled(27,3,87,7.1429)
       Background = &H0B3A72&
       AutoResize = True
       { Panel1 Panel
-        MoveScaled(0,1,23,7)
+        MoveScaled(0,1,23,5.7143)
         AutoResize = True
         { TextLabel2 TextLabel
-          MoveScaled(0.7143,0.2857,22,7)
+          MoveScaled(0.7143,0.2857,21,5.7143)
           Font = Font["Bold,18"]
           Foreground = &H000000&
+          AutoResize = True
           Text = ("EPG GUIDE")
-          Alignment = Align.TopLeft
+          Alignment = Align.Left
           Transparent = True
         }
         { TextLabel1 TextLabel
-          MoveScaled(1,0,22,7)
+          MoveScaled(0,0,21,6)
           Font = Font["Bold,18"]
           Foreground = &HFFFFFF&
+          AutoResize = True
           Text = ("EPG GUIDE")
-          Alignment = Align.TopLeft
+          Alignment = Align.Left
           Transparent = True
         }
       }
       { VBox2 VBox
-        MoveScaled(24,2,3,6)
+        MoveScaled(25,0,3,3)
         Expand = True
       }
       { Timer1 #Timer
@@ -48,39 +50,41 @@
         Delay = 1
       }
       { Panel2 Panel
-        MoveScaled(38,1,48,7)
+        MoveScaled(38,1,48,5.7143)
         AutoResize = True
         { ClockLabel2 TextLabel
-          MoveScaled(-5.2857,0.2857,48,7)
+          MoveScaled(-6.2857,0.2857,54,5.7143)
           Font = Font["Bold,18"]
           Foreground = &H000000&
+          AutoResize = True
           Text = ("EPG GUIDE")
-          Alignment = Align.TopRight
+          Alignment = Align.Right
           Transparent = True
         }
         { ClockLabel TextLabel
-          MoveScaled(-1,0,48,7)
+          MoveScaled(-6,0,54,6)
           Font = Font["Bold,18"]
           Foreground = &HFFFFFF&
+          AutoResize = True
           Text = ("EPG GUIDE")
-          Alignment = Align.TopRight
+          Alignment = Align.Right
           Transparent = True
         }
       }
     }
     { Separator2 Separator
-      MoveScaled(36,12,53,1)
+      MoveScaled(36,12,53,2)
     }
     { ScrollViewTime ScrollView
-      MoveScaled(27,13,66,3)
-      Font = Font["Bold,Italic"]
+      MoveScaled(52,14,66,4)
+      Font = Font["Bold,Italic,-1"]
       Foreground = &HFFFFFF&
       Arrangement = Arrange.Horizontal
       Border = False
       ScrollBar = Scroll.None
     }
     { HBox2 HBox
-      MoveScaled(26,16,79,46)
+      MoveScaled(30,19,79,46)
       Background = &H0B3A72&
       Foreground = &HFFFFFF&
       Expand = True
@@ -92,7 +96,7 @@
         ScrollBar = Scroll.None
       }
       { EpgView ScrollView
-        MoveScaled(22,1,54,43)
+        MoveScaled(22,1,56,43)
         Font = Font["Bold"]
         Background = &H81B0D6&
         Expand = True
@@ -191,10 +195,10 @@
       }
     }
     { HBox4 HBox
-      MoveScaled(2,63,79,1)
+      MoveScaled(33,66,79,0.7143)
     }
     { HBox3 HBox
-      MoveScaled(1,65,119,4)
+      MoveScaled(1,68,119,4)
       { TextBoxSearchEvent TextBox
         MoveScaled(0,0,25,4)
         Background = &HCDE9FF&
@@ -230,7 +234,7 @@
         MoveScaled(60,1,26,3)
         Visible = False
         Font = Font["Bold"]
-        Background = &H80FFFFFF&
+        Background = &HCDE9FF&
       }
       { VBox4 VBox
         MoveScaled(89,0,0.5714,4)

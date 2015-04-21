@@ -348,17 +348,23 @@ Public Sub MyInfoPanel_MouseDown()
 End
 
 Private mpx As Integer
+Private mpy As Integer
 
 Public Sub EpgView_MouseDown()
     mpx = Mouse.screenx 
+    mpy = Mouse.screeny
 End
 
 
 Public Sub EpgView_MouseDrag()
   Dim sx As Integer
+  Dim sy As Integer
   sx = CInt((Mouse.screenx - mpx) * (epgview.w / 500))
-  epgview.Scroll(epgview.scrollx - sx, epgview.scrolly)
+  sy = CInt((Mouse.screeny - mpy) * (epgview.h / 500))
+  'epgview.Scroll(epgview.scrollx - sx, epgview.scrolly)
+  epgview.Scroll(epgview.scrollx - sx, epgview.scrolly - sy)
   mpx = Mouse.screenx 
+  mpy = Mouse.screeny
 End
 
 Public Function updateNowSeparator()
