@@ -1352,7 +1352,6 @@ Public Sub Form_Close()
   Try Shell "rm -R " & global.confpath & "/.xt7-screenshots/* >/dev/null 2>&1" Wait
   
   If (fsform.FullScreen = True) Then FullScreenSwitch()
-  'OneSecTimer.Stop
   If mplayer.ProcessRunningOvr() Then
     mplayer.do_stop()
     ExecutePostCmd()
@@ -1671,7 +1670,6 @@ End
 Public Sub ButtonPlay_Click()
   If mplayer.ProcessRunningOvr() Then
     If mplayer.Paused() Then
-      'OneSecTimer.start
       ButtonPlay.picture = Picture["media-playback-pause.png"]
       mplayer.do_leave_pause()
     Else
@@ -2382,9 +2380,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   
   Wait
   Stopmthumbler()
-  'OneSecTimer.Stop()
-  
-
   
   needytcookie = False
   ButtonNowNext.visible = Lower(fullpath) Like "dvb://*"
@@ -3495,7 +3490,6 @@ Public Sub SeekBar_Change()
   Dim newpos As Integer
   If fmain.closing Then Return
   If Not (Seekbar.tag = "timer") Then
-    'OneSecTimer.Enabled = False
     percent = SeekBar.value * 100
     mplayer.do_seek(percent, FsForm.fullscreen)
   Endif
@@ -4955,7 +4949,6 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
   
   Else If (TabSelectedCDDA() And CurrentQueue = "") Or CurrentQueue = "cdda" Then
     CDDANext()
-    'If mplayer.ProcessRunningOvr() Then OneSecTimer.start
     Wait 0.025
   
   Else If (TabSelectedYoutube() And CurrentQueue = "") Or CurrentQueue = "youtube" Then
@@ -5051,7 +5044,6 @@ Public Sub ButtonPrev_Click()
   Dim mplayerwasrunning As Boolean = False
 
   Try mplayerwasrunning = mplayer.ProcessRunningOvr()
-  'OneSecTimer.stop
   Stopmthumbler()
   fmain.mouse = mouse.wait
   Object.Lock(fmain.SeekBar)
@@ -5072,7 +5064,6 @@ Public Sub ButtonPrev_Click()
     If mplayerwasrunning Then playselecteddvb()
   Else If TabSelectedCDDA() Then
     CDDAPrev()
-    'If mplayer.ProcessRunningOvr() Then OneSecTimer.start
     Wait 0.025
     
   Else If TabSelectedDVD() Then
@@ -5335,7 +5326,6 @@ Public Sub PlaySelectedDvb(Optional channel As String = ":::")
   
   Return
 ReturnLabel:
-  'If Not OneSecTimer.Enabled Then OneSecTimer.Start()
   
 End
 
@@ -10435,13 +10425,10 @@ Private Sub CantSeekMessage()
   mplayer.ShowText(("Stream is not seekable, use arrow keys or doubleclick"), 1000)
   StatusLabelLeft.foreground = Color.green
   StatusLabelLeft.text = " " & ("Stream is not seekable!, use arrow keys or doubleclick to override")
-  'OneSecTimer.stop
   Stopmthumbler()
   Wait 1
-  'OneSecTimer.Trigger
   Wait
   StatusLabelLeft.foreground = Color.white
-  'OneSecTimer.start
 End
 
 Public ThumblerActive As Boolean = False
