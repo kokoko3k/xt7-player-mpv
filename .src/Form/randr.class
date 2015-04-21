@@ -317,10 +317,12 @@ Public Function find_modes(s_output_name As String, s_w As Integer, s_h As Integ
           ' 0.1281281 / 3 = 0.0427
           ' se il numero che esce è inferiore a 0.05 (che rappresenta il mio 5%) allora va bene.
   
-          t = r / s_fps
+          Try t = r / s_fps
+          If Error Then Return Null
           t_int = Round(t)
           perfect_refresh = s_fps * t_int
-          compensation = r / perfect_refresh
+          Try compensation = r / perfect_refresh
+          If Error Then Return Null
           Hz_error = 1 - compensation 
           If Abs(Hz_error) <= Hz_error_max Then
             global.myDebug("Mode found: " & mode)
