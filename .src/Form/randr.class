@@ -30,13 +30,17 @@ Public Function get_sizes() As String[]
   Dim return_value As New String[]
   Dim mode As String
   Dim modes As New String[]
+  Dim pW As Integer
   
   Shell "xrandr --verbose --current" To xrandr_output
   xrandr_output_splitted = Split(xrandr_output, "\n", "", True)
   
   For i = 0 To xrandr_output_splitted.max 'search output_name
     aLine = xrandr_output_splitted[i] 
-    If aLine Like "* connected *" Then output_name = Split(aline, " ", "", True)[0]
+    If aLine Like "* connected *" Then 
+      output_name = Split(aline, " ", "", True)[0]
+      pw = 999999
+    Endif
 
         If aLine Like "* (*) *Hz*HSync*VSync*" Then 'found the first modeline"
           modename = Split(aLine, " ", "", True)[0]
@@ -44,6 +48,14 @@ Public Function get_sizes() As String[]
           b = xrandr_output_splitted[i + 2]
 
           w = Split(a, " ", "", True)[2]
+          'xrandr shows modes that hasn't been associated with an output
+          'right after the last mode in the list.
+          'the only way to catch them is to compare the width of the mode
+          'since xrandr sorts by mode size, if the size increases, then we're done 
+          'with that output.
+            If CInt(w) > CInt(pw) Then Break
+            pw = w
+          
           h = Split(b, " ", "", True)[2]
 
           tmp = Split(b, " ", "", True)
@@ -53,7 +65,6 @@ Public Function get_sizes() As String[]
           modes.Add(mode)
         Endif
   Next 'i
-  
   Return modes
   
 End
@@ -249,7 +260,7 @@ Public Function find_mode(s_output_name As String, s_w As Integer, s_h As Intege
   Return ""
 End
 
-Public Function find_modes(s_output_name As String, min_h As Integer, s_fps As Float, Optional HZ_ERROR_max As Float = 0) As String[]
+Public Function find_modes(s_output_name As String, min_h As Integer, min_w As Integer, s_fps As Float, Optional HZ_ERROR_max As Float = 0) As String[]
   'given an output-name
   'given a minimum height
   'given the source fps
@@ -289,7 +300,7 @@ Public Function find_modes(s_output_name As String, min_h As Integer, s_fps As F
       w = CInt(Split(mode, "|", "", True)[2])
       h = CInt(Split(mode, "|", "", True)[3])
       r = CFloat(Split(mode, "|", "", True)[4])
-      If (h >= min_h) Then
+      If (h >= min_h) And (w >= min_w) Then
         'check refresh
         ' come si fa a capire che una frequenza destinazione va bene?
         ' 

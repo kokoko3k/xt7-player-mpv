@@ -1231,11 +1231,11 @@ End
 
 
 Public Sub Switchres_use_CheckBox_Click()
-  EnableDisableSwitchResCheckboxes
+  EnableDisableSwitchResCheckboxes()
 End
 
 Public Sub ScrollView7_Arrange()
-  EnableDisableSwitchResCheckboxes
+  EnableDisableSwitchResCheckboxes()
 End
 
 Public Sub switchres_compensate_checkbox_Click()
@@ -1246,4 +1246,5 @@ Public Sub EnableDisableSwitchResCheckboxes()
   NoparseHbox9.enabled = Switchres_compensate_CheckBox.value
   NoparseHbox6.enabled = Switchres_use_CheckBox.value
   NoparseHbox7.enabled = Switchres_use_CheckBox.value  
+  NoparseHbox10.enabled = Switchres_use_CheckBox.value  
 End

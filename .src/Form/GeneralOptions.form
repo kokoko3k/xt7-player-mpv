@@ -339,7 +339,7 @@
           { Switchres_use_CheckBox CheckBox
             MoveScaled(0,0,35,4)
             AutoResize = True
-            Text = ("Select video modes with:")
+            Text = ("Show video modes") & "..."
           }
         }
         { NoparseHbox6 HBox
@@ -350,7 +350,7 @@
           { Switchres_refresh_checkbox CheckBox
             MoveScaled(3,0,36,4)
             AutoResize = True
-            Text = ("...a refresh rate multiple of the video fps, +/- ")
+            Text = ("...with a refresh rate multiple of the video fps, +/- ")
           }
           { Switchres_refresh_error_combobox ComboBox
             MoveScaled(40,0,10,4)
@@ -378,11 +378,22 @@
             Text = "720p"
           }
         }
+        { NoparseHbox10 HBox
+          MoveScaled(1,20,52,4)
+          ToolTip = ("Select resolutions with a vertical\nresolution higher than this value.")
+          Spacing = True
+          Indent = True
+          { Switchres_W_H_CheckBox2 CheckBox
+            MoveScaled(3,0,44,4)
+            AutoResize = True
+            Text = ("...with an height and a width higher than the video")
+          }
+        }
         { Noparsesep675 Separator
-          MoveScaled(4,19,45,1)
+          MoveScaled(3,26,45,1)
         }
         { NoparseHbox8 HBox
-          MoveScaled(1,21,52,4)
+          MoveScaled(1,34,52,4)
           ToolTip = ("If the display video mode vertical refresh is close \nenough to an integer multiple of the played video, \nchange the playing speed so that a perfect match is achieved.\n\nThis helps to produce smoother video.")
           Spacing = True
           { switchres_compensate_checkbox CheckBox
@@ -399,7 +410,7 @@
           }
         }
         { NoparseHbox9 HBox
-          MoveScaled(2,27,52,4)
+          MoveScaled(2,40,52,4)
           Enabled = False
           ToolTip = ("If you have an AC3 capable decoder connected\nto the spdif output, check this.\n\nSince changing playing speed is not supported on \naudio passthrough configurations, the only way to\nhave multichannel/surround sound over SPDIF is\nto encode an AC3 stream on the fly.")
           Spacing = True

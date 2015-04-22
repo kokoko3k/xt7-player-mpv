@@ -1625,6 +1625,7 @@ End
 
 Public Sub ButtonStop_Click()
   ' Dim a As Integer = 1 / 0
+  switchresBTN.enabled = True
   global.mouse_wait(fmain, False)
   InitABLoop()
   Stopmthumbler()
@@ -2465,7 +2466,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   n = 0
   Repeat  'first try to play with generated options, then try to force with ytdl
     'If mplayer.do_play(mplayer.Media_FullPath, mplayer.currentoptions, False, MkvSubsWorkaround, cookieopts, dumpfile, doanalyze) Then
-
+    switchresBTN.enabled = False
     If Not mplayer.do_play(fullpath) Then Goto returnlabel
     ButtonPlay.picture = Picture["media-playback-pause.png"]
     CorrectAreaAspect() 'fixmempv: lo chiamo subito dopo il play... e funziona anche senza informazioni di larghezza e altezza con mpv !?
@@ -2587,6 +2588,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   ReturnLabel:
   global.mouse_wait(fmain, False)
+  switchresBTN.enabled = True
   Return True
 End
 
@@ -11314,15 +11316,15 @@ End
 
 Public Sub switchresBTN_Click()
   If (Not global.initearlyformsdone) Then InitEarlyForms()
-  If generaloptions.Switchres_use_CheckBox.value = False Then
-    If MyQuestion.Ask(("SwitchRes is disabled, do you want to configure it now?"), "Yes", "No") = 1 Then
-      GeneralOptions.Show()
-      GeneralOptions.OptionsList["Screen"].selected = True
-      Return
-        Else
-      Return
-    Endif
-  Endif
+  ' If generaloptions.Switchres_use_CheckBox.value = False Then
+  '   If MyQuestion.Ask(("SwitchRes is disabled, do you want to configure it now?"), "Yes", "No") = 1 Then
+  '     GeneralOptions.Show()
+  '     GeneralOptions.OptionsList["Screen"].selected = True
+  '     Return
+  '       Else
+  '     Return
+  '   Endif
+  ' Endif
   Make_modes_menu()
   menu_modes.popup
 End
@@ -11331,8 +11333,8 @@ Public menu_modes As Menu
 
 Public Sub Make_modes_menu()
   Dim Xm As Xmode
-  Dim min_h As Integer = 0
-  Dim HZ_ERROR_MAX As Float
+  Dim s_h, s_w, min_h, min_w As Integer = 0
+  Dim HZ_ERROR_MAX As Float = 100
   Dim fps As Float = -1
   Dim selected_modes As New String[]
   Dim menu_mode As Menu
@@ -11340,21 +11342,43 @@ Public Sub Make_modes_menu()
   Dim mode_splitted As String[]
   Dim output_name, mode_name, w, h, hz, err As String
   
-  If generaloptions.Switchres_height_CheckBox.value Then 
-    min_h = Left(generaloptions.Switchres_height_Combobox.text, -1)
-  Endif
-  
-  If generaloptions.Switchres_refresh_checkbox.value Then 
-    HZ_ERROR_MAX = CFloat(Left(generaloptions.Switchres_refresh_error_combobox.text, -1)) / 100
-  Endif 
-  
-  menu_modes = New Menu(fmain)
-  menu_mode = New Menu(menu_modes) As "menu_mode_configure"
-  menu_mode.text = ("Configure...")
-  menu_mode.picture = Picture["icon:/small/options"]
+  'configure menu is always visible
+    menu_modes = New Menu(fmain)
+    menu_mode = New Menu(menu_modes) As "menu_mode_configure"
+    menu_mode.text = ("Configure...")
+    menu_mode.picture = Picture["icon:/small/options"]
+
+  'switchres disabled? exit.
+    If generaloptions.Switchres_use_CheckBox.value = False Then Return
 
   If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then
-    Try fps = CFloat(mplayer.getP("fps"))
+
+    'refresh rate condition needs to know the video fps:
+      If generaloptions.Switchres_refresh_checkbox.value = True Then
+        Try fps = CFloat(mplayer.getP("fps"))
+          If Error Then Return
+          '...and set the maximum refresh rate error
+          HZ_ERROR_MAX = CFloat(Left(generaloptions.Switchres_refresh_error_combobox.text, -1)) / 100
+          Else
+        fps = 30
+        HZ_ERROR_MAX = 9999
+      Endif
+
+    'fixed minimum height?
+      If generaloptions.Switchres_height_CheckBox.value Then 
+        min_h = Left(generaloptions.Switchres_height_Combobox.text, -1)
+      Endif
+    
+    'minimum size dependant on the video?
+      If generaloptions.Switchres_W_H_CheckBox2.value = True Then
+        Try s_h = CFloat(mplayer.getP("height"))
+          If Error Then Return
+        Try s_w = CFloat(mplayer.getP("width"))
+          If Error Then Return
+        min_h = Max(s_h, min_h)
+        min_w = s_w
+      Endif
+
     menu_mode = New Menu(menu_modes) 
     menu_mode.text = ("Matching modes")
     menu_mode.Enabled = False
@@ -11370,10 +11394,9 @@ Public Sub Make_modes_menu()
   menu_mode = New Menu(menu_modes) 
   menu_mode.text = ("")
 
-  
   Xm = randr.Xmode_from_obj(fmain)
   If fps >= 0 Then 
-    selected_modes = randr.find_modes(Xm.output_name, min_h, fps, HZ_ERROR_MAX)
+    selected_modes = randr.find_modes(Xm.output_name, min_h, min_w, fps, HZ_ERROR_MAX)
   Endif
   If selected_modes = Null Then Return
   
@@ -11389,7 +11412,9 @@ Public Sub Make_modes_menu()
       menu_mode = New Menu(menu_modes) As "menu_mode"
       menu_mode.tag = mode
       menu_mode.text = output_name & ": " & w & "x" & h & "@" & hz & "hz"
-      If min_h <> 0 Then menu_mode.text &= " (err: " & err & ")"
+      If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then 
+        menu_mode.text &= " (err: " & err & ")"
+      Endif
     Next 'mode
   Endif
 
