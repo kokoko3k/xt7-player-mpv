@@ -3849,7 +3849,7 @@ Public Sub SwitchToFS()
   FsForm.Background = color.Default
 
   'execute shell commands
-  If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
+  'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
 
   'invert the HSplit with a vSplit
   fmain.HSplit1.Reparent(zzzFake)
@@ -3932,7 +3932,7 @@ Public Sub NEW_SwitchToFS()
  
   
   'execute shell commands
-  If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
+  'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
   
   'invert the HSplit with a vSplit
   fmain.HSplit1.Reparent(zzzFake)
@@ -4020,7 +4020,7 @@ Public Sub OLD_SwitchToFS()
 
   Wait
   'execute shell commands
-  If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
+  'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
   
   'invert the HSplit with a vSplit
   fmain.HSplit1.Reparent(zzzFake)
@@ -4082,13 +4082,84 @@ Public Sub OLD_SwitchToFS()
   CorrectAreaAspect()
 End
 
+
 Public Sub SwitchToWindow()
+
+  bottomvbox.y = rightsidepanel.h - bottomvbox.h
+  BottomVbox.ignore = False
+  'execute shell commands
+  'FsCommandsExec(False, 60)
+  Maintoolbar.Reparent(fmain)
+  fsform.Background = color.black
+  Wait    
+
+  'invert the VSplit with a HSplit
+  zzzFake.VSplit1.Reparent(zzzFake)
+  Hsplit1.Reparent(Fmain)
+
+  'populate HSplit with controls
+  Leftsidepanel.Reparent(Hsplit1)
+  rightsidepanel.Reparent(HSplit1)
+  If (SplitterLayout <> Null) Then Hsplit1.Layout = SplitterLayout
+  Wait
+  'show the menu
+  AllmenuVisible(True)
+  toolbarbackground.show
+  'restore the form position
+  LeftsidePanel.Visible = LeftsideWasVisible
+  
+  UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
+  
+  'show the bottom controls
+  bottomvbox.Raise() '<-make sure it is on the bottom
+  bottomvbox.show
+  CostrainFormSizes()
+  
+  TimerFullScreen.Stop()
+  
+  If zzzfake.PanelNowNext.visible Then 
+    PanelNowNextArrange()
+    Wait
+  Endif
+  
+  RightSidePanel.SetFocus()
+  
+  OuterBox.Mouse = mouse.Default
+  VideoBox.Mouse = mouse.Default
+  
+  'make the form windowed
+  fsform.Background = color.black
+  Wait
+  bottomvbox.ignore = False
+  controlframe.ignore = False
+  statusbar1.ignore = False
+  CostrainFormSizes()
+  Maintoolbar.hide 'workaround for missing picture at fs switch
+  Wait 
+  Maintoolbar.show
+  Wait 
+  cachebar.Reparent(rightsidepanel)
+  cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h)
+  cachebar.raise
+  cachebar.show
+  Wait
+  fmain.Stacking = Window.below
+  fmain.Maximized = winmax
+  fmain.show  
+  Wait 0.1
+  FsForm.hide
+  FsForm.FullScreen = False
+  Hsplit1_MyRefresh()
+  fmain.Stacking = Window.normal
+End
+
+Public Sub OLD_SwitchToWindow()
   
   bottomvbox.y = rightsidepanel.h - bottomvbox.h
   BottomVbox.ignore = False
   
   'execute shell commands
-  FsCommandsExec(False, 60)
+  'FsCommandsExec(False, 60)
   
   Maintoolbar.Reparent(fmain)
   'invert the VSplit with a HSplit
