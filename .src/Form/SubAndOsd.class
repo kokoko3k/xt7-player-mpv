@@ -17,12 +17,6 @@ Public Sub Init()
 End
 
 
-
-Private Function ToString(Var As Variant) As String
-  Return Var
-End
-
-
 Private Function rgba2Habgr(RGBA As String) As String
   'will convert an hex in rrggbbaa format to an hex in Haabbggrr format
   'rrggbbAA"

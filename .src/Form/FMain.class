@@ -2364,7 +2364,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Dim timeA As Float = 0
   Dim n As Integer
   Dim exportfile As String
-  Dim opt As Mpvoption
   Dim opts As New Collection
   Dim data As String
 
@@ -2689,8 +2688,6 @@ Public Function SetRightCache(fullpath As String) As MpvOption[]
   Dim cache_initial As String = 0
   Dim cache_seek_min As String = 500
   
-  Dim sep As String = Chr(0)
-  
   Dim opt As MpvOption
   Dim opts As New MpvOption[]
   
@@ -2977,7 +2974,6 @@ Public customtitle As String = ""
 'Private LASTVOLUME As String = -2 'remember the exit volume so that we can set it when opening new media
 
 Public Sub UpdateVolumeSlider(volume As String)
-  Dim ctime As Float = 0
   Dim newvolume As Integer
 
   Try newvolume = Split(volume, ",.", "", True)[0]
@@ -3326,11 +3322,9 @@ End
 
 
 Public Sub SlideTo(aSlider As Slider, aTarget As Integer, Optional aThreshold As Integer = 7)
-  Dim prevosd As String = mplayer.osdlevel
   Dim wasdisabled As Boolean = True
   Dim tvalue As Integer = aSlider.value
   Dim waittime As Float = 0.005
-  Dim paused As Boolean
 
   VideoEqualizer.NoOsd = True
 
@@ -3492,7 +3486,6 @@ End
 
 Public Sub SeekBar_Change()
   Dim percent As Integer
-  Dim newpos As Integer
   If fmain.closing Then Return
   If Not (Seekbar.tag = "timer") Then
     percent = SeekBar.value * 100
@@ -3597,9 +3590,7 @@ End
 
 
 Public Sub VideoAreaGroup_MouseDrag()
-  Dim panstep As Float = 0.05
   Dim threshold As Integer = videobox.w Div 20
-  Dim NewX, NewY As Integer
 
   Dim isimgfile As Boolean = global.IsImgFile(mplayer.getP("fullpath")) 
   global.myDebug(" ")
@@ -11280,7 +11271,7 @@ Public Sub Make_modes_menu()
   Dim menu_mode As Menu
   Dim mode As String
   Dim mode_splitted As String[]
-  Dim output_name, mode_name, w, h, hz, err As String
+  Dim output_name, w, h, hz, err As String
   
   'configure menu is always visible
     menu_modes = New Menu(fmain)

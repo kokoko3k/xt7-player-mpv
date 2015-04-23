@@ -1146,7 +1146,6 @@ End
 
 Public Function get_mounted_fss() As String[]
   Dim df As String
-  Dim mounts As String[]
   Shell "df -x devtmpfs -x tmpfs --output=target|grep '/'|sort -u" To df
   Return Split(df, "\n", "", True)
 End

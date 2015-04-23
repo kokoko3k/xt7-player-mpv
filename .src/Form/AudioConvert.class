@@ -21,21 +21,14 @@ End
 Public ffproc As Process
   
 Public Sub ConvertandSaveAudio()
-  Dim i, j As Integer
+  Dim i As Integer
   Dim youtube As New Youtubeclass
   Dim currentstream As String
   Dim outputfolder As String
   Dim outfmt, q As String
   Dim mymplayer As New MplayerClass
-  Dim mptimeout As Integer = 10
   Dim tmpout As String
   Dim outstr As String
-  Dim length As String
-  Dim ffcmdline As String
-  Dim ffprogressfile As String = Temp()
-  Dim ffout As String = Temp()
-  Dim tmpprogress As String[]
-  Dim ffcurtime As String
   Dim audiotempfolder As String = global.confpath & "/audiotemp/"
   Dim kbps As String
   Dim finalfile As String
