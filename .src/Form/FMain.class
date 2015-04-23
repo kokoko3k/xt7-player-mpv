@@ -4153,13 +4153,10 @@ Public Sub SwitchToWindow()
   fmain.Maximized = winmax
   fmain.show  
   Wait 0.1
-
   fmain.Stacking = Window.normal
-
   FsForm.hide
   FsForm.FullScreen = False
-    Hsplit1_MyRefresh()
-
+  Hsplit1_MyRefresh()
 End
 
 Public Sub OLD_SwitchToWindow()
