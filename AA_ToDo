@@ -636,19 +636,6 @@ FIX: tries hardly (5 seconds limit) to pause mplayer even when it doesn't answer
 - Esce dalla modalità fullscreen se non siamo in playlist 
 
 
--BUG di gambas, il mouseup sul menù o fuori del form non è catchato, questo crea problemi a dynagui.
-  (oggetti che spariscono nel nulla)...
-  Bisogna in qualche modo mettere dei constraints
-  *Aggiunti mousemove forzati quando il mouse si avvicina ai bordi.
-  -audiotag non interpreta caratteri strani (risolto tramite dconv e sconv)
-        (-BUG, drag and drop di max gazzè, errore runtime)        
--add audio output options and video output options to driver tabs...  
- 
-
-
-in pluginmode non si chiude bene, le sessioni di mplayer rimangono appese.
-basta, anche senza aprire più tab, guardare più video uno dietro l'altro.
-
 
 
 --------- MPV----------
@@ -693,11 +680,12 @@ equalizzatore video:
     h         me ne frego
     s         direi uguale
 
-dynagui non serve più, praticamente, e nemmeno chains, è il caso di rimuoverli dai file
 
 lo scaling del pitch funziona solo se lo imposti prima del playin tempo reale
 viene aumentato anche il tempo, a meno che non si clicchi su usa nel chains.
 questo vuol dire che se si reinserisce scaletempo, allora funziona.
+
+
 
 non aggiornare i meters se la finestra è minimizzata.
 
@@ -707,8 +695,6 @@ Il font "predefinito" delle liste di sinistra, in realtà non è quello di Siste
 in quanto se viene cambiato dalle impostazioni di sistema, xt7 non lo sa.
 servwe un modo per capire se il font è stato cambiato oppure no.
 
-per ripristino schermo: autorandr
-importalo e cambia le directory, metti tipo: ~/.autorandr-xt7
 
 
 questo:

@@ -679,8 +679,24 @@
         Expand = True
         Arrangement = Arrange.Vertical
         Border = False
-        { AlsaParseMeHbox1 HBox
+        { AlsaParseMeHbox3 HBox
           MoveScaled(0,0,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk CheckBox
+            MoveScaled(1,1,15,4)
+            Tag = "device="
+            Text = ("Device")
+          }
+          { AlsaDeviceTextBox ComboBox
+            MoveScaled(18,1,26,4)
+            Font = Font["Monospace"]
+            Expand = True
+            Text = ("spdif")
+          }
+        }
+        { AlsaParseMeHbox1 HBox
+          MoveScaled(0,7,46,6)
           AutoResize = True
           Padding = 6
           { AlsaDeviceChk2 CheckBox
@@ -699,7 +715,7 @@
           }
         }
         { AlsaParseMeHbox2 HBox
-          MoveScaled(0,6,46,6)
+          MoveScaled(0,14,46,6)
           AutoResize = True
           Padding = 6
           { AlsaDeviceChk1 CheckBox

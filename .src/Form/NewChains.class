@@ -1429,3 +1429,15 @@ Public Sub CheckBox3gl_Click()
 End
 
 
+Private GotAlsaDevices As Boolean = False
+Public Sub AlsaDeviceTextBox_Enter()
+  Dim adevice As String 
+  Dim prevtext As String = Last.text
+  If GotAlsaDevices Then Return
+  For Each adevice In GetAlsaDevices()
+    AlsaDeviceTextBox.Add(adevice)
+  Next
+  If AlsaDeviceTextBox.find(prevtext) = -1 Then AlsaDeviceTextBox.Add(prevtext, 0)
+  GotAlsaDevices = True
+End
+
