@@ -3910,7 +3910,7 @@ Public Sub SwitchToFS()
     CorrectAreaAspect()
     Wait 0.1
   Next 'i
-
+  fsform.picture = Null
 End
 
 
@@ -4090,7 +4090,7 @@ End
 
 
 Public Sub SwitchToWindow()
-
+  fsform.picture = Picture["black.png"]
   bottomvbox.y = rightsidepanel.h - bottomvbox.h
   BottomVbox.ignore = False
   'execute shell commands
@@ -4153,10 +4153,13 @@ Public Sub SwitchToWindow()
   fmain.Maximized = winmax
   fmain.show  
   Wait 0.1
+
+  fmain.Stacking = Window.normal
+
   FsForm.hide
   FsForm.FullScreen = False
-  Hsplit1_MyRefresh()
-  fmain.Stacking = Window.normal
+    Hsplit1_MyRefresh()
+
 End
 
 Public Sub OLD_SwitchToWindow()
