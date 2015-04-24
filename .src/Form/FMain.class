@@ -3252,27 +3252,27 @@ Public Sub Mplayer_mykill(return_value As Integer)
   ExecutePostCmd()
   videobox.cached = False
   'delete export file
-     Try Kill mymeters.exportfile
-      If TogglePls.value And (Not mplayer.user_stopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) Then
-          global.myDebug("end of media reached, playing next video...")
+  Try Kill mymeters.exportfile
+  If TogglePls.value And (Not mplayer.user_stopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) Then
+      global.myDebug("end of media reached, playing next video...")
 
-          SelectNext(True, GetActivePlayQueue())
-          PlaylistFinished = Not global.IsNextSelected
-          If (Shutdown = "PLS") And PlaylistFinished And (Not ShufflePls.value) Then CountDown.engage
-          global.myDebug("mpv was off, so hit PLAY from here")
+      SelectNext(True, GetActivePlayQueue())
+      PlaylistFinished = Not global.IsNextSelected
+      If (Shutdown = "PLS") And PlaylistFinished And (Not ShufflePls.value) Then CountDown.engage
+      global.myDebug("mpv was off, so hit PLAY from here")
 
-          If Not (mplayer.ProcessRunningOvr()) Then
-            Play(Media_Next_path)
-              Else
-            global.myDebug("Not hitting PLay from here because ButtonNext did it first")
-          Endif
-          
-      Else
-        Playstarted = False
-        'UserStopped = False
-        FirstPlay = False
-        If ((Not TogglePls.value) And fsform.FullScreen) Then FullScreenSwitch()
+      If Not (mplayer.ProcessRunningOvr()) Then
+        Play(Media_Next_path)
+          Else
+        global.myDebug("Not hitting PLay from here because ButtonNext did it first")
       Endif
+    Else 'do not autoadvance condition
+      Playstarted = False
+      'UserStopped = False
+      FirstPlay = False
+      If ((Not TogglePls.value) And fsform.FullScreen) Then FullScreenSwitch()
+      ShowAudioPanel(False)
+  Endif
 
     StatusLabelLeft.text = (" Stopped")
     StatusLabelRight.text = ""
@@ -3280,7 +3280,7 @@ Public Sub Mplayer_mykill(return_value As Integer)
     SeekBar.value = 0
     SetProgress(seekbar.value)
     Fmain.caption = global.AppName
-    ShowAudioPanel(False)
+
 End
 
 Private PrevValuecTime As Integer = 0 'so that the first value will be used
