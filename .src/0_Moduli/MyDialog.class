@@ -55,15 +55,84 @@ Public Function SelectFont() As Boolean
   sync()
   Return ret
 End
+
+
+Private Sub should_use_kdialog() As Boolean
+  Dim kdialog As String
+  If Application.Env["XDG_CURRENT_DESKTOP"] = "KDE" Or Lower(Application.Env["DESKTOP_SESSION"]) = "KDE" Then
+    If Application.Env["KDE_SESSION_VERSION"] = "4" And Application.Env["KDE_FULL_SESSION"] = "true" Then
+      Shell "which kdialog" To kdialog
+      kdialog = Trim(kdialog)
+      If kdialog <> "" Then Return True
+    Endif
+  Endif
+  Return False
+End
+
+Private Function kdialog_askfile(Optional open_dir As Boolean = False) As String
+  Dim kdialog_out As String
+  Dim kfilter As String
+  Dim i As Integer
+  If Not open_dir Then
+    For i = 0 To filter.max
+      If (i Mod 2) = 0 Then
+        kfilter &= Replace(filter[i], ";", " ")
+    Else
+        kfilter &= " |" & filter[i] & "\n"
+      Endif
+    Next 'i
+    kfilter = "'" & kfilter & "*|" & ("All files") & "'"
+    Shell "kdialog --getopenfilename " & Dialog.Path & " " & kfilter To kdialog_out
+      Else
+    Shell "kdialog --getexistingdirectory " & Dialog.Path & " " To kdialog_out
+  Endif        
+  Return Trim(kdialog_out)
+End
+
+
+
 Public Function OpenFile() As Boolean
   Dim ret As Boolean
+  Dim kdialog_out As String
   Getsync()
+  If should_use_kdialog() Then
+    kdialog_out = kdialog_askfile() 
+    ret = (kdialog_out = "")
+    If ret Then Return ret
+    Dialog.Path = kdialog_out
+    Goto returnlabel
+  Endif
+
   Try ret = Dialog.OpenFile()
   If Error Then Try ret = Dialog.OpenFile()
   If Error Then Try ret = Dialog.OpenFile()
+  
+  returnlabel:
   sync()
   Return ret
 End
+
+Public Function SelectDirectory() As Boolean
+  Dim ret As Boolean
+  Dim kdialog_out As String
+  Getsync()
+  If should_use_kdialog() Then
+    kdialog_out = kdialog_askfile(True) 
+    ret = (kdialog_out = "")
+    If ret Then Return ret
+    Dialog.Path = kdialog_out
+    Goto returnlabel
+  Endif
+  
+  Try ret = Dialog.SelectDirectory()
+  If Error Then Try ret = Dialog.SelectDirectory()
+  If Error Then Try ret = Dialog.SelectDirectory()
+  
+  returnlabel:
+  sync()
+  Return ret
+End
+
 
 Public Function SelectDate() As Boolean
   Dim ret As Boolean
@@ -74,13 +143,5 @@ Public Function SelectDate() As Boolean
   sync()
   Return ret
 End
-Public Function SelectDirectory() As Boolean
-  Dim ret As Boolean
-  Getsync()
-  Try ret = Dialog.SelectDirectory()
-  If Error Then Try ret = Dialog.SelectDirectory()
-  If Error Then Try ret = Dialog.SelectDirectory()
-  sync()
-  Return ret
-End
+
 

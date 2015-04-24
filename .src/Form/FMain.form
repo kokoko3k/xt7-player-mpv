@@ -684,7 +684,7 @@
     { ButtonmenuNEWBTN MenuButton
       MoveScaled(0,1,8,4)
       Font = Font["1"]
-      ToolTip = ("Open a file")
+      ToolTip = ("Menu")
       AutoResize = True
       Picture = Picture["icon:/22/menu"]
       Border = False
@@ -1653,11 +1653,10 @@
           Expand = True
           AutoResize = True
           { SearchLabel Button
-            MoveScaled(0,0,5,4)
+            MoveScaled(0,0,4,4)
             ToolTip = ("Show and select the possible search fields")
             AutoResize = True
-            Text = ("Fields")
-            Picture = Picture["icon:/16/watch"]
+            Picture = Picture["icon:/16/find"]
           }
           { SearchField ComboBox
             MoveScaled(5,0,5,3)
