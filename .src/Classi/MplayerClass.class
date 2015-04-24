@@ -1762,7 +1762,7 @@ Next
 End
 
 
-Private Sub do_apply_restart(new_opts As Collection)
+Public Sub do_apply_restart(new_opts As Collection)
   Dim name, data, newdata As String
   Dim timepos As String = "0"
   Dim fullpath As String
