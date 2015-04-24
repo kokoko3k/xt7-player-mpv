@@ -1621,7 +1621,34 @@ Public Sub GridRefreshWorkaround(librarygrid As Gridview)
 End
 
 
+Public Sub test()
+  Dim new_opts As New Collection
+  Dim aValue As String
+  new_opts = get_apply_opts()
+  
+  'fix options to allow the insertion of lavcac3enc
+  'audio-channels
+  For Each aValue In new_opts
+    If new_opts.key = "audio-channels" Then
+      global.myDebug("removing incompatible option: " & new_opts.key & " to add lavcac3enc")
+      new_opts.Remove(new_opts.key)
+    Endif
+  'spdif/hdmi passthrough  
+ 
+  'use mpv commands to remove audio filters that reduces the channel numbers
+  'extrastereo,pan
+  
+  Next
+  mplayer.do_apply_restart(new_opts)
+  
+  
+End
+
+
+
 Public Sub ButtonStop_Click()
+                                                    ' test()
+                                                    ' Return
   ' Dim a As Integer = 1 / 0
   switchresBTN.enabled = True
   global.mouse_wait(fmain, False)

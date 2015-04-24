@@ -273,10 +273,10 @@ Public Sub set_option(name As String, data As String)
   global.myDebug(name, data)
 End
 
-Public Sub unset_option(name As String)
+Public Sub unset_option(name As String, Optional options As Collection = mpvoptions)
   Dim tName As String = name
-  While mpvoptions.Exist(tName)
-    mpvOptions.Remove(tName)
+  While options.Exist(tName)
+    options.Remove(tName)
     tName = " " & tName 'prefix white spaces to use multiple options with the same name
     global.myDebug(tName)
   Wend
@@ -298,18 +298,21 @@ Private Function set_options() As String
 End
 
 
-Private Function fix_options()
+Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As Collection
+  Dim return_opts As Collection = broken_opts.Copy()
   Dim data As String
   'handle corner cases where an option could conflict with another
-  For Each data In mpvOptions
+  For Each data In return_opts
     If data Like "*lavcac3enc*" Then
-      If mpvoptions.Key Like "*af*" Then
+      If return_opts.Key Like "*af*" Then
         Print "found audio filter lavcac3enc; searching and unsetting --audio-channels"
         Print
-        unset_option("audio-channels")
+        unset_option("audio-channels", return_opts)
+        Stop
       Endif
     Endif
   Next
+  Return return_opts
 End
 
 
@@ -454,7 +457,6 @@ Public Function do_play(filename As String, Optional string_options As String = 
   If global.IsImgFile(filename) Then
     mpvOptions["fps"] = "0.1"
   Endif
-  
   fix_options()
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)
@@ -1664,8 +1666,8 @@ Public Sub do_apply(new_opts As Collection)
   Dim af_pre_new As String = ""
   Dim vf_pre_new As String = ""
   
-  
-  
+  Stop
+  new_opts = fix_options(new_opts)
   'see if we need a restart
   'make a list of changed options
   changed_opts = what_changes(mpvoptions, new_opts)
