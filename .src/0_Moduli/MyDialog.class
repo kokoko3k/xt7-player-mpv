@@ -72,7 +72,10 @@ End
 Private Function kdialog_askfile(Optional open_dir As Boolean = False) As String
   Dim kdialog_out As String
   Dim kfilter As String
+  Dim startpath As String = User.Home
   Dim i As Integer
+  Stop
+  If Trim(Dialog.path) <> "" Then startpath = Dialog.path
   If Not open_dir Then
     For i = 0 To filter.max
       If (i Mod 2) = 0 Then
@@ -82,9 +85,9 @@ Private Function kdialog_askfile(Optional open_dir As Boolean = False) As String
       Endif
     Next 'i
     kfilter = "'" & kfilter & "*|" & ("All files") & "'"
-    Shell "kdialog --getopenfilename " & Dialog.Path & " " & kfilter To kdialog_out
+    Shell "kdialog --getopenfilename " & startpath & " " & kfilter To kdialog_out
       Else
-    Shell "kdialog --getexistingdirectory " & Dialog.Path & " " To kdialog_out
+    Shell "kdialog --getexistingdirectory " & startpath & " " To kdialog_out
   Endif        
   Return Trim(kdialog_out)
 End

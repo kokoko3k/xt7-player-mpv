@@ -1541,6 +1541,7 @@ Public Sub mpv_command(command As String[])
   Next
   sbuf = Left(sbuf, -1)
   send(sbuf)
+  global.myDebug(sbuf)
 End
 
 
@@ -1859,6 +1860,23 @@ Private Sub search_term(item As String) As String[]
   Return out
 End
 
+Public Function filters_available(audio As Boolean) As String[]
+  Dim f As String
+  Dim out, l As String
+  Dim filters As New String[]
+  If audio Then 
+    f = "af"
+      Else
+    f = "vf"
+  Endif
+  Shell executable() & " --" & f & "=help" To out
+  For Each l In Split(out, "\n", "", True)
+    If l Like "* : *" Then
+      filters.Add(Trim(Split(l, ":", "", True)[0]))
+    Endif
+  Next
+  Return filters
+End
 
 
 

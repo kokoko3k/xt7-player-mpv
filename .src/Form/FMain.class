@@ -1624,31 +1624,64 @@ End
 Public Sub test()
   Dim new_opts As New Collection
   Dim aValue As String
-  new_opts = get_apply_opts()
+  Dim filter_str As String
+  Dim audio_filters_all As String[] 
+  Dim audio_filters_used As New String[]
+  Dim audio_filters_used_reformatted As New String[]
+  Dim out_file As String = Temp()
+  Dim item, f_name, f_param As String
   
-  'fix options to allow the insertion of lavcac3enc
-  'audio-channels
-  For Each aValue In new_opts
-    If new_opts.key = "audio-channels" Then
-      global.myDebug("removing incompatible option: " & new_opts.key & " to add lavcac3enc")
-      new_opts.Remove(new_opts.key)
+
+  Try audio_filters_all = mplayer.filters_available(True)
+
+  'audio_filters_used = Split(mplayer.get_property_mpv("=af", True), ",", "", True)
+  'mplayer.mpv_command(["run", "/bin/sh", "-c", "echo ${=af} > /tmp/playing"])
+  mplayer.mpv_command(["run", "/bin/sh", "-c", "echo '${af}' > /tmp/playing"])
+
+  
+
+  For Each item In audio_filters_used
+    If audio_filters_all.Find(item) > 0 Then
+      If f_name <> "" Then
+        audio_filters_used_reformatted.Add(f_name & "=" & f_param)
+        f_param = ""
+        f_name = ""
+      Endif
+      f_name = item
+        Else
+      f_param = item
     Endif
-  'spdif/hdmi passthrough  
- 
-  'use mpv commands to remove audio filters that reduces the channel numbers
-  'extrastereo,pan
-  
   Next
-  mplayer.do_apply_restart(new_opts)
   
+  
+
+  ' Stop
+  ' Return
+  ' new_opts = get_apply_opts()
+  ' 
+  ' 'fix options to allow the insertion of lavcac3enc
+  ' 'audio-channels
+  ' For Each aValue In new_opts
+  '   If new_opts.key = "audio-channels" Then
+  '     global.myDebug("removing incompatible option: " & new_opts.key & " to add lavcac3enc")
+  '     new_opts.Remove(new_opts.key)
+  '   Endif
+  ' 'spdif/hdmi passthrough  
+  ' 
+  ' 'use mpv commands to remove audio filters that reduces the channel numbers
+  ' 'extrastereo,pan
+  ' 
+  ' Next
+  ' mplayer.do_apply_restart(new_opts)
+  ' 
   
 End
 
 
 
 Public Sub ButtonStop_Click()
-                                                    ' test()
-                                                    ' Return
+                                                     test()
+                                                     Return
   ' Dim a As Integer = 1 / 0
   switchresBTN.enabled = True
   global.mouse_wait(fmain, False)
@@ -11357,6 +11390,7 @@ Public Sub Make_modes_menu()
   If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then
 
     'refresh rate condition needs to know the video fps:
+      'Try fps = CFloat(mplayer.get_property_mpv("fps", True)
       Try fps = CFloat(mplayer.getP("fps"))
       If Error Then Return
       If generaloptions.Switchres_refresh_checkbox.value = True Then
