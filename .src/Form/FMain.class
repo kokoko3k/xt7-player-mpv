@@ -11519,6 +11519,11 @@ End
 
 
 Public Sub change_speed(factor As Float)
+  If factor > 1 Then
+    If Lower(mplayer.getP("fullpath")) Like "dvb://*" Then
+      global.myDebug("WW: Not going to speedup DVB streams")
+    Endif
+  Endif
   fmain.mplayer.set_property_mpv("speed", factor)
   fmain.mplayer.ShowText("New speed: " & factor)
 End
