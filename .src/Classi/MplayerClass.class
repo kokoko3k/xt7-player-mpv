@@ -1561,6 +1561,14 @@ Public Sub abloop_set_b(Optional timefloat As String = "notset") 'no argument me
   Endif
 End
 
+Public Function do_revert_seek(Optional osd As Boolean = False) As Boolean
+  If osd Then 
+    mpv_command(["osd-msg", "revert_seek"])
+      Else
+    mpv_command(["no-osd", "revert_seek"])
+  Endif
+End
+
 
 Public Function do_seek(Percentual As String, Optional osd As Boolean = False) As Boolean
   If osd Then 

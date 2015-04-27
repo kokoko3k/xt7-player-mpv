@@ -11467,15 +11467,25 @@ Public Sub menu_mode_Click()
   Dim mode_splitted As String[]
   Dim output_name, mode_name As String
   Dim err, rate As Float
-  
   Dim speed_compensation As Float
-  
+
+
   mode_splitted = Split(Last.tag, "|", "", True)
   output_name = mode_splitted[0]
   mode_name = mode_splitted[1]
   rate = CFloat(mode_splitted[4])
   err = mode_splitted[5]
   randr.change_mode(output_name, mode_name, rate)
+  
+  'ION1 needs the playback to be seeked if 
+  'hardware acceleration is used, so we did it.
+    If mplayer.ProcessRunningOvr() Then
+      mplayer.do_pause()
+      Wait 2
+      mplayer.do_seek_to("0", False, False)
+      Wait 0.1
+    Endif
+
   If fsform.visible Then
     'needed to update the screen size
     SwitchToWindow()
@@ -11490,6 +11500,13 @@ Public Sub menu_mode_Click()
       Endif
     Endif
   Endif
+  
+  'ION1 needs the playback to be seeked if 
+  'hardware acceleration is used, so we did it.
+    If mplayer.ProcessRunningOvr() Then
+      mplayer.do_leave_pause()
+      mplayer.do_revert_seek()
+    Endif
 End
 
 Public Sub speed_compensate(Optional HZ_ERROR_MAX As Float = 100)
