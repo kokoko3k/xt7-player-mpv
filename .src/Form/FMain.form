@@ -1564,11 +1564,15 @@
           Arrangement = Arrange.Fill
           Border = Border.Plain
           { PropertiesGrid GridView
-            MoveScaled(3,1,33,30)
+            MoveScaled(2,1,33,30)
             ToolTip = ("Info on playing media\nor on the last played one")
             Expand = True
             Border = False
           }
+        }
+        { Timer_mediainfo #Timer
+          #MoveScaled(9,39)
+          Delay = 3000
         }
         Index = 12
         Text = ("Profiles")

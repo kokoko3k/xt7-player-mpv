@@ -1696,7 +1696,7 @@ Public Sub do_apply(new_opts As Collection)
 
 'ora abbiamo disponibili la lista di nuove opzioni completa di fixed e realtime
 'ma ci servono solo le realtime, quindi dobbiamo selezionarle.
-Debug "No changed option requires restart, setting realtime properties instead"
+global.myDebug("No changed option requires restart, setting realtime properties instead")
 For Each new_opts
   name = new_opts.Key
   data = new_opts[new_opts.Key]

@@ -1166,12 +1166,12 @@ Public Sub InitPropertiesGrid()
   PropertiesGrid[12, 0].text = "Audio Channels"
   PropertiesGrid[13, 0].text = "Audio Rate"
   PropertiesGrid[14, 0].text = "Audio Codec"
-  PropertiesGrid[15, 0].text = "Audio Bitrate"
+  PropertiesGrid[15, 0].text = "Audio Bitrate (Actual) "
   PropertiesGrid[16, 0].text = "Video Resolution"
   PropertiesGrid[17, 0].text = "Video Fps"
   PropertiesGrid[18, 0].text = "Video Codec"
-  PropertiesGrid[19, 0].text = "Video Bitrate"
-  PropertiesGrid[20, 0].text = "Total Bitrate"
+  PropertiesGrid[19, 0].text = "Video Bitrate (Actual) "
+  PropertiesGrid[20, 0].text = "Total Bitrate (Avg.)"
   
   For i = 0 To PropertiesGrid.Rows.count - 1
     PropertiesGrid[i, 0].Font.bold = True
@@ -1220,7 +1220,8 @@ Public Sub FillPropertiesGrid()
   PropertiesGrid[12, 1].text = mplayer.getP("=audio-channels")
   PropertiesGrid[13, 1].text = mplayer.getP("=audio-samplerate")
   PropertiesGrid[14, 1].text = mplayer.getP("audio-codec")
-  Try PropertiesGrid[15, 1].text = (CInt(mplayer.getP("=audio-bitrate")) Div 1000) & "Kbps"
+  'Try PropertiesGrid[15, 1].text = (CInt(mplayer.get_property_mpv("=audio-bitrate")) Div 1000) & "Kbps"
+  Try PropertiesGrid[15, 1].text = mplayer.get_property_mpv("audio-bitrate")
   
   If Not mplayer.getP("audioonly") Then
     PropertiesGrid[16, 1].text = mplayer.getP("width") & "x" & mplayer.getP("height")
@@ -1229,7 +1230,8 @@ Public Sub FillPropertiesGrid()
       PropertiesGrid[17, 1].text = mplayer.get_property_mpv("estimated-vf-fps")
     Endif
     PropertiesGrid[18, 1].text = mplayer.getP("video-codec")
-    Try PropertiesGrid[19, 1].text = (CInt(mplayer.getP("=video-bitrate")) Div 1000) & "Kbps"
+    'Try PropertiesGrid[19, 1].text = (CInt(mplayer.get_property_mpv("=video-bitrate")) Div 1000) & "Kbps"
+    Try PropertiesGrid[19, 1].text = mplayer.get_property_mpv("video-bitrate")
   Else
 
       PropertiesGrid[5, 1].text = mplayer.getP("Album")
@@ -4721,7 +4723,8 @@ Public Sub Show_runtime_infos()
   prop["-----"] = " "
   
   prop["video codec"] = "video-codec"
-  prop["video bitrate (packet)"] = "packet-video-bitrate"
+  'prop["video bitrate (packet)"] = "packet-video-bitrate" '<- deprecated
+  prop["video bitrate (actual)"] = "video-bitrate"
   prop["Video width"] = "width"
   prop["Video height"] = "height"
   prop["Video fps"] = "estimated-vf-fps"
@@ -4733,7 +4736,8 @@ Public Sub Show_runtime_infos()
   prop["------"] = " "
   
   prop["audio codec"] = "audio-codec"
-  prop["audio bitrate (packet)"] = "packet-audio-bitrate" 
+  'prop["audio bitrate (packet)"] = "packet-audio-bitrate"  '<-deprecated
+  prop["audio bitrate (actual)"] = "audio-bitrate"  '<-deprecated
   prop["audio channels"] = "audio-channels"
   prop["------"] = " "
 
@@ -6183,8 +6187,9 @@ Public Sub MenuSearch_Click()
 End
 
 Public Sub UpdateTabs()
+
   'force a select to handle the correct item to tag
-  
+  Timer_mediainfo.stop()
   If TabSelectedLibrary() Then
     LibraryGrid_Select()
   Else If TabSelectedPlaylist() Then
@@ -6195,6 +6200,9 @@ Public Sub UpdateTabs()
     If fullyloaded Then Youtube_Select()
   Else If TabSelectedAlbums() Then
     If fullyloaded Then Albums_Select()
+   Else If TabSelectedMediaInfo() Then
+      Timer_mediainfo_Timer()
+      Timer_mediainfo.Start()
   Endif
   
   HBox2.visible = (TabSelectedLibrary() Or TabSelectedPlaylist() Or tabselectedcdda() Or TabSelectedBrowse() Or TabselectedAlbums())
@@ -11557,3 +11565,7 @@ Public Sub menu_mode_configure_Click()
   GeneralOptions.OptionsList["Screen"].selected = True
 End
 
+
+Public Sub Timer_mediainfo_Timer()
+  Try FillPropertiesGrid()
+End
