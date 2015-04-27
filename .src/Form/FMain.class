@@ -1224,7 +1224,11 @@ Public Sub FillPropertiesGrid()
   
   If Not mplayer.getP("audioonly") Then
     PropertiesGrid[16, 1].text = mplayer.getP("width") & "x" & mplayer.getP("height")
+    Stop
     PropertiesGrid[17, 1].text = mplayer.getP("fps")
+    If PropertiesGrid[17, 1].text Like "*unavailable*" Then
+      PropertiesGrid[17, 1].text = mplayer.get_property_mpv("estimated-vf-fps")
+    Endif
     PropertiesGrid[18, 1].text = mplayer.getP("video-codec")
     Try PropertiesGrid[19, 1].text = (CInt(mplayer.getP("=video-bitrate")) Div 1000) & "Kbps"
   Else
@@ -1680,8 +1684,8 @@ End
 
 
 Public Sub ButtonStop_Click()
-                                                     test()
-                                                     Return
+                                                     ' test()
+                                                     ' Return
   ' Dim a As Integer = 1 / 0
   switchresBTN.enabled = True
   global.mouse_wait(fmain, False)
@@ -8346,7 +8350,7 @@ End
 
 Public Function PopupCddaError() As Boolean
   
-  If MyQuestion.Ask(("Cannot access a valid cd audio or Cd device"), "Configure it", "Never mind") = 1 Then
+  If MyQuestion.Ask(("Cannot access a valid cd audio or Cd device"), ("Configure it"), ("Never mind")) = 1 Then
     GeneralOptions.Show
     GeneralOptions.TabStrip1.index = Global.TabIndexByName(("CD/DVD"), GeneralOptions.TabStrip1)
   Endif
@@ -8355,7 +8359,7 @@ End
 
 Public Function PopupDVDError() As Boolean
   
-  If MyQuestion.Ask(("Cannot access a valid dvd device"), "Configure it", "Never mind") = 1 Then
+  If MyQuestion.Ask(("Cannot access a valid dvd device"), ("Configure it"), ("Never mind")) = 1 Then
     GeneralOptions.Show
     GeneralOptions.TabStrip1.index = Global.TabIndexByName(("CD/DVD"), GeneralOptions.TabStrip1)
   Endif
@@ -11390,9 +11394,12 @@ Public Sub Make_modes_menu()
   If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then
 
     'refresh rate condition needs to know the video fps:
-      'Try fps = CFloat(mplayer.get_property_mpv("fps", True)
-      Try fps = CFloat(mplayer.getP("fps"))
-      If Error Then Return
+    Stop
+      Try fps = CFloat(mplayer.get_property_mpv("fps"))
+      If Error Then
+        Try fps = CFloat(mplayer.get_property_mpv("estimated-vf-fps"))
+        If Error Then Return
+      Endif
       If generaloptions.Switchres_refresh_checkbox.value = True Then
           '...and set the maximum refresh rate error
           HZ_ERROR_MAX = CFloat(Left(generaloptions.Switchres_refresh_error_combobox.text, -1)) / 100
