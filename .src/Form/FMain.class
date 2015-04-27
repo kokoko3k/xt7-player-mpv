@@ -1224,7 +1224,6 @@ Public Sub FillPropertiesGrid()
   
   If Not mplayer.getP("audioonly") Then
     PropertiesGrid[16, 1].text = mplayer.getP("width") & "x" & mplayer.getP("height")
-    Stop
     PropertiesGrid[17, 1].text = mplayer.getP("fps")
     If PropertiesGrid[17, 1].text Like "*unavailable*" Then
       PropertiesGrid[17, 1].text = mplayer.get_property_mpv("estimated-vf-fps")
@@ -3898,7 +3897,9 @@ Public Sub SwitchToFS()
   winmax = fmain.Maximized
   fmain.hide
   cachebar.hide
-  If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
+  If HSplit1.Layout.count > 0 Then
+    If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
+  Endif
 
   Maintoolbar.Reparent(FsForm)
   FsForm.Background = color.black
@@ -11394,7 +11395,6 @@ Public Sub Make_modes_menu()
   If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then
 
     'refresh rate condition needs to know the video fps:
-    Stop
       Try fps = CFloat(mplayer.get_property_mpv("fps"))
       If Error Then
         Try fps = CFloat(mplayer.get_property_mpv("estimated-vf-fps"))
@@ -11476,7 +11476,12 @@ Public Sub menu_mode_Click()
   rate = CFloat(mode_splitted[4])
   err = mode_splitted[5]
   randr.change_mode(output_name, mode_name, rate)
-  
+  If fsform.visible Then
+    'needed to update the screen size
+    SwitchToWindow()
+    Wait 1
+    SwitchToFS()
+  Endif
   If generaloptions.switchres_compensate_checkbox.value Then
     If mplayer.ProcessRunningOvr() Then 
       If Not mplayer.getP("audioonly") Then
