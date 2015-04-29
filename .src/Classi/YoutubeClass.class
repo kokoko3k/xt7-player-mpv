@@ -39,9 +39,22 @@ Private KEY_OK As String
 Private Sub APIKEY() As String
   Dim ykey As String
   Dim lkey_file As String = global.ConfPath & "/.ak.txt"
-  Stop
+
+  'Just do this 'till a working key is found
   If KEY_OK <> "" Then Return KEY_OK
   
+  'try the user spcified API KEY
+  If GeneralOptions.UseMyApiKeyCheckbox.value Then
+    If Trim(GeneralOptions.API_KEY_USER_textbox.text) <> "" Then
+      ykey = Trim(GeneralOptions.API_KEY_USER_textbox.text)
+      If Not (TestKey(ykey)) Then
+        Message.error(("User provided api key does not seem to work.") & "\n" & ("Trying shared and cached keys..."))
+      Endif
+      KEY_OK = ykey
+    Endif
+  Endif
+
+  'try web API KEY
   If Not (NO_WEB_KEY) Then
     ykey = ""
     ykey = webkey()
@@ -57,6 +70,7 @@ Private Sub APIKEY() As String
   Endif
   NO_WEB_KEY = True 'flag to avoid trying to get keys from web again
 
+  'try local cached api key
   ykey = ""
   Try ykey = File.Load(lkey_file)
   If Not Error Then 
@@ -67,6 +81,7 @@ Private Sub APIKEY() As String
     Endif
   Endif
 
+  'if we reach here, no working keys were found :(
   global.myDebug("Could not get a vaild key")
   Message.Error("\n" & ("Invalid or missing API KEY") & "\n\n" & ("You could try again later.") & ".\n")
   NO_WEB_KEY = False 'local key failed as well, we'll rely on webkeys again 

@@ -40,7 +40,7 @@
       }
     }
     { Tabstrip1 TabStrip
-      MoveScaled(24,1,62,67)
+      MoveScaled(26,1,62,67)
       Tag = "User options"
       Expand = True
       Arrangement = Arrange.Vertical
@@ -869,8 +869,24 @@
         { NOPARSESEP6 Separator
           MoveScaled(5,16,43,1)
         }
+        { NoParse52 HBox
+          MoveScaled(1,21,50,4)
+          ToolTip = ("Temporary recording folder")
+          Spacing = True
+          { UseMyApiKeyCheckbox CheckBox
+            MoveScaled(0,0,26,4)
+            ToolTip = ("Since Youtube API v3, searching youtube contents requires an API KEY \nthat google limits to a number of requests per day.\n\nxt7 provides a shared API KEY, used by everybody, but you may\nspecify your own here.")
+            Expand = True
+            Text = ("Use this Youtube API KEY (need restart)")
+          }
+          { API_KEY_USER_textbox TextBox
+            MoveScaled(29,0,19,3)
+            ToolTip = ("Select your femon executable.\nJust write 'femon' for default.")
+            Expand = True
+          }
+        }
         { NoParse33 HBox
-          MoveScaled(1,23,50,4)
+          MoveScaled(1,26,50,4)
           ToolTip = ("When playing youtube videos, \nprefer this format if available.")
           AutoResize = True
           Spacing = True
@@ -896,18 +912,18 @@
           }
         }
         { NoParse15 HBox
-          MoveScaled(1,28,50,4)
+          MoveScaled(1,32,50,4)
           ToolTip = ("When playing youtube videos, \nprefer this format if available.")
           AutoResize = True
           Spacing = True
           { Get3dYT CheckBox
-            MoveScaled(2,0,49,4)
+            MoveScaled(0,-1,34,4)
             ToolTip = ("If available, 3D videos will be displayed instead of 2D ones.\nDisabling this option will completely discard 3D videos.\n\nNOTES:\n It may be necessary to use the stereo3d video filter\nUsing the stereo3d video disables GPU decoding.")
             Expand = True
             Text = ("Prefer 3D videos from Youtube")
           }
           { PictureBox2 PictureBox
-            MoveScaled(44,0,5,4)
+            MoveScaled(42,0,5,4)
             Expand = True
             Picture = Picture["3dglassess.png"]
             AutoResize = True
