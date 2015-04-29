@@ -84,9 +84,9 @@ Private Function kdialog_askfile(Optional open_dir As Boolean = False) As String
       Endif
     Next 'i
     kfilter = "'" & kfilter & "*|" & ("All files") & "'"
-    Shell "kdialog --getopenfilename " & startpath & " " & kfilter To kdialog_out
+    Shell "kdialog --getopenfilename " & startpath & " " & kfilter & " --title '" & Dialog.title & "'" To kdialog_out
       Else
-    Shell "kdialog --getexistingdirectory " & startpath & " " To kdialog_out
+    Shell "kdialog --getexistingdirectory " & startpath & " " & " --title '" & Dialog.title & "'" To kdialog_out
   Endif        
   Return Trim(kdialog_out)
 End
