@@ -1368,7 +1368,7 @@
             MoveScaled(-1,4,30,4)
             ToolTip = ("Only valid for standard feeds")
             { Label4 Label
-              MoveScaled(0,0,11,3)
+              MoveScaled(1,0,11,3)
               Tag = "region"
               Text = ("Region")
             }
@@ -1382,6 +1382,7 @@
           }
           { HBox17 HBox
             MoveScaled(1,9,33,4)
+            Enabled = False
             ToolTip = ("only valid for searches")
             { Label5 Label
               MoveScaled(0,1,11,3)
@@ -1403,7 +1404,7 @@
             { Label6 Label
               MoveScaled(0,1,11,3)
               Tag = "safeSearch"
-              Text = ("Uploader")
+              Text = ("Author")
             }
             { TextBoxUploader TextBox
               MoveScaled(8,0,18,4)

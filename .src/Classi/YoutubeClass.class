@@ -136,7 +136,7 @@ End
 
 Public Function ChannelIdFromName(uploader As String) As String
   Dim mywget As New Wgetclass
-  Dim url As String = "'https://www.googleapis.com/youtube/v3/channels?key=" & APIKEY & "&part=id&forUsername=" & uploader & "'"
+  Dim url As String = "'https://www.googleapis.com/youtube/v3/channels?key=" & APIKEY() & "&part=id&forUsername=" & uploader & "'"
   Dim answer, out As String
   Dim jdecoded As Collection
   answer = mywget.DownloadAsync(url)
