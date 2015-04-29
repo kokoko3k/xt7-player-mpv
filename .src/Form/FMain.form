@@ -1294,7 +1294,7 @@
             ToolTip = ("Click to open video page")
             Expand = True
             { YouVideoInfo TextLabel
-              MoveScaled(1,1,30,10)
+              MoveScaled(0,1,30,10)
               Visible = False
               Background = &H000000&
               Foreground = &HFFFFFF&
@@ -1305,7 +1305,7 @@
           }
         }
         { HBox13 HBox
-          MoveScaled(2,32,38,4)
+          MoveScaled(3,32,38,4)
           ToolTip = (" ")
           Spacing = True
           { buttondetail Button
@@ -1324,14 +1324,14 @@
             Text = ("Results")
           }
           { SpinBoxmaxresults SpinBox
-            MoveScaled(24,0,7,4)
+            MoveScaled(19,0,7,4)
             ToolTip = ("How many results to get.")
             MinValue = 1
             MaxValue = 49
             Value = 10
           }
           { buttonstartytsearch Button
-            MoveScaled(35,0,4,4)
+            MoveScaled(25,0,4,4)
             ToolTip = ("Search now")
             Picture = Picture["icon:/small/find"]
           }
@@ -1360,7 +1360,7 @@
               MoveScaled(9,0,18,4)
               Expand = True
               ReadOnly = True
-              List = [("relevance"), ("published"), ("viewCount"), ("rating")]
+              List = [("relevance"), ("rating"), ("viewcount"), ("date"), ("title")]
               Text = ("relevance")
             }
           }

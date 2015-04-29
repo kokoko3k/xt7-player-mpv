@@ -32,8 +32,10 @@ Static Public Sub Application_error()
   Wend
 End
 
+
+
 Static Public Sub main()
-  'quicktest()
+  quicktest()
   ProcessSignals(True)
   zzzFake.Start()
 End
@@ -58,7 +60,6 @@ Static Public Function MidC(s As String, a As String, Optional b As String) As S
 End
 
 
+
 Static Public Sub quicktest()
-  Quit
-  
 End

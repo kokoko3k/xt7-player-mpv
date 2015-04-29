@@ -350,6 +350,15 @@ Geometry=[273,46,845,344]
 [DebugWindow/Items]
 Geometry=[0,0,2529,402]
 
+[DebugWindow/JSON.Decode(detail_json)]
+Geometry=[-2,-1,256,320]
+
+[DebugWindow/JSON.Decode(detail_json)["items"]]
+Geometry=[14,15,256,320]
+
+[DebugWindow/JSON.Decode(detail_json)["items"][0]]
+Geometry=[160,256,505,411]
+
 [DebugWindow/Key]
 Geometry=[0,0,344,344]
 
@@ -692,6 +701,9 @@ Geometry=[44,-3,210,210]
 [DebugWindow/Split(Mid(s, InStr(s, llabel & ":") + 1), ":")]
 Geometry=[44,-3,210,210]
 
+[DebugWindow/Split(T1, " ", "", True)]
+Geometry=[1280,0,224,280]
+
 [DebugWindow/Split(aLine, " ", "", True)]
 Geometry=[1280,0,224,280]
 
@@ -994,7 +1006,7 @@ Geometry=[0,-3,210,210]
 Geometry=[0,0,344,344]
 
 [DebugWindow/Youtube.feedsinfo]
-Geometry=[24,687,660,588]
+Geometry=[311,306,660,588]
 
 [DebugWindow/["run", "|bin|sh", "-c", "echo ${title} > |tmp|playing"]]
 Geometry=[1280,-3,224,280]
@@ -1237,6 +1249,18 @@ Geometry=[47,-3,273,668]
 [DebugWindow/covermanager.coverpicture(CoverManager.coverfile(artist, album), fullpath, rowheight)]
 Geometry=[48,-4,210,210]
 
+[DebugWindow/detail_jdecoded]
+Geometry=[1170,288,256,320]
+
+[DebugWindow/detail_jdecoded["items"]]
+Geometry=[1186,304,256,320]
+
+[DebugWindow/detail_jdecoded["items"][0]]
+Geometry=[1202,320,256,320]
+
+[DebugWindow/detail_jdecoded["items"][0]["contentDetails"]]
+Geometry=[1220,347,256,320]
+
 [DebugWindow/devices]
 Geometry=[48,-4,210,210]
 
@@ -1257,6 +1281,9 @@ Geometry=[1280,0,210,210]
 
 [DebugWindow/droppedfiles]
 Geometry=[0,212,588,458]
+
+[DebugWindow/durations]
+Geometry=[792,546,256,320]
 
 [DebugWindow/dvbsnoop.EventDB]
 Geometry=[0,-3,607,623]
@@ -1483,6 +1510,18 @@ Geometry=[-309,307,1235,412]
 
 [DebugWindow/items_container]
 Geometry=[1400,120,210,881]
+
+[DebugWindow/jdecoded]
+Geometry=[640,203,528,406]
+
+[DebugWindow/jdecoded["items"]]
+Geometry=[654,217,528,406]
+
+[DebugWindow/jdecoded["items"][0]]
+Geometry=[668,231,528,406]
+
+[DebugWindow/json]
+Geometry=[1280,-3,224,280]
 
 [DebugWindow/key]
 Geometry=[44,0,210,210]
@@ -2001,7 +2040,7 @@ Geometry=[0,0,210,210]
 Geometry=[0,0,344,344]
 
 [DebugWindow/streaminfo]
-Geometry=[47,0,561,246]
+Geometry=[49,1,561,320]
 
 [DebugWindow/subdir]
 Geometry=[0,326,242,262]
@@ -2147,7 +2186,7 @@ Geometry=[44,-3,1233,1004]
 Geometry=[44,-3,490,476]
 
 [DebugWindow/youtubetree]
-Geometry=[1314,608,344,344]
+Geometry=[922,465,344,344]
 
 [DebugWindow/youtubetree.Current]
 Geometry=[0,0,210,503]
@@ -2175,21 +2214,21 @@ SearchString=True
 [OpenFile]
 File[1]=".src/Form/NewChains.class:1343.114"
 File[2]=".src/Form/GeneralOptions.form"
-File[3]=".src/Form/GeneralOptions.class:434.31"
+File[3]=".src/Form/GeneralOptions.class:609.0"
 File[4]=".src/Form/FMain.form"
-Active=5
-File[5]=".src/Form/FMain.class:1661.12"
-File[6]=".src/Classi/SettingsClass.class:328.16"
-File[7]=".src/0_Moduli/Global.module:134.0"
+Active=24
+File[5]=".src/Form/FMain.class:9050.6"
+File[6]=".src/Classi/SettingsClass.class:296.6"
+File[7]=".src/0_Moduli/Global.module:126.0"
 File[8]=".src/Form/EpgForm.form"
-File[9]=".src/Classi/MplayerClass.class:1543.12"
+File[9]=".src/Classi/MplayerClass.class:1684.20"
 File[10]=".src/Form/MyQuestion.class:64.27"
 File[11]=".src/Classi/FloatSpinBox.class:51.0"
 File[12]=".src/Form/CoverManager.class:1268.0"
 File[13]=".src/Form/SubAndOsd.class:18.0"
 File[14]=".src/Form/SubAndOsd.form"
 File[15]=".src/Form/NewChains.form"
-File[16]=".src/0_Moduli/MyDialog.class:134.0"
+File[16]=".src/0_Moduli/MyDialog.class:76.0"
 File[17]="CHANGELOG_GIT:979.26"
 File[18]="xt7-player-mpv.desktop:1.19"
 File[19]=".src/Form/FsForm.class:0.0"
@@ -2197,7 +2236,7 @@ File[20]=".src/Form/LogWindow.form"
 File[21]=".src/Form/LogWindow.class:102.32"
 File[22]=".src/Form/HotKeys.form"
 File[23]=".src/Form/HotKeys.class:503.47"
-File[24]="AA_ToDo:638.0"
+File[24]="AA_ToDo:726.31"
 File[25]=".src/Form/AddUriForm.form"
 File[26]=".src/Form/RealtimeForm.form"
 File[27]=".src/Form/RealtimeForm.class:45.2"
@@ -2216,19 +2255,19 @@ File[39]=".src/Form/OpenSubtitesForm.class:78.80"
 File[40]=".src/Form/VideoEqualizer.form"
 File[41]=".src/Form/OpenSubtitesForm.form"
 File[42]=".src/Classi/FlashClass.class:80.30"
-File[43]=".src/Classi/PlaylistClass.class:143.0"
+File[43]=".src/Classi/PlaylistClass.class:1269.0"
 File[44]=".src/Classi/mpris.class:111.0"
 File[45]=".src/Form/DVBTuner.class:332.29"
 File[46]=".src/Form/EpgForm.class:354.23"
 File[47]="caching.gif"
-File[48]=".src/Classi/StartClass.class:22.3"
+File[48]=".src/Classi/StartClass.class:37.2"
 File[49]="FakeInput.conf:165.32"
 File[50]=".src/Classi/IceCastClass.class:35.9"
 File[51]=".src/Form/ladspahelper.form"
 File[52]=".src/Form/AudioConvert.class:211.0"
 File[53]=".src/Form/AudioConvert.form"
 File[54]="amarok_random.png"
-File[55]=".src/Classi/YoutubeClass.class:705.7"
+File[55]=".src/Classi/YoutubeClass.class:54.0"
 File[56]="media-loop-off.png"
 File[57]="media-loop-ab.png"
 File[58]="media-loop-a.png"
@@ -2241,14 +2280,14 @@ File[64]=".src/Classi/CDDB.class:108.19"
 File[65]=".src/Classi/DynaGuiClass.class:215.29"
 File[66]=".src/Classi/PodCast.class:151.39"
 File[67]=".src/Classi/TagLib.class:132.9"
-File[68]=".src/Classi/WgetClass.class:55.31"
+File[68]=".src/Classi/WgetClass.class:21.26"
 File[69]=".src/Classi/dvbsnoop_class.class:182.13"
 File[70]=".src/Form/AddUriForm.class:100.0"
 File[71]=".src/Classi/DbusProperties.class:90.19"
 File[72]=".src/Form/FormLyrics.class:214.25"
 File[73]="00_note:334.14"
 File[74]=".src/Form/ladspahelper.class:63.51"
-File[75]=".src/Form/BugReport.class:24.0"
+File[75]=".src/Form/BugReport.class:8.14"
 File[76]=".src/Form/BugReport.form"
 File[77]=".src/Form/Xt7Egg.form"
 File[78]="barglow.png"

@@ -712,3 +712,17 @@ questo:
 'Cambiamento in mpv git per video e audio bitrate
   https://github.com/mpv-player/mpv/commit/c6d046414b1d31046c39da6399130b39fe54813d
   
+'youtube è un casino e il codice è pure peggio.
+'rimane da implementare la ricerca per data: 
+https://developers.google.com/youtube/v3/docs/search/list
+publishedAfter publishedBefore
+
+'rimane da implementare pure un minimo di feed standard
+...che alla fine vengono fuori con ricerche particolari
+quindi puoi pensare di schiaffare delle tag nel item del thread
+che rappresentino il tipo di ricerca da effettuare.
+
+...la chiave non deve stare nel codice, ma su un server remoto
+e cachata all'occorrenza che il server vada giù
+ciò è fondamentale per youtube.
+

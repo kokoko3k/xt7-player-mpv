@@ -5873,7 +5873,7 @@ Public Sub MenuOpenContainingFolderPopUp_Click()
   If Error Then Return
   desktop.open(File.Dir(item))
   MenuOpenContainingFolderPopUp.visible = False
-  
+
 End
 
 Public Sub MenuplaylistOpenFolder_Click()
@@ -9022,14 +9022,23 @@ End
 ' '------------
 
 Public Function YoutubeParseOpts() As String
-  
+  Dim channelid, region As String
   Dim out As String
+  'https://developers.google.com/youtube/v3/docs/search/list
+  out = out & "&order=" & ComboBoxOrderBy.text
+  'out = out & "&time=" & Comboboxtime.text 'fixme
+  out = out & "&safeSearch=" & "none" 'fixme
+  If Trim(TextBoxUploader.text) <> "" Then 
+    channelid = Youtube.ChannelIdFromName(TextBoxUploader.text)
+    out = out & "&channelId=" & channelid
+  Endif
   
-  out = out & "&orderby=" & ComboBoxOrderBy.text
-  out = out & "&time=" & Comboboxtime.text
-  If Trim(TextBoxUploader.text) <> "" Then out = out & "&author=" & Trim(TextBoxUploader.text)
+  Try region = Trim(Split(ComboBoxRegion.text, ":", "", True)[1])
+  If region <> "" Then
+    out = out & "&regionCode=" & region & "&relevanceLanguage=" & region
+  Endif
+  
   Return out
-  
 End
 
 Public Sub youtubeTree_Activate()
@@ -9039,6 +9048,7 @@ End
 
 Public Sub TimerTreeDelayExpand_Timer()
   Dim IsChild As Boolean = False
+
   'if the item has no parent then refresh it, else play it
   fmain.mouse = mouse.wait
   youtubeTree.MoveCurrent
@@ -9105,10 +9115,10 @@ End
 
 
 Public Sub YouSearchfield_Activate()
-  youtubetree.MoveTo("custom_search_results")
-  youtubetree.Item.Selected = True
+  Try youtubetree.MoveTo("custom_search_results")
+  Try youtubetree.Item.Selected = True
   'TimerTreeDelayExpand.start()
-  TimerTreeDelayExpand_Timer()
+  Try TimerTreeDelayExpand_Timer()
 End
 
 Public Sub fillyoutubeinfo(url As String)
@@ -9116,14 +9126,18 @@ Public Sub fillyoutubeinfo(url As String)
   Dim title, category, seconds, description, published, updated, author, authorlink As String
   Dim outtext As String = ""
   Dim ytsite As String = "http://www.youtube.com/watch?v="
-  ytsite = ytsite & Youtube.getvideoid(url)
-  Try title = Youtube.feedsinfo[url & ".title"]
-  Try category = Youtube.feedsinfo[url & ".categorylabel"]
-  Try seconds = mplayer.FormatTime(Youtube.feedsinfo[url & ".yt:durationseconds"])
-  Try description = Youtube.feedsinfo[url & ".media:description"]
-  Try published = Youtube.feedsinfo[url & ".published"]
-  Try updated = Youtube.feedsinfo[url & ".updated"]
-  authorlink = Youtube.feedsinfo[url & ".author"]
+  Dim videoid As String
+  videoid = Youtube.getvideoid(url)
+  ytsite = ytsite & videoid
+
+  Try title = Youtube.feedsinfo[videoid & ".title"]
+  Try category = Youtube.feedsinfo[videoid & ".categorylabel"]
+  Try seconds = mplayer.FormatTime(Youtube.feedsinfo[videoid & ".yt:durationseconds"])
+  Try description = Youtube.feedsinfo[videoid & ".media:description"]
+  Try published = Youtube.feedsinfo[videoid & ".published"]
+  Try updated = Youtube.feedsinfo[videoid & ".updated"]
+
+  authorlink = Youtube.feedsinfo[videoid & ".author"]
   author = file.Name(authorlink)
   YouVideoInfo.w = scrollviewyt.w - 64
   outtext = outtext & "<font color='white'>"
@@ -9144,7 +9158,7 @@ Public Sub fillyoutubeinfo(url As String)
   YouVideoInfo.text = outtext
   YouVideoInfo.visible = True
   blinktimer.start
-  
+
 End
 
 Private blinknum As Integer = 0
@@ -9179,8 +9193,8 @@ Public Sub YouVideoInfo_MouseDown()
   
   ytsite = ytsite & Youtube.getvideoid(YouVideoInfo.tag)
   If MyQuestion.Ask(("Would you like to go to the video homepage?"), ("Yes, Go to Youtube"), ("No, thanks")) = 1 Then
-    'Shell "xdg-open '" & ytsite & "'"
-    desktop.Open(ytsite)
+    Shell "xdg-open '" & ytsite & "'"
+    'desktop.Open(ytsite)
   Endif
   
 End
@@ -9217,9 +9231,14 @@ Public Sub youtubeappendmenu_Click()
   Dim relatedtotext As String
   Dim tmpkey, lastitemkey, myparentkey, tmptmpkey As String
   Dim howmanyparents As Integer = 0
+  Dim searchurl As String 
+
   Object.Detach(youtubetree)
   youtubetree.MoveCurrent
   If youtubetree.Current.Key Like "__MORERESULTS__*" Then 
+    Try searchurl = Split(youtubetree.Current.Key, Chr(8), "", True)[1]
+    If Error Then Return 
+
     tmpkey = youtubetree.Current.Key
     If Not (youtubetree.MovePrevious()) Then
       lastitemkey = youtubetree.Item.key
@@ -9239,6 +9258,8 @@ Public Sub youtubeappendmenu_Click()
   Endif
   global.myDebug(youtubetree.Current.key)
   youtubetree.moveparent()
+  myparentkey = youtubetree.Item.key
+  
   Try youtubetree.Remove(tmpkey)
   fmain.mouse = mouse.wait
   Leftsidetabs.mouse = Mouse.wait
@@ -9250,9 +9271,13 @@ Public Sub youtubeappendmenu_Click()
       relatedtotext = Left(youtubetree.item.text, InStr(youtubetree.item.text, "\n"))
 
 
-      Youtube.GetRelated(relatedlink, youtubetree, relatedtotext, SpinBoxmaxresults.text, (Desktop.h Div 12),, True)
+      'Youtube.GetRelated(relatedlink, youtubetree, relatedtotext, SpinBoxmaxresults.text, (Desktop.h Div 12),, True)
+      'implement relatedtotext again fixme
+      Youtube.DownloadAndParse(searchurl, youtubetree, myparentkey, (desktop.h Div 12), True)
     Else If myparentkey = "custom_search_results" Then
-      SearchYoutube(True)
+      'SearchYoutube(True)
+
+      Youtube.DownloadAndParse(searchurl, youtubetree, myparentkey, (desktop.h Div 12), True)
     Else
       Youtube.GetFeed(myparentkey, youtubeTree, (Desktop.h Div 12), Split(ComboBoxRegion.text, ":", "", False)[1], SpinBoxmaxresults.value, True)
   Endif
@@ -9269,108 +9294,7 @@ Public Sub youtubeappendmenu_Click()
 
 End
 
-Public Sub NEW_OK_youtubeappendmenu_Click()
-  
-  Dim relatedlink As String
-  Dim relatedtotext As String
-  Dim tmpkey, lastitemkey, myparentkey, tmptmpkey As String
-  
-  Object.Detach(youtubetree)
-  youtubetree.MoveCurrent
-  If youtubetree.Current.Key Like "__MORERESULTS__*" Then 
-    tmpkey = youtubetree.Current.Key
-    If Not (youtubetree.MovePrevious()) Then
-      lastitemkey = youtubetree.Item.key
-      youtubetree.item.selected = True
-    Endif
-    tmptmpkey = youtubetree.Item.key
-    While youtubetree.item.ParentKey <> Null
-      Try myparentkey = youtubetree.item.ParentKey
-      youtubetree.moveparent()
-    Wend
-    
-    If Error Then Goto ReturnLabel
-    Try youtubetree.MoveTo(tmptmpkey)
-    If Error Then Goto ReturnLabel
-  Endif
-  global.myDebug(youtubetree.Current.key)
-  youtubetree.moveparent()
-  Try youtubetree.Remove(tmpkey)
-  fmain.mouse = mouse.wait
-  Leftsidetabs.mouse = Mouse.wait
-  If myparentkey = "custom_search_results" Then
-    SearchYoutube(True)
-  Else If myparentkey = "related" Then 'go to child item to see what related items we need
-   ' Try youtubetree.MoveChild
-    'If Not Error Then
-      relatedlink = youtubetree.Current.key 'youtubetree.Item.key
-      relatedtotext = Left(youtubetree.Current.text, InStr(youtubetree.Current.text, "\n") - 1)
-      youtubetree.moveparent 'then go back to the 'upstream'
-      'Youtube.CollapseAll(youtubetree)
-      Youtube.GetRelated(relatedlink, youtubetree, relatedtotext, SpinBoxmaxresults.text, (Desktop.h Div 12),, True)
-    'Endif
-  Else
-    Youtube.GetFeed(myparentkey, youtubeTree, (Desktop.h Div 12), Split(ComboBoxRegion.text, ":", "", False)[1], SpinBoxmaxresults.value, True)
-  Endif
-  fmain.mouse = mouse.default
-  Leftsidetabs.mouse = mouse.default
-  'move to the last selected item
-  Try youtubetree.MoveTo(lastitemkey)
-  If Not Error Then 
-    youtubetree.Item.selected = True
-  Endif
-  
-  ReturnLabel:
-  Object.Attach(youtubetree, fmain, youtubetree.name)
 
-End
-
-Public Sub OLDyoutubeappendmenu_Click()
-  
-  Dim IsChild As Boolean = False
-  Dim relatedlink As String
-  Dim relatedtotext As String
-  Dim tmpkey, lastitemkey As String
-  youtubetree.MoveCurrent
-  
-  If youtubetree.Current.Key Like "__MORERESULTS__*" Then 
-    tmpkey = youtubetree.Current.Key
-    If Not (youtubetree.MovePrevious()) Then
-      lastitemkey = youtubetree.Item.key
-    Endif
-    Try youtubetree.MoveParent()
-    If Error Then Return
-    Try youtubetree.Item.selected = True
-  Endif
-  global.myDebug(youtubetree.Current.key)
-  Try youtubetree.Remove(tmpkey)
-  If Not ischild Then
-    fmain.mouse = mouse.wait
-    Leftsidetabs.mouse = Mouse.wait
-    If youtubetree.Current.Key = "custom_search_results" Then
-      SearchYoutube(True)
-    Else If youtubetree.Current.Key = "related" Then 'go to child item to see what related items we need
-      Try youtubetree.MoveChild
-      If Not Error Then
-        relatedlink = youtubetree.Item.key
-        relatedtotext = youtubetree.Current.text
-        youtubetree.moveparent 'then go back to the 'upstream'
-        Youtube.CollapseAll(youtubetree)
-        Youtube.GetRelated(relatedlink, youtubetree, relatedtotext, SpinBoxmaxresults.text, (Desktop.h Div 12),, True)
-      Endif
-    Else
-      Youtube.GetFeed(youtubeTree.Current.key, youtubeTree, (Desktop.h Div 12), Split(ComboBoxRegion.text, ":", "", False)[1], SpinBoxmaxresults.value, True)
-    Endif
-    fmain.mouse = mouse.default
-    Leftsidetabs.mouse = mouse.default
-    'move to the last selected item
-    Try youtubetree.MoveTo(lastitemkey)
-    If Not Error Then 
-      youtubetree.Item.selected = True
-    Endif
-  Endif
-
-End
 
 Public Sub YoutubeTreeTreeGetRelatedMenu_click(Optional myappend As Boolean = False)
   Dim IsChild As Boolean = False
@@ -9513,10 +9437,8 @@ Public Sub youtubetree_KeyPress()
   
 End
 
-Public Sub TextBoxUploader_KeyPress()
-  
-  If ((key.code = key.enter) Or (key.code = key.return)) Then SearchYoutube()
-  
+Public Sub TextBoxUploader_activate()
+  SearchYoutube()
 End
 
 Public Sub buttonstartytsearch_Click()

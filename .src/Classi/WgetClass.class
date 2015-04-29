@@ -14,7 +14,7 @@ Public Function DownloadAsync(URL As String, Optional AsFile As Boolean = False)
 
   If URL = "" Then Return
   tmpfile = Temp()
-  tries = 10
+  tries = 3
   commandline = "wget " & URL & " -O " & tmpfile & timeouts & " >/dev/null 2>&1"
   'commandline = "wget " & URL & " -O " & tmpfile & timeouts
   Repeat
@@ -32,6 +32,11 @@ Public Function DownloadAsync(URL As String, Optional AsFile As Boolean = False)
     Endif
   'UNTIL ((tries = 0) OR (Stat(tmpfile).size > 0))
    Until ((tries = 0) Or wgetdone)
+   If wgetdone Then 
+    global.myDebug("Done")
+      Else
+    global.myDebug("timeout")
+   Endif
   If (Not AsFile) Then
     Try Kill tmpfile
     Return out
@@ -75,6 +80,7 @@ Public Function ExistsUrl(url As String) As Boolean
     Endif
   'Message.Error(("Stream not found or network error"))
 End
+
 
 Private Function ProcessRunningOvr(myprocess As Process) As Boolean
 'As gambas returns runtime error if process is not ready,
