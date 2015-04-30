@@ -1,3 +1,6 @@
+[Bookmarks]
+YoutubeClass=[]
+
 [Breakpoints]
 Count=0
 
@@ -332,6 +335,9 @@ Geometry=[51,0,210,210]
 [DebugWindow/Hsplit1.layout]
 Geometry=[0,0,210,210]
 
+[DebugWindow/HttpClient]
+Geometry=[1280,-3,224,280]
+
 [DebugWindow/HttpClient1]
 Geometry=[95,46,708,490]
 
@@ -358,6 +364,9 @@ Geometry=[14,15,256,320]
 
 [DebugWindow/JSON.Decode(detail_json)["items"][0]]
 Geometry=[160,256,505,411]
+
+[DebugWindow/JSON.Decode(j_main)]
+Geometry=[1280,-3,224,280]
 
 [DebugWindow/Key]
 Geometry=[0,0,344,344]
@@ -1182,6 +1191,15 @@ Geometry=[-4,-3,210,210]
 [DebugWindow/buttonopen]
 Geometry=[1280,0,248,458]
 
+[DebugWindow/c1]
+Geometry=[1280,-3,224,280]
+
+[DebugWindow/c2]
+Geometry=[1504,0,224,280]
+
+[DebugWindow/c3]
+Geometry=[1728,0,224,280]
+
 [DebugWindow/cBox]
 Geometry=[1280,671,394,844]
 
@@ -1269,6 +1287,9 @@ Geometry=[0,41,344,344]
 
 [DebugWindow/devices2.Sort()]
 Geometry=[0,41,344,344]
+
+[DebugWindow/di]
+Geometry=[1280,-3,224,280]
 
 [DebugWindow/dir(directory)]
 Geometry=[1280,0,210,210]
@@ -1519,6 +1540,12 @@ Geometry=[654,217,528,406]
 
 [DebugWindow/jdecoded["items"][0]]
 Geometry=[668,231,528,406]
+
+[DebugWindow/jdecoded["items"][i]["snippet"]["thumbnails"]]
+Geometry=[1280,-3,224,280]
+
+[DebugWindow/jdecoded["items"][i]["snippet"]["thumbnails"]["default"]]
+Geometry=[1294,11,355,280]
 
 [DebugWindow/json]
 Geometry=[1280,-3,224,280]
@@ -2133,11 +2160,14 @@ Geometry=[0,41,344,344]
 Geometry=[51,0,722,281]
 
 [DebugWindow/tree]
-Geometry=[61,11,279,770]
+Geometry=[720,649,279,770]
 
 [DebugWindow/tree.Current]
 ShowHidden=True
-Geometry=[529,189,279,770]
+Geometry=[720,109,279,770]
+
+[DebugWindow/tree.current]
+Geometry=[1280,-3,224,280]
 
 [DebugWindow/uncovered]
 Geometry=[664,142,359,803]
@@ -2148,6 +2178,9 @@ Geometry=[0,0,1148,344]
 [DebugWindow/urls]
 Geometry=[1609,259,544,507]
 
+[DebugWindow/v]
+Geometry=[1280,-3,224,280]
+
 [DebugWindow/valuescontainer]
 Geometry=[0,0,344,344]
 
@@ -2156,6 +2189,15 @@ Geometry=[0,0,344,344]
 
 [DebugWindow/valuescontainer.children[i]]
 Geometry=[0,0,344,344]
+
+[DebugWindow/video]
+Geometry=[1280,-3,224,280]
+
+[DebugWindow/videos]
+Geometry=[1280,-3,224,280]
+
+[DebugWindow/videos["dcl9z6LBEY4"]]
+Geometry=[1504,0,279,280]
 
 [DebugWindow/videourls]
 Geometry=[46,405,425,458]
@@ -2182,6 +2224,9 @@ Geometry=[116,387,813,653]
 [DebugWindow/xrandr_output_splitted]
 Geometry=[44,-3,1233,1004]
 
+[DebugWindow/youtubeTree]
+Geometry=[1280,-3,224,280]
+
 [DebugWindow/youtubeTree.current]
 Geometry=[44,-3,490,476]
 
@@ -2194,6 +2239,12 @@ Geometry=[0,0,210,503]
 [DebugWindow/youtubetree.Item]
 ShowHidden=True
 Geometry=[2186,563,344,344]
+
+[DebugWindow/youtubetree.tag]
+Geometry=[1280,-3,224,280]
+
+[DebugWindow/youtubetree.tag[youtubeTree.current.key]]
+Geometry=[1280,-3,224,280]
 
 [DebugWindow/yplines]
 Geometry=[1280,-3,688,733]
@@ -2216,12 +2267,12 @@ File[1]=".src/Form/NewChains.class:1343.114"
 File[2]=".src/Form/GeneralOptions.form"
 File[3]=".src/Form/GeneralOptions.class:609.0"
 File[4]=".src/Form/FMain.form"
-Active=15
-File[5]=".src/Form/FMain.class:9143.18"
+Active=4
+File[5]=".src/Form/FMain.class:8984.0"
 File[6]=".src/Classi/SettingsClass.class:296.6"
 File[7]=".src/0_Moduli/Global.module:126.0"
 File[8]=".src/Form/EpgForm.form"
-File[9]=".src/Classi/MplayerClass.class:1684.20"
+File[9]=".src/Classi/MplayerClass.class:956.36"
 File[10]=".src/Form/MyQuestion.class:64.27"
 File[11]=".src/Classi/FloatSpinBox.class:51.0"
 File[12]=".src/Form/CoverManager.class:1268.0"
@@ -2260,14 +2311,14 @@ File[44]=".src/Classi/mpris.class:111.0"
 File[45]=".src/Form/DVBTuner.class:332.29"
 File[46]=".src/Form/EpgForm.class:354.23"
 File[47]="caching.gif"
-File[48]=".src/Classi/StartClass.class:37.2"
+File[48]=".src/Classi/StartClass.class:22.2"
 File[49]="FakeInput.conf:165.32"
 File[50]=".src/Classi/IceCastClass.class:35.9"
 File[51]=".src/Form/ladspahelper.form"
 File[52]=".src/Form/AudioConvert.class:16.0"
 File[53]=".src/Form/AudioConvert.form"
 File[54]="amarok_random.png"
-File[55]=".src/Classi/YoutubeClass.class:138.86"
+File[55]=".src/Classi/YoutubeClass.class:883.6"
 File[56]="media-loop-off.png"
 File[57]="media-loop-ab.png"
 File[58]="media-loop-a.png"

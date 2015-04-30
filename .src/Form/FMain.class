@@ -155,7 +155,7 @@ Public FullScreenSwitchDeltaY As Integer = 0
 
 Public mypodcast As New Podcast
 Public MyRadio As New ShoutCastClass
-Public Youtube As New Youtubeclass
+Public Youtube As Youtubeclass
 
 Public mplayer As New MplayerClass 
 
@@ -371,6 +371,7 @@ Public Sub ShowGrid(LibraryGrid As Gridview)
 End
 
 Public Sub AllInit_Pre()
+  youtube = New YoutubeClass(youtubetree)
   shadeup.visible = False
   VersionCheck()
   'MakeProfilePath() <--maininit already did this
@@ -485,7 +486,7 @@ Public Sub AllInit_Post()
   Else If TabSelectedPlaylist() Then
     LibraryGrid_Select()
   Else If TabSelectedyoutube() Then
-    Youtube_Select()
+    'Youtube_Select()
   Endif
   global.AddUserExtensions(GeneralOptions.KnownExtensions.text)
   VideoAreaGroup_keypress_timer = New Timer As "VideoAreaGroup_keypress_timer"
@@ -1627,66 +1628,16 @@ End
 
 
 Public Sub test()
-  Dim new_opts As New Collection
-  Dim aValue As String
-  Dim filter_str As String
-  Dim audio_filters_all As String[] 
-  Dim audio_filters_used As New String[]
-  Dim audio_filters_used_reformatted As New String[]
-  Dim out_file As String = Temp()
-  Dim item, f_name, f_param As String
-  
 
-  Try audio_filters_all = mplayer.filters_available(True)
-
-  'audio_filters_used = Split(mplayer.get_property_mpv("=af", True), ",", "", True)
-  'mplayer.mpv_command(["run", "/bin/sh", "-c", "echo ${=af} > /tmp/playing"])
-  mplayer.mpv_command(["run", "/bin/sh", "-c", "echo '${af}' > /tmp/playing"])
-
-  
-
-  For Each item In audio_filters_used
-    If audio_filters_all.Find(item) > 0 Then
-      If f_name <> "" Then
-        audio_filters_used_reformatted.Add(f_name & "=" & f_param)
-        f_param = ""
-        f_name = ""
-      Endif
-      f_name = item
-        Else
-      f_param = item
-    Endif
-  Next
-  
-  
-
-  ' Stop
-  ' Return
-  ' new_opts = get_apply_opts()
-  ' 
-  ' 'fix options to allow the insertion of lavcac3enc
-  ' 'audio-channels
-  ' For Each aValue In new_opts
-  '   If new_opts.key = "audio-channels" Then
-  '     global.myDebug("removing incompatible option: " & new_opts.key & " to add lavcac3enc")
-  '     new_opts.Remove(new_opts.key)
-  '   Endif
-  ' 'spdif/hdmi passthrough  
-  ' 
-  ' 'use mpv commands to remove audio filters that reduces the channel numbers
-  ' 'extrastereo,pan
-  ' 
-  ' Next
-  ' mplayer.do_apply_restart(new_opts)
-  ' 
+  youtubeTree_Activate()
   
 End
 
 
 
 Public Sub ButtonStop_Click()
-                                                     ' test()
-                                                     ' Return
+  ' test()
+  ' Return
   ' Dim a As Integer = 1 / 0
   switchresBTN.enabled = True
   global.mouse_wait(fmain, False)
@@ -6196,8 +6147,8 @@ Public Sub UpdateTabs()
     PlaylistGrid_Select()
   Else If TabSelectedShoutcast() Then
     If fullyloaded Then ShoutCast_Select()
-  Else If TabSelectedyoutube() Then
-    If fullyloaded Then Youtube_Select()
+  ' Else If TabSelectedyoutube() Then
+  '   If fullyloaded Then Youtube_Select()
   Else If TabSelectedAlbums() Then
     If fullyloaded Then Albums_Select()
    Else If TabSelectedMediaInfo() Then
@@ -8206,11 +8157,6 @@ Public Sub ShoutCast_Select()
   Endif
 End
 
-Public Sub Youtube_Select()
-  
-  If youtubetree.count = 0 Then Youtube.init_tree(youtubetree)
-  
-End
 
 Public Sub TextBox1_Click()
   If Trim(TextBox1.text) <> "" Then 
@@ -9004,45 +8950,50 @@ Public Sub MenuBrowseDelete_Click()
   If therewasanerror Then Message.Error(("There was an error while trying to delete the item"), ("Ok"))
 End
 
-' 'Some hackish code due to gambas 3.4.0 and new treeview
-'     Private YTreeJustExpandedOrCollapsed As Boolean = False
-'     Public Sub youtubetree_mouseup()
-'       If (youtubeTree.moveparent()) Then
-'         If Not YTreeJustExpandedOrCollapsed Then youtubetree.Current.expanded = Not youtubetree.Current.expanded
-'         YTreeJustExpandedOrCollapsed = False
-'       Endif
-'     End
-'     
-'     Public Sub youtubetree_Expand()
-'        YTreeJustExpandedOrCollapsed = True
-'     End
-'     Public Sub youtubetree_Collapse()
-'        YTreeJustExpandedOrCollapsed = True
-'     End
-' '------------
 
-Public Function YoutubeParseOpts() As String
-  Dim channelid, region As String
-  Dim out As String
-  'https://developers.google.com/youtube/v3/docs/search/list
-  out = out & "&order=" & ComboBoxOrderBy.text
-  'out = out & "&time=" & Comboboxtime.text 'fixme
-  out = out & "&safeSearch=" & "none" 'fixme
-  If Trim(TextBoxUploader.text) <> "" Then 
-    channelid = Youtube.ChannelIdFromName(TextBoxUploader.text)
-    out = out & "&channelId=" & channelid
-  Endif
-  
-  Try region = Trim(Split(ComboBoxRegion.text, ":", "", True)[1])
-  If region <> "" Then
-    out = out & "&regionCode=" & region & "&relevanceLanguage=" & region
-  Endif
-  
-  Return out
-End
 
 Public Sub youtubeTree_Activate()
-   TimerTreeDelayExpand.Start()
+  Dim yt_item As YoutubeItem
+  Dim video_url, query, pagetoken, parentkey As String
+  Dim more_text As String
+  
+  fmain.mouse = mouse.wait
+
+  'if is custom_search_results node, populate it
+  If youtubetree.Current.key = "custom_search_results" Then
+    youtube_custom_search()
+    Goto returnlabel
+  Endif
+
+  'if is a network uri, them play it
+  youtubeTree.MoveCurrent
+  Try yt_item = youtubetree.tag[youtubeTree.current.key]
+  Try video_url = yt_item.playurl
+  If video_url <> "" Then
+    If global.IsNetworkURI(video_url) Then
+      play(video_url)
+      SetActivePlayQueue("youtube")
+      Try customtitle = yt_item.title
+      Goto returnlabel
+    Endif
+  Endif
+
+  'is not a network uri.
+  'if is a moreresult link, search for more results
+  If InStr(youtubetree.Current.key, "__MORERESULTS__") Then
+    'more_text = InStr(youtubetree.Current.key,&q)
+    query = Right(Split(Right(youtubetree.Current.key, - InStr(youtubetree.Current.key, "&q=")), "&")[0], -2)
+    pagetoken = Split(youtubetree.Current.key, Chr(8))[2]
+    parentkey = youtubetree.Current.ParentKey
+    youtubetree.Current.Delete()
+    Try Youtube.GetResults(youtubetree, parentkey, youtube_query_opts(), pagetoken,, (desktop.h Div 12))
+
+    Goto returnlabel
+  Endif
+
+
+  ReturnLabel:
+  fmain.mouse = mouse.normal
 End
 
 
@@ -9067,7 +9018,7 @@ Public Sub TimerTreeDelayExpand_Timer()
     'If (youtubeTree.Current.Children = 0) Then
       If youtubetree.Current.Key = "custom_search_results" Then
         'Youtube.CollapseAll(youtubetree)
-        SearchYoutube()
+        youtube_custom_search()
       ' Else If youtubetree.Current.Key = "related" Then
       '   msgrelated = (("Please, right click on a video and select")) & "'" & (("Get related videos")) & "'"
       '   Message.info(msgrelated, "Ok")
@@ -9079,77 +9030,80 @@ Public Sub TimerTreeDelayExpand_Timer()
       If (youtubeTree.Current.Children > 0) Then youtubeTree.Current.Expanded = True
     'Endif
   Endif
+  
   ReturnLabel:
-  TimerTreeDelayExpand.stop
+
   fmain.mouse = mouse.normal
 End
 
-Public Sub youtubetree_Select()
 
+Public Struct YoutubeItem
+  duration As Integer
+  published As String
+  channelId As String
+  channeltitle As String
+  title As String
+  description As String
+  thumbnail As String
+  playurl As String
+End Struct
+
+Public Sub youtubetree_Select()
+  Dim yt_item As YoutubeItem
+  Dim video_url As String
   Dim IsChild As Boolean = False
   'if the item has no parent then refresh it, else play it
   youtubeTree.MoveCurrent
+  Try yt_item = youtubetree.tag[youtubeTree.current.key]
+  Try video_url = yt_item.playurl
+  
   IsChild = Not (youtubeTree.moveparent())
   If IsChild Then
-    If global.IsNetworkURI(youtubeTree.current.key) Then
-      fillyoutubeinfo(youtubeTree.current.key)
+    If video_url <> "" Then
+      If global.IsNetworkURI(video_url) Then
+        Try fillyoutubeinfo(yt_item)
+      Endif
     Endif
   Endif
-  Try Media_Next_path = youtubeTree.Current.key
+
+  Try Media_Next_path = video_url
   Try YouVideoInfo.w = scrollviewyt.w - 64
 
 End
 
-Public Sub SearchYoutube(Optional myappend As Boolean = False)
-  Dim searchstring As String
-  If Not (fmain.fullyloaded) Then Return
-  fmain.mouse = mouse.wait
-  ComboHistory.AddHistory(yousearchfield, yousearchfield.text)
-  searchstring = Replace(yousearchfield.text, " ", "+")
-  youtubetree.MoveTo("custom_search_results")
-  youtubetree.Item.text = Split(youtubetree.Item.text, ":", "", True)[0] & ": " & yousearchfield.text
-  'Youtube.CollapseAll(youtubetree)
-  Youtube.FeedSearch(searchstring, "custom_search_results", youtubeTree, spinboxmaxresults.value, (desktop.h Div 12), YoutubeParseOpts(), myappend)
-  fmain.mouse = mouse.default
-End
 
 
 Public Sub YouSearchfield_Activate()
-  Try youtubetree.MoveTo("custom_search_results")
-  Try youtubetree.Item.Selected = True
-  'TimerTreeDelayExpand.start()
-  Try TimerTreeDelayExpand_Timer()
+  youtube_custom_search()
 End
 
-Public Sub fillyoutubeinfo(url As String)
+Public Sub fillyoutubeinfo(ytitem As YoutubeItem)
   
-  Dim title, category, seconds, description, published, updated, author, authorlink As String
+  Dim title, category, description, published, updated, author, seconds As String
   Dim outtext As String = ""
-  Dim ytsite As String = "http://www.youtube.com/watch?v="
-  Dim videoid As String
-  videoid = Youtube.getvideoid(url)
-  ytsite = ytsite & videoid
+  Dim ytsite As String 
 
-  Try title = Youtube.feedsinfo[videoid & ".title"]
-  Try category = Youtube.feedsinfo[videoid & ".categorylabel"]
-  Try seconds = mplayer.FormatTime(Youtube.feedsinfo[videoid & ".yt:durationseconds"])
-  Try description = Youtube.feedsinfo[videoid & ".media:description"]
-  Try published = Youtube.feedsinfo[videoid & ".published"]
-  Try updated = Youtube.feedsinfo[videoid & ".updated"]
+  'Try updated = Youtube.feedsinfo[videoid & ".updated"] 'fixme?
+  'Try category = ytitem.category 'fixme?
+  Try title = ytitem.title
+  Try seconds = mplayer.FormatTime(ytitem.duration)
+  Try description = ytitem.description
+  Try published = ytitem.published
+  Try author = ytitem.channeltitle
+  Try ytsite = ytitem.playurl
 
-  authorlink = Youtube.feedsinfo[videoid & ".author"]
-  author = file.Name(authorlink)
   YouVideoInfo.w = scrollviewyt.w - 64
+
+  'outtext = outtext & "<b>Category:</b> " & category & "<br>"
+  'outtext = outtext & "<b>Updated:</b> " & updated & "<br>"
   outtext = outtext & "<font color='white'>"
   outtext = outtext & "<b>Title:</b> " & title & "<br>"
   outtext = outtext & "<b>Link:</b> "
   outtext = outtext & "<font color='#8888FF'>"
   outtext = outtext & "<u>" & ytsite & "</u><br>"
   outtext = outtext & "</font>"
-  'outtext = outtext & "<b>Category:</b> " & category & "<br>"
   outtext = outtext & "<b>Author:</b> " & author & "<br>"
   outtext = outtext & "<b>Published:</b> " & published & "<br>"
-  'outtext = outtext & "<b>Updated:</b> " & updated & "<br>"
   outtext = outtext & "<b>Duration:</b> " & seconds & "<br>"
   outtext = outtext & "<b>Description:</b><br> " & description & "<br>"
   outtext = outtext & "</font>"
@@ -9183,7 +9137,7 @@ End
 
 Public Sub SpinBoxmaxresults_KeyPress()
   
-  If ((key.code = key.enter) Or (key.code = key.return)) Then SearchYoutube()
+  If ((key.code = key.enter) Or (key.code = key.return)) Then youtube_custom_search()
   
 End
 
@@ -9204,6 +9158,51 @@ Public Sub YouVideoInfo_Enter()
   Last.mouse = mouse.Pointing
   
 End
+
+
+Public Sub youtube_custom_search()
+  ' Try youtubetree.MoveTo("custom_search_results")
+  ' Try youtubetree.Item.Selected = True
+  ' TimerTreeDelayExpand.trigger
+ 
+   youtube = New Youtubeclass(youtubetree)
+   
+  
+   youtubetree.Tag = Null
+   
+   Youtube.GetResults(youtubetree, "custom_search_results", youtube_query_opts(),,, (desktop.h Div 12))
+
+End
+
+
+Private Function youtube_query_opts() As String
+  Dim query As String
+  Dim MaxResults As Integer
+  Dim SortBy As String
+  Dim date_start, date_end As String
+  Dim region As String
+  Dim Author As String  
+  Dim opts As String
+  
+  query = YouSearchfield.Text
+  MaxResults = SpinBoxmaxresults.text
+  SortBy = ComboBoxOrderBy.text
+  date_start = "" 'fixme
+  date_end = "" 'fixme
+  Try region = Trim(Split(ComboBoxRegion.text, ":", "", True)[1])
+  Author = TextBoxUploader.text
+  
+  If query <> "" Then opts &= "&q=" & query
+  opts &= "&maxResults=" & maxresults
+  If SortBy <> "" Then opts &= "&SortBy=" & SortBy
+  If Trim(Author) <> "" Then opts &= "&channelId=" & youtube.ChannelIdFromName(Author)
+  If Trim(region) <> "" Then 
+    opts &= "&regionCode=" & region
+    opts &= "&relevanceLanguage=" & region
+  Endif
+  Return opts
+End
+
 
 Public Sub youtubetree_Menu()
   
@@ -9305,9 +9304,9 @@ Public Sub YoutubeTreeTreeGetRelatedMenu_click(Optional myappend As Boolean = Fa
   If ischild Then
     fmain.mouse = mouse.wait
     Leftsidetabs.mouse = mouse.wait
-    relatedtotext = youtubetree.Current.text
-    'Youtube.CollapseAll(youtubetree)
-    Youtube.GetRelated(youtubetree.Current.key, youtubetree, relatedtotext, SpinBoxmaxresults.text, (Desktop.h Div 12), myappend)
+    Try relatedtotext = Split(youtubetree.Current.text, "\n", "", True)[0]
+    If Error Then relatedtotext = youtubetree.Current.text
+    Youtube.GetRelated(youtubetree.Current.key, youtubetree, relatedtotext, youtube_query_opts(), (Desktop.h Div 12))
     fmain.mouse = mouse.default
     Leftsidetabs.mouse = mouse.default
   Endif
@@ -9405,7 +9404,7 @@ Public Sub YtRefresh_Click()
   fmain.mouse = mouse.wait
   Leftsidetabs.mouse = mouse.wait
   If youtubetree.Current.Key = "custom_search_results" Then
-    SearchYoutube()
+    youtube_custom_search()
   Else
     Youtube.GetFeed(youtubeTree.Current.key, youtubeTree, (Desktop.h Div 12), Split(ComboBoxRegion.text, ":", "", False)[1], SpinBoxmaxresults.value)
   Endif
@@ -9438,11 +9437,11 @@ Public Sub youtubetree_KeyPress()
 End
 
 Public Sub TextBoxUploader_activate()
-  SearchYoutube()
+  youtube_custom_search()
 End
 
 Public Sub buttonstartytsearch_Click()
-  YouSearchfield_Activate()
+  youtube_custom_search()
 End
 
 Public Sub Form_DblClick()

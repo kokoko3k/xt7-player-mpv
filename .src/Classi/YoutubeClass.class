@@ -42,7 +42,6 @@ Private Sub APIKEY() As String
 
   'Just do this 'till a working key is found
   If KEY_OK <> "" Then Return KEY_OK
-  
   'try the user spcified API KEY
   If GeneralOptions.UseMyApiKeyCheckbox.value Then
     If Trim(GeneralOptions.API_KEY_USER_textbox.text) <> "" Then
@@ -51,6 +50,7 @@ Private Sub APIKEY() As String
         Message.error(("User provided api key does not seem to work.") & "\n" & ("Trying shared and cached keys..."))
       Endif
       KEY_OK = ykey
+      Return ykey
     Endif
   Endif
 
@@ -90,18 +90,22 @@ End
 
 
 Public Sub init_tree(tree As Treeview)
+  tree.clear
+  Try Tree.Add("custom_search_results", ("Custom search results"), picture["youtubeicon.png"])
+
   ' Tree.Add("most_recent", ("Most recent"), picture["youtubeicon.png"])
   ' Tree.Add("top_rated", ("Top Rated"), picture["youtubeicon.png"])
   ' Tree.Add("most_popular", ("Most popular"), picture["youtubeicon.png"]) '
   'Tree.Add("top_favorites", ("Top favourites"), picture["youtubeicon.png"])
  ' Tree.Add("most_viewed", ("Most viewed"), picture["youtubeicon.png"])
-  
-  
   'Tree.Add("most_discussed", ("Most discussed"), picture["youtubeicon.png"])
   'Tree.Add("most_responded", ("Most responded"), picture["youtubeicon.png"])
   'Tree.Add("recently_featured", ("Recently featured"), picture["youtubeicon.png"])
-  Tree.Add("custom_search_results", ("Custom search results"), picture["youtubeicon.png"])
   'Tree.Add("related", ("*Related Videos"), picture["youtubeicon.png"])
+End
+
+Public Sub _new(tree As Treeview)
+  init_tree(tree)
 End
 
 
@@ -172,10 +176,7 @@ Public Sub FeedSearch(searchterm As String, thread As String, tree As Treeview, 
   Endif
 End
 
-
-
-
-Public Sub GetRelated(sourcefeed As String, tree As Treeview, relatedtotext As String, Optional maxresults As Integer = 20, Optional resizew As Integer = 0, Optional otheropts As String = "", Optional myappend As Boolean = False)
+Public Sub OLD_GetRelated(sourcefeed As String, tree As Treeview, relatedtotext As String, Optional maxresults As Integer = 20, Optional resizew As Integer = 0, Optional otheropts As String = "", Optional myappend As Boolean = False)
 
   Dim AskUrl As String
 
@@ -190,11 +191,37 @@ Public Sub GetRelated(sourcefeed As String, tree As Treeview, relatedtotext As S
   AskUrl &= "&type=video"
   AskUrl &= "&relatedToVideoId=" & videoid
 
-  'Askurl = Askurl & Otheropts                                         'fixme
+  'Askurl = Askurl & Otheropts                                         'fixme servono le altre opzioni di ricerca
 
-  DownloadAndParse(AskUrl, Tree, sourcefeed, resizew, myappend) 'try to fill the current subthread
+Stop
+  relatedtotext = ("More Related to: ") & relatedtotext
+  GetResults(tree, tree.current.key, relatedtotext, "", maxresults, "", "", "", "", "",, videoid, (Desktop.h Div 12))
+  'DownloadAndParse(AskUrl, Tree, sourcefeed, resizew, myappend) 'try to fill the current subthread
 
   tree.item.text = "*" & ("More Related to: ") & Left(relatedtotext, InStr(relatedtotext, "\n") - 1)
+  Tree.Item.Expanded = True
+
+End
+
+
+Public Sub GetRelated(sourcefeed As String, tree As Treeview, relatedtotext As String, Optional otheropts As String = "", Optional resizew As Integer = 0)
+
+  Dim AskUrl As String
+
+  Dim v As Integer = 1 'api version
+  Dim videoid As String
+
+  videoid = getvideoid(sourcefeed)
+                                                                        '"relatedToVideoId"
+  AskUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet"
+  Askurl &= "&key=" & APIKEY()
+  Askurl &= otheropts
+  AskUrl &= "&type=video"
+  AskUrl &= "&relatedToVideoId=" & videoid
+
+  relatedtotext = ("More Related to: ") & relatedtotext
+  GetResults(tree, tree.current.key, otheropts,, videoid, resizew)
+
   Tree.Item.Expanded = True
 
 End
@@ -765,3 +792,310 @@ Public Sub Select_PrevTreeItem(MyTree As Treeview)
   Endif
   Wait 0.1 'needed for grid select event to fill new mplayer.media_fullpath,maybe tunable
 End
+
+
+Public Struct YoutubeItem
+  duration As Integer
+  published As String
+  channelId As String
+  channeltitle As String
+  title As String
+  description As String
+  thumbnail As String
+  playurl As String
+End Struct
+
+
+Public Function GetResults(youtubetree As Treeview, under As String, queryopts As String, Optional pagetoken As String = "", Optional relatedto As String = "", resizew As Integer) As Collection
+  'query youtube and append results in the current thread in youtubetree
+  'add a link at the end to show more results.
+  Dim AskUrl As String
+  Dim detailurl As String
+  Dim j_main, j_detail As String
+  Dim jdecoded As New Collection
+  Dim detail_jdecoded As New Collection
+  Dim i, r, rd As Integer
+  Dim wget As New Wgetclass
+  Dim video As New YoutubeItem
+  Dim videos As New Collection
+  Dim videoid As String
+  Dim treetext As String
+  Dim previous As String
+  Dim mr_query, mr_key, mr_text As String
+  Dim mr_picture As Picture
+
+  AskUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet"
+  AskUrl &= "&type=video"
+  AskUrl &= queryopts
+  If relatedto <> "" Then Askurl &= "&relatedToVideoId=" & relatedto
+  If pagetoken <> "" Then AskUrl &= "&pageToken=" & pagetoken
+  Askurl &= "&key=" & APIKEY()
+
+
+  j_main = wget.DownloadAsync("'" & AskUrl & "'")
+  Try jdecoded = JSON.Decode(j_main)
+  If Error Then Goto ReturnErrorLabel
+  If jdecoded = Null Then Goto ReturnErrorLabel
+  
+  Try r = jdecoded["items"].count
+  If Error Then Goto ReturnErrorLabel
+  If r = 0 Then Goto ReturnErrorLabel
+  
+  'use a single query to get all of the durations
+  'put the durations into a collection with key = videoid
+  detailurl = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&key=" & APIKEY() & "&id=" 
+  For i = 0 To r - 1
+    videoid = ""
+    Try videoid = jdecoded["items"][i]["id"]["videoId"]
+    If videoid <> "" Then
+      detailurl &= videoid & ","
+    Endif
+  Next
+  If Right(detailurl) = "," Then detailurl = Left(detailurl, -1)
+  detailurl = "'" & detailurl & "'"
+  j_detail = wget.DownloadAsync(detailurl)
+
+  Try detail_jdecoded = JSON.Decode(j_detail)
+  Try rd = detail_jdecoded["items"].count
+
+  For i = 0 To rd - 1
+    video = New YoutubeItem
+
+    videoid = detail_jdecoded["items"][i]["id"]
+    video.duration = time_decode(detail_jdecoded["items"][i]["contentDetails"]["duration"])
+    Try video.published = jdecoded["items"][i]["snippet"]["publishedAt"]
+    Try video.channelId = jdecoded["items"][i]["snippet"]["channelId"]
+    Try video.channeltitle = jdecoded["items"][i]["snippet"]["channelTitle"]
+    Try video.title = jdecoded["items"][i]["snippet"]["title"]
+    Try video.description = jdecoded["items"][i]["snippet"]["description"]
+    Try video.playurl = "http://www.youtube.com/watch?v=" & videoid
+    Try video.thumbnail = jdecoded["items"][i]["snippet"]["thumbnails"]["default"]["url"]    
+    videos.Add(video, videoid)
+    'Stop
+    If Not youtubetree.Exist(videoid) Then
+      treetext = video.title & "\n"
+      treetext &= FormatTime(video.duration)
+      
+      'parentkey means where to put search results; no null values allowed
+      youtubetree.Add(videoid, treetext, temp_picture(resizew), under)
+      Try youtubetree[youtubetree.item.parentkey].Expanded = True
+      Wait
+      'defer the download of the picture
+      Get_Thumb_defer(youtubetree, videoid, video.thumbnail, resizew)
+    Endif
+  Next
+
+  'Add more results item
+  Try mr_key = "__MORERESULTS__" & Rnd(0, 9999) 
+  Try mr_key &= Chr(8) & queryopts & Chr(8) & jdecoded["nextPageToken"]
+  If Not Error Then
+    mr_text = ("See more results") '& ": (" & more_results_text & ")"
+    mr_picture = picture["icon:/" & (resizew Div 2) & "/find"]
+    youtubetree.Add(mr_key, mr_text, mr_picture, under)
+  Endif
+  
+  'tree tag holds all the video informations
+  youtubetree.tag = collection_join(youtubetree.tag, videos)
+
+  Return Null
+  ReturnErrorLabel:
+  If Error Then 
+    Message.Error("No results or error")
+    Return Null
+  Endif
+
+End
+
+
+Public Function OLD_GetResults(youtubetree As Treeview, under As String, more_results_text As String, query As String, MaxResults As Integer, SortBy As String, date_start As String, date_end As String, region As String, Author As String, Optional pagetoken As String = "", Optional relatedto As String = "", resizew As Integer) As Collection
+  'query youtube and append results in the current thread in youtubetree
+  'add a link at the end to show more results.
+  Dim AskUrl As String
+  Dim detailurl As String
+  Dim j_main, j_detail As String
+  Dim jdecoded As New Collection
+  Dim detail_jdecoded As New Collection
+  Dim i, r, rd As Integer
+  Dim wget As New Wgetclass
+  Dim video As New YoutubeItem
+  Dim videos As New Collection
+  Dim videoid As String
+  Dim treetext As String
+  Dim previous As String
+  Dim mr_query, mr_key, mr_text As String
+  Dim mr_picture As Picture
+
+  AskUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet"
+  AskUrl &= "&type=video"
+  If query <> "" Then Askurl &= "&q=" & query
+  Askurl &= "&maxResults=" & maxresults
+  If SortBy <> "" Then Askurl &= "&SortBy=" & SortBy
+  'Askurl &= "&time=" & date_start date_end 'fixme
+  If Trim(Author) <> "" Then Askurl &= "&channelId=" & ChannelIdFromName(Author)
+  If Trim(region) <> "" Then 
+    Askurl &= "&regionCode=" & region
+    Askurl &= "&relevanceLanguage=" & region
+  Endif
+  If relatedto <> "" Then Askurl &= "&relatedToVideoId=" & relatedto
+  
+  
+  If pagetoken <> "" Then AskUrl &= "&pageToken=" & pagetoken
+  Askurl &= "&key=" & APIKEY()
+
+
+
+
+  j_main = wget.DownloadAsync("'" & AskUrl & "'")
+  Try jdecoded = JSON.Decode(j_main)
+  If Error Then Goto ReturnErrorLabel
+  If jdecoded = Null Then Goto ReturnErrorLabel
+  
+  Try r = jdecoded["items"].count
+  If Error Then Goto ReturnErrorLabel
+  If r = 0 Then Goto ReturnErrorLabel
+  
+  'use a single query to get all of the durations
+  'put the durations into a collection with key = videoid
+  detailurl = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&key=" & APIKEY() & "&id=" 
+  For i = 0 To r - 1
+    videoid = ""
+    Try videoid = jdecoded["items"][i]["id"]["videoId"]
+    If videoid <> "" Then
+      detailurl &= videoid & ","
+    Endif
+  Next
+  If Right(detailurl) = "," Then detailurl = Left(detailurl, -1)
+  detailurl = "'" & detailurl & "'"
+  j_detail = wget.DownloadAsync(detailurl)
+
+  Try detail_jdecoded = JSON.Decode(j_detail)
+  Try rd = detail_jdecoded["items"].count
+
+  For i = 0 To rd - 1
+    video = New YoutubeItem
+
+    videoid = detail_jdecoded["items"][i]["id"]
+    video.duration = time_decode(detail_jdecoded["items"][i]["contentDetails"]["duration"])
+    Try video.published = jdecoded["items"][i]["snippet"]["publishedAt"]
+    Try video.channelId = jdecoded["items"][i]["snippet"]["channelId"]
+    Try video.channeltitle = jdecoded["items"][i]["snippet"]["channelTitle"]
+    Try video.title = jdecoded["items"][i]["snippet"]["title"]
+    Try video.description = jdecoded["items"][i]["snippet"]["description"]
+    Try video.playurl = "http://www.youtube.com/watch?v=" & videoid
+    Try video.thumbnail = jdecoded["items"][i]["snippet"]["thumbnails"]["default"]["url"]    
+    videos.Add(video, videoid)
+    'Stop
+    If Not youtubetree.Exist(videoid) Then
+      treetext = video.title & "\n"
+      treetext &= FormatTime(video.duration)
+      
+      'parentkey means where to put search results; no null values allowed
+      youtubetree.Add(videoid, treetext, temp_picture(resizew), under)
+      Try youtubetree[youtubetree.item.parentkey].Expanded = True
+      Wait
+      'defer the download of the picture
+      'Get_Thumb_defer(youtubetree, videoid, video.thumbnail, resizew)
+    Endif
+  Next
+
+  'Add more results item
+  Try mr_key = "__MORERESULTS__" & Rnd(0, 9999) 
+  Try mr_key &= Chr(8) & query & Chr(8) & jdecoded["nextPageToken"]
+  If Not Error Then
+    mr_text = ("See more results") & ": (" & more_results_text & ")"
+    mr_picture = picture["icon:/" & (resizew Div 2) & "/find"]
+    youtubetree.Add(mr_key, mr_text, mr_picture, under)
+  Endif
+  
+  'tree tag holds all the video informations
+  youtubetree.tag = collection_join(youtubetree.tag, videos)
+
+  Return Null
+  ReturnErrorLabel:
+  If Error Then 
+    Message.Error("No results or error")
+    Return Null
+  Endif
+
+End
+
+
+Private Function collection_join(c1 As Collection, c2 As Collection) As Collection
+  Dim c3 As New Collection
+  Dim k As String
+  Dim v As Variant
+  If c1 = Null Then Return c2
+  If c2 = Null Then Return c1
+  For Each v In c1
+    k = c1.key
+    Try c3.Add(v, k)
+  Next
+  For Each v In c2
+    k = c2.key
+    Try c3.Add(v, k)
+  Next
+  Return c3
+End
+
+
+Public Struct downinfo
+  tree As Treeview
+  tree_key As String
+  dfile As String
+  max_w As Integer
+End Struct
+
+Public hAsyncClient As HttpClient
+
+Private Function Get_Thumb_defer(tree As Treeview, tree_key As String, t_url As String, max_w As Integer)
+  Dim di As New Downinfo
+  Dim dfile As String = Temp()
+  di.tree_key = tree_key
+  di.tree = tree
+  di.dfile = dfile
+  di.max_w = max_w
+
+  HAsyncClient = New HttpClient As "hAsyncClient"
+
+  HAsyncClient.tag = di
+  hAsyncClient.URL = t_url
+  hAsyncClient.TimeOut = 5
+  hAsyncClient.Async = True
+  hAsyncClient.TargetFile = dfile
+  hAsyncClient.Get()
+End
+
+
+
+Public Function temp_picture(resizew As Integer) As Picture
+  Dim tmppicture As Picture
+  Dim aspect As Float = 1.33333
+  Try tmppicture = picture["black.png"]
+  If resizew <> 0 Then
+    tmppicture = tmppicture.Image.Stretch(resizew, CInt(resizew / aspect)).picture
+  Endif
+  Return CoverManager.Shadowed(tmppicture).picture
+End
+
+Public Sub hAsyncClient_Finished()
+  Dim di As Downinfo = Last.tag
+  Dim tmppicture As Picture
+  Dim aspect As Float = 1.33333
+
+  tmppicture = Picture.Load(di.dfile).Image.Stretch(di.max_w, CInt(di.max_w / aspect)).picture
+  Try di.tree[di.tree_key].Picture = CoverManager.Shadowed(tmppicture).picture
+  Try Kill di.dfile
+End
+
+
+
+
+
+
+
+
+
+
+
+
+
