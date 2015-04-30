@@ -9449,26 +9449,6 @@ Public Sub Form_DblClick()
   
 End
 
-Public Sub GetYoutubeSubs(VideoId As String)
-  
-  Dim Subdir As String = settings.defaultdir & "/" & Global.Appname & "/" & ".substmp/"
-  Dim subfile, track, langcode, trackname As String
-  Dim id As Integer = 0
-  
-  Try Mkdir Subdir
-  For Each track In Youtube.AvailableSubs(VideoId)
-    langcode = Split(track, ":", "", False, False)[0]
-    trackname = Split(track, ":", "", False, False)[1]
-    
-    SubFile = Subdir & id & " - " & Trackname & "_" & LangCode & ".srt"
-    file.Save(SubFile, Youtube.GetSub(VideoId, LangCode, trackname))
-    mplayer.SubtitleAdd(SubFile)
-    id = id + 1
-  Next 'LangCode
-  FillStreamsMenu()
-  
-End
-
 Public Sub MenuShowDVBT_Click()
   
   DVBTuner.show

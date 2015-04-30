@@ -89,12 +89,7 @@ Private Sub APIKEY() As String
 End
 
 
-
-
-Private DoXmlWorkaround As Boolean = False
 Public Sub init_tree(tree As Treeview)
-  DoXmlWorkaround = (System.FullVersion = "3.2.0") Or (System.FullVersion = "3.2.1")
-
   ' Tree.Add("most_recent", ("Most recent"), picture["youtubeicon.png"])
   ' Tree.Add("top_rated", ("Top Rated"), picture["youtubeicon.png"])
   ' Tree.Add("most_popular", ("Most popular"), picture["youtubeicon.png"]) '
@@ -204,22 +199,6 @@ Public Sub GetRelated(sourcefeed As String, tree As Treeview, relatedtotext As S
 
 End
 
-Private Function HaveToParseNode(MyXmlreader As Xmlreader) As Boolean
-'gambas 3.2.0 misses Xmlreader.Node.IsEmptyElement property, workaround just for that version.
-
-
-  If Not DoXmlWorkaround Then
-    If Not (MyXmlreader.Node.IsEmptyElement) And (MyXmlreader.Node.Attributes.count > 0) Then
-      Return True
-    Endif
-    Return False
-      Else
-    If (MyXmlreader.Node.Attributes.count > 0) And (MyXmlreader.Node.Depth > 0) Then
-      Return True
-    Endif
-    Return False
-  Endif
-End
 
 Private AK_URL As String = "http://xt7-player.sourceforge.net/xt7forum/ak.php"
 
@@ -474,27 +453,6 @@ Public Sub AddMoreResultsItem(tree As Treeview, feed As String, resizew As Integ
   Wait 0.01
 End
 
-' Public Sub AddMoreResultsItem(tree As Treeview, feed As String, resizew As Integer)
-'   Dim Mykey, tmpkey, parenttext As String
-'   Dim thumb As Picture
-'   Dim resizeh As Integer
-'   resizeh = (resizew * 3) Div 4
-'   mykey = "__MORERESULTS__" & CStr(Rnd(0, 9999999999999999999))
-'   thumb = picture["icon:/" & (resizew Div 2) & "/find"]
-' 
-'   'find parent text
-'   Try tmpkey = tree.item.key
-'   Try tree.MoveTo(tree.current.key)
-'   If Error Then Return
-'   tree.moveparent()
-'   Try parenttext = tree.Item.text
-'   If Error Then parenttext = tree.current.text
-'   Try tree.MoveTo(tmpkey)
-'   tree.Add(MyKey, (("See more results") & ": " & parenttext), thumb, feed)
-'   tree.Refresh
-'   Wait 0.01
-' End
-
 
 
 Public Sub FormatTime(seconds As String) As String
@@ -552,28 +510,6 @@ Public Function YoutubeDlInstalled() As Boolean
   Return True
 End
 
-' Public Function fHeight(fmt As Integer) As Integer
-'   Dim FormatsBySize As New String[]
-'   Dim i As Integer
-'   'resolution,code,container
-'   FormatsBySize.Add("1080,37,mp4")
-'   FormatsBySize.Add("720,22,mp4")
-'   FormatsBySize.Add("720,45,webm")
-'   FormatsBySize.Add("480,35,flv")
-'   FormatsBySize.Add("480,44,webm")
-'   FormatsBySize.Add("360,34,flv")
-'   FormatsBySize.Add("360,18,mp4")
-'   FormatsBySize.Add("360,43,webm")
-'   FormatsBySize.Add("240,5,flv")
-'   FormatsBySize.Add("144,17,mp4")
-'   
-'   For i = 0 To FormatsBySize.Max
-'     If Split(FormatsBySize[i], ",")[1] = fmt Then 
-'       Return Split(FormatsBySize[i], ",")[0]
-'     Endif
-'   Next
-'   Return -1
-' End
 
 
 Private ytdlout As String = Temp(Rnd(0, 1000) & "youtubedl-out")
@@ -589,23 +525,6 @@ End
 
 Public Function get_formats(maxR As Integer, Optional threedee As Boolean = False) As String
   
-  'given a maximum resolution, maxR,
-  'returns a string of formats: a/b/../z
-  'sorted by resolution; "a" is a format with resolution <= MaxR
-  
-  'to get gb code from youtube-dl, use this script:
-  
-  '#!/bin/bash
-  'export IFS=$'\n'
-  'for line in $(cat  /tmp/tmp.txt |grep height|cut -d ":" -f 1,3,4|cut -d "," -f 1,2,4|cut -d \' -f 2,4,7|tr \' ","|tr -d ':'|tr -d " ") ; do
-  '    a=$(echo $line |cut -d "," -f 1)
-  '    b=$(echo $line |cut -d "," -f 2)
-  '    c=$(echo $line |cut -d "," -f 3)
-  '    echo fsorted.add\(\"$c,$a,$b\"\)
-  'done
-  'https://github.com/rg3/youtube-dl/blob/master/youtube_dl/extractor/youtube.py
-  'Then sort it out:
-  '/tmp/yt.sh |sort -V -r
   
   Dim fSorted As New String[] 'formats sorted by resolution
   Dim i, mFormat As String
@@ -802,15 +721,8 @@ Endif
       Endif
     Endif
   Next
-  
-  
-  
+
 End
-
-
-
-
-
 
 Public urlexists As Integer = -1
 
@@ -837,8 +749,7 @@ Public Sub Select_NextTreeItem(MyTree As Treeview)
     Global.IsNextSelected = False
     Try MyTree.MoveFirst()
   Endif
-    
-  
+
   If Not Error Then
     Try MyTree.Item.selected = True
   Endif
@@ -853,123 +764,4 @@ Public Sub Select_PrevTreeItem(MyTree As Treeview)
     Try MyTree.Item.selected = True
   Endif
   Wait 0.1 'needed for grid select event to fill new mplayer.media_fullpath,maybe tunable
-End
-
-Public Sub AvailableSubs(VideoId As String) As String[]
-  Dim Url As String = "'http://video.google.com/timedtext?type=list&v=" & VideoId & "'"
-  Dim wget As New Wgetclass
-  Dim Sublist As String
-  Dim sublistarray, outarray As New String[]
-  Dim langcode, linea, trackname, out As String
-  Dim start, sstop As Integer
-  sublist = wget.DownloadAsync(Url)
-  sublist = Replace(sublist, "<track id=", "\n<track id=")
-  sublistarray = Split(sublist, "\n")
-  For Each linea In sublistarray
-    trackname = ""
-    LangCode = ""
-    If linea Like "*lang_code*" Then
-      start = InStr(linea, "lang_code=") + 11
-      sstop = InStr(linea, "\"", start)
-      Try langcode = Mid(linea, start, sstop - start)
-      'If (outarray.Find(langcode) = -1) Then outarray.Add(langcode)
-    Endif
-    If linea Like "*name=*" Then
-      start = InStr(linea, "name=") + 6
-      sstop = InStr(linea, "\"", start)
-      Try trackname = Mid(linea, start, sstop - start)
-    Endif
-    If (Trim(TrackName & LangCode) <> "") Then 
-      out = trackname & ":" & langcode
-      If (outarray.Find(out) = -1) Then outarray.Add(out)
-    Endif
-    global.myDebug(out)
-
-  Next 'linea
-  global.myDebug("")
-  Return outarray.Sort()
-End
-
-Public Function GetSub(VideoId As String, trackname As String, langcode As String) As String
-  'Download the subtitle, convert it to srt format and return it as a string
-  'Dim SubUrl As String = "'http://video.google.com/timedtext?hl=" & LangCode & "&lang=" & LangCode & "&v=" & VideoId & "'"
-  Dim Suburl As String
-  Dim wget As New Wgetclass
-  Dim timedText, tmp, linea, start, dur, sstop, out, text As String
-  Dim subarray, startdur As New String[]
-  Dim i As Integer = -1
-  
-  Suburl = "http://video.google.com/timedtext?type=track"
-  Suburl = Suburl & "&name=" & trackname 
-  Suburl = Suburl & "&lang=" & langcode
-  Suburl = Suburl & "&v=" & VideoId 
-  suburl = "'" & suburl & "'"
-  TimedText = wget.DownloadAsync(SubUrl)
-  If Trim(TimedText) = "" Then
-    global.myDebug("Could not download subtitle with LangCode " & Langcode & " for video id " & VideoId)
-    Return ""
-  Endif
-  Tmp = TimedText
-  'Convert To srt format:
-  'tmp = Replace(tmp, "</text>", "\n")
-  'tmp = Replace(tmp, "l&amp;", "&")
-  'tmp = CGI.Decode(tmp)
-  tmp = Replace(Tmp, "<text start=", "\n<text start=")
-  tmp = Replace(tmp, "\">", "\"\n")
-  tmp = Replace(tmp, "&amp;#39;", "'")
-  
-  Subarray = Split(tmp, "\n")
-  For Each linea In subarray
-    If i < 1 Then out = "" 'discards all header
-    i = i + 1
-    If linea Like "<text start=\"*" Then
-      'eg: <text start="5212.958" dur="2.292">but they testify to a new awareness.</text>
-      'or: <text start="5212.958">but they testify to a new awareness.</text>
-      startdur = Split(linea, "\"")
-      start = startdur[1]
-      If linea Like "*dur=\"*" Then
-        dur = startdur[3] '
-          Else
-        dur = "2"
-      Endif
-      sstop = start + dur
-      
-      out = out & "\n" & i & "\n"
-      out = out & SubFormatTime(start) & " --> " & SubFormatTime(sstop) & "\n"
-      'PRINT "start" & start & "Dur=" & dur & "stop=" & sstop
-      'convert times
-        Else
-      text = Replace(linea, "</text>", "")
-      text = Replace(text, "&amp;quot;", "\"")
-      If text = "" Then text = "-"
-      out = out & text & "\n"
-    Endif
-  Next 'linea
-  out = Replace(out, "</transcript>", "")
-  Return out
-End
-
-Public Sub SubFormatTime(seconds As String) As String
-    Dim iseconds, hh, mm, ss, restosec As Integer
-    Dim Shh, Smm, Sss As String
-    Dim float As String = "0"
-    Dim integerfloat As String[]
-      integerfloat = Split(seconds, ".")
-      seconds = integerfloat[0]
-      Try float = integerfloat[1]
-      
-      Try iseconds = Val(seconds)
-      If Error Then iseconds = 0
-      hh = iseconds Div 3600
-      restosec = (iseconds - (hh * 3600))
-      mm = restosec Div 60
-      ss = (restosec - (mm * 60))
-      
-      Sss = ss
-      If Len(Sss) = 1 Then Sss = "0" & Sss
-      Smm = mm
-      If Len(Smm) = 1 Then Smm = "0" & Smm
-      Shh = hh
-      If Len(Shh) = 1 Then Shh = "0" & Shh
-    Return Shh & ":" & Smm & ":" & Sss & "," & float
 End
