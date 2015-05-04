@@ -1439,5 +1439,6 @@ Public Sub AlsaDeviceTextBox_Enter()
   Next
   If AlsaDeviceTextBox.find(prevtext) = -1 Then AlsaDeviceTextBox.Add(prevtext, 0)
   GotAlsaDevices = True
+  AlsaDeviceTextBox.text = prevtext
 End
 
