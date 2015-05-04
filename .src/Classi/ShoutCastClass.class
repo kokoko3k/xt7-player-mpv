@@ -157,42 +157,6 @@ Private Function DownloadAndParse(AskUrl As String, Optional GenresTree As Treev
    Return "OK"
 End
 
-Private Function DownloadAndParseOLD(AskUrl As String, Optional GenresTree As Treeview = Null, Optional ShutResultGrid As Gridview = Null) As String
-  Dim buffer As String
-  Dim xml As New Xmldocument
-  Dim node As Xmlnode
-
-
-  Dim tmpfile As String = Temp()
-  Dim wget As New Wgetclass
-  channelinfo = ""
-  'SHELL "wget '" & AskUrl & "' --timeout=4 --tries=3 --output-document=" & tmpfile WAIT
-  'TRY buffer = File.Load(tmpfile)
-  buffer = wget.DownloadAsync(AskUrl)
-  If Error Then Return ""
-   If Trim(buffer) = "" Then Return ""
-   Try xml.FromString(buffer)
-   If Error Then Return ""
-   node = xml.Root
-   items.clear
-   If (GenresTree <> Null) Then
-      parsechannel(node, GenresTree, Null)
-    Else If (ShutResultGrid <> Null) Then
-      ShutResultGrid.enabled = False
-      ShutResultGrid.Columns.count = 4
-      ShutResultGrid.rows.count = MAXRESULTS 'max results to show ?
-      ShutResultGrid.Header = GridView.Horizontal
-      ShutResultGrid.Columns[0].text = ("Name")
-      ShutResultGrid.Columns[1].text = ("Media Type")
-      ShutResultGrid.Columns[2].text = ("BitRate")
-      ShutResultGrid.Columns[3].text = ("Link")
-      parsechannel(node, Null, ShutResultGrid)
-      Alternatecolor(ShutResultGrid)
-      ShutResultGrid.enabled = True
-   Endif
-   Try Kill tmpfile
-   Return "OK"
-End
 
 Static Public Function MidC(s As String, a As String, Optional b As String) As String
   'return the first occurrence of the string between a and b
