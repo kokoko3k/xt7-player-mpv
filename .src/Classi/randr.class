@@ -30,10 +30,9 @@ Public Function get_sizes() As String[]
   Shell "xrandr --verbose --current" To xrandr_output
 
   xrandr_output_splitted = Split(xrandr_output, "\n", "", True)
-  
   For i = 0 To xrandr_output_splitted.max 'search output_name
     aLine = xrandr_output_splitted[i] 
-    If aLine Like "* connected *" Then 
+    If aLine Like "*connected *" Then 
       output_name = Split(aline, " ", "", True)[0]
     Endif
 
