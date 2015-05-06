@@ -1276,10 +1276,10 @@
           Text = ("Label3")
         }
         { VSplit1 VSplit
-          MoveScaled(0,1,36,28)
+          MoveScaled(0,1,36,24)
           Expand = True
           { youtubetree TreeView
-            MoveScaled(0,0,35,12)
+            MoveScaled(0,0,35,10)
             Expand = True
           }
           { TimerTreeDelayExpand #Timer
@@ -1287,7 +1287,7 @@
             Delay = 50
           }
           { scrollviewyt ScrollView
-            MoveScaled(0,13,35,13)
+            MoveScaled(0,10,35,13)
             Visible = False
             Background = &H000000&
             Foreground = &HFFFFFF&
@@ -1305,51 +1305,59 @@
           }
         }
         { HBox13 HBox
-          MoveScaled(3,32,38,4)
+          MoveScaled(2,28,32,4)
           ToolTip = (" ")
-          Spacing = True
           { buttondetail Button
             MoveScaled(0,0,4,4)
             ToolTip = ("Show youtube video information")
             Picture = Picture["icon:/16/info"]
           }
           { YouSearchfield ComboBox
-            MoveScaled(5,0,10,3)
+            MoveScaled(5,0,13,3)
             ToolTip = ("Enter some search terms.\nSpecial character \"|\" means \"OR\",\nso you can type: Bach|Mozart ")
             Expand = True
           }
-          { MaxLabel Label
-            MoveScaled(16,0,5,4)
-            AutoResize = True
-            Text = ("Results")
-          }
-          { SpinBoxmaxresults SpinBox
-            MoveScaled(19,0,7,4)
-            ToolTip = ("How many results to get.")
-            MinValue = 1
-            MaxValue = 50
-            Value = 10
-          }
           { buttonstartytsearch Button
-            MoveScaled(25,0,4,4)
+            MoveScaled(19,0,4,4)
             ToolTip = ("Search now")
             Picture = Picture["icon:/small/find"]
           }
+          { YT_search_opts ToggleButton
+            MoveScaled(24,0,4,4)
+            ToolTip = ("Show/Hide search options panel")
+            Picture = Picture["icon:/small/tools"]
+          }
         }
         { blinktimer #Timer
-          #MoveScaled(29,37)
+          #MoveScaled(30,31)
           Delay = 100
         }
         { sidepanelYTSearchoptions Panel
-          MoveScaled(2,39,32,18)
+          MoveScaled(1,33,32,25)
           Visible = False
           Arrangement = Arrange.Vertical
           Spacing = True
           Margin = True
           Padding = 2
           Border = Border.Raised
+          { HBox22 HBox
+            MoveScaled(0,3,33,4)
+            ToolTip = ("only valid for searches")
+            { MaxLabel Label
+              MoveScaled(1,0,11,4)
+              Text = ("Results")
+            }
+            { SpinBoxmaxresults SpinBox
+              MoveScaled(23,0,7,4)
+              ToolTip = ("How many results to get.")
+              Expand = True
+              MinValue = 1
+              MaxValue = 50
+              Value = 10
+            }
+          }
           { HBox15 HBox
-            MoveScaled(0,0,33,4)
+            MoveScaled(0.1429,7.1429,33,4)
             ToolTip = ("only valid for searches")
             { Label3 Label
               MoveScaled(0,1,11,3)
@@ -1357,7 +1365,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9,0,18,4)
+              MoveScaled(9.4286,-1.2857,18,4)
               Expand = True
               ReadOnly = True
               List = [("relevance"), ("rating"), ("viewcount"), ("date"), ("title")]
@@ -1365,10 +1373,10 @@
             }
           }
           { HBox16 HBox
-            MoveScaled(-1,4,30,4)
+            MoveScaled(-1.8571,11.1429,30,4)
             ToolTip = ("Only valid for standard feeds")
             { Label4 Label
-              MoveScaled(1,0,11,3)
+              MoveScaled(2,0,11,3)
               Tag = "region"
               Text = ("Region")
             }
@@ -1381,7 +1389,7 @@
             }
           }
           { HBox17 HBox
-            MoveScaled(1,9,33,4)
+            MoveScaled(1.1429,16.1429,33,4)
             Enabled = False
             ToolTip = ("only valid for searches")
             { Label5 Label
@@ -1399,7 +1407,7 @@
             }
           }
           { HBox18 HBox
-            MoveScaled(1,13,30,4)
+            MoveScaled(1.1429,20.1429,30,4)
             ToolTip = ("only valid for searches")
             { Label6 Label
               MoveScaled(0,1,11,3)

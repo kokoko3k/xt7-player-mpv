@@ -9032,8 +9032,11 @@ Public Sub youtubetree_Select()
 End
 
 
-
 Public Sub YouSearchfield_Activate()
+  youtube_custom_search()
+End
+
+Public Sub buttonstartytsearch_Click()
   youtube_custom_search()
 End
 
@@ -9122,10 +9125,12 @@ End
 
 Public Sub youtube_custom_search()
    fmain.mouse = mouse.wait
+   YouSearchfield.mouse = Mouse.wait  'bah...
    youtube = New Youtubeclass(youtubetree)
    youtubetree.Tag = Null
    Youtube.GetResults(youtubetree, "custom_search_results", youtube_query_opts(),,, (desktop.h Div 12))
    fmain.mouse = mouse.Default
+   YouSearchfield.mouse = Mouse.default 'bah...
 End
 
 
@@ -9309,9 +9314,7 @@ Public Sub TextBoxUploader_activate()
   youtube_custom_search()
 End
 
-Public Sub buttonstartytsearch_Click()
-  youtube_custom_search()
-End
+
 
 Public Sub Form_DblClick()
   
@@ -11067,8 +11070,12 @@ End
 Public Sub sidepanelYTSearchoptions_BeforeArrange()
   Dim lastc As Object = sidepanelYTSearchoptions.Children[sidepanelYTSearchoptions.Children.count - 1]
   sidepanelYTSearchoptions.h = lastc.y + lastc.h + Desktop.scale
-
+  sidepanelYTSearchoptions.visible = YT_search_opts.value
 End
+
+ Public Sub YT_search_opts_Click()
+   sidepanelYTSearchoptions.visible = YT_search_opts.value
+ End
 
 Public Sub Panel9_Arrange()
     progressshadow.Move(0, 0, progress.Parent.w, progress.parent.h Div 5)
@@ -11338,4 +11345,12 @@ End
 
 Public Sub Timer_mediainfo_Timer()
   Try FillPropertiesGrid()
+End
+
+
+
+Public Sub YouSearchfield_Click()
+
+  
+
 End
