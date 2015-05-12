@@ -647,7 +647,7 @@ Private Function Get_Thumb_defer(tree As Treeview, tree_key As String, t_url As 
 
   HAsyncClient.tag = di
   hAsyncClient.URL = t_url
-  hAsyncClient.TimeOut = 5
+  hAsyncClient.TimeOut = 10
   hAsyncClient.Async = True
   hAsyncClient.TargetFile = dfile
   hAsyncClient.Get()
