@@ -503,6 +503,7 @@ Public Struct YoutubeItem
   title As String
   description As String
   thumbnail As String
+  thumbnail_big As String
   playurl As String
 End Struct
 
@@ -571,6 +572,7 @@ Public Function GetResults(youtubetree As Treeview, under As String, queryopts A
     Try video.description = jdecoded["items"][i]["snippet"]["description"]
     Try video.playurl = "http://www.youtube.com/watch?v=" & videoid
     Try video.thumbnail = jdecoded["items"][i]["snippet"]["thumbnails"]["default"]["url"]    
+    Try video.thumbnail_big = jdecoded["items"][i]["snippet"]["thumbnails"]["high"]["url"]    
     videos.Add(video, videoid)
     'Stop
     If Not youtubetree.Exist(videoid) Then

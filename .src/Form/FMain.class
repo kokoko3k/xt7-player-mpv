@@ -1459,6 +1459,9 @@ Public Sub CorrectAreaAspect()
 
   Dim no_video As Boolean = True
  
+  If zzzfake.YTPanel.Parent = outerbox Then YTPanel_myrefresh()
+ 
+ 
   Try no_video = mplayer.getP("audioonly")
   If no_video Then Return
 
@@ -2494,7 +2497,12 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
       mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value)
       global.myDebug("mplayer.get_mediainfo()", Timer() - timeA)
     Endif
-
+    
+    If zzzfake.YTPanel.Parent = outerbox Then
+      zzzfake.YTPanel.Reparent(zzzfake)
+      zzzfake.ytpic.Picture = Picture["black.png"]
+    Endif
+    
     If Not mplayer.ProcessRunningOvr() Then 
       If mplayer.return_value <> 0 Then 'try to use youtube-dl 
         mplayer.set_option("ytdl", "yes")
@@ -8950,6 +8958,70 @@ Public Sub MenuBrowseDelete_Click()
   If therewasanerror Then Message.Error(("There was an error while trying to delete the item"), ("Ok"))
 End
 
+Public hAsyncClient As HttpClient
+
+Private Sub YTPanel_myrefresh()
+  Dim AR As Float = 1.3333333
+  Try AR = zzzfake.ytpic.tag
+  zzzFake.YTPanel.Move(0, 0, outerbox.w, outerbox.h)
+  zzzfake.ytpic.w = zzzfake.ytpic.parent.w
+  zzzfake.ytpic.h = CInt(zzzfake.ytpic.w / 1.333333)
+End
+
+
+
+
+Public Sub ShowYtBox(infos As Variant)
+  Dim yt_item As YoutubeItem = infos
+  Dim dfile As String = Temp()
+  
+  zzzfake.ytpic.Picture = Picture["black.png"]
+  Wait
+  
+  'make 4:3 space for the pic:
+  zzzfake.ytpic.w = zzzfake.ytpic.parent.w
+  zzzfake.ytpic.h = CInt(zzzfake.ytpic.w / 1.333333)
+
+  'title text
+  zzzfake.YTText.text = yt_item.title
+
+  'description text
+  zzzfake.YTDESC.text = yt_item.description
+
+  'zzzfake.Spinner1.start
+
+  'show
+  zzzFake.YTPanel.Reparent(outerbox)
+  zzzFake.YTPanel.Move(0, 0, outerbox.w, outerbox.h)
+  zzzFake.YTPanel.raise()
+  
+  
+  'defer image download
+  HAsyncClient = New HttpClient As "hAsyncClient"
+  hAsyncClient.URL = yt_item.thumbnail_big
+  hAsyncClient.TimeOut = 5
+  hAsyncClient.Async = True
+  hAsyncClient.TargetFile = dfile
+  hAsyncClient.Get()
+
+End
+
+Public Sub hAsyncClient_Finished()
+  Dim AR As Float
+  Dim tmppic As Picture
+
+  zzzfake.ytpic.Stretch = False
+  Try tmppic = Picture.Load(Last.TargetFile)
+  If Not Error Then
+    AR = tmppic.Image.w / tmppic.Image.h
+    zzzfake.ytpic.tag = AR
+    zzzfake.ytpic.Picture = tmppic
+    zzzfake.ytpic.w = zzzfake.ytpic.parent.w
+    zzzfake.ytpic.h = CInt(zzzfake.ytpic.w / AR)
+    Wait
+  Endif
+  Try Kill Last.TargetFile
+End
 
 
 Public Sub youtubeTree_Activate()
@@ -8958,7 +9030,6 @@ Public Sub youtubeTree_Activate()
   Dim more_text As String
   
   fmain.mouse = mouse.wait
-
   'if is custom_search_results node, populate it
   If youtubetree.Current.key = "custom_search_results" Then
     youtube_custom_search()
@@ -8971,6 +9042,7 @@ Public Sub youtubeTree_Activate()
   Try video_url = yt_item.playurl
   If video_url <> "" Then
     If global.IsNetworkURI(video_url) Then
+      ShowYtBox(youtubetree.tag[youtubeTree.current.key])
       play(video_url)
       SetActivePlayQueue("youtube")
       Try customtitle = yt_item.title
@@ -9005,6 +9077,7 @@ Public Struct YoutubeItem
   title As String
   description As String
   thumbnail As String
+  thumbnail_big As String
   playurl As String
 End Struct
 
@@ -9022,6 +9095,7 @@ Public Sub youtubetree_Select()
     If video_url <> "" Then
       If global.IsNetworkURI(video_url) Then
         Try fillyoutubeinfo(yt_item)
+        If Not mplayer.ProcessRunningOvr() Then ShowYtBox(yt_item)
       Endif
     Endif
   Endif

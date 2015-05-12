@@ -190,13 +190,60 @@
     }
   }
   { PanelMini Panel
-    MoveScaled(20,2,15,16)
+    MoveScaled(1,3,15,16)
     Arrangement = Arrange.Fill
   }
   { cachingbox MovieBox
-    MoveScaled(56,7,16,16)
+    MoveScaled(18,3,16,16)
     Background = &H000000&
     Path = "caching.gif"
     Playing = True
+  }
+  { YTPanel Panel
+    MoveScaled(46,1,43,26)
+    Ignore = True
+    Arrangement = Arrange.Vertical
+    Spacing = True
+    Margin = True
+    { YTText TextLabel
+      MoveScaled(1,3,42,3)
+      Font = Font["Bold,+8"]
+      Foreground = &HFFFFFF&
+      Expand = True
+      AutoResize = True
+      Alignment = Align.Bottom
+    }
+    { Label2 Label
+      MoveScaled(1,7,24,2)
+      Font = Font["Bold,+1"]
+      Foreground = &H000000&
+      AutoResize = True
+      Text = ("Dont see me")
+    }
+    { Separator2 Separator
+      MoveScaled(3,9,37,2)
+    }
+    { ytpic PictureBox
+      MoveScaled(19,10,6,6)
+      Expand = True
+      Alignment = Align.Center
+    }
+    { Separator4 Separator
+      MoveScaled(3,15,37,2)
+    }
+    { Label4 Label
+      MoveScaled(1,19,24,2)
+      Font = Font["Bold,+1"]
+      Foreground = &H000000&
+      AutoResize = True
+      Text = ("Dont see me")
+    }
+    { YTDESC TextLabel
+      MoveScaled(4,23,35,3)
+      Font = Font["Bold,+3"]
+      Foreground = &HFFFFFF&
+      Expand = True
+      Alignment = Align.Top
+    }
   }
 }
