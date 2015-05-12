@@ -34,6 +34,7 @@ Public Sub Form_Open()
   If Not initdone Then Init()
 End
 
+
 Public Sub Init()
   StartDate = DateAdd(Now(), gb.hour, -2) 'start from 2 hours before now
   StartDate = Date(Year(StartDate), Month(StartDate), Day(StartDate), Hour(StartDate)) 'round to hour.

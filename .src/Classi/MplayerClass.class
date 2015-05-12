@@ -365,7 +365,8 @@ Private prop As Collection
 
 Public Sub setP(aKey As String, aData As Variant)
   'set property into a collection in lowercase
-  prop[Lower(aKey)] = aData
+  Try prop[Lower(aKey)] = aData
+  If Error Then global.myDebug("Error while trying to set: ", aKey, "=", aData)
 End
 
 Public Function getP(aKey As String) As Variant

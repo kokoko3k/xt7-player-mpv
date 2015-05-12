@@ -1264,6 +1264,10 @@ Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip)
     Endif
   Wend
 
+  If aTabstrip.Children.count = 0 Then 
+    global.mydebug("aTabstrip.Children.count is actually 0 (?), could not parse audio driver.")
+    Return ""
+  Endif
   If aTabstrip.Children[0] Is Scrollview Then 
     container_obj = aTabstrip.Children[0]
       Else
