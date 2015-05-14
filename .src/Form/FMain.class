@@ -9037,7 +9037,7 @@ Public Sub youtubeTree_Activate()
   Dim yt_item As YoutubeItem
   Dim video_url, query, pagetoken, parentkey As String
   Dim more_text As String
-  
+  Dim current_key As String
   fmain.mouse = mouse.wait
   'if is custom_search_results node, populate it
   If youtubetree.Current.key = "custom_search_results" Then
@@ -9066,9 +9066,14 @@ Public Sub youtubeTree_Activate()
     query = Right(Split(Right(youtubetree.Current.key, - InStr(youtubetree.Current.key, "&q=")), "&")[0], -2)
     pagetoken = Split(youtubetree.Current.key, Chr(8))[2]
     parentkey = youtubetree.Current.ParentKey
+
+    Try youtubetree.MoveAbove
+    Try current_key = youtubetree.Item.Key
+    Try youtubetree.Movebelow
+
     youtubetree.Current.Delete()
     Try Youtube.GetResults(youtubetree, parentkey, youtube_query_opts(), pagetoken,, (desktop.h Div 12))
-
+    Try youtubetree[current_key].Selected = True
     Goto returnlabel
   Endif
 
