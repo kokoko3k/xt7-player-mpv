@@ -9225,7 +9225,9 @@ Private Function youtube_query_opts() As String
   Dim region As String
   Dim Author As String  
   Dim opts As String
-  
+
+  'https://developers.google.com/youtube/v3/docs/search/list#try-it
+
   query = YouSearchfield.Text
   MaxResults = SpinBoxmaxresults.text
   SortBy = ComboBoxOrderBy.text
@@ -9236,7 +9238,7 @@ Private Function youtube_query_opts() As String
   
   If query <> "" Then opts &= "&q=" & query
   opts &= "&maxResults=" & maxresults
-  If SortBy <> "" Then opts &= "&SortBy=" & SortBy
+  If SortBy <> "" Then opts &= "&order=" & SortBy
   If Trim(Author) <> "" Then opts &= "&channelId=" & youtube.ChannelIdFromName(Author)
   If Trim(region) <> "" Then 
     opts &= "&regionCode=" & region

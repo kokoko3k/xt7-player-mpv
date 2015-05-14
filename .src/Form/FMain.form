@@ -1365,15 +1365,16 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-1.2857,18,4)
+              MoveScaled(9.4286,-2.2857,18,4)
+              #Translate = False
               Expand = True
               ReadOnly = True
-              List = [("relevance"), ("rating"), ("viewcount"), ("date"), ("title")]
-              Text = ("relevance")
+              List = ["relevance", "rating", "viewCount", "date", "title"]
+              Text = "relevance"
             }
           }
           { HBox16 HBox
-            MoveScaled(-1.8571,11.1429,30,4)
+            MoveScaled(-2.8571,11.1429,30,4)
             ToolTip = ("Only valid for standard feeds")
             { Label4 Label
               MoveScaled(2,0,11,3)
@@ -1382,10 +1383,11 @@
             }
             { ComboBoxRegion ComboBox
               MoveScaled(10,0,18,4)
+              #Translate = False
               Expand = True
               ReadOnly = True
-              List = [("Any: "), ("Argentina:AR"), ("Australia:AU"), ("Brazil:BR"), ("Canada:CA"), ("Czec Republic:CZ"), ("France:FR"), ("Germany:DE"), ("Great Britain:BG"), ("Hong Kong:HK"), ("India:IN"), ("Ireland:IE"), ("Israel:IL"), ("Italy:IT"), ("Japan:JP"), ("Mexico:MX"), ("Netherlands:NL"), ("New Zeland:NZ"), ("Poland:PL"), ("Russia:RU"), ("South Africa:ZA"), ("South Korea:KR"), ("Spain:ES"), ("Sweden:SE"), ("Taiwan:TW"), ("United States:US")]
-              Text = ("Any:")
+              List = ["Any: ", "Argentina:AR", "Australia:AU", "Brazil:BR", "Canada:CA", "Czec Republic:CZ", "France:FR", "Germany:DE", "Great Britain:BG", "Hong Kong:HK", "India:IN", "Ireland:IE", "Israel:IL", "Italy:IT", "Japan:JP", "Mexico:MX", "Netherlands:NL", "New Zeland:NZ", "Poland:PL", "Russia:RU", "South Africa:ZA", "South Korea:KR", "Spain:ES", "Sweden:SE", "Taiwan:TW", "United States:US"]
+              Text = "Any:"
             }
           }
           { HBox17 HBox
@@ -1399,11 +1401,12 @@
             }
             { ComboBoxtime ComboBox
               MoveScaled(8,0,18,4)
+              #Translate = False
               Tag = "time"
               Expand = True
               ReadOnly = True
-              List = [("today"), ("this_week"), ("this_month"), ("all_time")]
-              Text = ("all_time")
+              List = ["today", "this_week", "this_month", "all_time"]
+              Text = "all_time"
             }
           }
           { HBox18 HBox
@@ -1416,6 +1419,7 @@
             }
             { TextBoxUploader TextBox
               MoveScaled(8,0,18,4)
+              #Translate = False
               Expand = True
             }
           }
