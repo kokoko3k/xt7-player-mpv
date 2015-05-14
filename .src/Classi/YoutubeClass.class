@@ -221,9 +221,6 @@ Public Function getvideoid(url As String) As String
   Return videoid
 End
 
-Public currentvideoid As String = ""
-
-
 Public Cookiesfile As String = ""
 
 Public Function YoutubeDlInstalled() As Boolean
@@ -243,10 +240,8 @@ End
 Private ytdlout As String = Temp(Rnd(0, 1000) & "youtubedl-out")
 
 Public Function GetTitle(sourceurl As String) As String
-    Dim videoid As String
     Dim title As String
-    videoid = getvideoid(sourceurl)
-    Shell "youtube-dl " & videoid & " -e" To title
+    Shell "youtube-dl '" & sourceurl & "' -e" To title
     Return Trim(title)
 End
 
@@ -329,7 +324,7 @@ End
 
 
 Public Function realvideourl(sourceurl As String, maxformat As String) As String
-  Dim videoid As String
+
   Dim fmtcode As Integer
   Dim fmt As String
   Dim i As Integer
@@ -342,10 +337,6 @@ Public Function realvideourl(sourceurl As String, maxformat As String) As String
   Dim UrlAndFormats As New Collection
 
   If Not YoutubeDlInstalled() Then Return
-
-  videoid = getvideoid(sourceurl)
-  currentvideoid = videoid
-  global.myDebug(videoid)
 
 If GeneralOptions.Get3dYT.value = True Then
   fSorted.Add("720,84,mp4")
@@ -417,9 +408,8 @@ Endif
       luckyformat = Split(fmt, ",")[1]
     Endif
   Next
-  'the space is intentional to play videoid(s) which begins with a "-"
-  ytdlprocess = Shell "youtube-dl ' " & videoid & "' --get-format --get-url --all-formats --prefer-insecure  --cookies " & Cookiesfile & " >" & ytdlout
-  global.myDebug("youtube-dl ' " & videoid & "' --get-format --get-url --all-formats --prefer-insecure --cookies " & Cookiesfile & " >" & ytdlout)
+  ytdlprocess = Shell "youtube-dl '" & sourceurl & "' --get-format --get-url --all-formats --prefer-insecure  --cookies " & Cookiesfile & " >" & ytdlout
+  global.myDebug("youtube-dl '" & sourceurl & "' --get-format --get-url --all-formats --prefer-insecure --cookies " & Cookiesfile & " >" & ytdlout)
   Repeat
     Wait 0.02
   Until ytdlprocess.State <> Process.Running

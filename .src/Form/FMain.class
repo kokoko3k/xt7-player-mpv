@@ -9276,31 +9276,44 @@ Public Sub YoutubeTreeTreeGetRelatedMenu_click(Optional myappend As Boolean = Fa
 End
 
 Public Sub YoutubetreeTreeaddtoLibrary_Click()
-  
   Dim QuickMode As Boolean
+  Dim yUrl As String 
+  Dim yItem As YoutubeItem
+  Try yItem = youtubetree.tag[youtubetree.current.key]
+  Try yUrl = yItem.playurl
+  If Error Then 
+    Message.Error("Failed.\nMissing video url")
+    Return
+  Endif
 
   QuickMode = True
-  Try MyLibrary.AddFile(librarygrid, youtubeTree.current.key, QuickMode, True, youtubetree.Current.text)
+  Try MyLibrary.AddFile(librarygrid, yUrl, QuickMode, True, youtubetree.Current.text)
   If Error Then
     MyQuestion.ask(("Error while adding one or more items"), ("Damn!"), "")
   Else
     UpdateSearchResults(MyLibrary, LibraryGrid, fmain.FullyLoaded, searchfield.text)
   Endif
-  
+
 End
 
 Public Sub YoutubetreeTreeaddtoPlaylist_Click()
-  
   Dim QuickMode As Boolean
-  
+  Dim yUrl As String 
+  Dim yItem As YoutubeItem
+  Try yItem = youtubetree.tag[youtubetree.current.key]
+  Try yUrl = yItem.playurl
+  If Error Then 
+    Message.Error("Failed.\nMissing video url")
+    Return
+  Endif
+
   QuickMode = True
-  Try MyPlaylist.AddFile(PlaylistGrid, youtubeTree.current.key, QuickMode, True, youtubetree.Current.text)
+  Try myplaylist.AddFile(playlistgrid, yUrl, QuickMode, True, youtubetree.Current.text)
   If Error Then
     MyQuestion.ask(("Error while adding one or more items"), ("Damn!"), "")
   Else
-    UpdateSearchResults(MyPlaylist, PlaylistGrid, fmain.FullyLoaded, SearchfieldPLS.text)
+    UpdateSearchResults(Myplaylist, playlistGrid, fmain.FullyLoaded, SearchFieldPLS.text)
   Endif
-
 End
 
 Public Sub youtubetreeDownload_Click()
@@ -10850,7 +10863,16 @@ End
 
 Public Sub youtubetreeextractaudio_Click()
   Dim selecteditems As New String[]
-  Try selecteditems.Add(youtubetree.Current.Key)
+  Dim yItem As YoutubeItem
+  Dim yUrl As String
+  Try yItem = youtubetree.tag[youtubetree.current.key]
+  Try yUrl = yItem.playurl
+  If Error Then 
+    Message.Error("Failed.\nMissing video url")
+    Return
+  Endif
+
+  Try selecteditems.Add(yUrl)
   If Not Error Then
     Try ExtractAudio(selecteditems)
       Else
