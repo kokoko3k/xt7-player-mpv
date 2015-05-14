@@ -5091,11 +5091,13 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
     Wait 0.025
   
   Else If (TabSelectedYoutube() And CurrentQueue = "") Or CurrentQueue = "youtube" Then
+    If mplayerwasrunning Then mplayer.do_stop() 'needed to see infos about next youtube item while it loads up
     Youtube.Select_NextTreeItem(youtubetree)
     Wait 0.025
     If mplayerwasrunning Then 'Or (TogglePls.value) Then
       Try customtitle = youtubetree.Current.text
       global.myDebug("mpv was off so hit play from here")
+      mplayer.do_stop()
       Play(Media_Next_path)
     Endif
   
@@ -5211,6 +5213,7 @@ Public Sub ButtonPrev_Click()
     Try BrowseSelectPrev()
     If mplayerwasrunning Then Play(Media_Next_path)
   Else If TabSelectedYoutube() Then
+    If mplayerwasrunning Then mplayer.do_stop() 'needed to see infos about next youtube item while it loads up
     Youtube.Select_PrevTreeItem(youtubetree)
     Wait 0.025
     If mplayerwasrunning Then 
@@ -8963,8 +8966,13 @@ Private Sub YTPanel_myrefresh()
   Dim AR As Float = 1.3333333
   Try AR = zzzfake.ytpic.tag
   zzzFake.YTPanel.Move(0, 0, outerbox.w, outerbox.h)
-  zzzfake.ytpic.w = zzzfake.ytpic.parent.w
-  zzzfake.ytpic.h = CInt(zzzfake.ytpic.w / 1.333333)
+  'zzzfake.ytpic.w = zzzfake.ytpic.parent.w
+  zzzfake.ytpic.h = CInt(zzzfake.ytpic.Picture.w / 1.333333)
+  
+  
+   zzzfake.vbox7.w = zzzfake.ytpic.Picture.w
+   zzzfake.vbox6.w = zzzfake.YTPanel.w - zzzfake.vbox7.w - (Desktop.scale * 2)
+
 End
 
 
@@ -8978,8 +8986,8 @@ Public Sub ShowYtBox(infos As Variant)
   Wait
   
   'make 4:3 space for the pic:
-  zzzfake.ytpic.w = zzzfake.ytpic.parent.w
-  zzzfake.ytpic.h = CInt(zzzfake.ytpic.w / 1.333333)
+  'zzzfake.ytpic.w = zzzfake.ytpic.parent.w
+  zzzfake.ytpic.h = CInt(zzzfake.ytpic.Picture.w / 1.333333)
 
   'title text
   zzzfake.YTText.text = yt_item.title
@@ -9015,11 +9023,13 @@ Public Sub hAsyncClient_Finished()
     AR = tmppic.Image.w / tmppic.Image.h
     zzzfake.ytpic.tag = AR
     zzzfake.ytpic.Picture = tmppic
-    zzzfake.ytpic.w = zzzfake.ytpic.parent.w
-    zzzfake.ytpic.h = CInt(zzzfake.ytpic.w / AR)
+    'zzzfake.ytpic.w = zzzfake.ytpic.parent.w
+    zzzfake.ytpic.h = CInt(zzzfake.ytpic.Picture.w / AR)
     Wait
   Endif
   Try Kill Last.TargetFile
+  YTPanel_myrefresh()
+  'zzzfake.YTPanel_Arrange()
 End
 
 
@@ -11319,7 +11329,8 @@ Public Sub Make_modes_menu()
 
   Xm = randr.Xmode_from_obj(fmain)
   If fps >= 0 Then 
-    selected_modes = randr.find_modes(Xm.output_name, min_h, min_w, fps, HZ_ERROR_MAX)
+    Try selected_modes = randr.find_modes(Xm.output_name, min_h, min_w, fps, HZ_ERROR_MAX)
+    If Error Then Return
   Endif
   If selected_modes = Null Then Return
   

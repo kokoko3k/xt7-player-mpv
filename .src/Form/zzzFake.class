@@ -130,8 +130,30 @@ Public Sub ShowHidePinfo()
   Fmain.PanelNowNextArrange(LabelNextInfo.visible)
 End
 
-Public Sub YTText_MouseDown()
 
-  
+' Public Sub YTPanel_Arrange()
+'   Dim TxtH As Integer = 0
+' 'If Rnd(1, 10) > 9 Then Stop
+'  ' Wait
+'   ytpic.w = ytpic.Picture.w
+'   ytpic.h = ytpic.Picture.h
+' 
+'   TxtH = yttext.h + ytdesc.h + (Desktop.scale * 2)
+' 
+'   panel2.h = Max(TxtH, ytpic.Picture.h)
+'   panel1.h = TxtH
+'   panel2.w = ytpanel.w
+' 
+'   Debug ytpanel.w, panel2.w
+'   panel1.w = panel2.w - ytpic.w - (Desktop.scale * 2)
+' 
+' 
+'  ' If TxtH < (ytpic.y + ytpic.Picture.h) Then
+'     hbox6.h = CInt((ytpic.Picture.h / 2) - (TxtH / 2)) 
+'     'global.myDebug(CInt((ytpic.Picture.h / 2) - (TxtH / 2)))
+'     'Stop
+'  ' Endif
+'  '  Wait
+'   If (yttext.h + ytdesc.h + (Desktop.scale * 2)) <> TxtH Then YTPanel_Arrange()
+' End
 
-End
