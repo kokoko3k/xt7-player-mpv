@@ -8981,10 +8981,16 @@ End
 Public Sub ShowYtBox(infos As Variant)
   Dim yt_item As YoutubeItem = infos
   Dim dfile As String = Temp()
+  Dim o As Object = fmain.outerbox
+  Dim sW As Integer
+  
+  sW = Screenbypos(o.screenx + (o.w Div 2), o.screeny + (o.h Div 2)).W
+  zzzfake.YTText.Font.size = CInt(sW / 75)
+  zzzfake.YTDesc.Font.size = CInt(sW / 106)
   
   zzzfake.ytpic.Picture = Picture["black.png"]
   Wait
-  
+
   'make 4:3 space for the pic:
   'zzzfake.ytpic.w = zzzfake.ytpic.parent.w
   zzzfake.ytpic.h = CInt(zzzfake.ytpic.Picture.w / 1.333333)
