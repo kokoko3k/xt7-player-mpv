@@ -9216,6 +9216,7 @@ Public Sub youtube_custom_search()
    YouSearchfield.mouse = Mouse.wait  'bah...
    youtube = New Youtubeclass(youtubetree)
    youtubetree.Tag = Null
+   ComboHistory.AddHistory(yousearchfield, yousearchfield.text)
    Youtube.GetResults(youtubetree, "custom_search_results", youtube_query_opts(),,, (desktop.h Div 12))
    fmain.mouse = mouse.Default
    YouSearchfield.mouse = Mouse.default 'bah...
