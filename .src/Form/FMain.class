@@ -9165,7 +9165,7 @@ Public Sub fillyoutubeinfo(ytitem As YoutubeItem)
   outtext = outtext & "<b>Description:</b><br> " & description & "<br>"
   outtext = outtext & "</font>"
   outtext = Replace(outtext, "\n", "<br>")
-  YouVideoInfo.tag = url
+  YouVideoInfo.tag = ytsite
   YouVideoInfo.text = outtext
   YouVideoInfo.visible = True
   blinktimer.start
@@ -9199,15 +9199,10 @@ Public Sub SpinBoxmaxresults_KeyPress()
 End
 
 Public Sub YouVideoInfo_MouseDown()
-  
-  Dim ytsite As String = "http://www.youtube.com/watch?v="
-  
-  ytsite = ytsite & Youtube.getvideoid(YouVideoInfo.tag)
   If MyQuestion.Ask(("Would you like to go to the video homepage?"), ("Yes, Go to Youtube"), ("No, thanks")) = 1 Then
-    Shell "xdg-open '" & ytsite & "'"
+    Shell "xdg-open '" & YouVideoInfo.tag & "'"
     'desktop.Open(ytsite)
   Endif
-  
 End
 
 Public Sub YouVideoInfo_Enter()
