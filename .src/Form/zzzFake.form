@@ -218,11 +218,14 @@
         AutoResize = True
         Alignment = Align.Bottom
       }
-      { Separator4 Separator
-        MoveScaled(0,6,20,1)
+      { BrightSeparator1 PictureBox
+        MoveScaled(2,7,33,0.4286)
+        Padding = 1
+        Picture = Picture["bright_separator.png"]
+        Stretch = True
       }
       { YTDESC TextLabel
-        MoveScaled(1,8,15,3)
+        MoveScaled(1,14,15,3)
         Font = Font["Bold"]
         Foreground = &HFFFFFF&
         Expand = True

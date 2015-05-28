@@ -8985,8 +8985,8 @@ Public Sub ShowYtBox(infos As Variant)
   Dim sW As Integer
   
   sW = Screenbypos(o.screenx + (o.w Div 2), o.screeny + (o.h Div 2)).W
-  zzzfake.YTText.Font.size = CInt(sW / 70)
-  zzzfake.YTDesc.Font.size = CInt(sW / 95)
+  zzzfake.YTText.Font.size = CInt(sW / 66)
+  zzzfake.YTDesc.Font.size = CInt(sW / 89)
   
   zzzfake.ytpic.Picture = Picture["black.png"]
   Wait
