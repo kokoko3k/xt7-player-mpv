@@ -1250,7 +1250,7 @@ Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip)
   Dim obj, child, container_obj As Object
   Dim tab_index_old As Integer = aTabstrip.index
   Dim outline As String
-  
+  Dim sep As String = Chr(126)
   If Lower(driver_name) Like "custom*" Then
     Return TextBox5customaudio.text
   Endif
@@ -1283,8 +1283,8 @@ Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip)
               outline = outline & child.tag
                 If (child.next <> Null) Then
                   If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
-                    If child.NEXT.text Like "*" & gb.tab & "*" Then
-                      outline = outline & Split(child.NEXT.text, gb.tab)[0]
+                    If child.NEXT.text Like "*" & sep & "*" Then
+                      outline = outline & Split(child.NEXT.text, sep)[0]
                         Else
                       outline = outline & child.NEXT.text
                     Endif
@@ -1319,12 +1319,11 @@ Public Sub GetAlsaDevices() As String[]
   Dim adevices As New String[]
   Dim apcms As New String[]
   Dim acards As New String[]
-  Dim tabs As String = gb.tab
-
-  adevices.Add("plug:dmix" & tabs & " - [" & ("Default device, software mixing") & "]")
-  adevices.Add("default" & tabs & " - [" & ("Default alsa device") & "]")
-  adevices.Add("spdif" & tabs & " - [" & ("Default S/PDIF device") & "]")
-  adevices.Add("hdmi" & tabs & " - [" & ("Default hdmi device") & "]")
+  Dim sep As String = Chr(126)
+  adevices.Add("plug:dmix" & " " & sep & " " & "(" & ("Default device, software mixing") & ")")
+  adevices.Add("default" & " " & sep & " " & "(" & ("Default alsa device") & ")")
+  adevices.Add("spdif" & " " & sep & " " & "(" & ("Default S/PDIF device") & ")")
+  adevices.Add("hdmi" & " " & sep & " " & "(" & ("Default hdmi device") & ")")
   Try acards = Dir("/proc/asound/", "card*", gb.directory)
   If Not Error Then
     For Each acard In acards
@@ -1345,7 +1344,7 @@ Public Sub GetAlsaDevices() As String[]
             Endif
           Next
          ' global.myDebug( acardid, apcmid, acardname, apcminfo)
-          adevices.add("plughw:" & acardid & "." & apcmid & tabs & " - " & "[" & acardname & ":" & apcminfo & "]")
+          adevices.add("[plughw:" & acardid & "," & apcmid & "]" & " " & sep & " " & "(" & acardname & ":" & apcminfo & ")")
         Next
       Endif
 
