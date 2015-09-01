@@ -756,3 +756,9 @@ https://github.com/mpv-player/mpv/commit/25755f5fe75ad2a4ac9fb4ecf70f7bdf7a58a04
 audio: add --audio-spdif as new method for enabling passthrough 
 ...e il vecchio è deprecato
 https://github.com/mpv-player/mpv/commit/57048c7393e94820520a395e569d05cdcc085224
+
+
+Cambiamenti prox gambas:
+se imposti un reparent a uno che già è parente, c'è un glitch (controlla se c'è glitch pure se reimposti a visibile un già visibile)
+questo crea problemi di glitch con gli shadeup.
+inoltre la gestione degli hsplit è diventata lentissima. consiglio di tornare al fakesplit.

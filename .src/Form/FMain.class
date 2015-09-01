@@ -5606,7 +5606,9 @@ End
 Public Sub SearchField_Activate()
 
   Try customtitle = librarygrid[librarygrid.row, myplaylist.ColumnIndex["Filename"]].text
-  Play(LibraryGrid[Librarygrid.row, MyLibrary.Columnindex["Full Path"]].text)
+  If Error Then Return
+  Try Play(LibraryGrid[Librarygrid.row, MyLibrary.Columnindex["Full Path"]].text)
+  If Error Then Return
   SetActivePlayQueue("librarygrid")
   ComboHistory.AddHistory(Searchfield, Searchfield.text)
 
@@ -5615,7 +5617,9 @@ End
 Public Sub SearchFieldPLS_Activate()
 
   Try customtitle = PlayListGrid[PlayListGrid.row, myplaylist.ColumnIndex["Filename"]].text
-  Play(PlayListGrid[Playlistgrid.row, MyPlayList.Columnindex["Full Path"]].text)
+  If Error Then Return
+  Try Play(PlayListGrid[Playlistgrid.row, MyPlayList.Columnindex["Full Path"]].text)
+  If Error Then Return
   SetActivePlayQueue("playlistgrid")
   ComboHistory.AddHistory(SearchfieldPLS, SearchfieldPLS.text)
 
