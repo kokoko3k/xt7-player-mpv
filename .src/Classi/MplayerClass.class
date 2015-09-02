@@ -589,7 +589,8 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
   
   properties = New String[]
   properties.insert(["filename", "partially-seekable", "file-format", "audio-codec"]) 'common
-  properties.Insert(["=audio-bitrate", "audio-channels", "=audio-channels", "=audio-samplerate"]) 'common
+  'properties.Insert(["=audio-bitrate", "audio-channels", "=audio-channels", "=audio-samplerate"]) 'common
+  properties.Insert(["=audio-bitrate", "audio-params/channels", "=audio-params/channels", "=audio-params/samplerate"]) 'common
   If Not getP("audioonly") Then
     properties.Insert(["video-codec", "video-params/dw", "video-params/dh"]) 'video files
   Endif
@@ -617,10 +618,10 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
       If getP("length") = 0 Then properties.add("length")
       setP("=Audio-Bitrate", media_taglib.Bitrate)
       If getP("=Audio-Bitrate") = 0 Then properties.add("=audio-bitrate")
-      setP("=audio-Channels", media_taglib.Channels)
-      If getP("=Audio-channels") = 0 Then properties.add("=audio-channels")
-      setP("=audio-samplerate", media_taglib.Samplerate)
-      If getP("=Audio-samplerate") = 0 Then properties.add("=audio-samplerate")
+      setP("=audio-params/channels", media_taglib.Channels)
+      If getP("=audio-params/channels") = 0 Then properties.add("=audio-params/channels")
+      setP("=audio-params/samplerate", media_taglib.Samplerate)
+      If getP("=audio-params/samplerate") = 0 Then properties.add("=audio-params/samplerate")
       global.myDebug("got info from taglib on " & getP("FullPath") & " --")
       
        media_taglib.tlFree()

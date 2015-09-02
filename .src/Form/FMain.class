@@ -1218,8 +1218,8 @@ Public Sub FillPropertiesGrid()
   PropertiesGrid[3, 1].text = mplayer.getP("length")
   PropertiesGrid[4, 1].text = mplayer.getP("file-format")
 
-  PropertiesGrid[12, 1].text = mplayer.getP("=audio-channels")
-  PropertiesGrid[13, 1].text = mplayer.getP("=audio-samplerate")
+  PropertiesGrid[12, 1].text = mplayer.getP("=audio-params/channels")
+  PropertiesGrid[13, 1].text = mplayer.getP("=audio-params/samplerate")
   PropertiesGrid[14, 1].text = mplayer.getP("audio-codec")
   'Try PropertiesGrid[15, 1].text = (CInt(mplayer.get_property_mpv("=audio-bitrate")) Div 1000) & "Kbps"
   Try PropertiesGrid[15, 1].text = mplayer.get_property_mpv("audio-bitrate")
@@ -4724,7 +4724,7 @@ Public Sub Show_runtime_infos()
   prop["audio codec"] = "audio-codec"
   'prop["audio bitrate (packet)"] = "packet-audio-bitrate"  '<-deprecated
   prop["audio bitrate (actual)"] = "audio-bitrate"  '<-deprecated
-  prop["audio channels"] = "audio-channels"
+  prop["audio-params/channels"] = "audio-params/channels"
   prop["------"] = " "
 
   
