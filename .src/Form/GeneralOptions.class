@@ -333,14 +333,16 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   For Each option In noparsevboxpt.Children
     If option Is Togglebutton Then
       If option.value = True Then
-        pt &= "spdif:" & option.tag & ","
+        'pt &= "spdif:" & option.tag & ","
+        pt &= option.tag & ","
       Endif
     Endif
     
   Next
   If Right(pt) = "," Then pt = Left(pt, -1)
-  If pt <> "" Then myopts.Add(newopt("ad", pt))
-  ' 
+  'If pt <> "" Then myopts.Add(newopt("ad", pt))
+  If pt <> "" Then myopts.Add(newopt("audio-spdif", pt))
+  Stop
   
   Return myopts.Insert(parse_custom_options())
 
