@@ -4701,12 +4701,14 @@ Public Sub Show_runtime_infos()
   prop["----"] = " "
   
   prop["Hardware decoding"] = "hwdec"
-  prop["Hardware decoding detected"] = "detected-hwdec"
+  prop["Hardware decoding detected"] = "hwdec-detected"
+  prop["Hardware decoding active"] = "hwdec-active"
+  
   prop["-----"] = " "
   
   prop["video driver"] = "current-vo"
   prop["Video filters"] = "vf"
-  prop["-----"] = " "
+  prop["------"] = " "
   
   prop["video codec"] = "video-codec"
   'prop["video bitrate (packet)"] = "packet-video-bitrate" '<- deprecated
@@ -4714,18 +4716,18 @@ Public Sub Show_runtime_infos()
   prop["Video width"] = "width"
   prop["Video height"] = "height"
   prop["Video fps"] = "estimated-vf-fps"
-  prop["-----"] = " "
+  prop["-------"] = " "
 
   prop["audio driver"] = "current-ao"
   prop["audio filters"] = "af"  
   'prop["Audio device in use"] = "audio-out-detected-device"
-  prop["------"] = " "
+  prop["--------"] = " "
   
   prop["audio codec"] = "audio-codec"
   'prop["audio bitrate (packet)"] = "packet-audio-bitrate"  '<-deprecated
   prop["audio bitrate (actual)"] = "audio-bitrate"  '<-deprecated
   prop["audio-params/channels"] = "audio-params/channels"
-  prop["------"] = " "
+  prop["---------"] = " "
 
   
   For Each prop
