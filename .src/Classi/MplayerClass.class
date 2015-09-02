@@ -422,7 +422,8 @@ Private Function internal_options() As Collection
   out["msg-color"] = "no"
   out["msg-level"] = "all=v,cplayer=status"
   out["term-status-msg"] = "\"\""
-
+  out["force-seekable"] = "yes" 'this will allow seeks within the cache
+  
   'this array will be needed by do_apply().
   'because ut decides if a restart is needed by comparing the changed user options
   'with the previous one. But singe the changed options are set from the outside,

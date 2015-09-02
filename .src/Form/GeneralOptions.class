@@ -342,7 +342,6 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   If Right(pt) = "," Then pt = Left(pt, -1)
   'If pt <> "" Then myopts.Add(newopt("ad", pt))
   If pt <> "" Then myopts.Add(newopt("audio-spdif", pt))
-  Stop
   
   Return myopts.Insert(parse_custom_options())
 
