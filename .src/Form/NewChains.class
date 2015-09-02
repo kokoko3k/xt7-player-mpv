@@ -541,8 +541,8 @@ Private Function parse_video_filter_custom() As String
                             'it is created by DrawFiltersGui function
   Dim SubObject As Object
   Dim customfilter As String = ""
-  
-  For Each MyScrollview In Tabstrip1.Children
+
+  For Each MyScrollview In TabStrip_filters_video.Children
     For Each PanelObject In MyScrollView.Children
       If PanelObject.name Like "*HBox" Then
         For Each SubObject In PanelObject.Children
@@ -565,6 +565,7 @@ Private Function parse_video_filter_custom() As String
       Endif
     Next
   Next
+  Stop
   Return customfilter
 End
 
