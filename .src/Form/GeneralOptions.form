@@ -253,7 +253,7 @@
           ToolTip = ("Select what audio codec won't be decoded by mpv,\nbut passed directly through spdif.\n\nTipical use includes just ac3 and dts.\n\nmpv option: --ad=spdif:<codecname>")
           Indent = True
           { ToggleButton1 ToggleButton
-            MoveScaled(8,0,5,4)
+            MoveScaled(1,0,5,4)
             #Translate = False
             Tag = "ac3"
             Expand = True
@@ -261,15 +261,23 @@
             Text = "AC3"
           }
           { ToggleButton2 ToggleButton
-            MoveScaled(14,0,4,4)
+            MoveScaled(8,0,4,4)
             #Translate = False
             Tag = "dts"
             Expand = True
             AutoResize = True
             Text = "DTS"
           }
+          { ToggleButton7 ToggleButton
+            MoveScaled(13,0,7,4)
+            #Translate = False
+            Tag = "dts"
+            Expand = True
+            AutoResize = True
+            Text = "DTS-HD"
+          }
           { ToggleButton3 ToggleButton
-            MoveScaled(19,0,5,4)
+            MoveScaled(22,0,5,4)
             #Translate = False
             Tag = "eac3"
             Expand = True
@@ -277,7 +285,7 @@
             Text = "EAC3"
           }
           { ToggleButton4 ToggleButton
-            MoveScaled(25,0,5,4)
+            MoveScaled(29,0,5,4)
             #Translate = False
             Tag = "mp3"
             Expand = True
@@ -285,7 +293,7 @@
             Text = "MP3"
           }
           { ToggleButton5 ToggleButton
-            MoveScaled(30,0,5,4)
+            MoveScaled(35,0,5,4)
             #Translate = False
             Tag = "aac"
             Expand = True
@@ -293,7 +301,7 @@
             Text = "AAC"
           }
           { ToggleButton6 ToggleButton
-            MoveScaled(36,0,7,4)
+            MoveScaled(41,0,7,4)
             #Translate = False
             Tag = "truehd"
             Expand = True

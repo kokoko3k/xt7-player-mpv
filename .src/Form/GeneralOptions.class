@@ -1248,3 +1248,12 @@ Public Sub EnableDisableSwitchResCheckboxes()
   NoparseHbox7.enabled = Switchres_use_CheckBox.value  
   NoparseHbox10.enabled = Switchres_use_CheckBox.value  
 End
+
+Public Sub ToggleButton2_Click()
+  If ToggleButton2.value = True Then ToggleButton7.value = False
+End
+Public Sub ToggleButton7_Click()
+  If ToggleButton7.value = True Then ToggleButton2.value = False
+End
+
+
