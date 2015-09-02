@@ -3381,8 +3381,7 @@ Public Sub SlideTo(aSlider As Slider, aTarget As Integer, Optional aThreshold As
 
 End
 
-
-Private Sub UpdateVolumeTooltip()
+Private Sub OLD_updateVolumeTooltip()
   Dim tip As String
   Dim volume As Integer
   Dim overboost As String
@@ -3395,6 +3394,35 @@ Private Sub UpdateVolumeTooltip()
   If overboost = Null Then overboost = "100"
   If Not mplayer.ProcessRunningOvr() Then Return
   Try volume = CInt(CInt(mplayer.get_property_mpv("volume", True)) / 100 * overboost)
+  If Error Then Return
+  tip = "   Volume: " & CStr(volume) & "% "
+  If volume > 100 Then 
+    StatusLabelright.Foreground = color.red
+  Else
+    StatusLabelright.Foreground = color.white
+  Endif
+  StatusLabelright.text = tip
+End
+
+
+Private Sub UpdateVolumeTooltip()
+  Dim tip As String
+  Dim volume As Integer
+  Dim overboost As String
+  Dim softvol As String = "auto"
+  
+  If Not mplayer.ProcessRunningOvr() Then Return
+  
+  Try softvol = Trim(mplayer.get_property_mpv("options/softvol"))
+  If softvol <> "no" Then
+    Try overboost = Split(mplayer.get_property_mpv("options/softvol-max"), ".,")[0]
+    If overboost = Null Then Try overboost = mplayer.get_option("softvol-max")
+  Endif
+  If overboost = Null Then overboost = "100"
+
+  savevolumeslider.maxvalue = overboost
+
+  Try volume = mplayer.get_property_mpv("volume", True)
   If Error Then Return
   tip = "   Volume: " & CStr(volume) & "% "
   If volume > 100 Then 
