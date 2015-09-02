@@ -122,7 +122,7 @@ Private Sub DrawFiltersGui()
     AllParams.Clear
       
   '-softvol-max <10.0-10000.0>
-    AllParams.add(["RANGE", ("Maximum Amplification"), "10", "100", "10000", "softvol000max", "Allows volume over 100%, does not work if softvol is set to 'no'"])
+    AllParams.add(["RANGE", ("Maximum Amplification"), "100", "100", "10000", "softvol000max", "Allows volume over 100%, does not work if softvol is set to 'no'"])
     Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Set the maximum amplification level in percent (default: 110).\n A value of 200 will allow you to adjust the volume up to a maximum of double the current level.\n mpv option: -softvol-max"))
     Try Object.SetProperty(Me.Controls["softvol000max.CheckBox"], "value", True) 'enabled by default ;)
     AllParams.Clear
