@@ -1215,7 +1215,7 @@ Public Sub FillPropertiesGrid()
   PropertiesGrid[1, 1].text = File.Name(mplayer.getP("fullpath"))
 
   PropertiesGrid[2, 1].text = mplayer.getP("size")
-  PropertiesGrid[3, 1].text = mplayer.getP("length")
+  PropertiesGrid[3, 1].text = mplayer.getP("duration")
   PropertiesGrid[4, 1].text = mplayer.getP("file-format")
 
   PropertiesGrid[12, 1].text = mplayer.getP("=audio-params/channels")
@@ -1244,7 +1244,7 @@ Public Sub FillPropertiesGrid()
       PropertiesGrid[11, 1].text = OneOf(mplayer.getP("Comment"), mplayer.getP("Comments"))
 
   Endif
-  Try cTime = CInt(Split(mplayer.getP("=length"), ".", "", True)[0])
+  Try cTime = CInt(Split(mplayer.getP("=duration"), ".", "", True)[0])
   Try PropertiesGrid[20, 1].text = CStr((CInt(mplayer.getP("size")) * 8) Div cTime)
   If PropertiesGrid[20, 1].text = 0 Then 
     Try PropertiesGrid[20, 1].text = ">=" & CStr((CInt(mplayer.getP("=audio-bitrate")) Div 1000) + (CInt(mplayer.getP("=video-bitrate")) Div 1000)) 
@@ -2446,7 +2446,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   ResizeFactor = 0
   'LogWindow.streamtextbox.text = fullpath
   PrevValuecTime = 999999
-  mplayer.watched_properties = ["pause", "volume", "=chapter", "=time-pos", "length", "=length", "percent-pos", "cache", "media-title"]
+  mplayer.watched_properties = ["pause", "volume", "=chapter", "=time-pos", "duration", "=duration", "percent-pos", "cache", "media-title"]
   mplayer.clear_options() 
   opts = static_options()
   For Each data In opts
@@ -2971,7 +2971,7 @@ Public Sub UpdateSeekSlider(Optional percent_pos As String = "-1")
   
   If SeekingRestarting Then Return
   SeekBar.tag = "timer" 'this will avoid seekbar to send seek to mplayer
-  Try totaltime = mplayer.getP("=length")
+  Try totaltime = mplayer.getP("=duration")
   'Try actualtime = mplayer.CurrentTime()
   Try actualtime = mplayer.CurrentTimeFloat()
   If actualtime <> 0 Then 
@@ -3124,16 +3124,16 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   '------------------------------
   'Depending on the Choosed timeformat, draw the current time:
     If TimeFormat = 0 Then
-      PostText = mplayer.FormatTime(cTime) & " / " & mplayer.FormatTime(mplayer.getP("=length"))
+      PostText = mplayer.FormatTime(cTime) & " / " & mplayer.FormatTime(mplayer.getP("=duration"))
   Else If Timeformat = 1 Then
-    Try RemainingTime = mplayer.getP("=length") - cTime
+    Try RemainingTime = mplayer.getP("=duration") - cTime
     If Error Then Return
-    PostText = "-" & mplayer.FormatTime(remainingtime) & " / " & mplayer.getP("length")
+    PostText = "-" & mplayer.FormatTime(remainingtime) & " / " & mplayer.getP("duration")
   Else If Timeformat = 2 Then
-    PostText = cTime & " / " & mplayer.getP("=length")
+    PostText = cTime & " / " & mplayer.getP("=duration")
   Else If Timeformat = 3 Then
-    RemainingTime = mplayer.getP("=length") - cTime
-    PostText = "-" & RemainingTime & " / " & mplayer.getP("=length")
+    RemainingTime = mplayer.getP("=duration") - cTime
+    PostText = "-" & RemainingTime & " / " & mplayer.getP("=duration")
   Endif
 
   
@@ -3232,10 +3232,10 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
       If data_new <> "(unavailable)" Then CACHEVALUE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
   
-    Case Like "=length"
+    Case Like "=duration"
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
   
-    Case Like "length"
+    Case Like "duration"
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
 
   End Select
@@ -10551,7 +10551,7 @@ Public Sub ProgressFrame_MouseDrag()
         If relative > 1 Then relative = 1
   Endif
 
-  msg = (" seek to:") & " " & mplayer.FormatTime(CInt(mplayer.getP("=length") * relative))
+  msg = (" seek to:") & " " & mplayer.FormatTime(CInt(mplayer.getP("=duration") * relative))
   seekbar.value = mouse.x / Last.w
   SetProgress(seekbar.value)
   StatusLabelLeft.text = msg

@@ -139,7 +139,7 @@ Public Function FillMultitracks()
 End
 
 Public Function get_length() As String
-  Return get_property_mpv("=length")
+  Return get_property_mpv("=duration")
 End
 
 
@@ -612,10 +612,10 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
       setP("comment", media_taglib.Comment)
       setP("comments", media_taglib.Comment)
       setP("trackno", media_taglib.Track)
-      setP("=length", media_taglib.Length)
-      setP("length", FormatTime(media_taglib.Length))
-      If getP("=length") = 0 Then properties.add("=length")
-      If getP("length") = 0 Then properties.add("length")
+      setP("=duration", media_taglib.Length)
+      setP("duration", FormatTime(media_taglib.Length))
+      If getP("=duration") = 0 Then properties.add("=duration")
+      If getP("duration") = 0 Then properties.add("duration")
       setP("=Audio-Bitrate", media_taglib.Bitrate)
       If getP("=Audio-Bitrate") = 0 Then properties.add("=audio-bitrate")
       setP("=audio-params/channels", media_taglib.Channels)
@@ -652,11 +652,11 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
         ' Try Media_Comments = DConv(FindAudioTag("comments")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
       Endif
       
-      If (getP("=length") = 0) Or (getP("=length") = "") Then properties.insert(["=length", "length"])
+      If (getP("=duration") = 0) Or (getP("=duration") = "") Then properties.insert(["=duration", "duration"])
 
     Endif
         Else 'for not audio only files, use mpv
-      properties.insert(["=length", "length"])
+      properties.insert(["=duration", "duration"])
       If (Not getP("audioonly")) Then
         properties.Insert(["=video-bitrate", "width", "height", "fps"])            
       Endif
@@ -665,8 +665,8 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
 
   get_properties_mpv(properties)
   
-  If getP("length") = "" Then setP("length", "00:00:00")
-  If getP("=length") = "" Then setP("length", "0")
+  If getP("duration") = "" Then setP("duration", "00:00:00")
+  If getP("=duration") = "" Then setP("duration", "0")
   Return True
 End
 

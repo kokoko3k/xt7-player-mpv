@@ -102,7 +102,7 @@ Public Sub UpdateInfos()
       album = FMain.mplayer.getP("album")
       song = FMain.mplayer.getP("title")
       If song = "" Then song = FMain.PropertiesGrid[7, 1].text
-      If Not FMain.mplayer.paused() Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("length")
+      If Not FMain.mplayer.paused() Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("duration")
       If Trim(artist) = "" Then artist = "Unknown Artist"
       If Trim(album) = "" Then album = "Unknown Album"
       If Trim(song) = "" Then song = "Unknown song"
@@ -118,7 +118,7 @@ Public Sub UpdateInfos()
 
       label1.text = artist & "\n" & album & "\n" & song & "\n" & filename & "\n" & timestr
         Else
-      If Not FMain.mplayer.paused() Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("length")
+      If Not FMain.mplayer.paused() Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("duration")
       If Trim(filename) = "" Then filename = ("No file is playing")
       label1.text = filename & "\n" & timestr
     Endif
