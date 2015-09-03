@@ -855,14 +855,6 @@
             Grid = False
             Header = GridView.Horizontal
           }
-          { shadeup PictureBox shadeuplow
-            Name = "shadeup"
-            MoveScaled(2,12,31,2)
-            Visible = False
-            Ignore = True
-            Picture = Picture["shadeup.png"]
-            Stretch = True
-          }
         }
         { LibrarySelInfo Label
           MoveScaled(1,47,36,4)
@@ -1033,14 +1025,28 @@
             Picture = Picture["icon:/16/watch"]
           }
         }
-        { FileView1 FileView
-          MoveScaled(0,13,35,32)
-          Background = Color.TextBackground
+        { Panel16 Panel gridpanels
+          Name = "Panel16"
+          MoveScaled(1,12,36,33)
           Expand = True
-          Mode = Select.Multiple
-          Dir = "/"
-          ShowDetailed = True
-          ShowDirectory = True
+          Arrangement = Arrange.Fill
+          { FileView1 FileView
+            MoveScaled(1,7,32,17)
+            Background = Color.TextBackground
+            Expand = True
+            Mode = Select.Multiple
+            Dir = "/"
+            ShowDetailed = True
+            ShowDirectory = True
+          }
+          { shadeup PictureBox shadeuplow
+            Name = "shadeup"
+            MoveScaled(-6,0,31,2)
+            Visible = False
+            Ignore = True
+            Picture = Picture["shadeup.png"]
+            Stretch = True
+          }
         }
         Index = 4
         Text = ("DVB-T")
@@ -1365,7 +1371,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-3.2857,18,4)
+              MoveScaled(9.4286,-4.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1374,7 +1380,7 @@
             }
           }
           { HBox16 HBox
-            MoveScaled(-3.8571,11.1429,30,4)
+            MoveScaled(-4.8571,11.1429,30,4)
             ToolTip = ("Only valid for standard feeds")
             { Label4 Label
               MoveScaled(2,0,11,3)

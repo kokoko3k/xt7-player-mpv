@@ -59,9 +59,9 @@ Private Sub Reparent(TheObject As Object, TheParentName As String, TheForm As Ob
       If Not (TheObject Is Container) Then
         If ParentObj.name = TheObject.parent.name Then
           HiddenBox = New Form
-          TheObject.reparent(hiddenbox)
+          If theobject.parent <> hiddenbox Then TheObject.reparent(hiddenbox)
         Endif
-        TheObject.Reparent(ParentObj)
+        If Lower(TheObject.parent.name) <> Lower(ParentObj.name) Then TheObject.Reparent(ParentObj)
         'Try HiddenBox.Delete 'is an hack to not to delete the object, but it is actually faster.
         'Debug "Reparenting " & TheObject.name & " into " & ParentObj.name  'Debug
         Break

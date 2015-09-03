@@ -188,20 +188,22 @@ Public Sub SmartInsert(TheObject As Object, TheForm As Object)
           Wend
           i = i - 1
           'now reparent the dragged object:
-          TheObject.reparent(hiddenbox)
-          TheObject.reparent(DestinationObj)
+          If TheObject.parent <> hiddenbox Then TheObject.reparent(hiddenbox)
+          If Lower(TheObject.parent.name) <> Lower(DestinationObj.name) Then TheObject.reparent(DestinationObj)
           TheObject.ignore = False
           MoveObject(TheObject, TheForm) '(This is needed to correctly position the object in the new container)
           'now trow down (reparent) the lower objects
           If found Then
             Repeat
-              Try DestinationObj.Children[i].reparent(hiddenbox)
-              Try Hiddenbox.children[hiddenbox.Children.count - 1].reparent(DestinationObj)
+              If DestinationObj.Children[i].parent = hiddenbox Then Try DestinationObj.Children[i].reparent(hiddenbox)
+              If Hiddenbox.children[hiddenbox.Children.count - 1].parent <> DestinationObj Then 
+                Try Hiddenbox.children[hiddenbox.Children.count - 1].reparent(DestinationObj)
+              Endif
             Until DestinationObj.children[i].name = draggedname
           Endif
           HiddenBox.Delete
             Else
-          TheObject.reparent(OldParent)
+          If Lower(TheObject.parent.name) <> Lower(OldParent.name) Then TheObject.reparent(OldParent)
           TheObject.ignore = False
         Endif
     Endif

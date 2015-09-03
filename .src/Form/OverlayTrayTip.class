@@ -7,14 +7,6 @@ Public filename As String
 Public Timestr As String
 Public MouseOnOverlayTraytip As Boolean = False
 
-' Public Sub Redraw(tip As String, x As Integer, y As Integer)
-'   UpdateInfos()
-'   If y + Me.h > desktop.h Then y = desktop.h - Me.h
-'   x = x - (Me.w Div 2) + FMain.trayicon1.w
-'   If x < 0 Then x = 0
-'   Me.Move(x, y)
-'   Me.stacking = Me.Above
-' End
 
 Public Sub Redraw(tip As String, x As Integer, y As Integer)
   Dim DesktopH As Integer = Global.DektopHTotal()

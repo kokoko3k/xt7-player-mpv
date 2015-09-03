@@ -155,13 +155,15 @@ Private Sub ReDraw_Ordered(item_container As Scrollview, chain_items As String[]
   Next 'i
   
   For i = item_container.Children.count - 1 DownTo 0
-    If item_container.Children[i] Is Hbox Then item_container.Children[i].reparent(Me)
+    If item_container.Children[i] Is Hbox Then 
+      If item_container.Children[i].parent <> Me Then item_container.Children[i].reparent(Me)
+    Endif
   Next 'i
 
   For i = 0 To chain_items.max
     For j = 0 To childrens.Max
       If childrens[j].name = chain_items[i] Then
-         childrens[j].reparent(item_container)
+         If childrens[j].parent <> item_container Then childrens[j].reparent(item_container)
          childrens.Delete(j)
          Break
       Endif
@@ -170,7 +172,7 @@ Private Sub ReDraw_Ordered(item_container As Scrollview, chain_items As String[]
   'if we add some filter/drivers and the user has a previous item order selected,
   'then we must reparent the newly added filters too.
   While childrens.count > 0
-   childrens[0].reparent(item_container)
+   If childrens[0].parent <> item_container Then childrens[0].reparent(item_container)
    childrens.Delete(0)
   Wend
 
@@ -272,12 +274,12 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
   Try item_tab = aTabstrip.Tag.Find(Lower(item_name))
   If item_tab >= 0 Then 
     aTabstrip.index = item_tab
-    HelpBox.reparent(aTabstrip)
+    If HelpBox.parent <> aTabstrip Then HelpBox.reparent(aTabstrip)
       Else
     For i = 0 To aTabstrip.count - 1
       aTabstrip.index = i
       If Lower(aTabstrip.caption) = item_name Then 
-        HelpBox.reparent(aTabstrip)
+        If HelpBox.parent <> aTabstrip Then HelpBox.reparent(aTabstrip)
         Return
       Endif
     Next

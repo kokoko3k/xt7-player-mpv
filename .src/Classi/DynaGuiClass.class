@@ -108,7 +108,7 @@ Public Sub DetachFrom(TheObject As Object, TheForm As Object)
 
     shadowobj.visible = False
     ShadowObj.ignore = True
-    shadowobj.reparent(theform)
+    If Lower(shadowobj.parent.name) <> Lower(theform.name) Then shadowobj.reparent(theform)
     shadowobj.visible = True
 
     shadowobj.enabled = TheObject.enabled
@@ -224,7 +224,7 @@ Public Sub SmartInsert(TheObject As Object, TheForm As Object)
           If skipone Then i = i - 1
 
           TheObject.ignore = False
-          TheObject.reparent(DestinationObj)
+          If TheObject.parent <> DestinationObj Then TheObject.reparent(DestinationObj)
           TheObject.raise
 
           MoveObject(TheObject, TheForm) '(This is needed to correctly position the object in the new container)
@@ -236,7 +236,7 @@ Public Sub SmartInsert(TheObject As Object, TheForm As Object)
           Endif
           DestinationObj.visible = True
             Else
-          TheObject.reparent(OldParent)
+          If Lower(TheObject.parent.name) <> Lower(oldparent.name) Then TheObject.reparent(OldParent)
           TheObject.ignore = False
         Endif
     Endif

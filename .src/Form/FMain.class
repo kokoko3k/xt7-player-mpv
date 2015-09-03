@@ -378,7 +378,7 @@ Public Sub AllInit_Pre()
   Try Mkdir global.confpath & "/.ExportFiles/"
   ExportFilesPath = global.confpath & "/.ExportFiles/"
   FileView1.visible = False
-  tagpanel.Reparent(zzzfake)
+  If tagpanel.parent.name <> "zzzFake" Then tagpanel.Reparent(zzzfake)
   'mplayer.FillLog = TRUE
   InitPropertiesGrid()
   AspectMenu.visible = False
@@ -434,13 +434,13 @@ Public Sub AllInit_Post()
   FileView1.dir = "non/esistent/dir/i/am/very/sure/of/this/1234432100/don/t/you"
   FileView1.visible = True
   FileView1.dir = savefileview1path
-  FileView1_Arrange()
+  gridpanels_arrange()
   fileview1Myreload()
   Leftsidepanel.mouse = mouse.wait
   InitLibrary(MyLibrary, LibraryGrid, True)
   InitLibrary(MyPlaylist, PlayListGrid, True)
   InitLibrary(MyDVBTList, DVBTGrid, False)
-  
+
   If TabSelectedAlbums() Then 
     Albums_Select()
   Endif  
@@ -491,13 +491,14 @@ Public Sub AllInit_Post()
   VideoAreaGroup_keypress_timer = New Timer As "VideoAreaGroup_keypress_timer"
 
   FullyLoaded = True
+   shadeup.visible = True
   ShowGrid(librarygrid)
   ShowGrid(playlistgrid)
   ShowGrid(DVBTGrid)
-  
+
   If tabselectedbrowse() Then 
-    FileView1_Arrange()
-      Else
+    gridpanels_arrange()
+     Else
     shadeup.visible = True
   Endif
 
@@ -581,7 +582,6 @@ Public Sub updaterecentfiles()
       Endif
     Endif
   Endif
-
 End
 
 Public Sub RecentFileEntry_Click()
@@ -1134,7 +1134,7 @@ Public Sub ShowBrowseTabTo(fullpath As String)
   Endif
   Try UrlBox.text = path
   Try FileView1.dir = path
-  FileView1_Arrange()
+  gridpanels_arrange()
   FileView1.ShowDetailed = True
   
   Leftsidetabs.Index = Tabid
@@ -2501,7 +2501,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     'mplayer.do_Apply(mplayer.mpvoptions, True)
     
     If zzzfake.YTPanel.Parent = outerbox Then
-      zzzfake.YTPanel.Reparent(zzzfake)
+      If zzzfake.parent <> zzzfake Then zzzfake.YTPanel.Reparent(zzzfake)
       zzzfake.ytpic.Picture = Picture["black.png"]
     Endif
     
@@ -2525,7 +2525,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   If (mplayer.getP("audioonly")) Then
     'If (Not audioformshown) Then
-    If (audioform.AudioPanel.parent <> outerbox) Then
+    If Lower(audioform.AudioPanel.parent.name) <> Lower(outerbox.name) Then
       If (Not tageditmode) Then
         ShowAudioPanel(True)
       Endif
@@ -2829,14 +2829,14 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
       'fmain.OuterBox.ignore = True
       fmain.OuterBox.Arrangement = Arrange.fill
       If Not samecover Then audioform.CoverBox.Resize(0, 0)
-      If (audioform.AudioPanel.Parent <> outerbox) Then
+      If Lower(audioform.AudioPanel.Parent.name) <> Lower(outerbox.name) Then
         BottomVbox.hide
         Wait
-        'audioform.AudioPanel.Reparent(Rightsidepanel)
-        audioform.AudioPanel.Reparent(outerbox)
+
+        If audioform.AudioPanel.parent <> outerbox Then audioform.AudioPanel.Reparent(outerbox)
         BottomVbox.raise() ' Reparent(rightsidepanel)
         bottomvbox.show
-        cachebar.Reparent(rightsidepanel)
+        If cachebar.parent <> Rightsidepanel Then cachebar.Reparent(rightsidepanel)
         If fsform.visible Then 
           cachebar.Move(0, audioform.AudioPanel.h - cachebar.h, 0)
             Else
@@ -2850,7 +2850,7 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
       AudioForm.TimerZoomIn.start
       audioform.refresh
     Endif
-    'OuterBox.visible = False 'OuterBox.Reparent(zzzfake)
+
     If GeneralOptions.ShowVmeterCHK.value = True Then
       Try mymeters.stopp
       mymeters = New Meters As "mymeters"
@@ -2863,9 +2863,9 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
     Try mymeters.stopp
     'If Not tageditmode Then rightsidepanel.Background = audioform.AudioPanel.Background
     fmain.OuterBox.ignore = False
-    OuterBox.visible = True 'OuterBox.Reparent(Rightsidepanel)
-    audioform.AudioPanel.Reparent(audioform)
-    cachebar.Reparent(rightsidepanel)
+    OuterBox.visible = True
+    If audioform.AudioPanel.parent.name <> "AudioForm" Then audioform.AudioPanel.Reparent(audioform)
+    If cachebar.parent <> rightsidepanel Then cachebar.Reparent(rightsidepanel)
     If fsform.visible Then 
       cachebar.Move(0, outerbox.h - cachebar.h, 0)
         Else
@@ -3902,7 +3902,7 @@ Public Sub SwitchToFS()
     If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
   Endif
 
-  Maintoolbar.Reparent(FsForm)
+  If Lower(Maintoolbar.parent.name) <> Lower(FsForm.name) Then Maintoolbar.Reparent(FsForm)
   FsForm.Background = color.black
   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
   
@@ -3913,12 +3913,12 @@ Public Sub SwitchToFS()
   'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
 
   'invert the HSplit with a vSplit
-  fmain.HSplit1.Reparent(zzzFake)
-  zzzFake.VSplit1.Reparent(FsForm)
+  If Lower(fmain.HSplit1.Parent.name) <> Lower(zzzFake.name) Then fmain.HSplit1.Reparent(zzzFake)
+  If Lower(zzzFake.VSplit1.Parent.name) <> Lower(FsForm.name) Then zzzFake.VSplit1.Reparent(FsForm)
 
   'populate the New VSplit1 With controls
-  Leftsidepanel.Reparent(zzzFake.vsplit1)
-  rightsidepanel.Reparent(zzzFake.VSplit1)
+  If Leftsidepanel.parent <> zzzFake.vsplit1 Then Leftsidepanel.Reparent(zzzFake.vsplit1)
+  If rightsidepanel.parent <> zzzFake.VSplit1 Then rightsidepanel.Reparent(zzzFake.VSplit1)
 
   'restore the form position
   LeftsideWasVisible = LeftsidePanel.Visible 
@@ -3931,7 +3931,7 @@ Public Sub SwitchToFS()
   Wait '<-this wait has to come before ConstrainFormSizes()
   CostrainFormSizes()
   bottomvbox.Hide
-  BottomVbox.Reparent(rightsidepanel)
+  If BottomVbox.parent <> rightsidepanel Then BottomVbox.Reparent(rightsidepanel)
   toolbarbackground.hide
   cachebar.raise
   Wait '<-this wait has to come just after ConstrainFormSizes()
@@ -3969,179 +3969,179 @@ Public Sub SwitchToFS()
 End
 
 
-Public Sub NEW_SwitchToFS()
- Dim i As Integer
-  'save the windowed information
-  videobox.hide
-  Wait 0.1
-  OuterBox.Mouse = mouse.blank
-  VideoBox.Mouse = mouse.blank
-  Object.Lock(hsplit1)
-  winmax = fmain.Maximized
-  fmain.hide
-  cachebar.hide
-  If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
-
-  Maintoolbar.Reparent(FsForm)
-  FsForm.Background = color.black
-  fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
-  FsForm.FullScreen = True
-  FsForm.Background = color.Default
-
-  'Wait 1
-  
- 
-  
-  'execute shell commands
-  'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
-  
-  'invert the HSplit with a vSplit
-  fmain.HSplit1.Reparent(zzzFake)
-  zzzFake.VSplit1.Reparent(FsForm)
-  
-  'populate the New VSplit1 With controls
-  Leftsidepanel.Reparent(zzzFake.vsplit1)
-  rightsidepanel.Reparent(zzzFake.VSplit1)
-
-  'restore the form position
-  LeftsideWasVisible = LeftsidePanel.Visible 
-  
-  'hide the upper controls
-  Leftsidepanel.hide()
-  
-  'let the bottom panel adapts to the new size:
-  Wait '<-this wait has to come before ConstrainFormSizes()
-  CostrainFormSizes()
-  bottomvbox.Hide
-  BottomVbox.Reparent(rightsidepanel)
-  toolbarbackground.hide
-  cachebar.raise
-  Wait '<-this wait has to come just after ConstrainFormSizes()
-  
-  'start the timer 
-  TimerFullScreen.start
-  
-  RightSidePanel.SetFocus()
-
-  
-  If zzzfake.PanelNowNext.visible Then 
-    PanelNowNextArrange()
-  Endif
-  
-  'show all
-  Object.unLock(hsplit1)
-  
-  If statusbar1.visible Then 
-    statusbar1.ignore = True
-    statusbar1.y = statusbar1.Parent.h - statusbar1.h
-  Endif
-  bottomvbox.ignore = True
-  controlframe.ignore = True
-  bottomvbox.w = Screenbypos(fmain.screenx, fmain.screeny).Width
-  controlframe.w = bottomvbox.W
-
-  CostrainFormSizes()
-  Maintoolbar.hide
-
-  videobox.Show
-  FsForm.show
-  For i = 1 To 10
-    CorrectAreaAspect()
-    Wait 0.1
-  Next 'i
-
-End
-
-Public Sub OLD_SwitchToFS()
-  Dim timeout_fs As Integer = 20
-  'save the windowed information
-  videobox.hide
-  Wait 0.1
-  OuterBox.Mouse = mouse.blank
-  VideoBox.Mouse = mouse.blank
-  Object.Lock(hsplit1)
-  winmax = fmain.Maximized
-  fmain.hide
-  cachebar.hide
-  If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
-  FsForm.Background = color.black
-  FsForm.x = fmain.ScreenX
-  FsForm.y = fmain.screeny
-  FsForm.show
-  
-  FsForm.FullScreen = True
-  Repeat
-     Wait 0.05
-     timeout_fs -= 1
-  Until (fsform.w >= Screenbypos(fmain.screenx, fmain.screeny).Width) Or timeout_fs = 0
-
-  FsForm.Background = color.Default
-  
-  Maintoolbar.Reparent(FsForm)
-
-  Wait
-  'execute shell commands
-  'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
-  
-  'invert the HSplit with a vSplit
-  fmain.HSplit1.Reparent(zzzFake)
-  zzzFake.VSplit1.Reparent(FsForm)
-  
-  'populate the New VSplit1 With controls
-  Leftsidepanel.Reparent(zzzFake.vsplit1)
-  rightsidepanel.Reparent(zzzFake.VSplit1)
-
-  'restore the form position
-  LeftsideWasVisible = LeftsidePanel.Visible 
-  
-  'hide the upper controls
-  Leftsidepanel.hide()
-  
-  'let the bottom panel adapts to the new size:
-  Wait '<-this wait has to come before ConstrainFormSizes()
-  CostrainFormSizes()
-  bottomvbox.Hide
-  BottomVbox.Reparent(rightsidepanel)
-  toolbarbackground.hide
-  cachebar.raise
-  Wait '<-this wait has to come just after ConstrainFormSizes()
-  
-  'start the timer 
-  TimerFullScreen.start
-  
-  CorrectAreaAspect()
-  
-  RightSidePanel.SetFocus()
-  Wait
-  
-  If zzzfake.PanelNowNext.visible Then 
-    PanelNowNextArrange()
-    Wait
-  Endif
-  
-  'show all
-  Object.unLock(hsplit1)
-  
-  If statusbar1.visible Then 
-    statusbar1.ignore = True
-    statusbar1.y = statusbar1.Parent.h - statusbar1.h
-  Endif
-  bottomvbox.ignore = True
-  controlframe.ignore = True
-  bottomvbox.w = Screenbypos(fmain.screenx, fmain.screeny).Width
-  controlframe.w = bottomvbox.W
-  Wait
-  CostrainFormSizes()
-
-
-  Wait 0.1
-  videobox.Show
-
-  'workaround for missing picture when switching 
-  Wait 0.2
-  Maintoolbar.hide
-  CorrectAreaAspect()
-End
+' Public Sub NEW_SwitchToFS()
+'  Dim i As Integer
+'   'save the windowed information
+'   videobox.hide
+'   Wait 0.1
+'   OuterBox.Mouse = mouse.blank
+'   VideoBox.Mouse = mouse.blank
+'   Object.Lock(hsplit1)
+'   winmax = fmain.Maximized
+'   fmain.hide
+'   cachebar.hide
+'   If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
+' 
+'   If Maintoolbar.parent <> FsForm Then Maintoolbar.Reparent(FsForm)
+'   FsForm.Background = color.black
+'   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
+'   FsForm.FullScreen = True
+'   FsForm.Background = color.Default
+' 
+'   'Wait 1
+'   
+'  
+'   
+'   'execute shell commands
+'   'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
+'   
+'   'invert the HSplit with a vSplit
+'   fmain.HSplit1.Reparent(zzzFake)
+'   zzzFake.VSplit1.Reparent(FsForm)
+'   
+'   'populate the New VSplit1 With controls
+'   Leftsidepanel.Reparent(zzzFake.vsplit1)
+'   rightsidepanel.Reparent(zzzFake.VSplit1)
+' 
+'   'restore the form position
+'   LeftsideWasVisible = LeftsidePanel.Visible 
+'   
+'   'hide the upper controls
+'   Leftsidepanel.hide()
+'   
+'   'let the bottom panel adapts to the new size:
+'   Wait '<-this wait has to come before ConstrainFormSizes()
+'   CostrainFormSizes()
+'   bottomvbox.Hide
+'   BottomVbox.Reparent(rightsidepanel)
+'   toolbarbackground.hide
+'   cachebar.raise
+'   Wait '<-this wait has to come just after ConstrainFormSizes()
+'   
+'   'start the timer 
+'   TimerFullScreen.start
+'   
+'   RightSidePanel.SetFocus()
+' 
+'   
+'   If zzzfake.PanelNowNext.visible Then 
+'     PanelNowNextArrange()
+'   Endif
+'   
+'   'show all
+'   Object.unLock(hsplit1)
+'   
+'   If statusbar1.visible Then 
+'     statusbar1.ignore = True
+'     statusbar1.y = statusbar1.Parent.h - statusbar1.h
+'   Endif
+'   bottomvbox.ignore = True
+'   controlframe.ignore = True
+'   bottomvbox.w = Screenbypos(fmain.screenx, fmain.screeny).Width
+'   controlframe.w = bottomvbox.W
+' 
+'   CostrainFormSizes()
+'   Maintoolbar.hide
+' 
+'   videobox.Show
+'   FsForm.show
+'   For i = 1 To 10
+'     CorrectAreaAspect()
+'     Wait 0.1
+'   Next 'i
+' 
+' End
+' 
+' Public Sub OLD_SwitchToFS()
+'   Dim timeout_fs As Integer = 20
+'   'save the windowed information
+'   videobox.hide
+'   Wait 0.1
+'   OuterBox.Mouse = mouse.blank
+'   VideoBox.Mouse = mouse.blank
+'   Object.Lock(hsplit1)
+'   winmax = fmain.Maximized
+'   fmain.hide
+'   cachebar.hide
+'   If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
+'   FsForm.Background = color.black
+'   FsForm.x = fmain.ScreenX
+'   FsForm.y = fmain.screeny
+'   FsForm.show
+'   
+'   FsForm.FullScreen = True
+'   Repeat
+'      Wait 0.05
+'      timeout_fs -= 1
+'   Until (fsform.w >= Screenbypos(fmain.screenx, fmain.screeny).Width) Or timeout_fs = 0
+' 
+'   FsForm.Background = color.Default
+'   
+'   Maintoolbar.Reparent(FsForm)
+' 
+'   Wait
+'   'execute shell commands
+'   'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
+'   
+'   'invert the HSplit with a vSplit
+'   fmain.HSplit1.Reparent(zzzFake)
+'   zzzFake.VSplit1.Reparent(FsForm)
+'   
+'   'populate the New VSplit1 With controls
+'   Leftsidepanel.Reparent(zzzFake.vsplit1)
+'   rightsidepanel.Reparent(zzzFake.VSplit1)
+' 
+'   'restore the form position
+'   LeftsideWasVisible = LeftsidePanel.Visible 
+'   
+'   'hide the upper controls
+'   Leftsidepanel.hide()
+'   
+'   'let the bottom panel adapts to the new size:
+'   Wait '<-this wait has to come before ConstrainFormSizes()
+'   CostrainFormSizes()
+'   bottomvbox.Hide
+'   BottomVbox.Reparent(rightsidepanel)
+'   toolbarbackground.hide
+'   cachebar.raise
+'   Wait '<-this wait has to come just after ConstrainFormSizes()
+'   
+'   'start the timer 
+'   TimerFullScreen.start
+'   
+'   CorrectAreaAspect()
+'   
+'   RightSidePanel.SetFocus()
+'   Wait
+'   
+'   If zzzfake.PanelNowNext.visible Then 
+'     PanelNowNextArrange()
+'     Wait
+'   Endif
+'   
+'   'show all
+'   Object.unLock(hsplit1)
+'   
+'   If statusbar1.visible Then 
+'     statusbar1.ignore = True
+'     statusbar1.y = statusbar1.Parent.h - statusbar1.h
+'   Endif
+'   bottomvbox.ignore = True
+'   controlframe.ignore = True
+'   bottomvbox.w = Screenbypos(fmain.screenx, fmain.screeny).Width
+'   controlframe.w = bottomvbox.W
+'   Wait
+'   CostrainFormSizes()
+' 
+' 
+'   Wait 0.1
+'   videobox.Show
+' 
+'   'workaround for missing picture when switching 
+'   Wait 0.2
+'   Maintoolbar.hide
+'   CorrectAreaAspect()
+' End
 
 
 Public Sub SwitchToWindow()
@@ -4150,17 +4150,17 @@ Public Sub SwitchToWindow()
   BottomVbox.ignore = False
   'execute shell commands
   'FsCommandsExec(False, 60)
-  Maintoolbar.Reparent(fmain)
+  If Lower(Maintoolbar.parent.name) <> Lower(fmain.name) Then Maintoolbar.Reparent(fmain)
   fsform.Background = color.black
   Wait    
 
   'invert the VSplit with a HSplit
-  zzzFake.VSplit1.Reparent(zzzFake)
-  Hsplit1.Reparent(Fmain)
+  If Lower(zzzFake.VSplit1.parent.name) <> Lower(zzzFake.name) Then zzzFake.VSplit1.Reparent(zzzFake)
+  If Lower(Hsplit1.parent.name) <> Lower(Fmain.name) Then Hsplit1.Reparent(Fmain)
 
   'populate HSplit with controls
-  Leftsidepanel.Reparent(Hsplit1)
-  rightsidepanel.Reparent(HSplit1)
+  If Leftsidepanel.parent <> Hsplit1 Then Leftsidepanel.Reparent(Hsplit1)
+  If rightsidepanel.parent <> HSplit1 Then rightsidepanel.Reparent(HSplit1)
   If (SplitterLayout <> Null) Then Hsplit1.Layout = SplitterLayout
   Wait
   'show the menu
@@ -4199,7 +4199,7 @@ Public Sub SwitchToWindow()
   Wait 
   Maintoolbar.show
   Wait 
-  cachebar.Reparent(rightsidepanel)
+  If cachebar.parent <> rightsidepanel Then cachebar.Reparent(rightsidepanel)
   cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h)
   cachebar.raise
   cachebar.show
@@ -4214,69 +4214,69 @@ Public Sub SwitchToWindow()
   Hsplit1_MyRefresh()
 End
 
-Public Sub OLD_SwitchToWindow()
-  
-  bottomvbox.y = rightsidepanel.h - bottomvbox.h
-  BottomVbox.ignore = False
-  
-  'execute shell commands
-  'FsCommandsExec(False, 60)
-  
-  Maintoolbar.Reparent(fmain)
-  'invert the VSplit with a HSplit
-  zzzFake.VSplit1.Reparent(zzzFake)
-  Hsplit1.Reparent(Fmain)
-  
-  'populate HSplit with controls
-  Leftsidepanel.Reparent(Hsplit1)
-  rightsidepanel.Reparent(HSplit1)
-  If (SplitterLayout <> Null) Then Hsplit1.Layout = SplitterLayout
-  Wait
-  
-  'show the menu
-  AllmenuVisible(True)
-  toolbarbackground.show
-  'restore the form position
-  LeftsidePanel.Visible = LeftsideWasVisible
-  
-  UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
-  
-  'show the bottom controls
-  bottomvbox.Raise() '<-make sure it is on the bottom
-  bottomvbox.show
-  CostrainFormSizes()
-  
-  TimerFullScreen.Stop()
-  
-  If zzzfake.PanelNowNext.visible Then 
-    PanelNowNextArrange()
-    Wait
-  Endif
-  
-  RightSidePanel.SetFocus()
-  
-  OuterBox.Mouse = mouse.Default
-  VideoBox.Mouse = mouse.Default
-  
-  'make the form windowed
-  fsform.Background = color.black
-  Wait
-  bottomvbox.ignore = False
-  controlframe.ignore = False
-  statusbar1.ignore = False
-  CostrainFormSizes()
-  FsForm.hide
-  FsForm.FullScreen = False
-  fmain.Maximized = winmax
-  fmain.show  
-  Maintoolbar.hide 'workaround for missing picture at fs switch
-  Wait 0.2
-  Maintoolbar.show
-  cachebar.Reparent(rightsidepanel)
-  cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h)
-  cachebar.raise
-  cachebar.show
-End
+' Public Sub OLD_SwitchToWindow()
+'   
+'   bottomvbox.y = rightsidepanel.h - bottomvbox.h
+'   BottomVbox.ignore = False
+'   
+'   'execute shell commands
+'   'FsCommandsExec(False, 60)
+'   
+'   If Maintoolbar.parent <> (fmain) Then Maintoolbar.Reparent(fmain)
+'   'invert the VSplit with a HSplit
+'   zzzFake.VSplit1.Reparent(zzzFake)
+'   Hsplit1.Reparent(Fmain)
+'   
+'   'populate HSplit with controls
+'   Leftsidepanel.Reparent(Hsplit1)
+'   rightsidepanel.Reparent(HSplit1)
+'   If (SplitterLayout <> Null) Then Hsplit1.Layout = SplitterLayout
+'   Wait
+'   
+'   'show the menu
+'   AllmenuVisible(True)
+'   toolbarbackground.show
+'   'restore the form position
+'   LeftsidePanel.Visible = LeftsideWasVisible
+'   
+'   UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
+'   
+'   'show the bottom controls
+'   bottomvbox.Raise() '<-make sure it is on the bottom
+'   bottomvbox.show
+'   CostrainFormSizes()
+'   
+'   TimerFullScreen.Stop()
+'   
+'   If zzzfake.PanelNowNext.visible Then 
+'     PanelNowNextArrange()
+'     Wait
+'   Endif
+'   
+'   RightSidePanel.SetFocus()
+'   
+'   OuterBox.Mouse = mouse.Default
+'   VideoBox.Mouse = mouse.Default
+'   
+'   'make the form windowed
+'   fsform.Background = color.black
+'   Wait
+'   bottomvbox.ignore = False
+'   controlframe.ignore = False
+'   statusbar1.ignore = False
+'   CostrainFormSizes()
+'   FsForm.hide
+'   FsForm.FullScreen = False
+'   fmain.Maximized = winmax
+'   fmain.show  
+'   Maintoolbar.hide 'workaround for missing picture at fs switch
+'   Wait 0.2
+'   Maintoolbar.show
+'   cachebar.Reparent(rightsidepanel)
+'   cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h)
+'   cachebar.raise
+'   cachebar.show
+' End
 
 Public Sub AllmenuVisible(AreVisible As Boolean)
 
@@ -4982,7 +4982,7 @@ End
 Public Sub PanelNowNextArrange(Optional Exdended As Boolean = False)
 
   With zzzfake
-    .PanelNowNext.Reparent(outerbox)
+    If .PanelNowNext.parent <> outerbox Then .PanelNowNext.Reparent(outerbox)
     .PanelNowNext.ignore = True
     .hbox1.h = .Label1.Font.TextHeight("|") + (desktop.scale * 4)
     .hbox2.h = .hbox1.h
@@ -6236,9 +6236,9 @@ Public Sub EnableDisableTagBtn()
   
   UpdateTabs()
   If TabSelectedyoutube() Then 
-    TogglePls.Reparent(hbox13)
+    If TogglePls.parent <> hbox13 Then TogglePls.Reparent(hbox13)
   Else 
-    TogglePls.Reparent(hbox2)
+    If TogglePls.parent <> hbox2 Then TogglePls.Reparent(hbox2)
   Endif
   
   If fmain.fullyloaded Then 
@@ -6271,8 +6271,8 @@ Public Sub LeftSideTabs_Click()
 
   If tabselectedbrowse() Then
     Wait 
-    FileView1_beforeArrange()
-    FileView1_Arrange()
+    'FileView1_beforeArrange()
+    gridpanels_arrange()
   Endif
 
 End
@@ -7167,9 +7167,9 @@ Public Sub EditTagModeSwitch1_Click()
       HBox4.background = Color.textbackground
       HBox4.Foreground = Color.TextForeground
       Rightsidepanel.background = rightsidepanel.Parent.Background
-      BottomVbox.Reparent(zzzfake)
-      tagpanel.Reparent(Rightsidepanel)
-      BottomVbox.Reparent(rightsidepanel)
+      If Lower(BottomVbox.parent.name) <> Lower(zzzfake.name) Then BottomVbox.Reparent(zzzfake)
+      If tagpanel.parent <> Rightsidepanel Then tagpanel.Reparent(Rightsidepanel)
+      If BottomVbox.parent <> rightsidepanel Then BottomVbox.Reparent(rightsidepanel)
       tagpanel.visible = True
       
       OuterBox.visible = False
@@ -8669,7 +8669,7 @@ End
 Private Sub HideScrollbars(librarygrid As Gridview)
 
   librarygrid.Scrollbar = Scroll.none
-  GridPanels_Arrange()
+  GridPanels_Arrange() 'pre
 
 End
 
@@ -8837,7 +8837,7 @@ Public Sub ButtonUp_Click()
   If String.Right(FileView1.dir, 1) = "/" Then FileView1.dir = String.Left(FileView1.dir, Len(FileView1.dir) - 1)
   FileView1.dir = File.dir(FileView1.dir)
   urlbox.text = Replace(FileView1.dir, "//", "/")
-  FileView1_Arrange()
+  gridpanels_arrange()
   Object.unLock(urlbox)
 End
 
@@ -8858,7 +8858,7 @@ Public Sub ActivateFile(fullpathitem As String)
   Try selecteditem = FileView1.Selection[0]
   If IsDir(fullpathitem) Then
     FileView1.dir = fullpathitem
-    FileView1_Arrange()
+    gridpanels_arrange()
     urlbox.text = Replace(FileView1.dir, "//", "/")
     If String.Right(urlbox.text, 1) = "/" Then urlbox.text = String.Left(urlbox.text, Len(urlbox.text) - 1)
   Else
@@ -8880,7 +8880,7 @@ Public Sub Urlbox_KeyPress()
   If (key.code = key.enter) Or (key.code = key.Return) Then
     If Urlbox.text <> FileView1.dir Then
       FileView1.dir = Urlbox.text
-      FileView1_Arrange()
+      gridpanels_arrange()
     Endif
   Endif
   
@@ -8970,7 +8970,7 @@ Public Sub UrlBox_Click()
   
   If Trim(Urlbox.text) = "" Then Urlbox.text = "/"
   FileView1.dir = Urlbox.text
-  FileView1_Arrange()
+  gridpanels_arrange()
 End
 
 Public Sub MenuAddToHistory_Click()
@@ -9051,7 +9051,7 @@ Public Sub ShowYtBox(infos As Variant)
   'zzzfake.Spinner1.start
 
   'show
-  zzzFake.YTPanel.Reparent(outerbox)
+  If zzzFake.YTPanel.parent <> outerbox Then zzzFake.YTPanel.Reparent(outerbox)
   zzzFake.YTPanel.Move(0, 0, outerbox.w, outerbox.h)
   zzzFake.YTPanel.raise()
   
@@ -9578,13 +9578,13 @@ Public Sub ShadeList(brother As Object, Optional dltx As Integer = 0, Optional d
   ' Else
   '   shadelow.y = brother.clienty + brother.h - shadelow.h + 2 + dlty
   ' Endif
-  shadeup.w = brother.clientw + 2
+  Try shadeup.w = brother.clientw + 2
   ' shadelow.w = brother.clientw + 2
 End
 
 Public Sub GridPanels_BeforeArrange()
   If Not fmain.FullyLoaded Then Return
-  shadeup.Reparent(Last)
+  If Lower(shadeup.parent.name) <> Lower(Last.name) Then shadeup.Reparent(Last)
   shadeup.visible = True
   ' shadelow.Reparent(Last)
 
@@ -9594,16 +9594,33 @@ Public Sub GridPanels_Arrange()
 
   Dim brother As Object
   Dim newsize As Integer = 9
+  Dim achild As Object
   
   '  If Not (fmain.fullyloaded) Then Return
   
   For Each brother In shadeup.Parent.Children 
-    If brother Is Gridview Then Break
+    If (brother Is Gridview) Or (brother Is Fileview) Then Break
   Next
-  Try newsize = CInt(brother.Rows[1].h / 4) 
-  If newsize > 9 Then newsize = 9
-  Try shadeup.h = newsize
-  shadelist(brother)
+  If brother Is Gridview Then 
+    Try newsize = CInt(brother.Rows[1].h / 4) 
+      If newsize > 9 Then newsize = 9
+      Try shadeup.h = newsize
+      shadelist(brother)
+      Else If brother Is Fileview Then
+        For Each achild In brother.Children
+          If achild Is Columnview Then
+            If achild.proxy Is Gridview Then
+              newsize = CInt(brother.Font.TextHeight("|") / 2.5) 
+              If newsize > 9 Then newsize = 9
+              Try shadeup.h = newsize
+              shadelist(achild.proxy, Object.GetProperty(brother.Parent, "padding") + achild.proxy.clientx - 1, brother.y - 1)
+              If fmain.fullyloaded Then shadeup.visible = True
+            Endif
+          Endif
+        Next
+  Endif
+
+  
 
 End
 
@@ -10579,36 +10596,39 @@ Public Sub Form_Show()
   HSplit1_Resize()
 End
 
-Public Sub FileView1_beforeArrange()
-  Dim newsize As Integer = 9
-  Try newsize = CInt(fileview1.Font.TextHeight("|") / 2.5) 
-  If newsize > 9 Then newsize = 9
-  Try shadeup.h = newsize
-
-  shadeup.visible = False
-  shadeup.Reparent(fileview1.parent)
-  ' shadelow.Reparent(Last.parent)
-End
-
-Public Sub FileView1_Arrange()
-  Dim achild As Object
-  For Each achild In FileView1.Children
-    If achild Is Columnview Then
-      If achild.proxy Is Gridview Then
-        'Stop
-        shadelist(achild.proxy, Object.GetProperty(FileView1.Parent, "padding") + achild.proxy.clientx - 1, FileView1.y - 1)
-        If fmain.fullyloaded Then shadeup.visible = True
-      Endif
-    Endif
-  Next
-End
+' Public Sub FileView1_beforeArrange()
+'   ' Dim newsize As Integer = 9
+'   ' Try newsize = CInt(fileview1.Font.TextHeight("|") / 2.5) 
+'   ' If newsize > 9 Then newsize = 9
+'   ' Try shadeup.h = newsize
+'   ' shadeup.visible = True
+'   ' 
+'   ' If shadeup.parent <> fileview1.parent Then 
+'   '   shadeup.Reparent(fileview1.parent)
+'   '   Wait
+'   ' Endif
+'   ' shadelow.Reparent(Last.parent)
+' End
+' 
+' Public Sub FileView1_Arrange()
+'   ' Dim achild As Object
+'   ' For Each achild In FileView1.Children
+'   '   If achild Is Columnview Then
+'   '     If achild.proxy Is Gridview Then
+'   '       'Stop
+'   '       shadelist(achild.proxy, Object.GetProperty(FileView1.Parent, "padding") + achild.proxy.clientx - 1, FileView1.y - 1)
+'   '       If fmain.fullyloaded Then shadeup.visible = True
+'   '     Endif
+'   '   Endif
+'   ' Next
+' End
 
 
 Public Sub UrlBox_Change()
   If Not fmain.fullyloaded Then Return
   fileview1.Refresh()
   fileview1.UnselectAll()
-  FileView1_Arrange()
+  gridpanels_arrange()
 End
 
 Public Sub volumecontainer_Arrange()
@@ -11291,7 +11311,7 @@ End
 Public Sub menu_mountpoint_Click()
   urlbox.text = Last.text
   FileView1.dir = Urlbox.text
-  FileView1_Arrange()
+  gridpanels_arrange()
 End
 
 
