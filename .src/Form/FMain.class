@@ -5742,7 +5742,6 @@ Public Sub Hsplit1_MyRefresh()
     UpdateSeekSlider()
   Endif
 
-
   CostrainFormSizes()
   CorrectAreaAspect()
   Try RightPanel = HSplit1.layout[1]
@@ -9515,19 +9514,79 @@ End
 '   FakeSplitRefresh()
 ' End
 
-Public Sub HSplit1_Resize()
 
-thumblebox.hide
-  If Rnd(0, 1) > 0.75 Then
-    Hsplit1_MyRefresh   
-  Endif
-  'old_workaround for missing picture, maybe not needed with mpv.
-  timerhideshowvideo.stop
+Public Sub HSplit1_Resize()
+  Dim prevlayout As Integer[]
+
+
+  bp.ignore = True
+  bp.move(0, 0, outerbox.w, outerbox.h)
+  bp.show
+  videobox.lower
+  videobox.hide
+  thumblebox.hide
+
+  ' If Rnd(0, 1) > 0.75 Then
+  '   Hsplit1_MyRefresh   
+  ' Endif
+  ' 'old_workaround for missing picture, maybe not needed with mpv.
+
+'check if drag has stopped
+  prevlayout = hsplit1.Layout
+  Wait 0.025
+  If prevlayout[0] <> hsplit1.layout[0] Then Return
+
   timerhideshowvideo.start
 
 End
 
+
  Public Sub timerhideshowvideo_Timer()
+  Dim prevlayout As Integer[]
+  Dim xy As Integer
+
+  timerhideshowvideo.stop
+  prevlayout = hsplit1.Layout
+  If Not fsform.fullscreen Then
+    If (rightsidepanel.width < 480) Then
+      If (BottomVbox.Parent.name <> "FMain") Then 
+        BottomVbox.Reparent(fmain)
+      Endif
+    Else
+      If (BottomVbox.Parent.name <> "RightSidePanel") And (Not (fsform.FullScreen)) Then
+          BottomVbox.Reparent(RightSidePanel)
+      Endif
+    Endif
+    hsplit1.Layout = prevlayout
+  Endif
+
+  Hsplit1_MyRefresh
+  videobox.show
+  Wait 0.025
+  Wait 0.025
+  
+  bp.hide
+
+  ' 'prevent glitches near the hsplit border
+  ' If Not fsform.fullscreen Then 
+  '   xy = videobox.x
+  '   Wait
+  '   videobox.x = 20
+  '   Wait
+  '   videobox.x = xy
+  '   Wait
+  '   Hsplit1_MyRefresh  
+  '     Else
+  '   xy = videobox.y
+  '   videobox.y = 20
+  '   Wait
+  '   videobox.y = xy
+  '   Wait
+  ' Endif
+
+End
+
+ Public Sub OLD_timerhideshowvideo_Timer()
   Dim prevlayout As Integer[]
   Dim xy As Integer
   timerhideshowvideo.stop
@@ -10531,9 +10590,6 @@ Public Sub GetLastVersion()
 End
 
 
-Public Sub PictureBox1_MouseMove()
-End
-
 Public Sub VideoAreaGroup_MouseMove()
 
    If mplayer.ProcessRunningOvr() Then videobox.SetFocus()  
@@ -10545,6 +10601,8 @@ Public Sub VideoAreaGroup_MouseMove()
   '   Return
   ' Endif
   If fsform.fullscreen Then HideMouseDelayed()
+
+
 End
 
 Private Sub CantSeekMessage()

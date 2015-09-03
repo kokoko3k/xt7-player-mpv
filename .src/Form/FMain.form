@@ -1371,7 +1371,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-4.2857,18,4)
+              MoveScaled(9.4286,-5.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1380,7 +1380,7 @@
             }
           }
           { HBox16 HBox
-            MoveScaled(-4.8571,11.1429,30,4)
+            MoveScaled(-5.8571,11.1429,30,4)
             ToolTip = ("Only valid for standard feeds")
             { Label4 Label
               MoveScaled(2,0,11,3)
@@ -1720,13 +1720,9 @@
     }
     { RightSidePanel Panel VideoAreaGroup
       Name = "RightSidePanel"
-      MoveScaled(42,6,60,65)
+      MoveScaled(46,6,60,65)
       Tracking = True
       Arrangement = Arrange.Vertical
-      { ABLoopTimer #Timer
-        #MoveScaled(8,2)
-        Delay = 75
-      }
       { TagPanel Panel
         MoveScaled(27,3,30,45)
         Expand = True
@@ -1939,22 +1935,26 @@
         Stretch = True
         Alignment = Align.Left
       }
+      { ABLoopTimer #Timer
+        #MoveScaled(2,6)
+        Delay = 75
+      }
       { OuterBox Panel VideoAreaGroup
         Name = "OuterBox"
-        MoveScaled(1,10,26,33)
+        MoveScaled(3,15,24,28)
         Background = &H000000&
         Tracking = True
         Drop = True
         Expand = True
         { VideoBox DrawingArea VideoAreaGroup
           Name = "VideoBox"
-          MoveScaled(1,7,24,14)
+          MoveScaled(2,10,24,14)
           Background = &H000000&
           Tracking = True
           Drop = True
           { TimerHideShowVideo #Timer
-            #MoveScaled(2,5)
-            Delay = 100
+            #MoveScaled(-3,2)
+            Delay = 10
           }
         }
         { ThumbleBox Panel
@@ -1967,9 +1967,13 @@
             MoveScaled(1,2,15,18)
           }
         }
+        { bp Panel
+          MoveScaled(0,-1,13,10)
+          Background = &H000000&
+        }
       }
       { TimerSeekThumble #Timer
-        #MoveScaled(16,20)
+        #MoveScaled(15,19)
         Delay = 100
       }
       { BottomVbox VBox
