@@ -228,25 +228,24 @@ Private DynaGuiTools As New DynaGuiClass
 
 Public TagEditMode As Boolean = False
 
-Public trayicon1 As Trayicon
+'Public trayicon1 As Trayicon 'fixme trayicon
 
 Public Sub InitTrayIcon()
-  'Dim trayicon1 As New TrayIcon
-
-  Dim SystemTray As Boolean = True
-  Try SystemTray = desktop.HasSystemTray
-  If Error Then
-    global.myDebug("Couldn't check if your desktop has a system tray, assuming it has")
-  Endif
-  If Not SystemTray Then Return
-  Try trayicon1 = New Trayicon
-  If Error Then global.myDebug("Cannot Init Trayicon")
-  'trayicon1.Picture = picture.Load("trayicon.png")
-  trayicon1.Picture = picture.Load("xt7-player-mpv.png")
-  'trayicon1.Picture.Image.Stretch(trayicon1.w, trayicon1.h)
-  trayicon1.Visible = True
-  Try Object.Attach(Trayicon1, Me, "Trayicon1")
-  If Error Then global.myDebug("Cannot Init Trayicon")
+'fixme trayicon
+  ' Dim SystemTray As Boolean = True
+  ' Try SystemTray = desktop.HasSystemTray
+  ' If Error Then
+  '   global.myDebug("Couldn't check if your desktop has a system tray, assuming it has")
+  ' Endif
+  ' If Not SystemTray Then Return
+  ' Try trayicon1 = New Trayicon
+  ' If Error Then global.myDebug("Cannot Init Trayicon")
+  ' 'trayicon1.Picture = picture.Load("trayicon.png")
+  ' trayicon1.Picture = picture.Load("xt7-player-mpv.png")
+  ' 'trayicon1.Picture.Image.Stretch(trayicon1.w, trayicon1.h)
+  ' trayicon1.Visible = True
+  ' Try Object.Attach(Trayicon1, Me, "Trayicon1")
+  ' If Error Then global.myDebug("Cannot Init Trayicon")
 End
 
 Public Sub Form_Open()
@@ -1299,7 +1298,7 @@ Public Sub Form_Close()
   
   ChooseAspect.visible = False
   'it is needed for lockfile and local socket to be correctly freed:
-  Try trayicon1.Delete
+  'Try trayicon1.Delete 'fixme trayicon
   Closing = True
   
 
@@ -2498,6 +2497,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
       mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value)
       global.myDebug("mplayer.get_mediainfo()", Timer() - timeA)
     Endif
+
+    'mplayer.do_Apply(mplayer.mpvoptions, True)
     
     If zzzfake.YTPanel.Parent = outerbox Then
       zzzfake.YTPanel.Reparent(zzzfake)
@@ -3624,7 +3625,6 @@ End
 
 
 Public Sub ProgressFrame_MouseUp()
-Stop
   HideThumbler()
   If thumbleractive Then
     If Not Mouse.left Then Return
@@ -4713,7 +4713,7 @@ Public Sub Show_runtime_infos()
   prop["dropped frames by vo"] = "vo-drop-frame-count"
   prop["----"] = " "
   
-  prop["Hardware decoding"] = "hwdec"
+  prop["Hardware decoding requested"] = "hwdec"
   prop["Hardware decoding detected"] = "hwdec-detected"
   prop["Hardware decoding active"] = "hwdec-active"
   
@@ -7521,14 +7521,14 @@ End
 
 Public TimerHideTray As New Timer As "TimerHideTray"
 
-Public Sub TrayIcon1_Enter()
-
-  If mplayer.ProcessRunningOvr() Then
-    OverlaytrayTip.Redraw("..:xt7-player::.", Last.screenx - (TrayIcon1.w), Last.screeny - (OverlayTrayTip.h))
-    OverlaytrayTip.show
-    TimerHideTray.delay = 5000
-    TimerHideTray.start
-  Endif
+Public Sub TrayIcon1_Enter() 'fixme trayicon (tutto commentato)
+  ' 
+  ' If mplayer.ProcessRunningOvr() Then
+  '   OverlaytrayTip.Redraw("..:xt7-player::.", Last.screenx - (TrayIcon1.w), Last.screeny - (OverlayTrayTip.h))
+  '   OverlaytrayTip.show
+  '   TimerHideTray.delay = 5000
+  '   TimerHideTray.start
+  ' Endif
 
 End
 
@@ -11509,10 +11509,3 @@ Public Sub Timer_mediainfo_Timer()
   Try FillPropertiesGrid()
 End
 
-
-
-Public Sub YouSearchfield_Click()
-
-  
-
-End

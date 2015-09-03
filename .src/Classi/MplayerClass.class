@@ -1669,7 +1669,7 @@ End
 
 Private ignore_opts As String[]
 
-Public Sub do_apply(new_opts As Collection)
+Public Sub do_apply(new_opts As Collection) ', Optional only_check_vdpaurb As Boolean = False)
   Dim realtime_opts As String[] = ["af", "af-add", "af-clr", "af-pre", "vf", "vf-add", "vf-clr", "vf-pre"]
   Dim name, data As String
   Dim changed_opts As New Collection
@@ -1680,6 +1680,8 @@ Public Sub do_apply(new_opts As Collection)
   
 
   new_opts = fix_options(new_opts)
+  'If only_check_vdpaurb Then Goto rt_options
+  
   'see if we need a restart
   'make a list of changed options
   changed_opts = what_changes(mpvoptions, new_opts)
@@ -1700,6 +1702,7 @@ Public Sub do_apply(new_opts As Collection)
 'ora abbiamo disponibili la lista di nuove opzioni completa di fixed e realtime
 'ma ci servono solo le realtime, quindi dobbiamo selezionarle.
 global.myDebug("No changed option requires restart, setting realtime properties instead")
+'rt_options:
 For Each new_opts
   name = new_opts.Key
   data = new_opts[new_opts.Key]
@@ -1757,21 +1760,50 @@ Next
   If af_new = "|(removed)|" Then af_new = ""
   If vf_new = "|(removed)|" Then vf_new = ""
   
+  set_property_mpv("af", af_new, True)
+' ' ' Stop
+' ' '       'This part is entirely for reinitialize playback with vdpaurb video filter
+' ' '           If vf_new <> "" Then
+' ' '             If want_vdpau() Then 
+' ' '               'we can't add vdpaurb if we're not hw decoding yet, so:
+' ' '                 'clear video filters
+' ' '                 set_property_mpv("vf", "", True)
+' ' '                 Wait 2
+' ' '                 'request hw decoding
+' ' '                 set_property_mpv("hwdec", "vdpau", True)
+' ' '               vf_new = "vdpaurb," & vf_new
+' ' '             Endif
+' ' '           Endif
 
-  'If af_new <> "-1" Then 
-  'If af_new <> realtime_opts_previous["af"] Then
-    set_property_mpv("af", af_new, True)
-    'realtime_opts_previous["af"] = af_new
-  'Endif
-  
-  'If vf_new <> "-1" Then 
-  'If vf_new <> realtime_opts_previous["vf"] Then 
-    set_property_mpv("vf", vf_new, True)
-    'realtime_opts_previous["vf"] = vf_new
-  'Endif
+  set_property_mpv("vf", vf_new, True)
 
   ReturnLabel:
   Return
+
+End
+
+
+
+Public Function want_vdpau() As Boolean
+  Dim hwdec, hwdec_active, hwdec_detected, vf As String
+
+  hwdec = get_property_mpv("hwdec")
+  If hwdec = "no" Then Return 'return if user don't want hwdecoding
+
+  ' hwdec_active = get_property_mpv("hwdec-active") 
+  ' If hwdec_active = "yes" Then Return 'return if we're already hwdecoding
+
+  hwdec_detected = get_property_mpv("hwdec-detected")
+  If hwdec_detected <> "vdpau" Then Return 'continue only if we're using vdpau
+
+  ' vf = Trim(get_property_mpv("vf"))
+  ' If vf <> "(empty)" Then Return 'no need of vdpaurb if no filters are requested
+
+  'If we are here thaen it means:
+  'user wants hardware decoding through vdpau
+  'hardware decoding is not active for some reason
+  '...probably because of video filters.
+  Return True
 
 End
 
@@ -1784,6 +1816,7 @@ Public Sub do_apply_restart(new_opts As Collection)
   Dim timerA As Float
   Dim properties_changed_runtime_old_datas As New Collection
   Dim olddata As String = "--------------"
+  'Dim only_check_vdpaurb As Boolean = True
   
   restarting = True
   
@@ -1830,6 +1863,8 @@ Public Sub do_apply_restart(new_opts As Collection)
       set_property_mpv(name, data, False)
       global.myDebug("Restore property:", name, newdata, data)
     Next
+
+  'do_apply(new_opts, only_check_vdpaurb)
 
   restarting = False
 

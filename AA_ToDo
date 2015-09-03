@@ -747,6 +747,21 @@ controlla se le opzioni di yadif necessiato di aggiornamento nella gui:
 https://github.com/mpv-player/mpv/commit/25755f5fe75ad2a4ac9fb4ecf70f7bdf7a58a04c
 
 
+vdpaurb funziona solo se:
+  la decodifica hardware è attiva
+  la decodifica hardware è vdpau
+
+* posso inserire vdpaurb automaticamente?
+  sì, è consentito.
+  quando va inserito?
+    quando la decodifica hardware è attiva (check prima di riavviare)
+    quando la decodifica hardware è vdpau
+    quando ci sono filtri video.
+
+    
+https://github.com/mpv-player/mpv/blob/master/DOCS/interface-changes.rst
+
+
 Cambiamenti prox gambas:
 se imposti un reparent a uno che già è parente, c'è un glitch (controlla se c'è glitch pure se reimposti a visibile un già visibile)
 questo crea problemi di glitch con gli shadeup.
