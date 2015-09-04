@@ -94,10 +94,28 @@ Public Sub Sock_Play(URI As String)
 End
 
 Public Sub VSplit1_Resize()
-  If Not FMain.mplayer.getP("audioonly") Then
-    FMain.CorrectAreaAspect()
-    fmain.TimerHideShowVideo.start
-  Endif
+'   Dim prevlayout As Integer[]
+'   If Not FMain.mplayer.getP("audioonly") Then
+' 
+'   'fmain.bp.ignore = True
+'   'fmain.bp.move(0, 0, fouterbox.w, outerbox.h)
+'   'fmain.bp.show
+'   fmain.videobox.lower
+'   fmain.videobox.hide
+'   fmain.thumblebox.hide
+' 
+'   ' If Rnd(0, 1) > 0.75 Then
+'   '   Hsplit1_MyRefresh   
+'   ' Endif
+'   ' 'old_workaround for missing picture, maybe not needed with mpv.
+' 
+' 'check if drag has stopped
+'   prevlayout = vsplit1.Layout
+'   Wait 0.025
+'   If prevlayout[0] <> vsplit1.layout[0] Then Return
+     FMain.CorrectAreaAspect()
+'     fmain.TimerHideShowVideo.start
+'   Endif
 End
 
 Public Sub LabelPanel_MouseDown()
