@@ -166,6 +166,7 @@ End
 Public Sub playerprocess_read(Optional injected As String = "")
   Dim sBuf As String, question, answer As String
   Try Read #playerprocess, sBuf, -4096
+  'global.myDebug(sbuf)
   If sBuf Like "ANS_*|*" Then
     For Each sBuf In Split(sbuf, "\n", "", True)
       question = MidC(sBuf, "_", "|")
@@ -420,7 +421,7 @@ Private Function internal_options() As Collection
   'out["quiet"] = "yes"
   out["input-file"] = SetUpInputPipe()
   out["msg-color"] = "no"
-  out["msg-level"] = "all=v,cplayer=status"
+  out["msg-level"] = "all=v,cplayer=status,dvdnav=no,disc=no"
   out["term-status-msg"] = "\"\""
   out["force-seekable"] = "yes" 'this will allow seeks within the cache
   
@@ -1468,10 +1469,10 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
   If wait_answer Then
     While (timeoutcentisecs >= 0) And ProcessRunningOvr()
       If getP(name) <> Null Then Return getP(name)
-      timeoutcentisecs -= 1
+      timeoutcentisecs -= 10
       send(dataout)
       ' global.myDebug( "asking ", dataout)
-      Wait 0.01
+      Wait 0.1
     Wend
     'global.myDebug( name & " --> " & getP(name))
     Return getP(name)

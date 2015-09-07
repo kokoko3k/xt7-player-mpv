@@ -1854,18 +1854,18 @@ End
 
 Public Function FillTitlesAndChaptersMenu() As Boolean
   Dim dtl, dcl, t, l, k, c, p, lk As String = ""
-  Dim ct, pt As Integer = 0
+  Dim ct, pt, timeout As Integer = 0
   Dim lengths As String[]
   Dim SubMenu As Menu 
   Dim ddevice As String
-  
+
   ClearChaptersAndTitlesMenu()
   If Not mplayer.ProcessRunningOvr() Then Return False
   p = mplayer.get_property_mpv("path", True, 1000, True)
   If p = "" Then Return
   ddevice = "/" & dvd_device(p)
-
   dtl = mplayer.get_property_mpv("=disc-title-list", True, 1000)
+
   If dtl = "" Then
     global.myDebug(("Could not get information about the dvd structure"))
     Return
@@ -1896,8 +1896,8 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
       treeview1.Add(k, c, picture["icon:/16/directory"])
    Next 'title
    If Not (Lower(p) Like "dvd://menu*") Then
-     Try treeview1.movefirst
-     Try pt = CInt(mplayer.get_property_mpv("=disc-title"))
+    Try treeview1.movefirst
+      Try pt = CInt(mplayer.get_property_mpv("=disc-title", True, 100, False))
       For ct = 0 To pt - 1
         Try treeview1.MoveBelow()
       Next
@@ -1905,7 +1905,6 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
         Try treeview1.Item.selected = True
         lk = treeview1.Item.Key
         'fill chapters
-        Stop
         dcl = mplayer.get_property_mpv("=chapter-list", True, 1000)
         dcl = Replace(dcl, "[", "")
         dcl = Replace(dcl, "]", "")
