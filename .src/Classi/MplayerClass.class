@@ -71,7 +71,7 @@ Private Sub ClearMediaProperties()
 
   prop = New Collection
   prop.Clear
-  ' setP("time_pos", 0)
+  ' setP("time-pos", 0)
   ' setP("Length", 0)
   ' setP("audio-channels", 0)
   ' setP("Height", 0)
@@ -738,23 +738,23 @@ End
 
 Public Function DoDeinterlace()
   If commandline Like "*vdpau*" Then
-    send("step_property deinterlace")
+    send("step-property deinterlace")
     Return
   Endif
   If commandline Like "*yadif*" Then
-    send("step_property deinterlace")
+    send("step-property deinterlace")
     Return
   Endif
   If commandline Like "*xvmc*" Then
-    send("step_property deinterlace")
+    send("step-property deinterlace")
     Return
   Endif
   If commandline Like "*vaapi*" Then
-    send("step_property deinterlace")
+    send("step-property deinterlace")
     Return
   Endif
   If commandline Like "*kerndeint*" Then
-    send("step_property deinterlace")
+    send("step-property deinterlace")
     Return
   Endif
   ShowText("Can't deinterlace, missing vdpau,xvmc,vaapi,yadif or kerndeint", 3000)
@@ -765,23 +765,23 @@ Public AudioSwitched As Boolean = False
 
 
 Private SUPPORTEDAUDIOFILTERS As New String[] 
-Public Sub afclr() 'fixmempv
-  'get the current audio filters and remove them one by one.
-  'needed because -af_clr slave command doesn't seem to work.
-  Dim out, filter As String
-  If SUPPORTEDAUDIOFILTERS.count = 0 Then 
-    Shell executable() & " -af help |grep ' : '" To out 
-    For Each filter In Split(out, "\n", "", True)
-      SUPPORTEDAUDIOFILTERS.add(Split(Trim(filter), " ", "", True)[0])
-    Next 'filter
-  Endif
-  For Each filter In SUPPORTEDAUDIOFILTERS
-    send("af_del " & filter) 'do it four times to be sure multiple instances
-    send("af_del " & filter) 'of the same filter are removed as well
-    send("af_del " & filter)
-    send("af_del " & filter)
-  Next 'filter
-End
+' Public Sub afclr() 'fixmempv
+'   'get the current audio filters and remove them one by one.
+'   'needed because -af_clr slave command doesn't seem to work.
+'   Dim out, filter As String
+'   If SUPPORTEDAUDIOFILTERS.count = 0 Then 
+'     Shell executable() & " -af help |grep ' : '" To out 
+'     For Each filter In Split(out, "\n", "", True)
+'       SUPPORTEDAUDIOFILTERS.add(Split(Trim(filter), " ", "", True)[0])
+'     Next 'filter
+'   Endif
+'   For Each filter In SUPPORTEDAUDIOFILTERS
+'     send("af_del " & filter) 'do it four times to be sure multiple instances
+'     send("af_del " & filter) 'of the same filter are removed as well
+'     send("af_del " & filter)
+'     send("af_del " & filter)
+'   Next 'filter
+' End
 
 
 
@@ -896,9 +896,9 @@ End
 
 Public Sub sub_add(file As String, UseSub As Boolean)
   If Usesub Then 
-    mpv_command(["sub_add", file, "select"])
+    mpv_command(["sub-add", file, "select"])
       Else
-    mpv_command(["sub_add", file])
+    mpv_command(["sub-add", file])
   Endif
 End
 
@@ -1455,7 +1455,7 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
      If cachedP <> Null Then Return cachedP
   Endif
 
-  dataout = "print_text "
+  dataout = "print-text "
   dataout &= "ANS_" & name & "|"
   dataout &= "${"
   dataout &= name
@@ -1482,7 +1482,7 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
   Dim name, dataout, p As String
   Dim got As Boolean
   For Each name In names
-    dataout = "print_text "
+    dataout = "print-text "
     dataout &= "ANS_" & name & "|"
     dataout &= "${"
     dataout &= name

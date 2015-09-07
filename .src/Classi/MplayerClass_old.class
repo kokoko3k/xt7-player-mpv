@@ -946,23 +946,23 @@ End
 
 Public SUPPORTEDAUDIOFILTERS As New String[] 
 
-Public Sub afclr()
-  'get the current audio filters and remove them one by one.
-  'needed because -af_clr slave command doesn't seem to work.
-  Dim out, filter As String
-  If SUPPORTEDAUDIOFILTERS.count = 0 Then 
-    Shell executable() & " -af help |grep ' : '" To out 
-    For Each filter In Split(out, "\n", "", True)
-      SUPPORTEDAUDIOFILTERS.add(Split(Trim(filter), " ", "", True)[0])
-    Next 'filter
-  Endif
-  For Each filter In SUPPORTEDAUDIOFILTERS
-    send("af_del " & filter) 'do it four times to be sure multiple instances
-    send("af_del " & filter) 'of the same filter are removed as well
-    send("af_del " & filter)
-    send("af_del " & filter)
-  Next 'filter
-End
+' Public Sub afclr()
+'   'get the current audio filters and remove them one by one.
+'   'needed because -af_clr slave command doesn't seem to work.
+'   Dim out, filter As String
+'   If SUPPORTEDAUDIOFILTERS.count = 0 Then 
+'     Shell executable() & " -af help |grep ' : '" To out 
+'     For Each filter In Split(out, "\n", "", True)
+'       SUPPORTEDAUDIOFILTERS.add(Split(Trim(filter), " ", "", True)[0])
+'     Next 'filter
+'   Endif
+'   For Each filter In SUPPORTEDAUDIOFILTERS
+'     send("af_del " & filter) 'do it four times to be sure multiple instances
+'     send("af_del " & filter) 'of the same filter are removed as well
+'     send("af_del " & filter)
+'     send("af_del " & filter)
+'   Next 'filter
+' End
 
 
 'old_send can workaround an ubuntu problem by using echo instead of print?

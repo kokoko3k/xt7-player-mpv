@@ -1905,6 +1905,7 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
         Try treeview1.Item.selected = True
         lk = treeview1.Item.Key
         'fill chapters
+        Stop
         dcl = mplayer.get_property_mpv("=chapter-list", True, 1000)
         dcl = Replace(dcl, "[", "")
         dcl = Replace(dcl, "]", "")
@@ -2103,28 +2104,29 @@ Public Sub MenuswitchTitle_click()
   Endif
 End
 
-Public Sub MenuswitchChapter_click()
-  
-  Dim ChapterToPlay As Integer
-  Dim Title, chapter As Menu
-  
-  Try ChaptertoPlay = Split(Last.caption, " ")[0]
-  'clear any checked chapter:
-  For Each title In Menutitles.children
-    If (title.Children.count > 0) Then
-      For Each chapter In title.Children
-        chapter.Checked = False
-      Next 'chapter
-    Endif
-  Next 'title
-  
-  'Check the selected chapter
-  Last.checked = True
-  If Not Error Then
-    mplayer.Send("seek_chapter " & ChapterToPlay & " 1")
-  Endif
-  
-End
+' Public Sub MenuswitchChapter_click()
+'   
+'   Dim ChapterToPlay As Integer
+'   Dim Title, chapter As Menu
+'   
+'   Try ChaptertoPlay = Split(Last.caption, " ")[0]
+'   'clear any checked chapter:
+'   For Each title In Menutitles.children
+'     If (title.Children.count > 0) Then
+'       For Each chapter In title.Children
+'         chapter.Checked = False
+'       Next 'chapter
+'     Endif
+'   Next 'title
+'   
+'   'Check the selected chapter
+'   Last.checked = True
+'   If Not Error Then
+'     Stop
+'     mplayer.Send("seek_chapter " & ChapterToPlay & " 1")
+'   Endif
+'   
+' End
 
 
 Public LASTAUDIOID As Integer = -1
@@ -3025,21 +3027,21 @@ Public Sub UpdateVolumeSlider(volume As String)
 
 End
 
-Public Sub UpdateStreamsMenu()
-  'read current subtitle and audio tracks and check the relevant item in the streams menu 
-
-  Dim tmpsub, tmpaudio As String
-  
-  mplayer.Send("get_property sub")
-  mplayer.Send("get_property switch_audio")
-  tmpsub = mplayer.CurrentSubStream
-  tmpaudio = mplayer.CurrentAudioStream
-  global.myDebug("tmpsub= " & tmpsub)
-  global.myDebug("tmpaudio= " & tmpaudio)
-  Repeat
-  Until Streamsaudiomenu
-  
-End
+' Public Sub UpdateStreamsMenu()
+'   'read current subtitle and audio tracks and check the relevant item in the streams menu 
+' 
+'   Dim tmpsub, tmpaudio As String
+'   
+'   mplayer.Send("get_property sub")
+'   mplayer.Send("get_property switch_audio")
+'   tmpsub = mplayer.CurrentSubStream
+'   tmpaudio = mplayer.CurrentAudioStream
+'   global.myDebug("tmpsub= " & tmpsub)
+'   global.myDebug("tmpaudio= " & tmpaudio)
+'   Repeat
+'   Until Streamsaudiomenu
+'   
+' End
 
 Public Sub ExecutePostCmd()
   
