@@ -1155,6 +1155,8 @@
         }
         { Button3 Button
           MoveScaled(-1,1,35,4)
+          Visible = False
+          Enabled = False
           ToolTip = ("Switch to navigation mode.")
           Text = ("DVD menu navigation mode")
           Picture = Picture["icon:/16/wizard"]
@@ -1371,7 +1373,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-5.2857,18,4)
+              MoveScaled(9.4286,-6.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1380,7 +1382,7 @@
             }
           }
           { HBox16 HBox
-            MoveScaled(-5.8571,11.1429,30,4)
+            MoveScaled(-6.8571,11.1429,30,4)
             ToolTip = ("Only valid for standard feeds")
             { Label4 Label
               MoveScaled(2,0,11,3)

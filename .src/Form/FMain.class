@@ -1865,7 +1865,7 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
   If p = "" Then Return
   ddevice = "/" & dvd_device(p)
 
-  dtl = mplayer.get_property_mpv("=disc_title_list", True, 1000)
+  dtl = mplayer.get_property_mpv("=disc-title-list", True, 1000)
   If dtl = "" Then
     global.myDebug(("Could not get information about the dvd structure"))
     Return
@@ -1897,7 +1897,7 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
    Next 'title
    If Not (Lower(p) Like "dvd://menu*") Then
      Try treeview1.movefirst
-     Try pt = CInt(mplayer.get_property_mpv("=disc_title"))
+     Try pt = CInt(mplayer.get_property_mpv("=disc-title"))
       For ct = 0 To pt - 1
         Try treeview1.MoveBelow()
       Next
@@ -1905,7 +1905,7 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
         Try treeview1.Item.selected = True
         lk = treeview1.Item.Key
         'fill chapters
-        dcl = mplayer.get_property_mpv("=chapter_list", True, 1000)
+        dcl = mplayer.get_property_mpv("=chapter-list", True, 1000)
         dcl = Replace(dcl, "[", "")
         dcl = Replace(dcl, "]", "")
         dcl = Replace(dcl, "},{", Chr(8))
@@ -7025,7 +7025,8 @@ End
 
 
 Private Function want_dvd_menu() As Boolean
-  Return MyQuestion.Ask(("How do you want to play the dvd?"), ("main title"), ("menu")) = 2
+  Return False
+  'Return MyQuestion.Ask(("How do you want to play the dvd?"), ("main title"), ("menu")) = 2
 End
 
 
