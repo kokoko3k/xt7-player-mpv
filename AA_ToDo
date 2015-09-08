@@ -766,3 +766,57 @@ Cambiamenti prox gambas:
 se imposti un reparent a uno che già è parente, c'è un glitch (controlla se c'è glitch pure se reimposti a visibile un già visibile)
 questo crea problemi di glitch con gli shadeup.
 inoltre la gestione degli hsplit è diventata lentissima. consiglio di tornare al fakesplit.
+
+
+
+
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+Visualizzazione:
+
+#!/bin/bash
+file="/mnt/nas.crypt/Musica/streamripper/radioparallax/Sixto Sounds - Super Hang On (Burn Baby Burn OC ReMix).mp3"
+file=/mnt/nas.crypt/Musica/Roxette\ -\ Tourism/Roxette\ -\ Tourism\ -\ 16\ -\ Queen\ of\ rain.ogg
+wid="58720645"
+export IFS=$'\n'
+
+#4.5%:
+    graph="amovie=$file,"
+    graph=$graph'asplit [a][out1];'
+    graph=$graph'[a]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,'
+    graph=$graph'crop=h=(in_h/1.5):y=in_h[spectrum];'
+    graph=$graph'movie=/root/Download/png.png,scale=h=(in_h/1.5)[pic];[spectrum][pic]overlay[out0]'
+
+    mpv av://lavfi:$graph -wid $wid  -no-keepaspect -v
+    exit
+
+#12%
+graph="amovie=$file[musica];"
+#graph=$graph'[musica]asplit=2 [azero][auno];'
+graph=$graph'[musica]asplit=3 [azero][auno][out1];'
+
+graph=$graph'[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,'
+    graph=$graph'crop=h=(in_h/1.5):y=in_h,'
+    graph=$graph'scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];'
+
+graph=$graph'[auno]showwaves=s=512x512:mode=line:r=20,'
+    graph=$graph'crop=h=(ih/2):y=(0),crop=h=(ih/2):y=ih,'
+    graph=$graph'colorlevels=romax=0.5[waves];'
+
+graph=$graph'[spectrum][waves]overlay[out0]'
+
+
+    mpv av://lavfi:$graph -wid $wid  -no-keepaspect -v
+    exit
+
+
+
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+
+
+
