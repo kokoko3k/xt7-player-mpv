@@ -2750,13 +2750,13 @@ Public Function SetRightCache(fullpath As String) As MpvOption[]
   opts.Add(opt)
  
   'set back cache buffer to 10% of the total cache
-  Try i = CInt(cache)
-  If Not Error Then 'means cache is a numeric value and not "auto, yes or no"
-    opt = New MpvOption
-    opt.name = "cache-backbuffer"
-    opt.data = CStr(CInt(CInt(cache) * 0.10))
-    opts.Add(opt)
-  Endif
+  ' Try i = CInt(cache)
+  ' If Not Error Then 'means cache is a numeric value and not "auto, yes or no"
+  '   opt = New MpvOption
+  '   opt.name = "cache-backbuffer"
+  '   opt.data = CStr(CInt(CInt(cache) * 0.10))
+  '   opts.Add(opt)
+  ' Endif
 
   opt = New MpvOption
   opt.name = "cache-initial"
