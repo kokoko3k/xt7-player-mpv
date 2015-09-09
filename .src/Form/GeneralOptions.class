@@ -325,7 +325,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   myopts.Add(newopt("dvbin-timeout", spinboxtimeout.value))
   alloptions = alloptions & " -dvbin timeout=" & spinboxtimeout.value
   If tsprobechk.value Then
-     myopts.Add(newopt("demuxer-lavf-probesize", comboboxtsprobe.value))
+     myopts.Add(newopt("demuxer-lavf-probesize", comboboxtsprobe.text))
   Endif
   
   
