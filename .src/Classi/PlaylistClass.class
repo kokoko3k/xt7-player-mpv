@@ -127,7 +127,7 @@ Public Sub LoadTable(ByRef table As String[], filename As String, mygrid As Grid
   Dim i As Integer
   Dim Layout As String[]
   Try Table = Split(file.Load(filename), "\n")
-  Table.Resize(Table.count - 1)
+  If table.count > 0 Then Table.Resize(Table.count - 1)
   
   If table.Count > 0 Then
     If table[0] Like "Layout*" Then
