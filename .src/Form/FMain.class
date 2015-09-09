@@ -11315,6 +11315,7 @@ Public Sub sidepanelYTSearchoptions_BeforeArrange()
 End
 
  Public Sub YT_search_opts_Click()
+   If Not fmain.fullyloaded Then Return
    sidepanelYTSearchoptions.visible = YT_search_opts.value
  End
 
@@ -11387,7 +11388,8 @@ End Struct
 
 
 Public Sub Leftsidetabs_Arrange()
-   sidepanelYTSearchoptions.visible = True
+   If Not fmain.fullyloaded Then Return
+   sidepanelYTSearchoptions.visible = YT_search_opts.value
 End
 
 Public Sub switchresBTN_Click()
