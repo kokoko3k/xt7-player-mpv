@@ -604,7 +604,7 @@ Public Sub Save(TheForm As Object, FileName As String)
         Try Print #ConfFile, TheObject.name
 
         If IsSafeToReparent(TheObject) Then Print #ConfFile, ".parent.name=" & TheObject.parent.name
-        If Not ((TheObject Is TabStrip) Or (TheObject Is Label) Or (TheObject Is Button) Or (TheObject Is ToggleButton) Or (TheObject Is Checkbox)) Then
+        If Not ((TheObject Is TabStrip) Or (TheObject Is Label) Or (TheObject Is Button) Or (TheObject Is ToggleButton) Or (TheObject Is Checkbox) Or (TheObject Is SpinBox)) Then
           'IF NOT (TheObject IS TabStrip) OR (TheObject IS Label) THEN 
           If Not (TheObject.name Like "*SearchField*") Then
             Try Print #ConfFile, ".text=" & TheObject.text
