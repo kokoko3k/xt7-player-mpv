@@ -37,8 +37,8 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
 'SSA related:
   Dim FontName As String = ",FontName=" "\"" & FontString.Font.name & "\""
   Dim subFontName As String
-  Dim Outline As String = ",outline=" & OutlineSpinBox.text
-  Dim Shadow As String = ",shadow=" & ShadowSpinBox.text
+  Dim Outline As String = ",outline=" & OutlineSpinBox.value
+  Dim Shadow As String = ",shadow=" & ShadowSpinBox.value
   Dim AssForceStyle As String = ""
   Dim opts As New MpvOption[]
   Dim opt As New MpvOption
@@ -70,13 +70,13 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
       AssForceStyle = AssForceStyle & ",OutlineColour=" & rgba2Habgr(Hex(BorderColorBox.value, 6) & Hex(BorderColorSpinBox.value, 2))
 
       opts.Add(o("sub-text-border-size", OutLineSpinBox.value))
-      opts.Add(o("sub-text-border-color", "#" & Hex(255 - BorderColorSpinBox.text, 2) & Hex(bordercolorBox.value, 6)))
+      opts.Add(o("sub-text-border-color", "#" & Hex(255 - BorderColorSpinBox.value, 2) & Hex(bordercolorBox.value, 6)))
     Endif
 
     'maybe redoundant with -ass-color and -ass-border-color, but do it anyway:
     If FontColorCHK.value Then 
       AssForceStyle = AssForceStyle & ",PrimaryColour=" & rgba2Habgr(Hex(FontColorBox.value, 6) & Hex(FontColorSpinBox.value, 2))
-      opts.Add(o("sub-text-color", "#" & Hex(255 - FontColorSpinBox.text, 2) & Hex(FontColorBox.value, 6)))
+      opts.Add(o("sub-text-color", "#" & Hex(255 - FontColorSpinBox.value, 2) & Hex(FontColorBox.value, 6)))
     Endif
     
     If SHADOWCHK.value Then
@@ -84,12 +84,12 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
       Assforcestyle = AssForceStyle & ",BackColour=" & rgba2Habgr(Hex(ShadowColorBTN.value, 6) & Hex(ShadowColorSpinBox.value, 2))
       
       opts.Add(o("sub-text-shadow-offset", ShadowSpinBox.value))
-      opts.Add(o("sub-text-shadow-color", "#" & Hex(255 - ShadowColorSpinBox.text, 2) & Hex(ShadowColorBTN.value, 6)))
+      opts.Add(o("sub-text-shadow-color", "#" & Hex(255 - ShadowColorSpinBox.value, 2) & Hex(ShadowColorBTN.value, 6)))
     Endif
 
     If MarginVCHK.value Then 
-      AssForceStyle = AssForceStyle & ",MarginV=" & MarginVSpinBox.text
-      opts.Add(o("subpos", MarginVSpinBox.text))
+      AssForceStyle = AssForceStyle & ",MarginV=" & MarginVSpinBox.value
+      opts.Add(o("subpos", MarginVSpinBox.value))
     Endif
 
     If Left(AssForceStyle) = "," Then Assforcestyle = Right(AssForceStyle, "-1")
@@ -104,16 +104,16 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
     opts.Push(o("osd-font-size", CStr(FontString2.Font.size)))
   Endif
   
-  If Fontcolorchk2.value Then opts.Add(o("osd-color", "#" & Hex(255 - FontColorSpinBox2.text, 2) & Hex(FontColorBox2.value, 6)))
+  If Fontcolorchk2.value Then opts.Add(o("osd-color", "#" & Hex(255 - FontColorSpinBox2.value, 2) & Hex(FontColorBox2.value, 6)))
   
   If outlinechk2.value Then
     opts.Add(o("osd-border-size", OutLineSpinBox2.value))
-    opts.Add(o("osd-border-color", "#" & Hex(255 - BorderColorSpinBox2.text, 2) & Hex(bordercolorBox2.value, 6)))
+    opts.Add(o("osd-border-color", "#" & Hex(255 - BorderColorSpinBox2.value, 2) & Hex(bordercolorBox2.value, 6)))
   Endif
 
   If shadowchk2.value Then
     opts.Add(o("osd-shadow-offset", ShadowSpinBox2.value))
-    opts.Add(o("osd-shadow-color", "#" & Hex(255 - ShadowColorSpinBox2.text, 2) & Hex(ShadowColorBTN2.value, 6)))
+    opts.Add(o("osd-shadow-color", "#" & Hex(255 - ShadowColorSpinBox2.value, 2) & Hex(ShadowColorBTN2.value, 6)))
   Endif
 
 

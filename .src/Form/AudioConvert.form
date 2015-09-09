@@ -29,10 +29,11 @@
     }
     { ComboBox1 ComboBox
       MoveScaled(17,0,24,4)
+      #Translate = False
       Expand = True
       ReadOnly = True
-      List = [("mp3"), ("ogg"), ("wav")]
-      Text = ("mp3 (requires ffmpeg)")
+      List = ["mp3", "ogg", "wav"]
+      Text = "mp3 (requires ffmpeg)"
     }
   }
   { Panel3 Panel

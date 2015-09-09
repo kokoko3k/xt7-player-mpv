@@ -5496,7 +5496,7 @@ Public Sub PlaySelectedDvb(Optional channel As String = ":::")
   '1) User has never switched audio
   '2) User explicitely want to try fast zapping
   If Usedvb_set_channel() Then
-    mplayer.dvb_set_channel(Replace(Lower(SelectedPath), "dvb://", ""), CInt(generaloptions.spinboxcard.Text) - 1) 'fixmempv is stub
+    mplayer.dvb_set_channel(Replace(Lower(SelectedPath), "dvb://", ""), CInt(generaloptions.spinboxcard.value) - 1) 'fixmempv is stub
     'simulate a dry run:
     FillStreamsMenu()
     CorrectAreaAspect()
@@ -9284,7 +9284,7 @@ Private Function youtube_query_opts() As String
   'https://developers.google.com/youtube/v3/docs/search/list#try-it
 
   query = YouSearchfield.Text
-  MaxResults = SpinBoxmaxresults.text
+  MaxResults = SpinBoxmaxresults.value
   SortBy = ComboBoxOrderBy.text
   date_start = "" 'fixme
   date_end = "" 'fixme
