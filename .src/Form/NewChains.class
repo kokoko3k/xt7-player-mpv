@@ -274,12 +274,12 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
   Try item_tab = aTabstrip.Tag.Find(Lower(item_name))
   If item_tab >= 0 Then 
     aTabstrip.index = item_tab
-    If HelpBox.parent <> aTabstrip Then HelpBox.reparent(aTabstrip)
+    HelpBox.reparent(aTabstrip)
       Else
     For i = 0 To aTabstrip.count - 1
       aTabstrip.index = i
       If Lower(aTabstrip.caption) = item_name Then 
-        If HelpBox.parent <> aTabstrip Then HelpBox.reparent(aTabstrip)
+        HelpBox.reparent(aTabstrip)
         Return
       Endif
     Next
