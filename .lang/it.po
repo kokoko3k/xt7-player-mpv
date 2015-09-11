@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xt7-player-mpv 3.8.1\n"
-"PO-Revision-Date: 2015-09-11 08:02 UTC\n"
+"PO-Revision-Date: 2015-09-11 15:13 UTC\n"
 "Last-Translator: kokoko3k <kokoko3k@gmail.com>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -397,7 +397,7 @@ msgstr "Test"
 msgid "ShutDown CountDown..."
 msgstr "Conto alla rovescia per lo spegnimento."
 
-#: CountDown.form:17 NewChains.class:413
+#: CountDown.form:17 NewChains.class:427
 msgid "Abort"
 msgstr "Annulla"
 
@@ -1557,7 +1557,7 @@ msgstr "Codec e demuxer"
 msgid "Video/Audio Chains"
 msgstr "Catena Audio/Video"
 
-#: FMain.form:913 GeneralOptions.form:443 NewChains.class:1173
+#: FMain.form:913 GeneralOptions.form:443 NewChains.class:1190
 msgid "Video"
 msgstr "Video"
 
@@ -3471,7 +3471,7 @@ msgstr "Usa le nuove impostazioni senza salvare"
 
 #: GeneralOptions.form:2808 NewChains.form:1195 SubAndOsd.form:768
 msgid "Use"
-msgstr "&Usa"
+msgstr "Usa"
 
 #: GeneralOptions.form:2814 NewChains.form:1201 SubAndOsd.form:774
 msgid "Close the window"
@@ -3685,391 +3685,391 @@ msgstr "Abilita la saturazione morbida"
 msgid "Runtime response to speed change"
 msgstr "Modo di riproduzione alla variazione di velocità"
 
-#: NewChains.class:361
+#: NewChains.class:375
 msgid "Custom audio filter(s):"
 msgstr "Filtri audio custom:"
 
-#: NewChains.class:361
+#: NewChains.class:375
 msgid "E.g.:resample=44100:1:2,hrtf=s"
 msgstr "Es.: resample=44100:1:2,hrtf=s"
 
-#: NewChains.class:413
+#: NewChains.class:427
 msgid "Continue anyway"
 msgstr "Continua comunque"
 
-#: NewChains.class:413
+#: NewChains.class:427
 msgid "Even if your mpv has ladspa support compiled in,\nyou seem to miss the ladspa package.\nbecause 'analyseplugin' executable is not found"
 msgstr "Anche se mpv sembra essere compilato con il supporto ladspa,\nsembra che il pacchetto ladspa sia mancante.\nperchè l'eseguibile \"analyseplugin\"\nnon può essere trovato."
 
-#: NewChains.class:434
+#: NewChains.class:448
 msgid "Luminance Matrix"
 msgstr "Matrice di luminanza"
 
-#: NewChains.class:434
+#: NewChains.class:448
 msgid "The higher, the slower"
 msgstr "Più alto è, più sarà lento"
 
-#: NewChains.class:435
+#: NewChains.class:449
 msgid "Luma amount"
 msgstr "Quantità di luma"
 
-#: NewChains.class:435
+#: NewChains.class:449
 msgid "Negative means blur"
 msgstr "Valori negativi producono sfocatura"
 
-#: NewChains.class:436
+#: NewChains.class:450
 msgid "Chrominance Matrix"
 msgstr "Matrice di crominanza"
 
-#: NewChains.class:437
+#: NewChains.class:451
 msgid "Chroma amount"
 msgstr "Quantità chroma"
 
-#: NewChains.class:442
+#: NewChains.class:456
 msgid "0 to Disable; Negative as offset to original value"
 msgstr "0 = disabilita; < 0 = discostamento dal valore originale"
 
-#: NewChains.class:442 Searchfields.form:189
+#: NewChains.class:456 Searchfields.form:189
 msgid "Width"
 msgstr "Larghezza"
 
-#: NewChains.class:443 Searchfields.form:196
+#: NewChains.class:457 Searchfields.form:196
 msgid "Height"
 msgstr "Altezza"
 
-#: NewChains.class:444
+#: NewChains.class:458
 msgid "Original image position; -1 to center"
 msgstr "Posizione dell' immagine originale; -1 per centro"
 
-#: NewChains.class:444
+#: NewChains.class:458
 msgid "X Position"
 msgstr "Posizione X"
 
-#: NewChains.class:445
+#: NewChains.class:459
 msgid "Y Position"
 msgstr "Posizione Y"
 
-#: NewChains.class:446
+#: NewChains.class:460
 msgid "Fit an aspect instead of a resolution"
 msgstr "Usa un Aspetto invece che una risoluzione"
 
-#: NewChains.class:447
+#: NewChains.class:461
 msgid "Make Width and Height divisible by"
 msgstr "Fa sì che Larghezza ed altezza siano divisibili per"
 
-#: NewChains.class:453
+#: NewChains.class:467
 msgid "Spatial luma strength"
 msgstr "Intensità spaziale della luminanza"
 
-#: NewChains.class:454
+#: NewChains.class:468
 msgid "Spatial chroma strength"
 msgstr "Intensità spaziale della crominanza"
 
-#: NewChains.class:455
+#: NewChains.class:469
 msgid "Temporal luma strength"
 msgstr "Intensità temporale della luminanza"
 
-#: NewChains.class:456
+#: NewChains.class:470
 msgid "Temporal chroma strength"
 msgstr "Intensità temporale della crominanza"
 
-#: NewChains.class:461
+#: NewChains.class:475
 msgid "0 disables scaling,see man below"
 msgstr "0 disabilita lo scaling, consulta il manuale sotto"
 
-#: NewChains.class:463
+#: NewChains.class:477
 msgid "Depends on sws, leave blank if unsure"
 msgstr "Dipende da sws, nel dubbio, lascia in bianco."
 
-#: NewChains.class:463
+#: NewChains.class:477
 msgid "Scaling Parameters"
 msgstr "Parametri di scalatura"
 
-#: NewChains.class:465
+#: NewChains.class:479
 msgid "0 - Use all available input lines for chroma"
 msgstr "0 - Usa tutte le linee per il chroma"
 
-#: NewChains.class:465
+#: NewChains.class:479
 msgid "1 - Use only every 2. input line for chroma"
 msgstr "1 - Usa solo 1 su 2 linee per il croma"
 
-#: NewChains.class:465
+#: NewChains.class:479
 msgid "2 - Use only every 4. input line for chroma"
 msgstr "2 - Usa solo 1 su 4 linee per il croma"
 
-#: NewChains.class:465
+#: NewChains.class:479
 msgid "3 - Use only every 8. input line for chroma"
 msgstr "3 - Usa solo 1 su 8 linee per il croma"
 
-#: NewChains.class:465
+#: NewChains.class:479
 msgid "Chroma skipping"
 msgstr "Salto croma"
 
-#: NewChains.class:465
+#: NewChains.class:479
 msgid "lower=slower"
 msgstr "Basso=lento"
 
-#: NewChains.class:466
+#: NewChains.class:480
 msgid "0 - Allow Upscaling"
 msgstr "0 - Permetti upscale"
 
-#: NewChains.class:466
+#: NewChains.class:480
 msgid "1 - Disallow if one dimensions exceeds its original value"
 msgstr "1 - Impedisci se una dimensione eccede il suo valore originale"
 
-#: NewChains.class:466
+#: NewChains.class:480
 msgid "2 - Disallow if both dimensions exceed their original values"
 msgstr "2 - Disabilita se entrambe le dimensioni eccedono il valore originale"
 
-#: NewChains.class:466
+#: NewChains.class:480
 msgid "Disable Upscaling"
 msgstr "Disabilita l'upscaling"
 
-#: NewChains.class:467
+#: NewChains.class:481
 msgid "Accurate Rounding"
 msgstr "Approssimazione accurata"
 
-#: NewChains.class:467
+#: NewChains.class:481
 msgid "no - Disable Accurate rounding"
 msgstr "no - disabilita l'arrotondamento accurato"
 
-#: NewChains.class:467
+#: NewChains.class:481
 msgid "yes - Enable Accurate rounding"
 msgstr "yes - Abilita l'arrotondamento accurato."
 
-#: NewChains.class:472
+#: NewChains.class:486
 msgid "TopLeft Corner"
 msgstr " Angolo superiore sinistro"
 
-#: NewChains.class:476
+#: NewChains.class:490
 msgid "-1 draws a green border"
 msgstr "-1 disegna un bordo verde"
 
-#: NewChains.class:476
+#: NewChains.class:490
 msgid "Tickness"
 msgstr "Spessore"
 
-#: NewChains.class:477
+#: NewChains.class:491
 msgid "Draw a rectangle showing the area defined by x/y/w/h."
 msgstr "Disegna un rettangolo rappresentante l'area di effetto del filtro."
 
-#: NewChains.class:482
+#: NewChains.class:496
 msgid "Custom video filter(s):"
 msgstr "Filtri video custom:"
 
-#: NewChains.class:482
+#: NewChains.class:496
 msgid "E.g.:mirror,smartblur=0.4:0.5:10"
 msgstr "Es: mirror,smartblur=0.4:0.5:10"
 
-#: NewChains.class:507 VideoEqualizer.form:189
+#: NewChains.class:521 VideoEqualizer.form:189
 msgid "Gamma"
 msgstr "Gamma"
 
-#: NewChains.class:507
+#: NewChains.class:521
 msgid "Initial gamma value(default: 1.0)"
 msgstr "Gamma iniziale (Predefinito: 1.0)"
 
-#: NewChains.class:508 VideoEqualizer.form:156
+#: NewChains.class:522 VideoEqualizer.form:156
 msgid "Contrast"
 msgstr "Contrasto"
 
-#: NewChains.class:508
+#: NewChains.class:522
 msgid "Initial contrast (-x = negative image)"
 msgstr "Contrasto iniziale (-x = immagine negativa)"
 
-#: NewChains.class:509 VideoEqualizer.form:123
+#: NewChains.class:523 VideoEqualizer.form:123
 msgid "Brightness"
 msgstr "Luminosità"
 
-#: NewChains.class:509
+#: NewChains.class:523
 msgid "Initial brightness (default: 0.0)"
 msgstr "Luminanza iniziale (predefinito: 0.0)"
 
-#: NewChains.class:510
+#: NewChains.class:524
 msgid "Initial Saturation (default: 0.0)"
 msgstr "Saturazione iniziale (predefinito: 0.0)"
 
-#: NewChains.class:510 VideoEqualizer.form:255
+#: NewChains.class:524 VideoEqualizer.form:255
 msgid "Saturation"
 msgstr "Saturazione"
 
-#: NewChains.class:511
+#: NewChains.class:525
 msgid "Gamma Red"
 msgstr "Gamma rosso"
 
-#: NewChains.class:511
+#: NewChains.class:525
 msgid "gamma for the red component (default: 1.0)"
 msgstr "Gamma per la componente rossa (predefinito: 1.0)"
 
-#: NewChains.class:512
+#: NewChains.class:526
 msgid "Gamma Green"
 msgstr "Gamma verde"
 
-#: NewChains.class:512
+#: NewChains.class:526
 msgid "gamma for the green component (default: 1.0)"
 msgstr "Gamma per la componente verde (predefinito: 1.0)"
 
-#: NewChains.class:513
+#: NewChains.class:527
 msgid "Gamma Blue"
 msgstr "Gamma blu"
 
-#: NewChains.class:513
+#: NewChains.class:527
 msgid "gamma for the blue component (default: 1.0)"
 msgstr "Gamma per la componente blu (predefinito: 1.0)"
 
-#: NewChains.class:514
+#: NewChains.class:528
 msgid "Reduce effect of gamma correction"
 msgstr "Riduce l'effetto della correzione gamma"
 
-#: NewChains.class:514
+#: NewChains.class:528
 msgid "Weight"
 msgstr "Peso"
 
-#: NewChains.class:520
+#: NewChains.class:534
 msgid "Maximum amount by which the filter will change any one pixel.  Also the threshold for detecting nearly flat regions (default: 1.2)."
 msgstr "Massima variazione che il filtro applicherà su ogni pixel. \nE' anche la soglia per determinare le regioni quasi piane (predefinito: 1.2)."
 
-#: NewChains.class:520
+#: NewChains.class:534
 msgid "Strength"
 msgstr "Intensità"
 
-#: NewChains.class:521
+#: NewChains.class:535
 msgid "Neighborhood to fit the gradient to.  Larger radius makes for smoother gradients, but also prevents the filter from modifying pixels near detailed regions (default: 16)."
 msgstr "Raggio della zona circostante a cui adattare  il  gradiente. (predefinito: 16)."
 
-#: NewChains.class:521
+#: NewChains.class:535
 msgid "Radius"
 msgstr "Raggio"
 
-#: NewChains.class:526
+#: NewChains.class:540
 msgid "Deinterlace mode"
 msgstr "Metodo di deinterlacciamento:"
 
-#: NewChains.class:526
+#: NewChains.class:540
 msgid "field - Output 1 frame for each field."
 msgstr "field - Produce 1 fotogramma per ciascun campo."
 
-#: NewChains.class:526
+#: NewChains.class:540
 msgid "field-nospatial - Like 1 but skips spatial interlacing check"
 msgstr "field-nospatial - Come 1, ma salta il controllo di interlacciamento spaziale."
 
-#: NewChains.class:526
+#: NewChains.class:540
 msgid "frame - Output 1 frame for each frame."
 msgstr "frame - Produce 1 fotogramma per ciascun fotogramma."
 
-#: NewChains.class:526
+#: NewChains.class:540
 msgid "frame-nospatial - Like 0 but skips spatial interlacing check."
 msgstr "frame-nospatial - Come 0, ma salta il controllo di interlacciamento spaziale."
 
-#: NewChains.class:532
+#: NewChains.class:546
 msgid "Input format"
 msgstr "Formato d'ingresso"
 
-#: NewChains.class:532
+#: NewChains.class:546
 msgid "ab2l - above-below with half height resolution (left eye above, right eye below)"
 msgstr "ab2l - sopra-sotto a mezza risoluzione (occhio sinistro sopra)"
 
-#: NewChains.class:532
+#: NewChains.class:546
 msgid "ab2r - above-below with half height resolution (right eye above, left eye below)"
 msgstr "ab2r - sopra-sotto a mezza risoluzione (occhio destro sopra)"
 
-#: NewChains.class:532
+#: NewChains.class:546
 msgid "abl - above-below (left eye above, right eye below)"
 msgstr "abl - sopra-sotto (occhio sinistro sopra)"
 
-#: NewChains.class:532
+#: NewChains.class:546
 msgid "abr - above-below (right eye above, left eye below)"
 msgstr "abr - sopra-sotto (occhio destro sopra)"
 
-#: NewChains.class:532
+#: NewChains.class:546
 msgid "sbsl - side by side parallel (left eye left, right eye right)"
 msgstr "sbsl - fianco-fianco parallela (occhio sinistro a sinistra, destro a destra)"
 
-#: NewChains.class:532
+#: NewChains.class:546
 msgid "sbsr - side by side crosseye (right eye left, left eye right)"
 msgstr "sbsr - fianco-fianco incrociata (occhio sinistro a destra, destro a sinistra)"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "Output format"
 msgstr "Formato d'uscita"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "agmc - anaglyph green/magenta colored (green filter on left eye, magenta filter on right eye)"
 msgstr "agmc - anaglifico colorato: occhio sinistro verde, occhio destro magenta"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "agmg - anaglyph green/magenta gray (green filter on left eye, magenta filter on right eye)"
 msgstr "agmg - anaglifico bianco e nero: occhio sinistro verde, occhio destro magenta"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "agmh - anaglyph green/magenta half colored (green filter on left eye, magenta filter on right eye)"
 msgstr "agmh - anaglifico poco colorato: occhio sinistro verde, occhio destro magenta"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "arcc - anaglyph red/cyan color (red filter on left eye, cyan filter on right eye)"
 msgstr "arcc - anaglifico colorato: occhio sinistro rosso, occhio destro ciano"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "arcd - anaglyph red/cyan color optimized with the least squares projection of dubois (red filter on left eye, cyan filter on right eye)"
 msgstr "arcd - anaglifico colorato ottimizzato: occhio sinistro rosso, destro ciano"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "arcg - anaglyph red/cyan gray (red filter on left eye, cyan filter on right eye)"
 msgstr "arcd - anaglifico in bianco e nero: occhio sinistro rosso, destro ciano"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "arch - anaglyph red/cyan half colored (red filter on left eye, cyan filter on right eye)"
 msgstr "arch - anaglifico poco colorato: occhio sinistro rosso, destro ciano"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "aybc - anaglyph yellow/blue colored (yellow filter on left eye, blue filter on right eye)"
 msgstr "aybc - anaglifico colorato: occhio sinistro giallo, destro blu"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "aybg - anaglyph yellow/blue gray (yellow filter on left eye, blue filter on right eye)"
 msgstr "aybg - anaglifico in bianco e nero: occhio sinistro giallo, destro blu"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "aybh - anaglyph yellow/blue half colored (yellow filter on left eye, blue filter on right eye)"
 msgstr "aybh - anaglifico poco colorato: occhio sinistro giallo, destro blu"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "irl - Interleaved rows (left eye has top row, right eye starts on next row)"
 msgstr "irl - Linee interlacciate (l'occhio sinistro ha la riga superiore)"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "irr - Interleaved rows (right eye has top row, left eye starts on next row)"
 msgstr "irl - Linee interlacciate (l'occhio destro ha la riga superiore)"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "ml - mono output (left eye only)"
 msgstr "ml - uscita mono (solo occhio sinistro)"
 
-#: NewChains.class:533
+#: NewChains.class:547
 msgid "mr - mono output (right eye only)"
 msgstr "ml - uscita mono (solo occhio destro)"
 
-#: NewChains.class:1072
+#: NewChains.class:1089
 msgid "is overridden"
 msgstr "è forzato"
 
-#: NewChains.class:1325
+#: NewChains.class:1342
 msgid "Default device, software mixing"
 msgstr "Dispositivo alsa predefinito, missaggio software"
 
-#: NewChains.class:1326
+#: NewChains.class:1343
 msgid "Default alsa device"
 msgstr "Dispositivo alsa predefinito"
 
-#: NewChains.class:1327
+#: NewChains.class:1344
 msgid "Default S/PDIF device"
 msgstr "Dispositivo S/PDIF predefinito"
 
-#: NewChains.class:1328
+#: NewChains.class:1345
 msgid "Default hdmi device"
 msgstr "Dispositivo HDMI predefinito"
 
-#: NewChains.class:1425
+#: NewChains.class:1442
 msgid "Adaptors list:\n---------------------------------\n"
 msgstr "Lista degli adattatori:\n-----------------------------------\n"
 

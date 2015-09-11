@@ -357,6 +357,20 @@ Private Sub draw_filters_audio_cfg()
     AllParams.Clear
     
 
+
+  ' 'Dynaudnorm lavfi
+  ' 'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+  ' 
+  '   AllParams.add(["ROCHOOSE", "speed=", "both", "tempo", "pitch", "none", "dynaudnorm1", ("Runtime response to speed change")])
+  '   AllParams.add(["RANGEFLOAT", "scale=", "0.1", "1", "4", "dynaudnorm2", ""])
+  '   AllParams.add(["RANGE", "stride=", "5", "60", "500", "dynaudnorm3", ""])
+  '   AllParams.add(["RANGEFLOAT", "overlap=", "0.10", "0.20", "1", "dynaudnorm4", ""])
+  '   AllParams.add(["RANGE", "search=", "1", "14", "100", "dynaudnorm5", ""])
+  '   Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, Switchable,,, "lavfi")
+  '   AllParams.Clear
+    
+
+
     
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom11", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom12", ("E.g.:resample=44100:1:2,hrtf=s")])
@@ -706,6 +720,9 @@ Private Function Parse_audio_filter(Filtername As String) As String
       For Each PanelObject In MyScrollView.Children
         If PanelObject.name Like "*HBox" Then
           parse = True
+          If PanelObject.tag = "lavfi" Then
+            Break
+          Endif
           For Each SubObject In PanelObject.Children
             If Not (SubObject Is Label) Then
               If (SubObject Is Checkbox) Then

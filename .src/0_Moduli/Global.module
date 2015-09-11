@@ -685,7 +685,7 @@ Dim theobject As Object
       Return -1
 End
 
-Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip As Tabstrip, Switchable As Boolean, Optional TheTooltip As String = "", Optional helper As Button)
+Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip As Tabstrip, Switchable As Boolean, Optional TheTooltip As String = "", Optional helper As Button, Optional tag As String = "")
   
   ' TabstripS
   '     Tabstrip
@@ -775,6 +775,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       AnHBOX.Width = FMain.Font.TextWidth("31.25")
       AnHBOX.Height = 200
       AnHBOX.Spacing = 8
+      AnHbox.tag = tag
     Endif
 
     'Let's Draw The Label
