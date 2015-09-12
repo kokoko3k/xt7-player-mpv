@@ -759,7 +759,7 @@ Private Function Parse_audio_filter(Filtername As String) As String
     Endif
     aTabstrip.index = i
     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
-    If is_lavfi Then parsedfilter = "lavfi='[" & parsedfilter & "]'"
+    If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
     Return ParsedFilter
 
   Endif
