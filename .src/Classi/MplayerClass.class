@@ -1468,11 +1468,11 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
   'Debug "asking ", dataout
   If wait_answer Then
     While (timeoutcentisecs >= 0) And ProcessRunningOvr()
+      Wait 0.1
       If getP(name) <> Null Then Return getP(name)
       timeoutcentisecs -= 10
       send(dataout)
       ' global.myDebug( "asking ", dataout)
-      Wait 0.1
     Wend
     'global.myDebug( name & " --> " & getP(name))
     Return getP(name)
