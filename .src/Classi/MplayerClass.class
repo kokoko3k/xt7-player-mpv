@@ -1678,7 +1678,6 @@ Public Sub do_apply(new_opts As Collection) ', Optional only_check_vdpaurb As Bo
   Dim vf_new As String = ""
   Dim af_pre_new As String = ""
   Dim vf_pre_new As String = ""
-  
 
   new_opts = fix_options(new_opts)
   'If only_check_vdpaurb Then Goto rt_options
@@ -1818,9 +1817,9 @@ Public Sub do_apply_restart(new_opts As Collection)
   Dim properties_changed_runtime_old_datas As New Collection
   Dim olddata As String = "--------------"
   'Dim only_check_vdpaurb As Boolean = True
-  
+
   restarting = True
-  
+
   'store old properties so that we can understand if we succeeded in restoring them
   For Each properties_changed_runtime
     name = properties_changed_runtime.key

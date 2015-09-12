@@ -2475,7 +2475,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Endif
 
 
-  
   mplayer.set_option("volume", Initialvolume())
 
   If Lower(fullpath) = "dvd://" Then fullpath = "dvd:///" & generaloptions.DVDDeviceText.text
@@ -3227,6 +3226,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
       Endif
   
     Case "volume"
+
       UpdateVolumeSlider(data_new)
   
     Case "percent-pos"
@@ -3426,12 +3426,20 @@ Private Sub UpdateVolumeTooltip()
   Dim softvol As String = "auto"
   
   If Not mplayer.ProcessRunningOvr() Then Return
-  
-  Try softvol = Trim(mplayer.get_property_mpv("options/softvol"))
+  ' 'The following is slow and blocking; volume can be updated several times in a second
+  ' 'with the mouse wheel; find a better way.
+  '   Try softvol = Trim(mplayer.get_property_mpv("options/softvol"))
+  '   If softvol <> "no" Then
+  '     Try overboost = Split(mplayer.get_property_mpv("options/softvol-max"), ".,")[0]
+  '     If overboost = Null Then Try overboost = mplayer.get_option("softvol-max")
+  '   Endif
+
+  Try softvol = mplayer.mpvoptions["softvol"]
   If softvol <> "no" Then
-    Try overboost = Split(mplayer.get_property_mpv("options/softvol-max"), ".,")[0]
-    If overboost = Null Then Try overboost = mplayer.get_option("softvol-max")
+    Try overboost = Split(mplayer.mpvoptions["softvol-max"], ".,")[0]
+    If overboost = Null Then Try overboost = mplayer.mpvoptions["softvol-max"]
   Endif
+  
   If overboost = Null Then overboost = "100"
 
   savevolumeslider.maxvalue = overboost

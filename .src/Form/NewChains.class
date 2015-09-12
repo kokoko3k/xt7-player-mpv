@@ -35,7 +35,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "drc", "karaoke", "extrastereo", "scaletempo", "volume", "CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"]
+  filters_audio_list = ["equalizer", "drc", "karaoke", "extrastereo", "scaletempo", "dynaudnorm", "volume", "CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"]
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
       draw_list_item(filters_audio_container, filter, True)
@@ -358,16 +358,21 @@ Private Sub draw_filters_audio_cfg()
     
 
 
-  ' 'Dynaudnorm lavfi
-  ' 'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
-  ' 
-  '   AllParams.add(["ROCHOOSE", "speed=", "both", "tempo", "pitch", "none", "dynaudnorm1", ("Runtime response to speed change")])
-  '   AllParams.add(["RANGEFLOAT", "scale=", "0.1", "1", "4", "dynaudnorm2", ""])
-  '   AllParams.add(["RANGE", "stride=", "5", "60", "500", "dynaudnorm3", ""])
-  '   AllParams.add(["RANGEFLOAT", "overlap=", "0.10", "0.20", "1", "dynaudnorm4", ""])
-  '   AllParams.add(["RANGE", "search=", "1", "14", "100", "dynaudnorm5", ""])
-  '   Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, Switchable,,, "lavfi")
-  '   AllParams.Clear
+  'Dynaudnorm lavfi
+  'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+    AllParams.Add(["COMMENT", "Dynamic Audio Normalizer."])
+    AllParams.add(["RANGE", "f=", "10", "500", "8000", "dynaudnorm1", "frame length in msec"])
+    AllParams.add(["RANGE", "g=", "3", "31", "301", "dynaudnorm2", "filter size (odd numbers)"])
+    AllParams.add(["RANGEFLOAT", "p=", "0", "0.95", "1", "dynaudnorm3", "peak value"])
+    AllParams.add(["RANGE", "m=", "1", "10", "100", "dynaudnorm4", "max amplification"])
+    AllParams.add(["RANGEFLOAT", "r=", "0", "0", "1", "dynaudnorm5", "target RMS"])
+    AllParams.add(["RANGE", "n=", "0", "1", "1", "dynaudnorm6", "enable channel coupling"])
+    AllParams.add(["RANGE", "c=", "0", "0", "1", "dynaudnorm7", "enable DC correction"])
+    AllParams.add(["RANGE", "b=", "0", "0", "1", "dynaudnorm8", "enable alternative boundary mode"])
+    AllParams.add(["RANGEFLOAT", "s=", "0", "0", "30", "dynaudnorm9", "compress factor"])    
+    
+    Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, Switchable,,, "lavfi")
+    AllParams.Clear
     
 
 
@@ -676,7 +681,7 @@ Private Function Parse_video_filter(Filtername As String) As String
   '     Return ParsedFilter & "=" & TmpString
   '   Endif
   ' Endif
-    
+    Stop
     aTabstrip.index = i
     If tmpstring <> "" Then
       Return ParsedFilter & "=" & TmpString
@@ -700,6 +705,7 @@ Private Function Parse_audio_filter(Filtername As String) As String
   Dim i As Integer
   Dim parse As Boolean = True
   Dim out As String
+  Dim is_lavfi As Boolean = False
   i = aTabstrip.index
   
   'Find the ParsedFilter Tab and activate it:
@@ -717,6 +723,7 @@ Private Function Parse_audio_filter(Filtername As String) As String
     'hierarchy is:
     'Tabstrip -> scrollviews -> Panels -> ParameterObjects
     For Each MyScrollview In aTabstrip.Children
+      If MyScrollView.tag = "lavfi" Then is_lavfi = True
       For Each PanelObject In MyScrollView.Children
         If PanelObject.name Like "*HBox" Then
           parse = True
@@ -751,11 +758,9 @@ Private Function Parse_audio_filter(Filtername As String) As String
       TmpString = Left(Tmpstring, - 1)
     Endif
     aTabstrip.index = i
-    If tmpstring <> "" Then
-      Return ParsedFilter & "=" & TmpString
-        Else
-      Return ParsedFilter
-    Endif
+    If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
+    If is_lavfi Then parsedfilter = "lavfi='[" & parsedfilter & "]'"
+    Return ParsedFilter
 
   Endif
 End

@@ -741,7 +741,10 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   Try TheTabstrip.index = TabIndexByName(TabCaption, TheTabStrip)
   'Find the Scrollview 
   For Each MyScrollview In TheTabstrip.Children
-    If MyScrollview Is Scrollview Then Break
+    If MyScrollview Is Scrollview Then 
+      myscrollview.tag = tag
+      Break
+    Endif
   Next
 
   For Each CurrentParams In TheParameters
@@ -775,7 +778,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       AnHBOX.Width = FMain.Font.TextWidth("31.25")
       AnHBOX.Height = 200
       AnHBOX.Spacing = 8
-      AnHbox.tag = tag
     Endif
 
     'Let's Draw The Label
@@ -826,6 +828,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       AComment.name = CurrentParams[1] & ".label"
       AComment.text = ""
       AComment.w = 0
+
 
     'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
     Else If CurrentParams[0] = "SUBLABEL" Then 'Let's Draw a Textlabel
