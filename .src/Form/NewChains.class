@@ -488,13 +488,14 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
   
   'delogo[=x:y:w:h:t]
+  AllParams.Add(["TITLE", "- Remove logo from input video. -", "Delogo0", ""])
   AllParams.Add(["RANGE", "X", "0", "0", "2048", "Delogo1", ("TopLeft Corner")])
   AllParams.Add(["RANGE", "Y", "0", "0", "2048", "Delogo2", ("TopLeft Corner")])
-  AllParams.Add(["RANGE", ("Width"), "0", "0", "2048", "Delogo3", ""])
-  AllParams.Add(["RANGE", ("Height"), "0", "0", "2048", "Delogo4", ""])
-  AllParams.Add(["RANGE", ("Tickness"), "-1", "0", "2048", "Delogo5", ("-1 draws a green border")])
-  AllParams.add(["SWITCH", "show", "DISABLED", "Delogo6", ("Draw a rectangle showing the area defined by x/y/w/h.")])
-  Global.DrawGui(AllParams, "delogo", aTabstrip, NotSwitchable)
+  AllParams.Add(["RANGE", ("Width"), "0", "50", "2048", "Delogo3", ""])
+  AllParams.Add(["RANGE", ("Height"), "0", "50", "2048", "Delogo4", ""])
+  AllParams.Add(["RANGE", ("Tickness"), "1", "4", "2048", "Delogo5", ""])
+  AllParams.add(["ROCHOOSE", "Show borders", "0 - disable", "1 - enable", "Delogo5", ("Draw rectangle borders")])
+  Global.DrawGui(AllParams, "delogo", aTabstrip, NotSwitchable,,, "lavfi")
   AllParams.Clear
 
   
