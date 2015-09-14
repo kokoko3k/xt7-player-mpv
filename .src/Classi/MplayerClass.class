@@ -1680,7 +1680,7 @@ Public Sub do_apply(new_opts As Collection) ', Optional only_check_vdpaurb As Bo
   Dim vf_new As String = ""
   Dim af_pre_new As String = ""
   Dim vf_pre_new As String = ""
-Stop
+
   new_opts = fix_options(new_opts)
   'If only_check_vdpaurb Then Goto rt_options
   
@@ -1761,7 +1761,6 @@ Next
 
   If af_new = "|(removed)|" Then af_new = ""
   If vf_new = "|(removed)|" Then vf_new = ""
-  Stop
   set_property_mpv("af", af_new, True)
 ' ' ' Stop
 ' ' '       'This part is entirely for reinitialize playback with vdpaurb video filter

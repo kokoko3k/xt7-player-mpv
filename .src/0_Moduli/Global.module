@@ -758,7 +758,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       'AnHbox.width = 400
       aTitle = New Label(AnHbox) As "dynaobj"
       aTitle.name = "NOPARSE" & CurrentParams[CurrentParams.count - 2] & ".CommentLabel"
-      aTitle.text = CurrentParams[CurrentParams.Count - 1]
+      aTitle.text = CurrentParams[1]
       aTitle.Font.bold = True
       aTitle.Foreground = Color.black 'Color.Lighter(Color.TextForeground)
       aTitle.background = Color.white
