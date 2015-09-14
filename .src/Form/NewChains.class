@@ -52,7 +52,7 @@ End
 Private Sub Init_filters_video()
   Dim filters_video_list As New String[]
   Dim filter As String
-  filters_video_list = ["Yadif", "GradFun", "HqDn3D", "UnSharp", "DeLogo", "Eq", "Scale", "Expand"]
+  filters_video_list = ["Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "Expand"]
   filters_video_list.Insert(["Stereo3D", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
@@ -488,7 +488,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
   
   'delogo[=x:y:w:h:t]
-  AllParams.Add(["TITLE", "- Remove logo from input video. -", "Delogo0", ""])
+  AllParams.Add(["TITLE", "- Remove logo from input video -", "Delogo0", ""])
   AllParams.Add(["RANGE", "X", "0", "0", "2048", "Delogo1", ("TopLeft Corner")])
   AllParams.Add(["RANGE", "Y", "0", "0", "2048", "Delogo2", ("TopLeft Corner")])
   AllParams.Add(["RANGE", ("Width"), "0", "50", "2048", "Delogo3", ""])
@@ -498,6 +498,13 @@ Private Sub draw_filters_video_cfg()
   Global.DrawGui(AllParams, "delogo", aTabstrip, NotSwitchable,,, "lavfi")
   AllParams.Clear
 
+  'spp[
+  AllParams.Add(["TITLE", "- Simple postprocessing filter -", "spp0", ""])
+  AllParams.Add(["RANGE", "quality=", "0", "3", "6", "spp1", ("Set quality. This option defines the number of levels for averaging")])
+  AllParams.Add(["RANGE", "qp=", "0", "0", "63", "spp2", ("Force a constant quantization parameter.")])
+  AllParams.add(["ROCHOOSE", "mode=", "0 - hard", "1 - soft", "spp3", ("Thresholding mode,soft is blurrer but derings better")])
+  Global.DrawGui(AllParams, "spp", aTabstrip, Switchable,,, "lavfi")
+  
   
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom11", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom12", ("E.g.:mirror,smartblur=0.4:0.5:10")])
@@ -537,9 +544,10 @@ Private Sub draw_filters_video_cfg()
 
 
  'gradfun[=strength[:radius]]
+  AllParams.Add(["TITLE", "- Debands video quickly using gradients. -", "gradfun0", ""])
   AllParams.Add(["RANGEFLOAT", ("Strength"), "0.51", "1.5", "64", "gradfun1", ("Maximum amount by which the filter will change any one pixel.  Also the threshold for detecting nearly flat regions (default: 1.2).")])
   AllParams.Add(["RANGE", ("Radius"), "0", "16", "32", "gradfun2", ("Neighborhood to fit the gradient to.  Larger radius makes for smoother gradients, but also prevents the filter from modifying pixels near detailed regions (default: 16).")])
-  Global.DrawGui(AllParams, "gradfun", aTabstrip, NotSwitchable)
+  Global.DrawGui(AllParams, "gradfun", aTabstrip, NotSwitchable,,, "lavfi")
   AllParams.Clear
   
  'yadif=[mode[:field_dominance]]
@@ -626,7 +634,78 @@ Private Function parse_audio_filter_custom() As String
   Return customfilter
 End
 
+
 Private Function Parse_video_filter(Filtername As String) As String
+  'will parse the tabstrip at filtername index and output
+  'a commandline to add a filter in mplayer
+  Dim ParsedFilter As String = Lower((FilterName))
+  Dim TmpString As String = ""
+  Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls in the tab
+  Dim PanelObject As Object 'the Hbox which contains a single parameter it is created by DrawFiltersGui function
+  Dim SubObject As Object
+  Dim aTabstrip As Tabstrip = TabStrip_filters_video
+  Dim i As Integer
+  Dim parse As Boolean = True
+  Dim out As String
+  Dim is_lavfi As Boolean = False
+  i = aTabstrip.index
+  'Find the ParsedFilter Tab and activate it:
+  aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
+  If Parsedfilter Like "customvideo*" Then
+    out = parse_audio_filter_custom()
+    aTabstrip.index = i 
+    Return out
+      Else
+    'Discend the Tab objects,parse them and build the commandline
+    'hierarchy is:
+    'Tabstrip -> scrollviews -> Panels -> ParameterObjects
+    For Each MyScrollview In aTabstrip.Children
+      If MyScrollView.tag = "lavfi" Then is_lavfi = True
+      For Each PanelObject In MyScrollView.Children
+        If PanelObject.name Like "*HBox" Then
+          parse = True
+          ' If PanelObject.tag = "lavfi" Then
+          '   Break
+          ' Endif
+          For Each SubObject In PanelObject.Children
+            If Not (SubObject Is Label) Then
+              If (SubObject Is Checkbox) Then
+                parse = SubObject.value '(is a checkbox,parse only if it is checked)
+                  Else If Lower(subobject.name) Like "noparse*" Then
+                    parse = False
+              Endif
+              If SubObject.text <> "" Then
+                If (parse And Not (subobject Is Checkbox)) Then TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0] & ":")
+                If (parse And (subobject Is Checkbox)) Then
+                  TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0]) 'fixmempv perchè non mette i due punti alla fine del checkbox?
+                Endif
+                  Else
+                If parse Then
+                  Print subobject.name
+                  TmpString = global.RemoveShortcut(TmpString & ":")
+                Endif
+              Endif
+            Endif
+          Next
+        Endif
+      Next
+    Next
+
+    If (Right(tmpstring) = ":") Then
+      TmpString = Left(Tmpstring, - 1)
+    Endif
+    aTabstrip.index = i
+    If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
+    If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
+    Return ParsedFilter
+
+  Endif
+End
+
+
+
+
+Private Function OLD_Parse_video_filter(Filtername As String) As String
   'will parse the tabstrip at filtername index and output
   'a commandline to add a filter in mplayer
   Dim ParsedFilter As String = Lower(FilterName)
