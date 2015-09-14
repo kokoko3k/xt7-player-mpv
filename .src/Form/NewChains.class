@@ -447,10 +447,12 @@ Private Sub draw_filters_video_cfg()
   
   AllParams.Clear
   ' unsharp[=l|cWxH:amount[:l|cWxH:amount]]
+  AllParams.Add(["TITLE", "- Sharpen or blur the input video -", "Sharp0", ""])
   AllParams.add(["CHOOSE", ("Luminance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp1", ("The higher, the slower")])
   AllParams.add(["RANGEFLOAT", ("Luma amount"), "-2", "0", "5", "Sharp2", ("Negative means blur")])
   AllParams.add(["CHOOSE", ("Chrominance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp3", ("The higher, the slower")])
   AllParams.add(["RANGEFLOAT", ("Chroma amount"), "-2", "0", "5", "Sharp4", ("Negative means blur")])
+  AllParams.add(["ROCHOOSE", "Enable opencl", "0 - disable", "1 - enable", "Sharp5", ("Needs ffmpeg compiled with opencl support")])
   Global.DrawGui(AllParams, "unsharp", aTabstrip, NotSwitchable)
   AllParams.Clear
   
@@ -461,7 +463,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.add(["RANGE", ("Y Position"), "-1", "-1", "2048", "Expand4", ("Original image position; -1 to center")])
   AllParams.add(["CHOOSE", ("Fit an aspect instead of a resolution"), "", "4/3", "3/2", "16/9", "16/10", "1.85/1", "2.35/1", "2.39/1", "Expand6", ""])
   AllParams.add(["RANGE", ("Make Width and Height divisible by"), "1", "1", "64", "Expand7", ""])
-  Global.DrawGui(AllParams, "expand", aTabstrip, NotSwitchable)
+  Global.DrawGui(AllParams, "expand", aTabstrip, NotSwitchable,,, "lavfi")
   AllParams.Clear
   
    
