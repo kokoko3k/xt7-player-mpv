@@ -504,8 +504,16 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["RANGE", "qp=", "0", "0", "63", "spp2", ("Force a constant quantization parameter.")])
   AllParams.add(["ROCHOOSE", "mode=", "0 - hard", "1 - soft", "spp3", ("Thresholding mode,soft is blurrer but derings better")])
   Global.DrawGui(AllParams, "spp", aTabstrip, Switchable,,, "lavfi")
+  AllParams.Clear
   
-  
+  'uspp
+  AllParams.Add(["TITLE", "- Ultra slow/simple postprocessing filter -", "uspp0", ""])
+  AllParams.Add(["RANGE", "quality=", "0", "3", "8", "uspp1", ("Set quality. This option defines the number of levels for averaging")])
+  AllParams.Add(["RANGE", "qp=", "0", "0", "63", "uspp2", ("Force a constant quantization parameter.")])
+  Global.DrawGui(AllParams, "uspp", aTabstrip, Switchable,,, "lavfi")
+  AllParams.Clear
+
+
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom11", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom12", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom13", ("E.g.:mirror,smartblur=0.4:0.5:10")])
