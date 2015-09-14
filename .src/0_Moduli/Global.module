@@ -707,7 +707,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   Dim ATextBox As Textbox
   Dim ATextLabel As TextLabel
   Dim AButton As Button
-  Dim ALabel, AComment As Label
+  Dim ALabel, AComment, aTitle As Label
   Dim i As Integer
   Dim f As Float
   Dim ASpinBox As SpinBox
@@ -716,13 +716,14 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   Dim MyVslider As VSlider
   Dim MyReq As StringFileReqClass
   Dim ResetDefault As Myresetbutton
+  Dim asep As Separator
   
   Dim max_obj_w As Integer = 0  'used to make labels
   Dim l As Integer                 'of the same width
   Dim align_objs As New Object[]        '
   Dim o As Object
   Dim checkbox_no_text_width As Integer
-  
+ 
   'find the width of an empty checkbox
   alabel = New Label(zzzfake)
   alabel.text = "sometext"
@@ -748,7 +749,25 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   Next
 
   For Each CurrentParams In TheParameters
-
+    If CurrentParams[0] = "TITLE" Then 'Let's Draw a readonly TextBox
+      AnHbox = New HBox(myscrollview) As "dynaobj"
+      AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
+      AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
+      AnHbox.spacing = True
+      
+      'AnHbox.width = 400
+      aTitle = New Label(AnHbox) As "dynaobj"
+      aTitle.name = "NOPARSE" & CurrentParams[CurrentParams.count - 2] & ".CommentLabel"
+      aTitle.text = CurrentParams[CurrentParams.Count - 1]
+      aTitle.Font.bold = True
+      aTitle.Foreground = Color.black 'Color.Lighter(Color.TextForeground)
+      aTitle.background = Color.white
+      aTitle.expand = True
+      aTitle.Alignment = Align.center
+      aTitle.border = Border.Plain
+      asep = New Separator(myscrollview)
+      Goto prossimo
+    Endif
     'Write the comment
     If CurrentParams[CurrentParams.Count - 1] <> "" Then
         AComment = New Label(myscrollview) As "dynaobj"
@@ -821,13 +840,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       ATextBox.ReadOnly = True
       ATextBox.expand = True
       ATextBox.refresh
-
-    Else If CurrentParams[0] = "COMMENT" Then 'Let's Draw a readonly TextBox
-      'AnHBOX.padding = 3
-      AComment = New Label(AnHBox) As "dynaobj"
-      AComment.name = CurrentParams[1] & ".label"
-      AComment.text = ""
-      AComment.w = 0
 
 
     'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
@@ -967,7 +979,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       abutton.tooltip = helper.Tooltip
       abutton.text = helper.text
     Endif
-
+    prossimo:
   Next
 
   'align labels

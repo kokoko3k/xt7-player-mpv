@@ -360,18 +360,17 @@ Private Sub draw_filters_audio_cfg()
 
   'Dynaudnorm lavfi
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
-    AllParams.Add(["COMMENT", "Dynamic Audio Normalizer."])
-    AllParams.add(["RANGE", "f=", "10", "500", "8000", "dynaudnorm1", "frame length in msec"])
-    AllParams.add(["RANGE", "g=", "3", "31", "301", "dynaudnorm2", "filter size (odd numbers)"])
-    AllParams.add(["RANGEFLOAT", "p=", "0", "0.95", "1", "dynaudnorm3", "peak value"])
-    AllParams.add(["RANGE", "m=", "1", "10", "100", "dynaudnorm4", "max amplification"])
+    AllParams.Add(["TITLE", "Dynamic Audio Normalizer."])
+    AllParams.add(["RANGE", "f=", "10", "50", "8000", "dynaudnorm1", "frame length in msec"])
+    AllParams.add(["RANGE", "g=", "3", "11", "301", "dynaudnorm2", "filter size (odd numbers)"])
+    AllParams.add(["RANGEFLOAT", "p=", "1", "0.95", "1", "dynaudnorm3", "peak value"])
+    AllParams.add(["RANGE", "m=", "1", "5", "100", "dynaudnorm4", "max amplification"])
     AllParams.add(["RANGEFLOAT", "r=", "0", "0", "1", "dynaudnorm5", "target RMS"])
     AllParams.add(["RANGE", "n=", "0", "1", "1", "dynaudnorm6", "enable channel coupling"])
     AllParams.add(["RANGE", "c=", "0", "0", "1", "dynaudnorm7", "enable DC correction"])
     AllParams.add(["RANGE", "b=", "0", "0", "1", "dynaudnorm8", "enable alternative boundary mode"])
     AllParams.add(["RANGEFLOAT", "s=", "0", "0", "30", "dynaudnorm9", "compress factor"])    
-    
-    Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, Switchable,,, "lavfi")
+    Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, False,,, "lavfi")
     AllParams.Clear
     
 
