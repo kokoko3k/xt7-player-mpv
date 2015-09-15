@@ -336,7 +336,7 @@ Private Sub draw_filters_audio_cfg()
 
 
   'volume[=<volumedb>[:...]]
-   ' AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
+    AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
     AllParams.add(["RANGE", "replaygain-preamp=", "-20", "0", "20", "Volume4", ("Pre-amplification in dB to apply to the replaygain gain")])
     AllParams.add(["ROCHOOSE", "replaygain-track=", "yes", "no", "Volume2", ("Use track-gain from replaygain metadata value")])
     AllParams.add(["ROCHOOSE", "replaygain-album=", "yes", "no", "Volume3", ("Like replaygain-track, but using the album-gain value")])
@@ -370,6 +370,7 @@ Private Sub draw_filters_audio_cfg()
     AllParams.add(["ROCHOOSE", "Enable DC bias correction", "0 - disable", "1 - enable", "dynaudnorm7", ""])
     AllParams.add(["ROCHOOSE", "Enable alternative boundary mode", "1 - enable", "0 - disable", "dynaudnorm8", ""])
     AllParams.add(["RANGEFLOAT", "Compress factor", "0", "0", "30", "dynaudnorm9", ""])    
+    AllParams.Add(["TIP", ("It is best to place the volume filter after dynaudnorm"), "dynaudnorm110", ""])
     Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, False,,, "lavfi")
     AllParams.Clear
     'or 50 11 1 5  0 0 0 0 0

@@ -717,7 +717,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   Dim MyReq As StringFileReqClass
   Dim ResetDefault As Myresetbutton
   Dim asep As Separator
-  
+  Dim tipimage As Picturebox
   Dim max_obj_w As Integer = 0  'used to make labels
   Dim l As Integer                 'of the same width
   Dim align_objs As New Object[]        '
@@ -752,9 +752,8 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     If CurrentParams[0] = "TITLE" Then 'Let's Draw a readonly TextBox
       AnHbox = New HBox(myscrollview) As "dynaobj"
       AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
-      AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
       AnHbox.spacing = True
-      
+      AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
       'AnHbox.width = 400
       aTitle = New Label(AnHbox) As "dynaobj"
       aTitle.name = "NOPARSE" & CurrentParams[CurrentParams.count - 2] & ".CommentLabel"
@@ -768,6 +767,36 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       asep = New Separator(myscrollview)
       Goto prossimo
     Endif
+    
+    
+    If CurrentParams[0] = "TIP" Then 'image + label
+         asep = New Separator(myscrollview)
+         AnHbox = New HBox(myscrollview) As "dynaobj"
+         AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
+         AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
+         AnHbox.spacing = True
+         tipimage = New PictureBox(AnHbox)
+         tipimage.Picture = picture["icon:/medium/warning"]
+         tipimage.stretch = False
+         tipimage.w = tipimage.Picture.Image.w
+         tipimage.h = tipimage.Picture.Image.w
+         
+         'AnHbox.width = 400
+         aTitle = New Label(AnHbox) As "dynaobj"
+         aTitle.name = "NOPARSE" & CurrentParams[CurrentParams.count - 2] & ".CommentLabel"
+         aTitle.text = CurrentParams[1]
+         aTitle.Font.italic = True
+         anhbox.Foreground = Color.TooltipForeground 'Color.Lighter(Color.TextForeground)
+         anhbox.background = Color.TooltipBackground
+         anhbox.margin = True
+         aTitle.expand = True
+         aTitle.Alignment = Align.Left
+         aTitle.border = Border.None
+
+         AnHBOX.height = tipimage.Picture.h + (Desktop.scale * 2)
+
+         Goto prossimo
+       Endif
     'Write the comment
     If CurrentParams[CurrentParams.Count - 1] <> "" Then
         AComment = New Label(myscrollview) As "dynaobj"
