@@ -361,18 +361,18 @@ Private Sub draw_filters_audio_cfg()
   'Dynaudnorm lavfi
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
     AllParams.Add(["TITLE", "- Dynamic Audio Normalizer -", "dynaudnorm0", ""])
-    AllParams.add(["RANGE", "Frame length in msec", "10", "50", "8000", "dynaudnorm1", ""])
-    AllParams.add(["RANGE", "Filter size (odd numbers only!)", "3", "11", "301", "dynaudnorm2", ""])
-    AllParams.add(["RANGEFLOAT", "Peak value", "0.1", "0.95", "1", "dynaudnorm3", ""])
-    AllParams.add(["RANGE", "Max amplification factor", "1", "5", "100", "dynaudnorm4", ""])
+    AllParams.add(["RANGE", "Frame length in msec", "10", "500", "8000", "dynaudnorm1", ""])
+    AllParams.add(["RANGE", "Filter size (odd numbers only!)", "3", "3", "301", "dynaudnorm2", ""])
+    AllParams.add(["RANGEFLOAT", "Peak value", "0.1", "1", "1", "dynaudnorm3", ""])
+    AllParams.add(["RANGE", "Max amplification factor", "1", "10", "100", "dynaudnorm4", ""])
     AllParams.add(["RANGEFLOAT", "Target RMS", "0", "0", "1", "dynaudnorm5", ""])
-    AllParams.add(["RANGE", "Enable channel coupling", "0", "1", "1", "dynaudnorm6", ""])
-    AllParams.add(["ROCHOOSE", "Enable channel coupling", "0 - disable", "1 - enable", "dynaudnorm7", ""])
-    'AllParams.add(["RANGE", "Enable alternative boundary mode", "0", "0", "1", "dynaudnorm8", ""])
-    AllParams.add(["ROCHOOSE", "Enable alternative boundary mode", "0 - disable", "1 - enable", "dynaudnorm8", ""])
+    AllParams.add(["ROCHOOSE", "Enable channel coupling", "1 - enable", "0 - disable", "dynaudnorm6", ""])
+    AllParams.add(["ROCHOOSE", "Enable DC bias correction", "0 - disable", "1 - enable", "dynaudnorm7", ""])
+    AllParams.add(["ROCHOOSE", "Enable alternative boundary mode", "1 - enable", "0 - disable", "dynaudnorm8", ""])
     AllParams.add(["RANGEFLOAT", "Compress factor", "0", "0", "30", "dynaudnorm9", ""])    
     Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, False,,, "lavfi")
     AllParams.Clear
+    'or 50 11 1 5  0 0 0 0 0
 
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom11", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom12", ("E.g.:resample=44100:1:2,hrtf=s")])
