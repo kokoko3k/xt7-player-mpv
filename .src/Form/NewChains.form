@@ -470,119 +470,147 @@
       Index = 2
       Text = ("vdpau")
       { VdPauScrollView ScrollView
-        MoveScaled(2,-3,52,35)
+        MoveScaled(4,2,52,41)
         Expand = True
         Arrangement = Arrange.Vertical
         Border = False
+        { Label14 Label
+          MoveScaled(0,0,46,3)
+          Font = Font["Italic,-1"]
+          Foreground = Color.TextForeground
+          AutoResize = True
+          Text = ("Override autodetected display refresh rate value")
+          Alignment = Align.Left
+        }
         { vdpauParseMeHBox1 HBox
-          MoveScaled(0,2,45,6)
+          MoveScaled(0,3,45,5)
           AutoResize = True
           Padding = 8
-          { CheckBox21vdpau CheckBox
-            MoveScaled(1,1,17,4)
-            #Translate = False
-            Tag = "sharpen="
-            Text = "sharpen"
+          { CheckBox32vaapi2 CheckBox
+            MoveScaled(1,1,26,4)
+            Tag = "fps="
+            Text = ("Display refresh rate")
           }
-          { ComboBox6vdpau ComboBox
-            MoveScaled(19,1,24,4)
+          { SpinBox1 SpinBox
+            MoveScaled(31,1,9,4)
             #Translate = False
-            Expand = True
-            ReadOnly = True
-            List = ["-1", "-0.9", "-0.8", "-0.7", "-0.6", "-0.5", "-0.4", "-0.3", "-0.2", "-0.1", "0 - no sharpen", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"]
-            Text = "0 - no sharpen"
+            MinValue = -1
+            MaxValue = 1000
           }
+        }
+        { Label15 Label
+          MoveScaled(0,8,46,3)
+          Font = Font["Italic,-1"]
+          Foreground = Color.TextForeground
+          AutoResize = True
+          Text = ("Detect whether a compositing window manager is active.")
+          Alignment = Align.Left
         }
         { vdpauParseMeHBox2 HBox
-          MoveScaled(0,8,45,6)
+          MoveScaled(0,11,45,5)
           AutoResize = True
           Padding = 8
-          { CheckBox22vdpau CheckBox
-            MoveScaled(1,1,17,4)
-            #Translate = False
-            Tag = "denoise="
-            Text = "denoise"
+          { CheckBox32vaapi3 CheckBox
+            MoveScaled(1,1,26,4)
+            Tag = "composite-detect="
+            Text = ("detect composite")
           }
-          { ComboBox7vdpau ComboBox
+          { ComboBox1 ComboBox
             MoveScaled(19,1,24,4)
             #Translate = False
-            Expand = True
             ReadOnly = True
-            List = ["0 - no denoise", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"]
-            Text = "0 - no denoise"
+            List = ["yes", "no"]
+            Text = "yes"
           }
         }
-        { vdpauParseMeHBox7 HBox
-          MoveScaled(0,14,45,6)
+        { Label16 Label
+          MoveScaled(0,16,46,3)
+          Font = Font["Italic,-1"]
+          Foreground = Color.TextForeground
           AutoResize = True
-          Padding = 8
-          { CheckBox27vdpau CheckBox
-            MoveScaled(1,1,17,4)
-            #Translate = False
-            Tag = "hqscaling="
-            Text = "hqscaling"
-          }
-          { ComboBox10vdpau ComboBox
-            MoveScaled(19,1,24,4)
-            #Translate = False
-            Expand = True
-            ReadOnly = True
-            List = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-            Text = "0 - Use default VDPAU scaling"
-          }
+          Text = ("Queue video frame changes at most this many milliseconds in advance")
+          Alignment = Align.Left
         }
         { vdpauParseMeHBox3 HBox
-          MoveScaled(0,20,45,6)
+          MoveScaled(0,19,45,5)
           AutoResize = True
           Padding = 8
-          { CheckBox23vdpau CheckBox
-            MoveScaled(1,1,17,4)
-            #Translate = False
-            Tag = "deint="
-            Text = "deint"
+          { CheckBox32vaapi4 CheckBox
+            MoveScaled(1,1,26,4)
+            Tag = "queuetime_windowed="
+            Text = ("queue video frames (ms) windowed")
           }
-          { ComboBox8vdpau ComboBox
-            MoveScaled(19,1,24,4)
+          { SpinBox2 SpinBox
+            MoveScaled(31,1,9,4)
             #Translate = False
-            Expand = True
-            ReadOnly = True
-            List = ["0 - No deinterlacing", "1 - Show only first field", "2 - Bob deinterlacing", "3 - Motion adaptive", "4 - Motion adaptive with edge-guided interpolation"]
-            Text = "0 - No deinterlacing"
+            MaxValue = 1000
+            Value = 50
           }
         }
         { vdpauParseMeHBox4 HBox
-          MoveScaled(0,27,45,6)
+          MoveScaled(0,24,45,5)
           AutoResize = True
           Padding = 8
-          { CheckBox24vdpau CheckBox
-            MoveScaled(1,0,18,4)
-            #Translate = False
-            Tag = "chroma-deint"
-            Text = "chroma-deint"
+          { CheckBox32vaapi5 CheckBox
+            MoveScaled(1,1,26,4)
+            Tag = "queuetime_fs="
+            Text = ("queue video frames (ms) fullscreen")
           }
+          { SpinBox3 SpinBox
+            MoveScaled(31,1,9,4)
+            #Translate = False
+            MaxValue = 1000
+            Value = 50
+          }
+        }
+        { Label17 Label
+          MoveScaled(1,29,45,3)
+          Font = Font["Italic,-1"]
+          Foreground = Color.TextForeground
+          AutoResize = True
+          Text = ("Allocate this many output surfaces to display video frames")
+          Alignment = Align.Left
         }
         { vdpauParseMeHBox5 HBox
-          MoveScaled(0,33,45,6)
+          MoveScaled(1,32,45,5)
           AutoResize = True
           Padding = 8
-          { CheckBox25vdpau CheckBox
-            MoveScaled(1,0,18,4)
+          { CheckBox32vaapi6 CheckBox
+            MoveScaled(1,1,26,4)
+            Tag = "output_surfaces="
+            Text = ("surfaces number")
+          }
+          { SpinBox4 SpinBox
+            MoveScaled(31,1,9,4)
             #Translate = False
-            Tag = "pullup"
-            Text = "pullup"
+            MinValue = 2
+            MaxValue = 15
+            Value = 3
           }
         }
-        { vdpauParseMeHBox9 HBox
-          MoveScaled(1,40,45,6)
+        { Label18 Label
+          MoveScaled(1,37,50,3)
+          Font = Font["Italic,-1"]
+          Foreground = Color.TextForeground
+          AutoResize = True
+          Text = ("Never accept RGBA input.")
+          Alignment = Align.Left
+        }
+        { vdpauParseMeHBox6 HBox
+          MoveScaled(0,40,49,5)
           AutoResize = True
           Padding = 8
-          { CheckBox29vdpau CheckBox
-            MoveScaled(1,1,18,4)
-            Text = ("Additional options")
+          { CheckBox32vaapi7 CheckBox
+            MoveScaled(1,1,26,4)
+            Tag = "force-yuv="
+            Text = ("Force YUV")
           }
-          { TextBox6vdpau TextBox
-            MoveScaled(22,1,22,4)
-            Expand = True
+          { ComboBox2 ComboBox
+            MoveScaled(19,1,24,4)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "yes"
           }
         }
       }
