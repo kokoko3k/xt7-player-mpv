@@ -29,13 +29,17 @@ Property tag As Variant
   End
 
 Public Sub ResetButton_Click()
-  Try Last.previous.value = Last.tag
-  If Not Error Then 
+  If Last.previous Is Combobox Then
+    'default combobox is the first item, which could be blank for translation issues.
+    'try to restore the second one too if the first is blank.
+    Try Last.previous.text = Last.previous.List[0]
+    If Last.previous.text = "" Then Try Last.previous.text = Last.previous.List[1]
     Return
-      Else
+  Endif
+
+  Try Last.previous.value = Last.tag
+  If Error Then 
     If Last.previous Is FloatSpinBox Then Last.tag = Replace(Last.tag, ".", ",")
     Try Last.previous.value = Last.tag
-    If Not Error Then Return
   Endif
-  Try Last.previous.text = Last.tag
 End
