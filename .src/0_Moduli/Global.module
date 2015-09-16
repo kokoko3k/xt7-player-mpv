@@ -768,7 +768,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       Goto prossimo
     Endif
     
-    
     If CurrentParams[0] = "TIP" Then 'image + label
          asep = New Separator(myscrollview)
          AnHbox = New HBox(myscrollview) As "dynaobj"
@@ -780,7 +779,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
          tipimage.stretch = False
          tipimage.w = tipimage.Picture.Image.w
          tipimage.h = tipimage.Picture.Image.w
-         
          'AnHbox.width = 400
          aTitle = New Label(AnHbox) As "dynaobj"
          aTitle.name = "NOPARSE" & CurrentParams[CurrentParams.count - 2] & ".CommentLabel"
@@ -815,8 +813,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
       AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
       AnHbox.spacing = True
-
-'AnHBOX.Spacing = 8
       If TheTooltip <> "" Then AnHbox.Tooltip = TheTooltip
         Else
       MyScrollView.Arrangement = Arrange.LeftRight 'With Vslider we must arrange horizontally
@@ -834,11 +830,9 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
         ALabel = New Label(AnHBox) As "dynaobj"
         ALabel.name = CurrentParams[CurrentParams.count - 2] & ".Label"
         ALabel.text = CurrentParams[1]
-
         l = alabel.Font.TextWidth(alabel.text)
         If l > max_obj_w Then max_obj_w = l
         align_objs.Add(alabel)
-
         ALabel.font = TheTabStrip.font
         ALabel.Foreground = Color.TextForeground
           Else
@@ -870,7 +864,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       ATextBox.expand = True
       ATextBox.refresh
 
-
     'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
     Else If CurrentParams[0] = "SUBLABEL" Then 'Let's Draw a Textlabel
       'AnHBOX.padding = 3
@@ -895,7 +888,11 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       Next 'i
       AComboBox.text = CurrentParams[2]
       AComboBox.expand = True
-      
+
+      ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
+      ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"
+      ResetDefault.tag = CurrentParams[2]
+
     Else If CurrentParams[0] = "ROCHOOSE" Then       'Let's Draw a readonky ComboBox
     'Syntax for TheParameters is: ["CHOOSE", Caption, Choice1,...., ChoiceN, CheckBoxName,Comment]
       AComboBox = New ComboBox(AnHBox) As "dynaobj"
@@ -910,6 +907,10 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       AComboBox.text = CurrentParams[2]
       AComboBox.expand = True
 
+      ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
+      ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"
+      ResetDefault.tag = CurrentParams[2]
+
 'AllParams.Add(["VSLIDER", "31", "-12", "0", "12", "Equalizer1", ""])
 '                    0       1     2     3    4        5          6
 
@@ -919,7 +920,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       MyVslider = New VSlider(AnHBox) As "dynaobj"
       MyVslider.Arrangement = Arrange.Vertical
       MyVslider.Name = CurrentParams[CurrentParams.Count - 2] & ".Vslider"
-      
+
       i = CurrentParams[2]
       MyVslider.MinValue = i
       i = CurrentParams[4]
@@ -987,8 +988,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
         f = CurrentParams[3]
         AFloatSpinBox.value = f
         AFloatSpinBox.expand = True
-        ' AFloatSpinBox.Width = 300
-        ' AFloatSpinBox.Background = Color.red
 
    ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
         ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"

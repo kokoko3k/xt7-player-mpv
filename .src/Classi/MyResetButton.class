@@ -30,8 +30,12 @@ Property tag As Variant
 
 Public Sub ResetButton_Click()
   Try Last.previous.value = Last.tag
-  If Error Then
+  If Not Error Then 
+    Return
+      Else
     If Last.previous Is FloatSpinBox Then Last.tag = Replace(Last.tag, ".", ",")
     Try Last.previous.value = Last.tag
+    If Not Error Then Return
   Endif
+  Try Last.previous.text = Last.tag
 End
