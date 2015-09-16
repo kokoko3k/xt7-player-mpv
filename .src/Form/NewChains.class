@@ -54,7 +54,7 @@ Private Sub Init_filters_video()
   Dim filters_video_list As New String[]
   Dim filter As String
   filters_video_list = ["Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "Expand"]
-  filters_video_list.Insert(["Stereo3D", "vdpaupp", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
+  filters_video_list.Insert(["Stereo3D", "vdpaupp", "vavpp", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
   Next
@@ -578,6 +578,12 @@ Private Sub draw_filters_video_cfg()
   Global.DrawGui(AllParams, "vdpaupp", aTabstrip, Switchable,,, "")
   AllParams.Clear
 
+  AllParams.Add(["TITLE", "- VAAPI video postprocessing - ", "vavpp0", ""])
+  AllParams.Add(["ROCHOOSE", "deint=", "bob", "first-field", "weave", "motion-adaptive", "motion-compensated", "vvavpp1", ("Select the deinterlacing algorithm.")])
+  AllParams.Add(["ROCHOOSE", "interlaced-only=", "yes", "no", "vavpp2", ("If yes (default), only deinterlace frames marked as interlaced.")])
+  AllParams.Add(["TIP", ("This filter only works with vaapi and opengl video outputs"), "vavpp3", ""])
+  Global.DrawGui(AllParams, "vavpp", aTabstrip, Switchable,,, "")
+  AllParams.Clear
   
   'stereo3d=[in:out]
   AllParams.Add(["CHOOSE", ("Input format"), ("sbsl - side by side parallel (left eye left, right eye right)"), ("sbsr - side by side crosseye (right eye left, left eye right)"), ("abl - above-below (left eye above, right eye below)"), ("abr - above-below (right eye above, left eye below)"), ("ab2l - above-below with half height resolution (left eye above, right eye below)"), ("ab2r - above-below with half height resolution (right eye above, left eye below)"), "stereo3d1", ""])

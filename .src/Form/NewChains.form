@@ -37,7 +37,7 @@
     Text = ("Video Filters")
     Picture = Picture["icon:/small/video"]
     { filters_video_container ScrollView
-      MoveScaled(1,2,30,31)
+      MoveScaled(1,2,30,44)
       Background = Color.TextBackground
       Arrangement = Arrange.Vertical
     }
@@ -639,27 +639,8 @@
             Text = ("default - use implementation default (default)\n")
           }
         }
-        { vaapiParseMeHBox12 HBox
-          MoveScaled(1,8,45,6)
-          AutoResize = True
-          Padding = 8
-          { CheckBox32vaapi CheckBox
-            MoveScaled(1,1,17,4)
-            #Translate = False
-            Tag = "deint="
-            Text = "deint"
-          }
-          { ComboBox13vaapi ComboBox
-            MoveScaled(19,1,24,4)
-            #Translate = False
-            Expand = True
-            ReadOnly = True
-            List = ["first-field", "bob"]
-            Text = "no"
-          }
-        }
         { vaapiParseMeHBox14 HBox
-          MoveScaled(1,15,45,6)
+          MoveScaled(1,7,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox1vaapi CheckBox
