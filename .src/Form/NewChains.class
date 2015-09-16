@@ -35,7 +35,8 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "drc", "karaoke", "extrastereo", "scaletempo", "dynaudnorm", "volume", "CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"]
+  filters_audio_list = ["equalizer", "drc", "karaoke", "extrastereo", "scaletempo", "dynaudnorm", "volume"]
+  filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
       draw_list_item(filters_audio_container, filter, True)
@@ -53,7 +54,7 @@ Private Sub Init_filters_video()
   Dim filters_video_list As New String[]
   Dim filter As String
   filters_video_list = ["Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "Expand"]
-  filters_video_list.Insert(["Stereo3D", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
+  filters_video_list.Insert(["Stereo3D", "vdpaupp", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
   Next
@@ -564,6 +565,19 @@ Private Sub draw_filters_video_cfg()
   Global.DrawGui(AllParams, "yadif", aTabstrip, NotSwitchable)
   AllParams.Clear
   
+  AllParams.Add(["TITLE", "- VDPAU video postprocessing - ", "vdpaupp0", ""])
+  AllParams.Add(["RANGEFLOAT", "sharpen=", "-1", "0.5", "1", "vdpaupp1", ("Sharpen filter, negative values will blur the picture")])
+  AllParams.Add(["RANGEFLOAT", "denoise=", "0", "0.5", "1", "vdpaupp2", ("Denoise filter")])
+  AllParams.Add(["ROCHOOSE", "deint=", "0 - disabled", "1 - enabled", "vdpaupp3", ("Wheater deinterlacing is enabled")])
+  AllParams.Add(["ROCHOOSE", "deint-mode=", "temporal", "temporal-spatial", "bob", "first-field", "vdpaupp4", ("Deinterlacing mode")])
+  AllParams.Add(["ROCHOOSE", "chroma-deint=", "yes", "no", "vdpaupp5", ("Set to no if having performance issue with deinterlacing")])
+  AllParams.Add(["ROCHOOSE", "pullup=", "no", "yes", "vdpaupp6", ("Try to apply inverse telecine, needs motion adaptive temporal deinterlacing.")])
+  AllParams.Add(["ROCHOOSE", "interlaced-only=", "yes", "no", "vdpaupp7", ("If yes (default), only deinterlace frames marked as interlaced.")])
+  AllParams.Add(["ROCHOOSE", "hqscaling=", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "vdpaupp8", ("Apply high quality VDPAU scaling (needs capable hardware).")])
+  AllParams.Add(["TIP", ("This filter only works with vdpau and opengl video outputs"), "vdpaupp9", ""])
+  Global.DrawGui(AllParams, "vdpaupp", aTabstrip, Switchable,,, "")
+  AllParams.Clear
+
   
   'stereo3d=[in:out]
   AllParams.Add(["CHOOSE", ("Input format"), ("sbsl - side by side parallel (left eye left, right eye right)"), ("sbsr - side by side crosseye (right eye left, left eye right)"), ("abl - above-below (left eye above, right eye below)"), ("abr - above-below (right eye above, left eye below)"), ("ab2l - above-below with half height resolution (left eye above, right eye below)"), ("ab2r - above-below with half height resolution (right eye above, left eye below)"), "stereo3d1", ""])
