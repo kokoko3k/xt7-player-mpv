@@ -311,12 +311,14 @@ Private Sub draw_filters_audio_cfg()
 
 
   'extrastereo[=mul]
+  AllParams.Add(["TITLE", "- Adds live effect to playback -", "ExtraStereo0", ""])
   AllParams.add(["RANGEFLOAT", ("Amount"), "0", "2.25", "10", "ExtraStereo1", ""])
   Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable)
   AllParams.Clear
 
 
   'lavcac3enc
+  AllParams.Add(["TITLE", "- Encode audio to AC-3 at runtime -", "lavcac3enc0", ""])
   AllParams.add(["ROCHOOSE", "tospdif=", "yes", "no", "lavcac3enc1", ("Output raw AC-3 stream if no, output to S/PDIF for pass-through if yes (default).")])
   AllParams.add(["ROCHOOSE", "bitrate=", "auto", "96", "128", "192", "224", "320", "448", "512", "640", "lavcac3enc2", ("The bitrate use for the AC-3 stream.")])
   AllParams.add(["ROCHOOSE", "minch=", "3", "2", "3", "4", "5", "6", "lavcac3enc3", ("If the input channel number is less than <minchn>, the filter will detach itself (default: 3).")])
@@ -325,12 +327,14 @@ Private Sub draw_filters_audio_cfg()
   
   
   'Karaoke
+  AllParams.Add(["TITLE", "- Voice removal filter -", "karaoke0", ""])
   Global.DrawGui(AllParams, "karaoke", aTabstrip, NotSwitchable)
   AllParams.Clear
 
 
 
   'volume[=<volumedb>[:...]]
+    AllParams.Add(["TITLE", "- Software volume control -", "Volume0", ""])
     AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
     AllParams.add(["RANGE", "replaygain-preamp=", "-20", "0", "20", "Volume4", ("Pre-amplification in dB to apply to the replaygain gain")])
     AllParams.add(["ROCHOOSE", "replaygain-track=", "yes", "no", "Volume2", ("Use track-gain from replaygain metadata value")])
@@ -342,7 +346,7 @@ Private Sub draw_filters_audio_cfg()
     
   'scaletempo[=option1:option2:...]
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
-
+    AllParams.Add(["TITLE", "- Scales audio tempo preserving pitch -", "scaletempo0", ""])
     AllParams.add(["ROCHOOSE", "speed=", "both", "tempo", "pitch", "none", "scaletempo1", ("Runtime response to speed change")])
     AllParams.add(["RANGEFLOAT", "scale=", "0.1", "1", "4", "scaletempo5", ""])
     AllParams.add(["RANGE", "stride=", "5", "60", "500", "scaletempo2", ""])
@@ -370,6 +374,7 @@ Private Sub draw_filters_audio_cfg()
     AllParams.Clear
     'or 50 11 1 5  0 0 0 0 0
 
+    AllParams.Add(["TITLE", "- Custom video filters - ", "ACustom000", ""])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom11", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom12", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom13", ("E.g.:resample=44100:1:2,hrtf=s")])
@@ -389,7 +394,7 @@ Private Sub draw_filters_audio_cfg()
       
     Endif
     AllParams.Clear
-  
+    AllParams.Add(["TITLE", "- Custom video filters - ", "ACustom001", ""])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom21", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom22", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom23", ("E.g.:resample=44100:1:2,hrtf=s")])
@@ -400,9 +405,9 @@ Private Sub draw_filters_audio_cfg()
         Else
       Global.DrawGui(AllParams, "CustomAudio2", aTabstrip, Switchable)
     Endif
-
     AllParams.Clear
     
+    AllParams.Add(["TITLE", "- Custom video filters - ", "ACustom002", ""])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom26", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom27", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom28", ("E.g.:resample=44100:1:2,hrtf=s")])
@@ -453,6 +458,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
   
   'expand[ = w: h: x: y: o: a: r]
+  AllParams.Add(["TITLE", "- Expands (not scales) video resolution -", "Expand0", ""])
   AllParams.add(["RANGE", ("Width"), "-2048", "0", "2048", "Expand1", ("0 to Disable; Negative as offset to original value")])
   AllParams.add(["RANGE", ("Height"), "-2048", "0", "2048", "Expand2", ("0 to Disable; Negative as offset to original value")])
   AllParams.add(["RANGE", ("X Position"), "-1", "-1", "2048", "Expand3", ("Original image position; -1 to center")])
@@ -473,6 +479,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
   
   'scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]
+  AllParams.Add(["TITLE", "- Software scaler -", "Scale0", ""])
   AllParams.Add(["RANGE", ("Width"), "-11", "0", "2048", "Scale1", ("0 disables scaling,see man below")])
   AllParams.Add(["RANGE", ("Height"), "-11", "0", "2048", "Scale2", ("0 disables scaling,see man below")])
   AllParams.Add(["FREE", ("Scaling Parameters"), "", "Scale5", ("Depends on sws, leave blank if unsure")])
@@ -509,7 +516,7 @@ Private Sub draw_filters_video_cfg()
   Global.DrawGui(AllParams, "uspp", aTabstrip, Switchable,,, "lavfi")
   AllParams.Clear
 
-
+  AllParams.Add(["TITLE", "- Custom video filters - ", "vcustom001", ""])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom11", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom12", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom13", ("E.g.:mirror,smartblur=0.4:0.5:10")])
@@ -517,7 +524,8 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom15", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   Global.DrawGui(AllParams, "CustomVideo1", aTabstrip, Switchable)
   AllParams.Clear
-      
+
+  AllParams.Add(["TITLE", "- Custom video filters - ", "vcustom002", ""])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom21", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom22", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom23", ("E.g.:mirror,smartblur=0.4:0.5:10")])
@@ -526,6 +534,7 @@ Private Sub draw_filters_video_cfg()
   Global.DrawGui(AllParams, "CustomVideo2", aTabstrip, Switchable)
   AllParams.Clear
 
+  AllParams.Add(["TITLE", "- Custom video filters - ", "vcustom003", ""])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom26", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom27", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom28", ("E.g.:mirror,smartblur=0.4:0.5:10")])
@@ -535,6 +544,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
       
   'eq2[=gamma:contrast:brightness:saturation:rg:gg:bg:weight]
+  AllParams.Add(["TITLE", "- Software equalizer -", "Eq0", ""])
   AllParams.add(["RANGEFLOAT", ("Gamma"), "0.1", "1.0", "10", "Eq1", ("Initial gamma value(default: 1.0)")])
   AllParams.add(["RANGEFLOAT", ("Contrast"), "-2.0", "1.0", "2", "Eq2", ("Initial contrast (-x = negative image)")])
   AllParams.add(["RANGEFLOAT", ("Brightness"), "-1", "0", "1", "Eq3", ("Initial brightness (default: 0.0)")])
@@ -555,6 +565,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
   
  'yadif=[mode[:field_dominance]]
+  AllParams.Add(["TITLE", "- Yet Another Deinterlace Filter. -", "yadif0", ""])
   AllParams.Add(["CHOOSE", ("Deinterlace mode"), "", ("frame - Output 1 frame for each frame."), ("field - Output 1 frame for each field."), ("frame-nospatial - Like 0 but skips spatial interlacing check."), ("field-nospatial - Like 1 but skips spatial interlacing check"), "yadif1", ""])
   Global.DrawGui(AllParams, "yadif", aTabstrip, NotSwitchable)
   AllParams.Clear
@@ -580,6 +591,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
   
   'stereo3d=[in:out]
+  AllParams.Add(["TITLE", "- Converts betweed stereoscopic image formats - ", "stereo3d0", ""])
   AllParams.Add(["CHOOSE", ("Input format"), ("sbsl - side by side parallel (left eye left, right eye right)"), ("sbsr - side by side crosseye (right eye left, left eye right)"), ("abl - above-below (left eye above, right eye below)"), ("abr - above-below (right eye above, left eye below)"), ("ab2l - above-below with half height resolution (left eye above, right eye below)"), ("ab2r - above-below with half height resolution (right eye above, left eye below)"), "stereo3d1", ""])
   AllParams.add(["CHOOSE", ("Output format"), ("arcg - anaglyph red/cyan gray (red filter on left eye, cyan filter on right eye)"), ("arch - anaglyph red/cyan half colored (red filter on left eye, cyan filter on right eye)"), ("arcc - anaglyph red/cyan color (red filter on left eye, cyan filter on right eye)"), ("arcd - anaglyph red/cyan color optimized with the least squares projection of dubois (red filter on left eye, cyan filter on right eye)"), ("agmg - anaglyph green/magenta gray (green filter on left eye, magenta filter on right eye)"), ("agmh - anaglyph green/magenta half colored (green filter on left eye, magenta filter on right eye)"), ("agmc - anaglyph green/magenta colored (green filter on left eye, magenta filter on right eye)"), ("aybg - anaglyph yellow/blue gray (yellow filter on left eye, blue filter on right eye)"), ("aybh - anaglyph yellow/blue half colored (yellow filter on left eye, blue filter on right eye)"), ("aybc - anaglyph yellow/blue colored (yellow filter on left eye, blue filter on right eye)"), ("irl - Interleaved rows (left eye has top row, right eye starts on next row)"), ("irr - Interleaved rows (right eye has top row, left eye starts on next row)"), ("ml - mono output (left eye only)"), ("mr - mono output (right eye only)"), "stereo3d2", ""])  
   Global.DrawGui(AllParams, "stereo3d", aTabstrip, NotSwitchable)
