@@ -35,7 +35,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "drc", "karaoke", "extrastereo", "scaletempo", "dynaudnorm", "volume"]
+  filters_audio_list = ["equalizer", "karaoke", "extrastereo", "scaletempo", "dynaudnorm", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -309,12 +309,6 @@ Private Sub draw_filters_audio_cfg()
   Dim aTabstrip As Tabstrip = TabStrip_filters_audio
   ladspacompiledin = FMain.mplayer.supportsladspa()
 
-  AllParams.Clear
-  'drc[=method:target]
-  AllParams.add(["ROCHOOSE", ("Method"), "1", "2", "VolNorm1", ""])
-  AllParams.add(["RANGEFLOAT", ("Target"), "0", "0.25", "2", "VolNorm2", ""])
-  Global.DrawGui(AllParams, "drc", aTabstrip, NotSwitchable)
-  AllParams.Clear
 
   'extrastereo[=mul]
   AllParams.add(["RANGEFLOAT", ("Amount"), "0", "2.25", "10", "ExtraStereo1", ""])
