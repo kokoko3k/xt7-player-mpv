@@ -751,7 +751,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   For Each CurrentParams In TheParameters
     If CurrentParams[0] = "TITLE" Then 'Let's Draw a readonly TextBox
       AnHbox = New HBox(myscrollview) As "dynaobj"
-      AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
+      AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".NoparseBox"
       AnHbox.spacing = True
       AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
       'AnHbox.width = 400
@@ -772,7 +772,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     If CurrentParams[0] = "TIP" Then 'image + label
          asep = New Separator(myscrollview)
          AnHbox = New HBox(myscrollview) As "dynaobj"
-         AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
+         AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".NoparseBox"
          AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
          AnHbox.spacing = True
          tipimage = New PictureBox(AnHbox)
