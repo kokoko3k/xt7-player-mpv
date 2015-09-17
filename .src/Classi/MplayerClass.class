@@ -488,6 +488,10 @@ Public Function do_play(filename As String, Optional string_options As String = 
   Return True
 End
 
+Public Struct chapter
+  title As String
+  start_time As String
+End Struct
 
 Public Struct CDINFO
   Artist As String
@@ -1481,8 +1485,47 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
   Endif
 End
 
+' Public Function old_get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeoutcs As Integer = 500)
+'   Dim name, dataout, p As String
+'   Dim got As Boolean
+'   For Each name In names
+'     dataout = "print-text "
+'     dataout &= "ANS_" & name & "|"
+'     dataout &= "${"
+'     dataout &= name
+'     dataout &= ":(unavailable)}"
+'     'clear previous answer
+'     If wait_answer Then setP(name, Null)
+'     'say mpv to answer 
+'     send(dataout)
+'   Next 'name
+'   
+'   If Not wait_answer Then Return
+'   'wait for all of the answers
+'   Repeat
+'     If (Not got) Then
+'       Wait 0.01
+'       timeoutcs -= 0.01
+'     Endif
+'     got = True
+'     For Each name In names
+'       p = getP(name) 
+'       If wait_unavailable Then 
+'         If (p <> Null) And (p <> "(unavailable)") Then names.Remove(names.Find(name))
+'           Else
+'         If (p <> Null) Then names.Remove(names.Find(name))
+'       Endif
+'       got = (got And (p <> Null))
+'       If Not got Then 
+'         global.myDebug("waiting", name)
+'       Endif
+'     Next
+'   Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
+' End
+
 Public Function get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeoutcs As Integer = 500)
   Dim name, dataout, p As String
+  Dim unanswered As String = Chr(8) & "unanswered" & Chr(8) 'indica che mpv non ha risposto
   Dim got As Boolean
   For Each name In names
     dataout = "print-text "
@@ -1498,6 +1541,7 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
   
   If Not wait_answer Then Return
   'wait for all of the answers
+  setP(name, unanswered)
   Repeat
     If (Not got) Then
       Wait 0.01
@@ -1507,19 +1551,17 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
     For Each name In names
       p = getP(name) 
       If wait_unavailable Then 
-        If (p <> Null) And (p <> "(unavailable)") Then names.Remove(names.Find(name))
+        If (p <> unanswered) And (p <> "(unavailable)") Then names.Remove(names.Find(name))
           Else
-        If (p <> Null) Then names.Remove(names.Find(name))
+        If (p <> unanswered) Then names.Remove(names.Find(name))
       Endif
-      got = (got And (p <> Null))
+      got = (got And (p <> unanswered))
       If Not got Then 
         global.myDebug("waiting", name)
       Endif
     Next
   Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
 End
-
-
 
 Public Function paused() As Boolean
   Return get_property_mpv("pause") = "yes"
@@ -1926,4 +1968,36 @@ Public Function filters_available(audio As Boolean) As String[]
 End
 
 
+
+
+Public Function get_chapters(Optional cached As Boolean = False) As Chapter[]
+  Dim chapter_list As Chapter[]
+  Dim aChapter As Chapter
+  Dim cCount As Integer = 0
+  Dim i As Integer
+  Dim properties As String[]
+
+  Try cCount = get_property_mpv("chapter-list/count", (Not cached),, cached)
+  If cCount = 0 Then Return
+  
+  If Not cached Then 'ask chapters to mpv cached parameter is false
+    properties = New String[]
+    For i = 0 To cCount - 1
+      properties.Add("chapter-list/" & i & "/title")
+      properties.Add("=chapter-list/" & i & "/time")
+    Next
+    global.myDebug("asking for chapters...")
+    get_properties_mpv(properties, True, False, 20000)
+    global.myDebug("got chapters (or timeout?)")
+  Endif
+
+  chapter_list = New Chapter[]
+  For i = 0 To cCount - 1
+    aChapter = New Chapter
+    aChapter.title = getP("chapter-list/" & i & "/title")
+    aChapter.start_time = getP("=chapter-list/" & i & "/time")
+    chapter_list.Add(aChapter)
+  Next
+  Return chapter_list
+End
 

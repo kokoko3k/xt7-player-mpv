@@ -88,11 +88,16 @@
         Enabled = False
         { MenuTitles Menu
           Text = ("Titles")
-          Picture = Picture["icon:/16/book"]
+          Picture = Picture["icon:/small/book"]
+        }
+        { MenuChapters Menu
+          Text = ("Chapters")
+          Picture = Picture["icon:/small/view-detail"]
+          Enabled = False
         }
         { StreamsMenu Menu
           Text = ("Streams")
-          Picture = Picture["icon:/16/watch"]
+          Picture = Picture["icon:/small/watch"]
           Enabled = False
           { StreamsAudioMenu Menu
             Text = ("Audio")
@@ -1373,7 +1378,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-8.2857,18,4)
+              MoveScaled(9.4286,-9.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True

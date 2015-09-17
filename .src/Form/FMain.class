@@ -30,6 +30,11 @@ Public Struct EventInfo
   icon As String
 End Struct
 
+Public Struct chapter
+  title As String
+  start_time As String
+End Struct
+
 Private Function IsTabChildren(name As String, Optional index As Integer = 99999) As Boolean
   
   Dim found As Boolean = False
@@ -1657,7 +1662,7 @@ Public Sub ButtonStop_Click()
   mplayer.do_stop
   VideoBox.Refresh
   ShowAudioPanel(False)
-
+  menuchapters.enabled = False
   aspectmenu.visible = False
   videobox.clear
   Try ClearStreamsMenu()
@@ -1701,19 +1706,22 @@ End
 
 Public Sub ClearStreamsMenu()
   
-  Dim child As Menu
+  ' Dim child As Menu
+  ' 
+  ' Repeat
+  '   'clear all previous sub-menus
+  '   For Each child In Streamsaudiomenu.Children
+  '     child.delete
+  '   Next 'child
+  ' Until (Streamsaudiomenu.Children.count = 0)
+  ' Repeat
+  '   For Each child In Streamssubtitlesmenu.Children
+  '     child.delete
+  '   Next 'child
+  ' Until (Streamsaudiomenu.Children.count = 0) And (Streamssubtitlesmenu.Children.count = 0)
+  ClearMenu(Streamsaudiomenu)
+  ClearMenu(Streamssubtitlesmenu)
   
-  Repeat
-    'clear all previous sub-menus
-    For Each child In Streamsaudiomenu.Children
-      child.delete
-    Next 'child
-  Until (Streamsaudiomenu.Children.count = 0)
-  Repeat
-    For Each child In Streamssubtitlesmenu.Children
-      child.delete
-    Next 'child
-  Until (Streamsaudiomenu.Children.count = 0) And (Streamssubtitlesmenu.Children.count = 0)
   
 End
 
@@ -1812,6 +1820,37 @@ Public Function FillStreamsMenu()
 
 End
 
+
+
+Public Sub FillChaptersMenu()
+  Dim aChapter As Chapter
+  Dim Chapters As Chapter[]
+  Dim chaptermenu As Menu
+  Dim i As Integer
+  Try ClearMenu(menuchapters)
+
+  Try chapters = mplayer.get_chapters()
+  If chapters = Null Then Return
+  If chapters.count = 0 Then Return
+
+  menuchapters.enabled = True
+  i = 0
+  For Each aChapter In chapters
+    'global.myDebug(aChapter.title, aChapter.start_time)
+    chaptermenu = New Menu(menuchapters) As "chapter_menu_item"
+    chaptermenu.tag = i
+    chaptermenu.Picture = stock["small/play"]
+    chaptermenu.Text = "[" & mplayer.FormatTime(aChapter.start_time) & "] - " & aChapter.title
+    i += 1
+  Next 'aChapter
+End
+
+Public Sub chapter_menu_item_Click()
+  If Not mplayer.ProcessRunningOvr() Then Return
+  mplayer.set_property_mpv("chapter", Last.tag)
+End
+
+
 Public Sub menuopensubconfigurelanguages_Click()
 
   If (Not global.initearlyformsdone) Then InitEarlyForms()
@@ -1893,6 +1932,7 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
       SubMenu = New Menu(Menutitles) As "MenuswitchTitle"
       SubMenu.name = k
       SubMenu.caption = c
+      Submenu.picture = picture["icon:/small/book"]
       treeview1.Add(k, c, picture["icon:/16/directory"])
    Next 'title
    If Not (Lower(p) Like "dvd://menu*") Then
@@ -1927,6 +1967,7 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
     Endif
    Endif
 End
+
 
 
 Public Function makeiso6392(langcode As String) As String
@@ -2543,6 +2584,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Endif
 
   FillStreamsMenu()
+  FillChaptersMenu()
 
   If (Lower(Fullpath) Like "dvd://*") Then
     IsDVD = True
@@ -8332,7 +8374,6 @@ Public Sub CDDANext()
 End
 
 Public Sub CDDAPrev()
-
   If cddagrid.row = -1 Then cddagrid.row = 0
   If cddagrid.row = 0 Then
     Try cddagrid.row = (cddagrid.Rows.count - 1)
