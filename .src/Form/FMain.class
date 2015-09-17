@@ -1227,7 +1227,7 @@ Public Sub FillPropertiesGrid()
   PropertiesGrid[14, 1].text = mplayer.getP("audio-codec")
   'Try PropertiesGrid[15, 1].text = (CInt(mplayer.get_property_mpv("=audio-bitrate")) Div 1000) & "Kbps"
   Try PropertiesGrid[15, 1].text = mplayer.get_property_mpv("audio-bitrate")
-  
+
   If Not mplayer.getP("audioonly") Then
     PropertiesGrid[16, 1].text = mplayer.getP("width") & "x" & mplayer.getP("height")
     PropertiesGrid[17, 1].text = mplayer.getP("fps")
