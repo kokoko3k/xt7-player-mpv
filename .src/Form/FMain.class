@@ -3871,17 +3871,18 @@ Public Sub FullScreenSwitch()
       Endif
     Endif
   Else
-    SwitchToFS()
     If global.IsImgFile(mplayer.getP("fullpath")) Then mplayer.do_seek(0)
     'Disable kde effects?
-      If GeneralOptions.NoEffectsCheckbox.value Then
+    If GeneralOptions.NoEffectsCheckbox.value Then
+      Try KdeEffectsWereActive = DisableKDECompositing()
+      If Error Then
+        global.myDebug("Unable to disable kde effects, are you sure use kwin window manager?")
+        KdeEffectsWereActive = False
+          Else
         Wait 1 'workaround possible driver bugs
-        Try KdeEffectsWereActive = DisableKDECompositing()
-        If Error Then
-          global.myDebug("Unable to disable kde effects, are you sure use kwin window manager?")
-          KdeEffectsWereActive = False
-        Endif
       Endif
+    Endif
+    SwitchToFS()
   Endif
   ' ' ' zzzfake.cachingbox.x = (outerbox.w Div 2) - 33
   ' ' ' zzzfake.cachingbox.y = (outerbox.h Div 2) - 33
