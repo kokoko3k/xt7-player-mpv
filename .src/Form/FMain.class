@@ -101,6 +101,12 @@ Public Function TabSelectedDVD() As Boolean
 
 End
 
+Public Function TabSelectedCHAPTERS() As Boolean
+
+  Return IsTabChildren("NOPARSETABCHAPTERS")
+
+End
+
 Public Function TabSelectedDVB() As Boolean
 
   Return IsTabChildren("NOPARSETABDVB")
@@ -122,6 +128,12 @@ End
 Public Function TabSelectedCDDAAt(index As Integer) As Boolean
 
   Return IsTabChildren("NOPARSETABCDDA", index)
+
+End
+
+Public Function TabSelectedChaptersAt(index As Integer) As Boolean
+
+  Return IsTabChildren("NOPARSETABCHAPTERS", index)
 
 End
 
@@ -389,8 +401,6 @@ Public Sub AllInit_Pre()
   AspectMenu.visible = False
   Try Kill "/tmp/FakeInput.conf"
   Try Copy "FakeInput.conf" To "/tmp/FakeInput.conf"
-  SetDvdTabVisibility(False)
-  SetCDDATabVisibility(False)
   If Not (Exist(global.confpath & "/" & "Factory_Defaults.profile")) Then
     'inizializza prma tutto:
     InitEarlyForms()
@@ -409,6 +419,7 @@ Public Sub AllInit_Pre()
   HideGrid(dvbtGrid)
   SetDvdTabVisibility(False)
   SetCDDATabVisibility(False)
+  SetChaptersTabVisibility(False)
   SetStyle_early()
 
 End
@@ -924,6 +935,10 @@ Public Sub SetStyle_early()
   ProfilesListBox.font = Userfont
   ProfilesListBox.foreground = forecolor
   ProfilesListBox.background = backcolor
+  
+  chaptersgrid.font = Userfont
+  chaptersgrid.Foreground = forecolor
+  chaptersgrid.Background = backcolor
   
   CDDAGrid.font = Userfont
   CDDAGrid.Foreground = forecolor
@@ -2421,7 +2436,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   Dim doanalyze As Boolean = False
   Dim timeA As Float = 0
-  Dim n As Integer
+  Dim n, c As Integer
   Dim exportfile As String
   Dim opts As New Collection
   Dim data As String
@@ -2519,7 +2534,12 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   mplayer.set_option("volume", Initialvolume())
 
   If Lower(fullpath) = "dvd://" Then fullpath = "dvd:///" & generaloptions.DVDDeviceText.text
-  If Lower(fullpath) = "cdda://" Then fullpath = "cdda:///" & generaloptions.CDDADeviceText.text
+  If Lower(fullpath) = "cdda://" Then 
+    fullpath = "cdda:///" & generaloptions.CDDADeviceText.text
+      Else
+    SetCDDATabVisibility(False)
+  Endif
+        
   n = 0
   Repeat  'first try to play with generated options, then try to force with ytdl
     'If mplayer.do_play(mplayer.Media_FullPath, mplayer.currentoptions, False, MkvSubsWorkaround, cookieopts, dumpfile, doanalyze) Then
@@ -2565,7 +2585,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
 
   If (mplayer.getP("audioonly")) Then
-    'If (Not audioformshown) Then
     If Lower(audioform.AudioPanel.parent.name) <> Lower(outerbox.name) Then
       If (Not tageditmode) Then
         ShowAudioPanel(True)
@@ -2586,6 +2605,14 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   FillStreamsMenu()
   FillChaptersMenu()
 
+  If (mplayer.getP("audioonly")) Then
+    c = 0
+    Try c = mplayer.get_property_mpv("chapter-list/count",,, True)
+    If c > 0 Then
+      Show_and_fill_chapters_tab()
+    Endif
+  Endif
+  
   If (Lower(Fullpath) Like "dvd://*") Then
     IsDVD = True
     Try FillTitlesAndChaptersMenu()
@@ -2665,7 +2692,6 @@ Private Sub StartOverbrightAnalyze()
   VideoEqualizer.ZeroControls()
   mplayer.StartOverbrightAnalyze()
 End
-
 
 
 Public Sub addhistory(fullpath As String, Optional Savetime As String = "0")
@@ -2915,6 +2941,25 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
     Endif
     audioform.refresh
   Endif
+End
+
+Public Sub SetChaptersTabVisibility(visibility As Boolean)
+  
+  Dim i As Integer
+  Dim WasVisible As Boolean
+  'find dvd tab id:
+  For i = 0 To Leftsidetabs.count - 1
+    WasVisible = Leftsidetabs[i].Visible
+    Leftsidetabs[i].Visible = True
+    If TabSelectedChaptersAt(i) Then
+      Leftsidetabs[i].Visible = visibility
+      CddaTabId = i
+      Break
+    Endif
+    Leftsidetabs[i].Visible = WasVisible
+  Next 'i
+  If visibility Then Leftsidetabs.index = CddaTabId
+  
 End
 
 Public Sub SetCddaTabVisibility(visibility As Boolean)
@@ -3265,7 +3310,9 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
         Audioform.label15.text = CUSTOMTITLE_OLD
         Audioform.label18.text = CUSTOMTITLE_OLD
         AutoresizeAudioForm()
-      Endif
+          Else If PlayQueueIs = "chapters" Then
+            Try chaptersgrid.row = data_new
+    Endif
   
     Case "volume"
 
@@ -5147,7 +5194,7 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
   Dim mplayerwasrunning As Boolean 
   Dim togglepls_value As Boolean = TogglePls.value
   Try mplayerwasrunning = mplayer.ProcessRunningOvr() Or forcerunning
-  
+
   TogglePls.value = False 'or else mykill will play the next
   
   Stopmthumbler()
@@ -5156,7 +5203,7 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
   fmain.SeekBar.Value = 0
   SetProgress(seekbar.value)
   Object.unLock(fmain.SeekBar)
-  
+
   If (TabSelectedPlaylist() And CurrentQueue = "") Or CurrentQueue = "playlistgrid" Then
     MyPlaylist.SelectNext(PlaylistGrid, ShufflePls.value)
     Wait 0.025
@@ -5174,7 +5221,7 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
     Wait 0.025
     If mplayerwasrunning Then playselecteddvb()
   
-  
+
   Else If (TabSelectedBrowse() And CurrentQueue = "") Or CurrentQueue = "browse" Then
     Try BrowseSelectNext()
     Wait 0.025
@@ -5184,7 +5231,12 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
   Else If (TabSelectedCDDA() And CurrentQueue = "") Or CurrentQueue = "cdda" Then
     CDDANext()
     Wait 0.025
-  
+
+  Else If (TabSelectedCHAPTERS() And CurrentQueue = "") Or CurrentQueue = "chapters" Then
+    CHAPTERNEXT()
+    Wait 0.025
+
+
   Else If (TabSelectedYoutube() And CurrentQueue = "") Or CurrentQueue = "youtube" Then
     If mplayerwasrunning Then mplayer.do_stop() 'needed to see infos about next youtube item while it loads up
     Youtube.Select_NextTreeItem(youtubetree)
@@ -5301,7 +5353,10 @@ Public Sub ButtonPrev_Click()
   Else If TabSelectedCDDA() Then
     CDDAPrev()
     Wait 0.025
-    
+  Else If (TabSelectedCHAPTERS()) Then
+    CHAPTERPREV()
+    Wait 0.025
+
   Else If TabSelectedDVD() Then
     DVDPREV()
   Else If TabSelectedBrowse() Then
@@ -5457,8 +5512,8 @@ Public Sub PlayListGrid_DblClick()
   Endif
   If MouseInsideGrid(PlayListGrid) Then
     If global.IsPlaylist(selectedpath) Then myradiolabel = PlaylistGrid[Playlistgrid.row, MyPlaylist.Columnindex["Filename"]].text
-    Try Play(SelectedPath,, myradiolabel)
     SetActivePlayQueue("playlistgrid")
+    Try Play(SelectedPath,, myradiolabel)
   Endif
   playlistgrid.mouse = mouse.Default
 
@@ -5477,8 +5532,8 @@ Public Sub LibraryGrid_DblClick()
   Endif
   If MouseInsideGrid(Librarygrid) Then
     If global.IsPlaylist(selectedpath) Then myradiolabel = LibraryGrid[librarygrid.row, MyLibrary.Columnindex["Filename"]].text
-    Try Play(SelectedPath,, myradiolabel)
     SetActivePlayQueue("librarygrid")
+    Try Play(SelectedPath,, myradiolabel)
   Endif
   Try Last.mouse = mouse.Default
   
@@ -8387,6 +8442,45 @@ Public Sub CDDAPrev()
   mplayer.set_property_mpv("chapter", cddagrid.row)
 End
 
+
+
+
+Public Sub CHAPTERNext()
+  If chaptersgrid.row = -1 Then chaptersgrid.row = 0
+  If chaptersgrid.row = (chaptersgrid.Rows.count - 1) Then
+    Try chaptersgrid.row = 0
+    Global.IsNextSelected = False
+  Else
+    Try chaptersgrid.row = chaptersgrid.row + 1
+    Global.IsNextSelected = True
+  Endif
+  Try chaptersgrid.Rows[chaptersgrid.row].selected = True
+  If Not mplayer.ProcessRunningOvr() Then
+    play(chaptersgrid.tag)
+  Endif
+  mplayer.set_property_mpv("chapter", chaptersgrid.row)
+End
+
+Public Sub CHAPTERPrev()
+  If chaptersgrid.row = -1 Then chaptersgrid.row = 0
+  If chaptersgrid.row = 0 Then
+    Try chaptersgrid.row = (chaptersgrid.Rows.count - 1)
+  Else
+    Try chaptersgrid.row = chaptersgrid.row - 1
+  Endif
+  Try chaptersgrid.Rows[chaptersgrid.row].selected = True
+  If Not mplayer.ProcessRunningOvr() Then
+    play(chaptersgrid.tag)
+  Endif
+  mplayer.set_property_mpv("chapter", chaptersgrid.row)
+End
+
+
+
+
+
+
+
 Public Sub DVDNEXT()
   treeview1.movecurrent
   If treeview1.MoveBelow() Then 
@@ -8915,8 +9009,8 @@ Public Sub ActivateFile(fullpathitem As String)
   Else
     If Not global.isimgfile(fullpathitem) Then ComboHistory.AddHistory(urlbox, FileView1.dir)
     Try fileview1.current = selecteditem
-    Play(fullpathitem)
     SetActivePlayQueue("browse")
+    Play(fullpathitem)
   Endif
   
 End
@@ -9156,8 +9250,8 @@ Public Sub youtubeTree_Activate()
   If video_url <> "" Then
     If global.IsNetworkURI(video_url) Then
       ShowYtBox(youtubetree.tag[youtubeTree.current.key])
-      play(video_url)
       SetActivePlayQueue("youtube")
+      play(video_url)
       Try customtitle = yt_item.title
       Goto returnlabel
     Endif
@@ -10916,8 +11010,8 @@ Public Sub FileView1_KeyPress()
         urlbox.text = fileview1.dir & "/" & fileview1.selection[0]
         UrlBox_Click
           Else 'isfile
-        Play(fileview1.dir & "/" & fileview1.selection[0])
         SetActivePlayQueue("browse")
+        Play(fileview1.dir & "/" & fileview1.selection[0])
       Endif
     Endif
     Return
@@ -10974,7 +11068,6 @@ Private PlayQueueIs As String 'remember where the Last played item is from
     For i = 0 To Leftsidetabs.count - 1
       If Leftsidetabs[i].text Like "< * >" Then Leftsidetabs[i].text = Replace(Replace(Leftsidetabs[i].text, " >", ""), "< ", "")
     Next
-  
     PlayQueueIs = queue
     If Right(Leftsidetabs.Current.text) <> " >" Then Leftsidetabs.Current.text = "< " & Leftsidetabs.Current.text & " >"
   End
@@ -11641,3 +11734,50 @@ Public Sub Timer_mediainfo_Timer()
   Try FillPropertiesGrid()
 End
 
+Public Sub Show_and_fill_chapters_tab()
+  Dim g As Gridview = chaptersgrid
+  Dim c As Integer
+  Dim aChapter As Chapter
+  
+  'show
+  SetChaptersTabVisibility(True)
+  SetActivePlayQueue("chapters")
+  
+  'and fill if needed
+  If chaptersgrid.tag <> mplayer.getP("fullpath") Then
+    chaptersgrid.tag = mplayer.getP("fullpath")
+    g.clear
+    g.rows.count = 0
+    g.Columns.count = 1
+    For Each aChapter In mplayer.get_chapters(True)
+      g.rows.count += 1
+      g[g.Rows.max, 0].text = aChapter.title
+    Next
+    g.Columns[0].w = -1
+  Endif
+  
+  Try g.row = mplayer.get_property_mpv("=chapter")
+
+End
+
+Public Sub chaptersGrid_DblClick()
+  Dim r As Integer
+  Dim g As Gridview = chaptersgrid
+  Dim oc As New Collection
+  r = g.row
+  If Not mplayer.ProcessRunningOvr() Then
+    oc["start"] = "#" & CInt(g.row + 1)
+    play(chaptersgrid.Tag, oc)
+      Else
+    mplayer.set_property_mpv("chapter", r)
+  Endif
+  SetActivePlayQueue("chapters")
+End
+
+
+Public Sub chaptersGrid_KeyPress()
+  If (Key.code = Key.Return) Or (Key.code = Key.Enter) Then
+    chaptersGrid_DblClick()
+  Endif
+
+End
