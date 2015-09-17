@@ -1844,6 +1844,7 @@ Public Sub FillChaptersMenu()
   Dim i As Integer
   Try ClearMenu(menuchapters)
 
+  menuchapters.enabled = False
   Try chapters = mplayer.get_chapters()
   If chapters = Null Then Return
   If chapters.count = 0 Then Return
