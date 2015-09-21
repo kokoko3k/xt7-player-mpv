@@ -816,7 +816,7 @@
       Margin = True
       Padding = 4
       { Leftsidetabs TabStrip
-        MoveScaled(-1,-1,39,59)
+        MoveScaled(0,-2,39,59)
         Visible = False
         Tag = "1"
         Expand = True
@@ -1316,8 +1316,9 @@
         { VSplit1 VSplit
           MoveScaled(0,2,36,24)
           Expand = True
+          PopupMenu = "YoutubeTreePopup"
           { youtubetree TreeView
-            MoveScaled(5,1,35,10)
+            MoveScaled(11,1,35,10)
             Expand = True
           }
           { TimerTreeDelayExpand #Timer
@@ -1332,7 +1333,7 @@
             ToolTip = ("Click to open video page")
             Expand = True
             { YouVideoInfo TextLabel
-              MoveScaled(0,1,30,10)
+              MoveScaled(0,0,30,10)
               Visible = False
               Background = &H000000&
               Foreground = &HFFFFFF&
@@ -1403,7 +1404,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-9.2857,18,4)
+              MoveScaled(9.4286,-10.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1494,7 +1495,7 @@
           MoveScaled(1,11,36,15)
           Expand = True
           { GenresTree TreeView
-            MoveScaled(1,0,35,9)
+            MoveScaled(-2,0,35,9)
             Tag = "shoutcast"
             Expand = True
           }

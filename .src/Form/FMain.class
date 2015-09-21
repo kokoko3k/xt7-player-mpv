@@ -9453,7 +9453,7 @@ Public Sub youtubetree_Menu()
   Dim IsChild As Boolean = False
   'if the item has no parent then refresh it, else play it
   youtubetree.MoveCurrent
-  
+  If youtubetree.Current = Null Then Return
   If youtubetree.Current.Key Like "__MORERESULTS__*" Then Return
   
   IsChild = Not (youtubetree.moveparent())
