@@ -3,8 +3,8 @@
 'Copyright (C) 2007, 2008 Antonio Orefice
 
 Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
-Private exportfilespath As String
-Public exportfile As String
+'Private exportfilespath As String 'mpv 0.11 removed af_export filter :(
+'Public exportfile As String 'mpv 0.11 removed af_export filter :(
 Public albumviewtexlen As Integer = 30
 Public mouseonfsform As Boolean = False
 Public IceRadio As New IceCastClass
@@ -392,8 +392,8 @@ Public Sub AllInit_Pre()
   VersionCheck()
   'MakeProfilePath() <--maininit already did this
   MakeScreenshotsPath()
-  Try Mkdir global.confpath & "/.ExportFiles/"
-  ExportFilesPath = global.confpath & "/.ExportFiles/"
+  'Try Mkdir global.confpath & "/.ExportFiles/" 'mpv 0.11 removed af_export filter :(
+  ' ExportFilesPath = global.confpath & "/.ExportFiles/" 'mpv 0.11 removed af_export filter :(
   FileView1.visible = False
   If tagpanel.parent.name <> "zzzFake" Then tagpanel.Reparent(zzzfake)
   'mplayer.FillLog = TRUE
@@ -1079,7 +1079,7 @@ Public Sub MainInit()
   Else
     'as there are no other istances, it's good to remove inputpipes
     Shell "rm " & global.confpath & "/.InputPipes/Xt7Input-* >/dev/null 2>&1" Wait ' To out
-    Shell "rm " & global.confpath & "/.ExportFiles/* >/dev/null 2>&1" Wait ' To out
+    ' Shell "rm " & global.confpath & "/.ExportFiles/* >/dev/null 2>&1" Wait ' 'mpv 0.11 removed af_export filter :(
   Endif
 
   global.CurrentProfile = MySettings.GetLastProfile(global.confpath)
@@ -2282,23 +2282,24 @@ Public Sub ExportDbusProperties()
 
 End
 
-Public Function VmetersOptionsAndInitIfNeeded(filename As String) As String
-
-  If GeneralOptions.ShowVmeterCHK.value Then
-    If Not (global.IsVideoFile(filename)) Then
-      If exportfile = "" Then 
-        exportfile = exportfilespath & Int(Rnd(1, 9999))
-      Endif
-      Return exportfile & ":" & GeneralOptions.RmsSizeSpinBox.value
-      audioform.BarBox.visible = True
-    Else
-      audioform.BarBox.visible = False
-    Endif
-  Else
-    audioform.BarBox.visible = False
-  Endif
-
-End
+'mpv 0.11 removed af_export filter :(
+' Public Function VmetersOptionsAndInitIfNeeded(filename As String) As String
+' 
+'   If GeneralOptions.ShowVmeterCHK.value Then
+'     If Not (global.IsVideoFile(filename)) Then
+'       If exportfile = "" Then 
+'         exportfile = exportfilespath & Int(Rnd(1, 9999))
+'       Endif
+'       Return exportfile & ":" & GeneralOptions.RmsSizeSpinBox.value
+'       audioform.BarBox.visible = True
+'     Else
+'       audioform.BarBox.visible = False
+'     Endif
+'   Else
+'     audioform.BarBox.visible = False
+'   Endif
+' 
+' End
 
 Public needytcookie As Boolean = False
 
@@ -2386,7 +2387,7 @@ Public Sub file_options(fullpath As String) As Collection
   Dim opt As Mpvoption
   Dim ytformats As String = ""
   Dim yt3d As Boolean = False
-  Dim export_opts As String = ""
+  ' Dim export_opts As String = "" 'mpv 0.11 removed af_export filter :(
 
   If Youtube.IsYoutubeLink(fullpath) Then
     yt3d = generaloptions.Get3dYT.Value
@@ -2417,11 +2418,13 @@ Public Sub file_options(fullpath As String) As Collection
   End Select
 
   generaloptions.FirstLoadIfNeeded()
-  If GeneralOptions.ShowVmeterCHK.value Then
-    export_opts = VmetersOptionsAndInitIfNeeded(fullpath)
-    If export_opts <> "" Then opts["af-pre"] = "export=" & export_opts
-  Endif
-
+  ' mpv 0.11 removed af_export filter :(
+  ' If GeneralOptions.ShowVmeterCHK.value Then
+  '   export_opts = VmetersOptionsAndInitIfNeeded(fullpath)
+  '   If export_opts <> "" Then opts["af-pre"] = "export=" & export_opts
+  ' Endif
+    audioform.BarBox.visible = False  'mpv 0.11 removed af_export filter :(
+  
   For Each opt In SetRightCache(fullpath)
     opts[opt.name] = opt.data
   Next 'opt 
@@ -2438,7 +2441,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Dim doanalyze As Boolean = False
   Dim timeA As Float = 0
   Dim n, c As Integer
-  Dim exportfile As String
+  ' Dim exportfile As String 'mpv 0.11 removed af_export filter :(
   Dim opts As New Collection
   Dim data As String
 
@@ -2886,12 +2889,12 @@ End
 
 Private currentfile_cover As String = ""
 Private previousfile_cover As String = ""
-Public mymeters As Meters
+' Public mymeters As Meters 'mpv 0.11 removed af_export filter :(
 
 Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False)
-  Dim vis As String = ""
+  ' Dim vis As String = ""  'mpv 0.11 removed af_export filter :(
   If Show And (Not TagEditMode) Then
-    audioform.BarBox.visible = GeneralOptions.ShowVmeterCHK.value 
+    ' audioform.BarBox.visible = GeneralOptions.ShowVmeterCHK.value   'mpv 0.11 removed af_export filter :(
     previousfile_cover = currentfile_cover
     currentfile_cover = mplayer.getP("fullpath")
     If ((currentfile_cover <> previousfile_cover) Or (audioform.AudioPanel.Parent <> outerbox)) Then  'avoid showing twice
@@ -2920,16 +2923,17 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
       audioform.refresh
     Endif
 
-    If GeneralOptions.ShowVmeterCHK.value = True Then
-      Try mymeters.stopp
-      mymeters = New Meters As "mymeters"
-      Try vis = Split(generaloptions.NoParseVisType.text, " ")[0]
-      mymeters.init(audioform.barbox, GeneralOptions.latencyspinbox.value, audioform.BarBox.h, fmain.exportfile, 6, GeneralOptions.fpsspinbox.value, vis)
-      mymeters.startt
+  If GeneralOptions.ShowVmeterCHK.value = True Then
+    global.myDebug("sorry, mpv 0.11 removed export filter, no visualization available") 'mpv 0.11 removed af_export filter :(
+    '   Try mymeters.stopp
+    '   mymeters = New Meters As "mymeters"
+    '   Try vis = Split(generaloptions.NoParseVisType.text, " ")[0]
+    '   mymeters.init(audioform.barbox, GeneralOptions.latencyspinbox.value, audioform.BarBox.h, fmain.exportfile, 6, GeneralOptions.fpsspinbox.value, vis)
+    '   mymeters.startt
     Endif
   Else
     fmain.OuterBox.Arrangement = Arrange.none
-    Try mymeters.stopp
+    ' Try mymeters.stopp 'mpv 0.11 removed af_export filter :(
     'If Not tageditmode Then rightsidepanel.Background = audioform.AudioPanel.Background
     fmain.OuterBox.ignore = False
     OuterBox.visible = True
@@ -3293,11 +3297,11 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
   
     Case "pause"
       If data_new = "yes" Then
-        If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.pause()
+        ' If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.pause() 'mpv 0.11 removed af_export filter :(
         ButtonPlay.picture = Picture["media-playback-start.png"]
         mplayer.event_loop.delay = 2000 'be light when we're on pause
           Else
-        If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.unpause()
+        ' If generaloptions.ShowVmeterCHK.value = True Then Try mymeters.unpause() 'mpv 0.11 removed af_export filter :(
         ButtonPlay.picture = Picture["media-playback-pause.png"]
         mplayer.event_loop.delay = 500 'be reactive
       Endif
@@ -3377,7 +3381,7 @@ Public Sub Mplayer_mykill(return_value As Integer)
   ExecutePostCmd()
   videobox.cached = False
   'delete export file
-  Try Kill mymeters.exportfile
+  'Try Kill mymeters.exportfile 'mpv 0.11 removed af_export filter :(
   If TogglePls.value And (Not mplayer.user_stopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) Then
       global.myDebug("end of media reached, playing next video...")
 
@@ -3661,8 +3665,9 @@ Public Sub SeekRestart(newpos As Integer)
   If mplayer.ProcessRunningOvr() Then
     ForcedAspectRT = "default"
     If (Trim(Youtube.Cookiesfile) <> "") Then cookieopts = "-cookies -cookies-file " & Youtube.Cookiesfile & " "
-    mplayer.do_restart(mplayer.getP("fullpath"), GetOptionsFromGui() & SetRightCache() & VmetersOptionsAndInitIfNeeded() & " " & cookieopts, False, False, newpos)
-    
+    ' mplayer.do_restart(mplayer.getP("fullpath"), GetOptionsFromGui() & SetRightCache() & VmetersOptionsAndInitIfNeeded() & " " & cookieopts, False, False, newpos)
+    audioform.BarBox.visible = False  'mpv 0.11 removed af_export filter :(
+    mplayer.do_restart(mplayer.getP("fullpath"), GetOptionsFromGui() & SetRightCache() & " " & cookieopts, False, False, newpos)
     aspectmenu.visible = Not (mplayer.getP("audioonly") Or fsform.fullscreen)
     mplayer.Renice(GeneralOptions.NiceLevelSpinBox.value)
     CorrectAreaAspect()

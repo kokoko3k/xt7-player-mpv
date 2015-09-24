@@ -151,6 +151,8 @@
         Padding = 6
         { NoParse8 HBox
           MoveScaled(0,0,50,4)
+          Visible = False
+          Enabled = False
           Spacing = True
           { ShowVmeterCHK CheckBox
             MoveScaled(1,0,17.1429,4)
@@ -161,6 +163,8 @@
         }
         { NoParse55 HBox
           MoveScaled(0,4,50,4)
+          Visible = False
+          Enabled = False
           Spacing = True
           Indent = True
           { NoParseVisType ComboBox
@@ -173,6 +177,8 @@
         }
         { NoParse42 HBox
           MoveScaled(0,9,50,4)
+          Visible = False
+          Enabled = False
           ToolTip = ("If you see meters moving sooner than the audio, raise this value.")
           Spacing = True
           Indent = True
@@ -195,6 +201,8 @@
         }
         { NoParse40 HBox
           MoveScaled(0,13,50,4)
+          Visible = False
+          Enabled = False
           ToolTip = ("Frames per second")
           Spacing = True
           Indent = True
@@ -218,6 +226,8 @@
         }
         { NoParse43 HBox
           MoveScaled(0,17,50,4)
+          Visible = False
+          Enabled = False
           ToolTip = ("How many samples to get to calculate the average audio level.")
           Spacing = True
           Indent = True
@@ -241,10 +251,10 @@
           }
         }
         { NOPARSESeparator2345 Separator
-          MoveScaled(2,22,46,4)
+          MoveScaled(2,22,46,2)
         }
         { NOPARSELabel26 Label
-          MoveScaled(1,24,15,4)
+          MoveScaled(1,25,15,4)
           AutoResize = True
           Text = ("Passthrough those codecs:")
         }
@@ -310,7 +320,7 @@
           }
         }
         { NOPARSESeparator4 Separator
-          MoveScaled(2,35,46,1)
+          MoveScaled(2,36,46,2)
         }
         { adevicehbox HBox
           MoveScaled(0,38,50,4)

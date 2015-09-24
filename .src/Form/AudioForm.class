@@ -130,10 +130,10 @@ Public Sub AudioAreaGroup_MouseMove()
 
 End
 
-
-Public Sub BarBox_MouseDown()
-  Try FMain.mymeters.nextvis()
-End
+'mpv 0.11 removed af_export filter :(
+' Public Sub BarBox_MouseDown()
+'   Try FMain.mymeters.nextvis()
+' End
 
 Public Sub PictureBox2_Enter()
   

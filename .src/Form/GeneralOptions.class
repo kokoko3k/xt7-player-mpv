@@ -822,6 +822,15 @@ Public Sub FillCdAndDvdDevices()
 End
 
 Public Sub Form_Show()
+ 'mpv 0.11 removed af_export filter :(
+  '8 5 42 40 43
+  noparse8.visible = False
+  noparse5.visible = False
+  noparse42.visible = False
+  noparse40.visible = False
+  noparse43.visible = False
+  noparse55.visible = False
+  
   FillCdAndDvdDevices()
   If Not aligned Then
     AlignObjects()
@@ -866,12 +875,13 @@ Public Sub NOPARSESCANBTN_Click()
     DVBTuner.show
 End
 
-Public Sub ShowVmeterCHK_Click()
-  noparse42.enabled = Last.value
-  noparse40.enabled = Last.value
-  noparse43.enabled = Last.value
-  NoParseVisType.enabled = Last.value
-End
+ 'mpv 0.11 removed af_export filter :(
+' Public Sub ShowVmeterCHK_Click()
+'   noparse42.enabled = Last.value
+'   noparse40.enabled = Last.value
+'   noparse43.enabled = Last.value
+'   NoParseVisType.enabled = Last.value
+' End
 
 
 
