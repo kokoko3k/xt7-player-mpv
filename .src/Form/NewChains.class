@@ -384,11 +384,11 @@ Private Sub draw_filters_audio_cfg()
       Global.DrawGui(AllParams, "CustomAudio1", aTabstrip, Switchable,, ButtonLadspaHelper)
         Else
       Print "WARNING:----------------------------------------------"
-      Print "        Your mpv has not been compiled with ladspa support"
+      Print "        Your ffmpeg has not been compiled with ladspa support"
       Print "        You will not be able to use any ladspa filter"
       Print "        and ladspahelper window will be unavaileble in xt7."
-      Print "        Recompile mpv with ladspa support or ask your"
-      Print "        distribution to fix it."
+      Print "        Recompile ffmpeg with ladspa support or ask your"
+      Print "        distribution mantainers to do that."
       Print ""
       Global.DrawGui(AllParams, "CustomAudio1", aTabstrip, Switchable)
       
