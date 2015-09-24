@@ -180,10 +180,10 @@ Public Sub playerprocess_read(Optional injected As String = "")
     Next 'sbuf
       Else
     If sbuf Like "\\[*\\] *" Then
-      modules_out &= sBuf & "\n"
+      'filter some noisy ladspa plugins
+      If Not (sbuf Like "*Parsed_ladspa_*") Then modules_out &= sBuf & "\n"
         Else
       stdout &= sBuf & "\n"
-      
     Endif
   Endif
 End
