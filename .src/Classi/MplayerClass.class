@@ -1915,27 +1915,43 @@ End
 
 
 Private man_page As String = ""
+Private man_page_lavfi As String = ""
 
-Public Function search_man(search_for As String) As String
+Public Function search_man(search_for As String, Optional lavfi As Boolean = False) As String
   'currently only works for drivers and filters
   Dim st, help_str As String
   Dim s_pos As Integer
-  If man_page = "" Then
-    global.myDebug("Getting mpv man...")
-    Shell "man mpv|col -bx" To man_page
+
+  If lavfi Then 'ffmpeg-filters man
+    If man_page_lavfi = "" Then
+      global.myDebug("Getting ffmpeg-filters man...")
+      Shell "man ffmpeg-filters|col -bx" To man_page_lavfi
+    Endif
+    For Each st In search_term(search_for, lavfi)
+      s_pos = InStr(man_page_lavfi, st) 
+      If s_pos > 0 Then Return Left(Right(man_page_lavfi, - s_pos), 80 * 300)
+      Wait
+    Next
+      Else 'mpv man
+
+    If man_page = "" Then
+      global.myDebug("Getting mpv man...")
+      Shell "man mpv|col -bx" To man_page
+    Endif
+    For Each st In search_term(search_for)
+      s_pos = InStr(man_page, st) 
+      If s_pos > 0 Then Return Left(Right(man_page, - s_pos), 80 * 100)
+      Wait
+    Next
   Endif
 
-  For Each st In search_term(search_for)
-    s_pos = InStr(man_page, st) 
-    If s_pos > 0 Then Return Left(Right(man_page, - s_pos), 80 * 100)
-    Wait
-  Next
+
   Return ""
 End
 
 
 
-Private Sub search_term(item As String) As String[]
+Private Sub search_term(item As String, Optional lavfi As Boolean = False) As String[]
   Dim out As New String[]
   Select Case item
     Case "vdpau"
@@ -1943,6 +1959,7 @@ Private Sub search_term(item As String) As String[]
     Case "vaapi"
       Return ["Intel VA API video"]
   End Select
+  If lavfi Then out.add("  " & Lower(item) & "\n")
   out.add("    " & Lower(item) & "[=" & "")
   out.add("    " & Lower(item) & "=[" & "")
   out.add("    " & Lower(item) & "")

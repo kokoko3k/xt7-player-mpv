@@ -271,8 +271,10 @@ End
 Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
   Dim item_tab As Integer = -1
   Dim i As Integer
-  helpbox.tag = item_name
+  Dim islavfi As Boolean = False
+
   Try item_tab = aTabstrip.Tag.Find(Lower(item_name))
+
   If item_tab >= 0 Then 
     aTabstrip.index = item_tab
     HelpBox.reparent(aTabstrip)
@@ -281,10 +283,17 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
       aTabstrip.index = i
       If Lower(aTabstrip.caption) = item_name Then 
         HelpBox.reparent(aTabstrip)
-        Return
+        Goto returnlabel
       Endif
     Next
   Endif
+
+  ReturnLabel:
+  'check if it is a lavfi filter
+  Try islavfi = atabstrip.children[0].tag = "lavfi"
+  helpbox.tag = item_name & Chr(8)
+  If islavfi Then helpbox.tag &= "lavfi"
+  Return
 End
 
 
@@ -1267,8 +1276,11 @@ End
 
 Public Sub timerDelayShowHelp_Timer()
   Dim help_str As String
+  Dim search_term, islavfi As String
   timerDelayShowHelp.stop
-  help_str = FMain.mplayer.search_man(HelpBox.tag)
+  Try search_term = Split(helpbox.tag, Chr(8))[0]
+  Try islavfi = Split(helpbox.tag, Chr(8))[1]
+  help_str = FMain.mplayer.search_man(search_term, islavfi = "lavfi")
   TextAreahelp.text = help_str
   textareahelp.pos = 0
   TextAreahelp.EnsureVisible()
