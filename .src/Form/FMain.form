@@ -803,6 +803,9 @@
       Picture = Picture["icon:/22/quit"]
     }
   }
+  { TimerUpdateNowNext #Timer
+    #MoveScaled(44,5)
+  }
   { HSplit1 HSplit
     MoveScaled(0,5,103,68)
     Tracking = True
@@ -1404,7 +1407,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-10.2857,18,4)
+              MoveScaled(9.4286,-11.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1969,7 +1972,7 @@
         Alignment = Align.Left
       }
       { ABLoopTimer #Timer
-        #MoveScaled(2,6)
+        #MoveScaled(6,6)
         Delay = 75
       }
       { OuterBox Panel VideoAreaGroup
@@ -2184,11 +2187,11 @@
       }
     }
     { TimerQuit #Timer
-      #MoveScaled(49,0)
+      #MoveScaled(52,0)
       Delay = 100
     }
     { DelayTimer #Timer
-      #MoveScaled(56,0)
+      #MoveScaled(60,0)
     }
     { TimerDVD #Timer
       #MoveScaled(72,0)
@@ -2206,9 +2209,6 @@
       #MoveScaled(93,0)
       Port = 4856
     }
-  }
-  { TimerUpdateNowNext #Timer
-    #MoveScaled(43,6)
   }
 }
 
