@@ -465,7 +465,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
   
   AllParams.Add(["TITLE", "- Allow filters with vdpau hwrdware decoding -", "vdpaurb0", ""])
-  AllParams.Add(["TIP", ("Place this filter before on top!"), "vdpaurb1", ""])
+  AllParams.Add(["TIP", ("Place this filter before any other (on top)"), "vdpaurb1", ""])
   Global.DrawGui(AllParams, "vdpaurb", aTabstrip, NotSwitchable)
   AllParams.Clear
   
@@ -476,7 +476,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.add(["CHOOSE", ("Chrominance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp3", ("The higher, the slower")])
   AllParams.add(["RANGEFLOAT", ("Chroma amount"), "-2", "0", "5", "Sharp4", ("Negative means blur")])
   AllParams.add(["ROCHOOSE", "Enable opencl", "0 - disable", "1 - enable", "Sharp5", ("Needs ffmpeg compiled with opencl support")])
-  Global.DrawGui(AllParams, "unsharp", aTabstrip, NotSwitchable)
+  Global.DrawGui(AllParams, "unsharp", aTabstrip, NotSwitchable, "",, "lavfi")
   AllParams.Clear
   
   'expand[ = w: h: x: y: o: a: r]
