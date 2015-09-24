@@ -435,35 +435,11 @@
           AutoResize = True
           Padding = 8
           { CheckBox4gl CheckBox
-            MoveScaled(1,1,17,4)
+            MoveScaled(1,1,39,4)
             #Translate = False
-            Tag = "smoothmotion"
-            Text = "smoothmotion"
-          }
-          { Label1 Label
-            MoveScaled(20,1,23,3)
-            Font = Font["Italic,-1"]
+            Tag = "interpolation"
             AutoResize = True
-            Text = ("may noy work with HW decoding")
-            Alignment = Align.Right
-          }
-        }
-        { openglParseMeHBox1 HBox
-          MoveScaled(0,26,45,6)
-          AutoResize = True
-          Padding = 8
-          { CheckBox5gl CheckBox
-            MoveScaled(1,1,24,4)
-            #Translate = False
-            Tag = "smoothmotion-threshold="
-            Text = "smoothmotion-threshold"
-          }
-          { ComboBox2gl ComboBox
-            MoveScaled(29,1,15,4)
-            #Translate = False
-            Expand = True
-            List = ["0.0", "0.05", "0.1", "0.15", "0.2", "0.25", "0.30", "0.35", "0.40", "0.45", "0.50"]
-            Text = "0.0"
+            Text = "temporal interpolation"
           }
         }
       }
