@@ -35,7 +35,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "scaletempo", "dynaudnorm", "volume"]
+  filters_audio_list = ["equalizer", "earwax", "scaletempo", "dynaudnorm", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -342,6 +342,13 @@ Private Sub draw_filters_audio_cfg()
     AllParams.add(["ROCHOOSE", "replaygain-clip=", "yes", "no", "Volume5", ("Prevent replaygain clipping by lowering the gain")])
     AllParams.add(["ROCHOOSE", "softclip=", "yes", "no", "Volume6", ("Turns on soft clipping")])
     Global.DrawGui(AllParams, "volume", aTabstrip, Switchable)
+    AllParams.Clear
+    
+    
+  'volume[=<volumedb>[:...]]
+    AllParams.Add(["TITLE", "- earwax -", "earwax0", ""])
+    Global.DrawGui(AllParams, "earwax", aTabstrip, False, "",, "lavfi")
+    
     AllParams.Clear
     
   'scaletempo[=option1:option2:...]
