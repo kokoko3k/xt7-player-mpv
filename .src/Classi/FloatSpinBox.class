@@ -47,21 +47,32 @@ Public Sub _NEW()
   MySpinButton.width = SpinButtonWidth
   
   'Create UpDown image on the fly  
-    hpic_up = New Picture(11, 13, True)
-    Draw.Begin(hpic_up)
-      Draw.FillStyle = 1
-      draw.Foreground = color.gradient(Color.ButtonBackground, Color.ButtonForeground)
-      
-
-      Draw.fillcolor = Color.ButtonForeground
-      coordinate = [2, 4, 8, 4, 5, 1]
-      Draw.Polygon(coordinate)
-      coordinate = [2, 8, 8, 8, 5, 11]
-      Draw.Polygon(coordinate)
-    Draw.End
-  
-  MySpinButton.picture = hpic_up
-  'MySpinButton.picture = Picture["UpDown.png"]
+  '   hpic_up = New Picture(11, 13, True)
+  '   ' Draw.Begin(hpic_up)
+  '   ' 
+  '   '   Draw.FillStyle = 1
+  '   '   draw.Foreground = color.gradient(Color.ButtonBackground, Color.ButtonForeground)
+  '   '   
+  '   '   Draw.fillcolor = Color.ButtonForeground
+  '   '   coordinate = [2, 4, 8, 4, 5, 1]
+  '   '   Draw.Polygon(coordinate)
+  '   '   coordinate = [2, 8, 8, 8, 5, 11]
+  '   '   Draw.Polygon(coordinate)
+  '   ' Draw.End
+  ' 
+  '   'Draw.Begin(hpic_up)
+  '   Paint.Begin(hpic_up)
+  '     'Draw.FillStyle = 1
+  '     'draw.Foreground = color.gradient(Color.ButtonBackground, Color.ButtonForeground)
+  '     'Draw.fillcolor = Color.ButtonForeground
+  '     coordinate = [2, 4, 8, 4, 5, 1]
+  '     Paint.Polygon(coordinate)
+  '     coordinate = [2, 8, 8, 8, 5, 11]
+  '     paint.Polygon(coordinate)
+  '   Paint.end
+  ' 
+  ' MySpinButton.picture = hpic_up
+  MySpinButton.picture = Picture["UpDown.png"]
   Super.Arrangement = Arrange.horizontal
   Super.AutoResize = False
 

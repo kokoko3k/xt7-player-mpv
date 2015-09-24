@@ -407,6 +407,9 @@ Geometry=[1280,0,210,210]
 [DebugWindow/Last.parent.parent]
 Geometry=[0,-3,210,210]
 
+[DebugWindow/Last.previous]
+Geometry=[1276,-3,224,280]
+
 [DebugWindow/Last.selection]
 Geometry=[47,-3,210,210]
 
@@ -718,6 +721,12 @@ Geometry=[44,-3,210,210]
 
 [DebugWindow/Split(Mid(s, InStr(s, llabel & ":") + 1), ":")]
 Geometry=[44,-3,210,210]
+
+[DebugWindow/Split(Split(s, ":]")[2], "=|,")]
+Geometry=[1280,0,224,280]
+
+[DebugWindow/Split(Split(s, ":]'")[3], "=|,")]
+Geometry=[1280,0,224,280]
 
 [DebugWindow/Split(T1, " ", "", True)]
 Geometry=[1280,0,224,280]
@@ -1635,7 +1644,10 @@ Geometry=[1280,0,845,633]
 Geometry=[1280,0,210,698]
 
 [DebugWindow/lparams]
-Geometry=[1280,-3,210,210]
+Geometry=[1292,504,224,280]
+
+[DebugWindow/lparams_to_clean]
+Geometry=[1280,0,224,280]
 
 [DebugWindow/mediaheaders]
 Geometry=[0,41,816,458]
@@ -1956,7 +1968,7 @@ Geometry=[1280,0,210,210]
 Geometry=[0,0,301,301]
 
 [DebugWindow/parentcontainer]
-Geometry=[1280,-3,308,830]
+Geometry=[1280,0,308,830]
 
 [DebugWindow/parentmenu]
 Geometry=[1280,0,210,210]
