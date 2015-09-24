@@ -427,13 +427,13 @@ Public Sub ButtonLadspaHelper_Click()
   Dim ptext As String
 
   If Not global.which("analyseplugin") Then
-    If MyQuestion.ask(("Even if your mpv has ladspa support compiled in,\nyou seem to miss the ladspa package.\nbecause 'analyseplugin' executable is not found"), ("Continue anyway"), ("Abort")) = 2 Then Return
+    If MyQuestion.ask(("Even if your ffmpeg has ladspa support compiled in,\nyou seem to miss the ladspa package.\nbecause 'analyseplugin' executable is not found"), ("Continue anyway"), ("Abort")) = 2 Then Return
   Endif
   ladspahelper.LOADING = True
   Try ptext = Last.previous.text
-  If ptext Like "ladspa=*" Then
+  If ptext Like "lavfi=?ladspa=*" Then
     ladspahelper.TextBox1.text = ptext
-    ladspahelper.button2_click()
+    ladspahelper.text_to_gui()
   Endif
   global.Center(Me, Ladspahelper)
   ladspahelper.parentcontainer = Last.previous

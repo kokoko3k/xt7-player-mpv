@@ -41,7 +41,7 @@
     Alignment = Align.Bottom
   }
   { Panel1 ScrollView
-    MoveScaled(0,16,88,47)
+    MoveScaled(0,16,88,42)
     Background = Color.ButtonBackground
     Expand = True
     Arrangement = Arrange.Column
@@ -49,6 +49,31 @@
     Margin = True
     { applytimer #Timer
       Delay = 500
+    }
+  }
+  { Panel5 Panel
+    MoveScaled(0,59,89,4)
+    Arrangement = Arrange.Horizontal
+    Spacing = True
+    { Label4 Label
+      MoveScaled(1,0,22,4)
+      AutoResize = True
+      Text = ("Number of output channels:")
+    }
+    { combooutputchannels ComboBox
+      MoveScaled(26,0,24,4)
+      #Translate = False
+      Expand = True
+      ReadOnly = True
+      List = ["1c", "2c", "3c", "4c", "5c", "6c", "7c", "8c"]
+      Text = "8c"
+    }
+    { Label5 Label
+      MoveScaled(47,0,41,4)
+      Font = Font["Italic"]
+      AutoResize = True
+      Text = ("ffmpeg > 2.8 will not need this.")
+      Alignment = Align.Right
     }
   }
   { Panel4 Panel
@@ -63,10 +88,12 @@
       MoveScaled(17,0,54,4)
       #Translate = False
       Expand = True
+      ReadOnly = True
     }
     { Button2 Button
       MoveScaled(72,0,16,4)
-      ToolTip = ("Display the plugin controls and values from a valid \nmpv ladspa command line, eg:\nladspa='/usr/lib/ladspa/delay.so':delay_5s:[0.5,0.2]")
+      Visible = False
+      ToolTip = ("Display the plugin controls and values from a valid \nmpv lavfi ladspa command line, eg:\naf lavfi=\"[ladspa=file=/usr/lib/ladspa/fast_lookahead_limiter_1913.so:p=fastLookaheadLimiter:c='c0=20|c1=-10|c2=2']")
       Text = ("Reverse")
     }
   }
@@ -89,7 +116,7 @@
     { TestBTN Button
       MoveScaled(58,0,14,4)
       AutoResize = True
-      Text = ("Test")
+      Text = Shortcut(("Use"), "U")
       Picture = Picture["icon:/16/redo"]
     }
     { CloseBTN Button

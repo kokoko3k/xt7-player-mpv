@@ -131,6 +131,11 @@ Public Sub paramwidget_Change()
   applytimer.start
 End
 
+
+Public Sub paramwidget_activate()
+  TestBTN_Click()  
+End
+
 Public LOADING As Boolean = True
 
 Public Sub ComboLabel_Click()
@@ -139,22 +144,9 @@ Public Sub ComboLabel_Click()
 End
 
 Public parentcontainer As Object
-Public Sub Button1_Click()
-  Dim myhbox As Hbox
-  Dim myobj As Object
-  Dim outstr As String
-  For Each myhbox In panel1.Children
-    For Each myobj In myhbox.Children
-      If myobj Is Floatspinbox Then
-        outstr &= myobj.value & ","
-      Endif
-    Next
-  Next
-  'TextBox1.text = "ladspa=" & LADSPA_FILE & ":" & "\"" & LADSPA_LABEL & "\"" & ":" & Left(outstr, Len(outstr) - 1)
-  TextBox1.text = "ladspa=" & "'" & LADSPA_FILE & "'" & ":" & LADSPA_LABEL & ":[" & Left(outstr, Len(outstr) - 1) & "]"
-  TextBox1.text = "ladspa=" & "\"" & LADSPA_FILE & "\"" & ":" & LADSPA_LABEL & ":[" & Left(outstr, Len(outstr) - 1) & "]"
 
-  
+Public Sub Button1_Click()
+  gui_to_text()
 End
 
 Public Sub CopyBTN_Click()
@@ -165,22 +157,54 @@ Public Sub CopyBTN_Click()
    Me.close
 End
 
-Public Sub Button2_Click()
+
+Public Sub gui_to_text()
+  Dim i As Integer = 0
+  Dim myhbox As Hbox
+  Dim myobj As Object
+  Dim controls As String
+  For Each myhbox In panel1.Children
+    For Each myobj In myhbox.Children
+      If myobj Is Floatspinbox Then
+        controls &= "c" & i & "=" & myobj.value & "|"
+        i += 1
+      Endif
+    Next
+  Next
+  controls = Left(controls, -1)
+  'generate commandline
+  TextBox1.text = "lavfi="
+    TextBox1.text &= "["
+      TextBox1.text &= "ladspa=file=" & LADSPA_FILE 
+      TextBox1.text &= ":p=" & LADSPA_LABEL 
+      TextBox1.text &= ":c='" & controls & "'"
+      TextBox1.text &= ",aformat=channel_layouts=" & combooutputchannels.Text
+    TextBox1.text &= "]" 
+End
+
+
+Public Sub text_to_gui()
   Dim s As String = TextBox1.text
   Dim lpath, llabel As String
   Dim lparams As New String[]
+  Dim lparams_to_clean As New String[]
   Dim myhbox As Hbox
   Dim myobj As Object
   Dim i As Integer = 0
+  Dim f, c As String
 
-  Try lpath = Split(Split(Mid(s, InStr(s, "\"")), ":")[0], "\"")[1] 'Split(Mid(s, InStr(s, "=") + 1), ":")[0]
+  Try lpath = Split(s, "=,:")[3]
+  'Try lpath = Split(Split(Mid(s, InStr(s, "\"")), ":")[0], "\"")[1] 'Split(Mid(s, InStr(s, "=") + 1), ":")[0]
   If Error Then Goto errorquit
-  Try llabel = Split(s, ":")[1]
+  Try llabel = Split(s, "=,:")[5]
+  'Try llabel = Split(s, ":")[1]
   If Error Then Goto errorquit
-  Try lparams = Split(Left(Split(s, "[")[1], -1), ",") 'Split(Mid(s, InStr(s, llabel & ":") + 1), ":")
-  If Error Then Goto errorquit
-  'lparams.Remove(0)
-  
+  'Try lparams = Split(Left(Split(s, "[")[1], -1), ",") 'Split(Mid(s, InStr(s, llabel & ":") + 1), ":")
+  Try lparams_to_clean = Split(Split(s, ":]'")[3], "=|,")
+  For Each f In lparams_to_clean
+    If IsFloat(Replace(f, ".", ",")) Then lparams.Add(f)
+  Next
+
   LADSPA_FILE = lpath
   ButtonBox1.text = lpath
   LADSPA_LABEL = llabel
@@ -196,6 +220,15 @@ Public Sub Button2_Click()
      Endif
    Next 'myobj
   Next 'myhbox
+
+  'restore channels_layout combobox
+  If s Like "*channel_layouts=*c*" Then
+    Try c = Split(s, "=]").max - 1
+    If Not Error Then 
+      c = Split(s, "=]")[c]
+      If combooutputchannels.Find(c) Then combooutputchannels.text = c
+    Endif
+  Endif
   
   errorquit:
   Return
@@ -203,10 +236,12 @@ End
 
 Public Sub TestBTN_Click()
  Dim prevfilter As String
+
  If parentcontainer <> Null Then
-   prevfilter = parentcontainer.text
-   Button1_Click()
-   parentcontainer.text = TextBox1.text
+   prevfilter = parentcontainer.text 'store the previous value
+   gui_to_text() 'generate new filter
+   parentcontainer.text = TextBox1.text 'wrote it to the newchains window
+   NewChains.ApplyBTN_Click() 'apply filters from newchains window
    parentcontainer.text = prevfilter 'restore the previous value
  Endif
 End
@@ -218,6 +253,12 @@ End
 
 
 Public Sub applytimer_Timer()
-  TestBTN_Click()
+  gui_to_text()
   Last.stop
+End
+
+Public Sub Button2_Click()
+
+  text_to_gui()
+
 End

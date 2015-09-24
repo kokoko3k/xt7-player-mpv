@@ -310,7 +310,6 @@ Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As
         Print "found audio filter lavcac3enc; searching and unsetting --audio-channels"
         Print
         unset_option("audio-channels", return_opts)
-        Stop
       Endif
     Endif
   Next

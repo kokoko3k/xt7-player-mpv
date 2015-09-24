@@ -169,4 +169,9 @@ Public Sub MyValueBox_Change()
  Raise Change()
 End
 
+Public Sub MyValueBox_KeyPress()
+ If (key.code = Key.enter) Or (Key.code = Key.return) Then Raise activate()
+End
+
 Event Change()
+Event Activate()
