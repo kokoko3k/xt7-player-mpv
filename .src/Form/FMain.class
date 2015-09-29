@@ -9594,6 +9594,7 @@ End
 Public Sub buttondetail_Click()
   Dim t As Integer
   Dim numlines As Integer = 10 'how many lines to show in yt panel?
+  Stop
   If scrollviewyt.visible Then 
     scrollviewyt.visible = False
     Return

@@ -819,8 +819,7 @@
       Margin = True
       Padding = 4
       { Leftsidetabs TabStrip
-        MoveScaled(0,-2,39,59)
-        Visible = False
+        MoveScaled(-1,-2,39,59)
         Tag = "1"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -1321,7 +1320,7 @@
           Expand = True
           PopupMenu = "YoutubeTreePopup"
           { youtubetree TreeView
-            MoveScaled(11,1,35,10)
+            MoveScaled(0,0,35,10)
             Expand = True
           }
           { TimerTreeDelayExpand #Timer
@@ -1407,7 +1406,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-11.2857,18,4)
+              MoveScaled(9.4286,-12.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True
