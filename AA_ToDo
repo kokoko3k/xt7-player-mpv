@@ -729,40 +729,6 @@ ciò è fondamentale per youtube.
 
 
 Cambiamenti nel prossimo mpv:
-vdpau software filters:
-https://github.com/mpv-player/mpv/commit/4b0b9b515bee4a589ed74b4f5de86401f1745e69
-
-Addio menu dvd e bd
-https://github.com/mpv-player/mpv/commit/3b3170aedb4c8a9bfa32238f3b580feea22071f8
-
-
-
-Aggiungi i filtri video vdpaupp e vavpp
-...controlla comunque che i quei filtri siano inseriti automaticamente
-quando il player vuole deinterlacciare
-https://github.com/mpv-player/mpv/commit/db2268d5b11bfd290251b4aac7045535803f4d96
-
-
-controlla se le opzioni di yadif necessiato di aggiornamento nella gui:
-https://github.com/mpv-player/mpv/commit/25755f5fe75ad2a4ac9fb4ecf70f7bdf7a58a04c
-
-
-vdpaurb funziona solo se:
-  la decodifica hardware è attiva
-  la decodifica hardware è vdpau
-
-* posso inserire vdpaurb automaticamente?
-  sì, è consentito.
-  quando va inserito?
-    quando la decodifica hardware è attiva (check prima di riavviare)
-    quando la decodifica hardware è vdpau
-    quando ci sono filtri video.
-
-    
-https://github.com/mpv-player/mpv/blob/master/DOCS/interface-changes.rst
-
-
-
 
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
@@ -813,3 +779,6 @@ graph=$graph'[spectrum][waves]overlay[out0]'
 
 
 
+Cambiamenti nel prossimo mpv:
+
+Riabilitare X11 :)
