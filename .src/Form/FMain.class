@@ -1289,9 +1289,9 @@ Public Sub FillPropertiesGrid()
     Endif
     Try audio_codec = Split(Trim(PropertiesGrid[14, 1].text), " ", "", True)[0]
     If audio_codec <> "" Then audioform.label21.text = audio_codec
-    If (Trim(PropertiesGrid[15, 1].text) <> "") Then audioform.label21.text = audioform.label21.text & "@" & PropertiesGrid[15, 1].text
-    If (Trim(PropertiesGrid[12, 1].text) <> "") Then audioform.label21.text = audioform.label21.text & ", " & PropertiesGrid[12, 1].text & (" channels")
-    If (Trim(PropertiesGrid[13, 1].text) <> "") Then audioform.label21.text = audioform.label21.text & "@" & PropertiesGrid[13, 1].text & "Hz"
+    If (Trim(PropertiesGrid[15, 1].text) <> "") Then audioform.label21.text &= "@" & PropertiesGrid[15, 1].text
+    If (Trim(PropertiesGrid[12, 1].text) <> "") Then audioform.label21.text &= ", " & ("Channels") & ": " & PropertiesGrid[12, 1].text
+    If (Trim(PropertiesGrid[13, 1].text) <> "") Then audioform.label21.text &= ", " & ("Rate") & ": " & PropertiesGrid[13, 1].text & "Hz"
   Endif
   
   If (global.IsAudioFile(mplayer.getP("fullpath"))) Or (global.IsNetworkURI(mplayer.getP("fullpath"))) Or (Lower(mplayer.getP("fullpath")) Like "cdd?://*") Then
