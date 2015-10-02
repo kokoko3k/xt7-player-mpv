@@ -1223,6 +1223,7 @@ Public Sub FillPropertiesGrid()
   Dim i As Integer
   Dim cTime As Integer = 0
   Dim audio_codec As String = ""
+  Dim chapter As Integer
   
   If Not mplayer.ProcessRunningOvr() Then Return
   
@@ -1257,10 +1258,27 @@ Public Sub FillPropertiesGrid()
       PropertiesGrid[5, 1].text = mplayer.getP("Album")
       PropertiesGrid[6, 1].text = OneOf(mplayer.getP("artist"), mplayer.getP("author"))
 
-      PropertiesGrid[7, 1].text = OneOf(mplayer.getP("title"), mplayer.getP("name"))
+     
       PropertiesGrid[8, 1].text = OneOf(mplayer.getP("year"), mplayer.getP("creationdate"))
       PropertiesGrid[9, 1].text = mplayer.getP("genre")
+      
       PropertiesGrid[10, 1].text = mplayer.getP("trackno")
+      If PropertiesGrid[10, 1].text Like "*unavailable*" Then 
+        If mplayer.getP("fullpath") Like "*.cue" Then
+          Try chapter = CInt(mplayer.getP("=chapter")) + 1
+          Try PropertiesGrid[10, 1].text = CStr(chapter)
+        Endif
+      Endif
+
+
+      PropertiesGrid[7, 1].text = OneOf(mplayer.getP("title"), mplayer.getP("name"))
+      If PropertiesGrid[7, 1].text Like "*unavailable*" Then 
+        If mplayer.getP("fullpath") Like "*.cue" Then
+          Try PropertiesGrid[7, 1].text = CStr(mplayer.get_property_mpv("chapter-metadata/title"))
+        Endif
+      Endif
+
+      
       PropertiesGrid[11, 1].text = OneOf(mplayer.getP("Comment"), mplayer.getP("Comments"))
 
   Endif

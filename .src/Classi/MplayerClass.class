@@ -574,9 +574,9 @@ Private Function get_main_cue_property(cuetext As String, tag As String) As Stri
     Wend
 
     If InStr(aLine, tag) = 1 Then
-      Return Right(aLine, - Len(tag))
+      Return Trim(Right(aLine, - Len(tag)))
         Else If InStr(aLine, "REM " & tag) = 1 Then 
-          Return Right(aLine, - Len("REM " & tag))
+          Return Trim(Right(aLine, - Len("REM " & tag)))
     Endif
   Next
 End
@@ -688,7 +688,6 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
       If Fullpath Like "*.cue" Then
         Try cuetext = File.Load(fullpath)
         If Not Error Then 
-
           Try setP("year", get_main_cue_property(cuetext, "DATE"))
           Try setP("comment", get_main_cue_property(cuetext, "COMMENT"))
           Try setP("genre", get_main_cue_property(cuetext, "GENRE"))
