@@ -1264,9 +1264,9 @@ Public Function DefaultLibraryIcon(fullpath As String, Optional rowheight As Int
   Endif    
     
   If Global.IsAudioFile(fullpath) Then
-    Return Stock[CStr(rowheight - localrowpadding) & "/audio"]
+    Return Icon_audio(CStr(rowheight - localrowpadding))
   Else If Global.IsVideoFile(fullpath) Then
-    Return Stock[CStr(rowheight - localrowpadding) & "/video"]
+    Return Icon_video(CStr(rowheight - localrowpadding))
   Else If Global.IsDvbURI(fullpath) Then
     Return picture["filetypedvb.png"].Image.Stretch(rowheight, rowheight).picture
   Else If FMain.Youtube.IsYoutubeLink(fullpath) Then
@@ -1279,6 +1279,14 @@ Public Function DefaultLibraryIcon(fullpath As String, Optional rowheight As Int
 
 End
 
+
+Public Function Icon_audio(size As String) As Picture
+  Return Stock[CStr(size) & "/audio"]
+End
+
+Public Function Icon_video(size As String) As Picture
+  Return Stock[CStr(size) & "/video"]
+End
 
 
 

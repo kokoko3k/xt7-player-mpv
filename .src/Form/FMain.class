@@ -11745,7 +11745,7 @@ Public Sub Show_and_fill_chapters_tab()
   Dim g As Gridview = chaptersgrid
   Dim c As Integer
   Dim aChapter As Chapter
-  
+  Dim iIcon As Picture
   'show
   SetChaptersTabVisibility(True)
   SetActivePlayQueue("chapters")
@@ -11756,13 +11756,23 @@ Public Sub Show_and_fill_chapters_tab()
     g.clear
     g.rows.count = 0
     g.Columns.count = 1
+    
+    'get an icon
+    iIcon = covermanager.icon_audio("small")
+    If mplayer.ProcessRunningOvr() Then 
+      If Not (mplayer.getP("audioonly")) Then
+        iIcon = covermanager.icon_video("small")
+      Endif
+    Endif
+    
     For Each aChapter In mplayer.get_chapters(True)
       g.rows.count += 1
+      g[g.Rows.max, 0].Picture = iIcon
       g[g.Rows.max, 0].text = aChapter.title
     Next
     g.Columns[0].w = -1
   Endif
-  
+
   Try g.row = mplayer.get_property_mpv("=chapter")
 
 End
