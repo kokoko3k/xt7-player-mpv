@@ -559,10 +559,26 @@ Public Function cdda_device(fullpath As String) As String
    Return ret
 End
 
-Private Function get_main_cue_property() As String
-  
-  
-  
+Private Function get_main_cue_property(cuetext As String, tag As String) As String
+  Dim cuelines As String[]
+  Dim aLine As String
+  Try cuelines = Split(cuetext, "\n", "", True)
+  If Error Then Return ""
+  If cuelines.count = 0 Then Return ""
+
+  For Each aLine In cuelines
+    aLine = Trim(UnQuote(aline))
+    aLine = Replace(aLine, "\"", "") ' gambas bug with instr() and double quotes :(
+    While Not IsAscii(Left(aline)) 'filter out spurious characters at the beginning of the file (?)
+      aline = Right(aline, -1)
+    Wend
+
+    If InStr(aLine, tag) = 1 Then
+      Return Right(aLine, - Len(tag))
+        Else If InStr(aLine, "REM " & tag) = 1 Then 
+          Return Right(aLine, - Len("REM " & tag))
+    Endif
+  Next
 End
 
 
@@ -669,15 +685,19 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
         ' Try Media_Comments = DConv(FindAudioTag("comments")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
       Endif
 
-      ' If Fullpath Like "*.cue" Then
-      '   Try cuetext = File.Load(fullpath)
-      '   Try setP("year", get_main_cue_property(cuetext, "DATE"))
-      '   Try setP("comment", get_main_cue_property(cuetext, "COMMENT"))
-      '   Try setP("genre", get_main_cue_property(cuetext, "GENRE"))
-      '   Try setP("artist", get_main_cue_property(cuetext, "PERFORMER"))
-      '   Try setP("author", get_main_cue_property(cuetext, "PERFORMER"))
-      '   Try setP("Album", get_main_cue_property(cuetext, "TITLE"))
-      ' Endif
+      If Fullpath Like "*.cue" Then
+        Try cuetext = File.Load(fullpath)
+        If Not Error Then 
+
+          Try setP("year", get_main_cue_property(cuetext, "DATE"))
+          Try setP("comment", get_main_cue_property(cuetext, "COMMENT"))
+          Try setP("genre", get_main_cue_property(cuetext, "GENRE"))
+          Try setP("artist", get_main_cue_property(cuetext, "PERFORMER"))
+          Try setP("author", get_main_cue_property(cuetext, "PERFORMER"))
+          Try setP("Album", get_main_cue_property(cuetext, "TITLE"))
+        Endif
+      Endif
+      
       
       If (getP("=duration") = 0) Or (getP("=duration") = "") Then properties.insert(["=duration", "duration"])
 

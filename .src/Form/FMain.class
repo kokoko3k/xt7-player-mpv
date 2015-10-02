@@ -1256,6 +1256,7 @@ Public Sub FillPropertiesGrid()
 
       PropertiesGrid[5, 1].text = mplayer.getP("Album")
       PropertiesGrid[6, 1].text = OneOf(mplayer.getP("artist"), mplayer.getP("author"))
+
       PropertiesGrid[7, 1].text = OneOf(mplayer.getP("title"), mplayer.getP("name"))
       PropertiesGrid[8, 1].text = OneOf(mplayer.getP("year"), mplayer.getP("creationdate"))
       PropertiesGrid[9, 1].text = mplayer.getP("genre")
@@ -1281,7 +1282,7 @@ Public Sub FillPropertiesGrid()
     audioform.label15.text = PropertiesGrid[7, 1].text
     audioform.label16.text = PropertiesGrid[11, 1].text
     audioform.label18.text = PropertiesGrid[1, 1].text
-    audioform.label19.text = PropertiesGrid[3, 1].text
+    'audioform.label19.text = PropertiesGrid[3, 1].text
     If Trim(PropertiesGrid[2, 1].text) <> "" Then 
       audioform.label20.text = PropertiesGrid[2, 1].text & "KB"
     Else
@@ -2893,6 +2894,13 @@ Private previousfile_cover As String = ""
 
 Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False)
   ' Dim vis As String = ""  'mpv 0.11 removed af_export filter :(
+  If show Then
+    Timer_mediainfo.start
+    audioform.tag = "visible" 
+      Else
+    Timer_mediainfo.stop
+    audioform.tag = "invisible"
+  Endif
   If Show And (Not TagEditMode) Then
     ' audioform.BarBox.visible = GeneralOptions.ShowVmeterCHK.value   'mpv 0.11 removed af_export filter :(
     previousfile_cover = currentfile_cover
@@ -6309,7 +6317,7 @@ End
 Public Sub UpdateTabs()
 
   'force a select to handle the correct item to tag
-  Timer_mediainfo.stop()
+  If audioform.tag <> "visible" Then Timer_mediainfo.stop()
   If TabSelectedLibrary() Then
     LibraryGrid_Select()
   Else If TabSelectedPlaylist() Then
