@@ -559,12 +559,23 @@ Public Function cdda_device(fullpath As String) As String
    Return ret
 End
 
+Private Function get_main_cue_property() As String
+  
+  
+  
+End
+
+
 Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean 
   Dim media_taglib As New TagLib
   Dim fileUtf8 As String
   Dim properties As String[]
+  Dim cuetext As String 
+  Dim fullpath As String
   
-  If getP("fullpath") = "" Then Return
+  fullpath = getP("fullpath") 
+  
+  If fullpath = "" Then Return
 
 ' ' ''ENUM Artist, title etc via mpv Metadata
 ' '     metadatacount = GetPropertympv("metadata/list/count")
@@ -584,14 +595,14 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
   
 
   'fixmempv: questa procedura sotto, cosa fa esattamente? mi sembra solo il trim (?)
-    Try fileUtf8 = DConv(getP("fullpath")) 'from system charset to utf8
-    If Error Then fileutf8 = getP("fullpath")
-    fileutf8 = getP("fullpath")
+    Try fileUtf8 = DConv(fullpath) 'from system charset to utf8
+    If Error Then fileutf8 = fullpath
+    fileutf8 = fullpath
     fileutf8 = Trim(fileutf8)
 
   FillMultitracks() 'will set prop[audioonly] too.
 
-  Try setP("size", (Stat(getP("fullpath"), True).Size Div 1024))
+  Try setP("size", (Stat(fullpath, True).Size Div 1024))
   
   properties = New String[]
   properties.insert(["filename", "partially-seekable", "file-format", "audio-codec"]) 'common
@@ -606,9 +617,8 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
   'for audio only files, try to get common audio tags
   'try first to get them using fast taglib
   'fixmempv --> but fallback to mplayer in idle mode <--fixmempv
-
-  If (getP("AudioOnly") And (Not Global.IsNetworkURI(getP("FullPath")))) Then
-    If media_taglib.IsSupported(fileutf8) And media_taglib.Init(getP("FullPath")) Then
+  If (getP("AudioOnly") And (Not Global.IsNetworkURI(FullPath))) Then
+    If media_taglib.IsSupported(fileutf8) And media_taglib.Init(Fullpath) Then
       setP("artist", media_taglib.Artist)
       setP("author", media_taglib.Artist)
       setP("title", media_taglib.Title)
@@ -628,13 +638,13 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
       If getP("=audio-params/channels") = 0 Then properties.add("=audio-params/channels")
       setP("=audio-params/samplerate", media_taglib.Samplerate)
       If getP("=audio-params/samplerate") = 0 Then properties.add("=audio-params/samplerate")
-      global.myDebug("got info from taglib on " & getP("FullPath") & " --")
+      global.myDebug("got info from taglib on " & Fullpath & " --")
       
        media_taglib.tlFree()
         Else  'there was a problem with TagLib Class initialization, fallback to mplayer
               'or was a network uri or a cddb 
-      If global.IsCdaudio(getP("FullPath")) Then 'fixmempv cddb allow to choose if user wants cddb
-        get_cdda_info(cdda_device(getP("FullPath")), cddb)
+      If global.IsCdaudio(Fullpath) Then 'fixmempv cddb allow to choose if user wants cddb
+        get_cdda_info(cdda_device(Fullpath), cddb)
         If cddb Then
           Try setP("Artist", Mycdinfo.Artist)
           Try setP("author", Mycdinfo.Artist)
@@ -644,7 +654,8 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
         Endif
       Endif
 
-      If Not (global.IsCdaudio(getP("FullPath")))
+
+      If Not (global.IsCdaudio(Fullpath))
         Try setP("Artist", get_property_mpv("metadata/by-key/ARTIST"))
         Try setP("Author", get_property_mpv("metadata/by-key/AUTHOR"))
         Try setP("Genre", get_property_mpv("metadata/by-key/GENRE"))
@@ -657,6 +668,16 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
         ' Try Media_Comment = DConv(FindAudioTag("comment")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
         ' Try Media_Comments = DConv(FindAudioTag("comments")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
       Endif
+
+      ' If Fullpath Like "*.cue" Then
+      '   Try cuetext = File.Load(fullpath)
+      '   Try setP("year", get_main_cue_property(cuetext, "DATE"))
+      '   Try setP("comment", get_main_cue_property(cuetext, "COMMENT"))
+      '   Try setP("genre", get_main_cue_property(cuetext, "GENRE"))
+      '   Try setP("artist", get_main_cue_property(cuetext, "PERFORMER"))
+      '   Try setP("author", get_main_cue_property(cuetext, "PERFORMER"))
+      '   Try setP("Album", get_main_cue_property(cuetext, "TITLE"))
+      ' Endif
       
       If (getP("=duration") = 0) Or (getP("=duration") = "") Then properties.insert(["=duration", "duration"])
 

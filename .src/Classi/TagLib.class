@@ -57,7 +57,7 @@ Public Samplerate As String
 Public Channels As String
 
 Public Function IsSupported(filename As String) As Boolean
-  Dim extensions As String = "*.mp3;*.ogg;*.oga;*.flac;*.mpc;*.speex;*.spx;*.wavpack;*.wv;*.trueaudio;*.tta;*.aiff"
+  Dim extensions As String = "*.mp3;*.ogg;*.oga;*.flac;*.mpc;*.speex;*.spx;*.wavpack;*.wv;*.trueaudio;*.tta;*.aiff;"
   Dim fileExt As String = "." & File.Ext(filename)
   If fileext = "." Then Return False
   If (InStr(Upper(extensions), Upper(fileExt & ";")) > 0) Then
