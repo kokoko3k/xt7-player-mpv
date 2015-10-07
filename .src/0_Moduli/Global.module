@@ -75,7 +75,7 @@ Public Sub init()
   imgfilters = ("*.jpg;*.jpeg;*.bmp;*.png;")
   Slowmedia = "cddb:// cdda:// mms:// http:// http_proxy:// rtp:// rtsp:// ftp:// udp:// smb:// "  'we'll get tag information on user prefs
   NonTaggableMedia = "tv:// radio:// cdda:// cddb:// mf:// pvr:// dvb:// unsv:// sdp:// mpst:// tivo://"
-  NetworkURI = " mms:// http:// http_proxy:// rtp:// rtsp:// ftp:// udp:// "
+  NetworkURI = "https:// mms:// http:// http_proxy:// rtp:// rtsp:// ftp:// udp:// "
   UserPlaylistsDir = ".playlists"
   'Please terminate ALLFILTERS with ";"!
   'ALLFilters  '= Videofilter & ";" & AudioFilter & ";" & UncommonVideoFilters & ";" & UncommonAudiofilters

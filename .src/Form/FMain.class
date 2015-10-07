@@ -2416,8 +2416,16 @@ Public Sub file_options(fullpath As String) As Collection
     yt3d = generaloptions.Get3dYT.Value
     ytformats = Youtube.get_formats(Left(generaloptions.Youtubeformat.text, -1), generaloptions.Get3dYT.Value)
     opts["ytdl-format"] = ytformats
-      Else
-    opts["ytdl"] = "no"
+    opts["ytdl"] = "yes"
+      Else 'not youtube specific link
+    If global.IsNetworkURI(fullpath) Then 'but network stream, is supported by youtube-dl?
+Stop
+      If youtube.is_supported(fullpath) Then
+        opts["ytdl"] = "yes"
+          Else
+        opts["ytdl"] = "no"
+      Endif
+    Endif
   Endif
 
   Select Case Lower(fullpath)

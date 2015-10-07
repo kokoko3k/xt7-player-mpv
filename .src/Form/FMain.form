@@ -6,6 +6,67 @@
   Icon = Picture["xt7-player-mpv.png"]
   Persistent = True
   Arrangement = Arrange.Vertical
+  { Menu2 Menu
+    Text = ("Menu2")
+    Visible = False
+    { Menu3 Menu
+      Text = ("Menu3")
+    }
+    { Menu4 Menu
+      Text = ("Menu4")
+    }
+    { Menu5 Menu
+      Text = ("Menu5")
+    }
+    { Menu6 Menu
+      Text = ("Menu6")
+      { Menu7 Menu
+        Text = ("Menu7")
+      }
+      { Menu8 Menu
+        Text = ("Menu8")
+      }
+      { Menu9 Menu
+        Text = ("Menu9")
+      }
+    }
+    { Menu10 Menu
+      Text = ("Menu10")
+    }
+    { Menu11 Menu
+      Text = ("Menu11")
+      { Menu12 Menu
+        Text = ("Menu12")
+      }
+      { Menu13 Menu
+        Text = ("Menu13")
+      }
+      { Menu14 Menu
+        Text = ("Menu14")
+        { Menu15 Menu
+          Text = ("Menu15")
+        }
+        { Menu16 Menu
+          Text = ("Menu16")
+          { Menu17 Menu
+            Text = ("Menu17")
+          }
+        }
+      }
+    }
+    { Menu18 Menu
+      Text = ("Menu18")
+    }
+    { Menu19 Menu
+      Text = ("Menu19")
+    }
+    { Menu20 Menu
+      Text = ("Menu20")
+    }
+    { Menu21 Menu
+      Text = ("Menu21")
+    }
+  }
   { alloptionsmenu Menu
     Text = ("alloptionsmenu")
     Visible = False
@@ -67,7 +128,7 @@
         Picture = Picture["icon:/small/cdrom"]
         { MenuDvdDrive Menu
           Text = ("From DVD drive")
-          Picture = Picture["icon:/16/cdrom"]
+          Picture = Picture["icon:/small/cdrom"]
         }
         { MenuDvdFile Menu
           Text = ("From an ISO")
@@ -1406,7 +1467,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-15.2857,18,4)
+              MoveScaled(9.4286,-17.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True

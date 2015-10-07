@@ -17,6 +17,23 @@ Private Function TestKey(ykey As String) As Boolean
 End
 
 
+Private supported_domains As String[]
+Public Function is_supported(url As String) As Boolean
+  Dim domain As String
+  If supported_domains = Null Then
+    supported_domains = New String[]
+    'ytdl_list.txt generated that way:
+    'youtube-dl --list-extractors |cut -d "." -f 1|cut -d ":" -f 1|sort -u
+    supported_domains = Split(File.Load("ytdl_list.txt"), "\n", "", True)
+  Endif
+  For Each domain In supported_domains
+    If InStr(url, domain & ".") > 1 Then Return True
+  Next
+  
+  Return False
+End
+
+
 Private Function webkey() As String
   Dim mywget As New Wgetclass
   Dim wk As String
