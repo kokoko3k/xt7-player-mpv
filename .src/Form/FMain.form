@@ -1406,7 +1406,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-13.2857,18,4)
+              MoveScaled(9.4286,-14.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1618,14 +1618,14 @@
           Arrangement = Arrange.Fill
           Border = Border.Plain
           { PropertiesGrid GridView
-            MoveScaled(2,1,33,30)
+            MoveScaled(2,0,33,30)
             ToolTip = ("Info on playing media\nor on the last played one")
             Expand = True
             Border = False
           }
         }
         { Timer_mediainfo #Timer
-          #MoveScaled(9,39)
+          #MoveScaled(13,40)
           Delay = 3000
         }
         Index = 13
