@@ -1603,8 +1603,8 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
   Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
 End
 
-Public Function paused() As Boolean
-  Return get_property_mpv("pause") = "yes"
+Public Function paused(Optional cached As Boolean = False) As Boolean
+  Return get_property_mpv("pause",,, cached) = "yes"
 End
 
 ' Private Sub mpv_command(command As String[])

@@ -11,15 +11,16 @@ Public MouseOnOverlayTraytip As Boolean = False
 Public Sub Redraw(tip As String, x As Integer, y As Integer)
   Dim DesktopH As Integer = Global.DektopHTotal()
   Dim DesktopW As Integer = Global.DektopWTotal()
-  UpdateInfos()
   If y + Me.h > Desktoph Then y = Desktoph - Me.h
   If x + Me.w + 8 > Desktopw Then x = Desktopw - Me.w - 8
   Me.Move(x, y)
   Me.stacking = Me.Above
+  OverlaytrayTip.show
+  UpdateInfos()
 End
 
 Public Sub UpdateScreenshot()
-    If Not (FMain.mplayer.getP("audioonly") Or FMain.mplayer.paused()) Then
+    If Not (FMain.mplayer.getP("audioonly") Or FMain.mplayer.paused(True)) Then
       panel1.Arrangement = Arrange.None
       picturebox1.picture = FMain.mplayer.get_screenshot(True)
       Try picturebox1.h = picturebox1.w / (FMain.mplayer.getP("video-params/dw") / FMain.mplayer.getP("video-params/dh"))
@@ -35,7 +36,7 @@ Public Sub Form_Show()
   UpdateScreenshot()
   Global.CenterObj(panel1, picturebox1)
   picturebox1.x = 0
-  UpdateInfos()
+  'UpdateInfos()
   timer1.start
 End
 
@@ -78,8 +79,9 @@ End
 
 
 Public Sub UpdateInfos()
+  Dim paused As Boolean = FMain.mplayer.Paused()
   Dim fullpath As String = FMain.mplayer.getP("fullpath")
-    If Not (FMain.mplayer.Paused()) Then
+    If Not Paused Then
       'If Not (btnplaypause.picture = Picture["icon:/16/pause"]) Then btnplaypause.picture = Picture["icon:/16/pause"]
       If Not (btnplaypause.picture = Picture["media-playback-pause.png"]) Then btnplaypause.picture = Picture["media-playback-start.png"]
         Else
@@ -94,7 +96,7 @@ Public Sub UpdateInfos()
       album = FMain.mplayer.getP("album")
       song = FMain.mplayer.getP("title")
       If song = "" Then song = FMain.PropertiesGrid[7, 1].text
-      If Not FMain.mplayer.paused() Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("duration")
+      If Not paused Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("duration")
       If Trim(artist) = "" Then artist = "Unknown Artist"
       If Trim(album) = "" Then album = "Unknown Album"
       If Trim(song) = "" Then song = "Unknown song"
@@ -110,7 +112,7 @@ Public Sub UpdateInfos()
 
       label1.text = artist & "\n" & album & "\n" & song & "\n" & filename & "\n" & timestr
         Else
-      If Not FMain.mplayer.paused() Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("duration")
+      If Not paused Then TimeStr = FMain.mplayer.FormatTime(FMain.mplayer.CurrentTime()) & " / " & FMain.mplayer.getP("duration")
       If Trim(filename) = "" Then filename = ("No file is playing")
       label1.text = filename & "\n" & timestr
     Endif

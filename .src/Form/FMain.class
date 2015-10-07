@@ -245,24 +245,28 @@ Private DynaGuiTools As New DynaGuiClass
 
 Public TagEditMode As Boolean = False
 
-'Public trayicon1 As Trayicon 'fixme trayicon
+Public TrayIcon2 As Trayicon 'fixme trayicon
 
 Public Sub InitTrayIcon()
-'fixme trayicon
-  ' Dim SystemTray As Boolean = True
-  ' Try SystemTray = desktop.HasSystemTray
-  ' If Error Then
-  '   global.myDebug("Couldn't check if your desktop has a system tray, assuming it has")
-  ' Endif
-  ' If Not SystemTray Then Return
-  ' Try trayicon1 = New Trayicon
-  ' If Error Then global.myDebug("Cannot Init Trayicon")
-  ' 'trayicon1.Picture = picture.Load("trayicon.png")
-  ' trayicon1.Picture = picture.Load("xt7-player-mpv.png")
-  ' 'trayicon1.Picture.Image.Stretch(trayicon1.w, trayicon1.h)
-  ' trayicon1.Visible = True
-  ' Try Object.Attach(Trayicon1, Me, "Trayicon1")
-  ' If Error Then global.myDebug("Cannot Init Trayicon")
+  'fixme trayicon
+
+  Dim SystemTray As Boolean = True
+  Try SystemTray = desktop.HasSystemTray
+  If Error Then
+    global.myDebug("Couldn't check if your desktop has a system tray, assuming it has")
+  Endif
+
+  If Not SystemTray Then Return
+  Try TrayIcon2 = New Trayicon 
+  If Error Then global.myDebug("Cannot Init Trayicon")
+  'TrayIcon2.Picture = picture.Load("trayicon.png")
+  TrayIcon2.Picture = picture.Load("xt7-player-mpv.png")
+  'TrayIcon2.Picture.Image.Stretch(TrayIcon2.w, TrayIcon2.h)
+  TrayIcon2.Visible = True
+  object.Attach(TrayIcon2, Me, "TrayIcon2")
+  TrayIcon2.PopupMenu = "MenuMain"
+
+  If Error Then global.myDebug("Cannot Init Trayicon")
 End
 
 Public Sub Form_Open()
@@ -1337,7 +1341,7 @@ Public Sub Form_Close()
   
   ChooseAspect.visible = False
   'it is needed for lockfile and local socket to be correctly freed:
-  'Try trayicon1.Delete 'fixme trayicon
+  Try TrayIcon2.Delete 'fixme trayicon
   Closing = True
   
 
@@ -7623,12 +7627,19 @@ Public Sub AutoresizeAudioForm()
   
 End
 
-Public Sub TrayIcon1_MouseDown()
 
+
+Public Sub TrayIcon2_Scroll(Delta As Float, Orientation As Integer)
+  If delta > 0 Then
+    volume_add("+2")
+  Else
+    volume_add("-2")
+  Endif
+End
+
+Public Sub TrayIcon2_click()
   Dim iconified As Boolean = False
   iconified = (fmain.minimized And fmain.SkipTaskbar)
-  If mouse.left Then
-    'fmain.visible = Not fmain.visible
     If iconified Then 
       fmain.Minimized = False
       fmain.SkipTaskbar = False
@@ -7637,38 +7648,19 @@ Public Sub TrayIcon1_MouseDown()
       fmain.Minimized = True
       fmain.SkipTaskbar = True
     Endif
-  Endif
-
 End
 
-Public Sub TrayIcon1_Menu()
 
-  OverlaytrayTip.hide
-  MenuMain.popup
-
-End
-
-Public Sub TrayIcon1_MouseWheel()
-
-  If mouse.delta > 0 Then
-    volume_add("+2")
-  Else
-    volume_add("-2")
-  Endif
-
-End
 
 Public TimerHideTray As New Timer As "TimerHideTray"
 
-Public Sub TrayIcon1_Enter() 'fixme trayicon (tutto commentato)
-  ' 
-  ' If mplayer.ProcessRunningOvr() Then
-  '   OverlaytrayTip.Redraw("..:xt7-player::.", Last.screenx - (TrayIcon1.w), Last.screeny - (OverlayTrayTip.h))
-  '   OverlaytrayTip.show
-  '   TimerHideTray.delay = 5000
-  '   TimerHideTray.start
-  ' Endif
-
+Public Sub TrayIcon2_middleclick() 'fixme trayicon (tutto commentato)
+  Dim iconsize As Integer = 48 'hack.
+  If mplayer.ProcessRunningOvr() Then
+    OverlaytrayTip.Redraw("..:xt7-player::.", mouse.screenx - (iconsize), mouse.screeny - (iconsize))
+    TimerHideTray.delay = 5000
+    TimerHideTray.start
+  Endif
 End
 
 Public Sub TimerHideTray_Timer()
@@ -11824,3 +11816,5 @@ Public Sub chaptersGrid_KeyPress()
   Endif
 
 End
+
+
