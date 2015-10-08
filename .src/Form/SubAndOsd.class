@@ -55,11 +55,12 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
     If FontStyleCHK.value Then 
       AssForceStyle = AssForceStyle & FontName
       AssForceStyle = AssForceStyle & ",FontSize=" & CStr(FontString.Font.Size)
-      If FontString.Font.Bold Then AssForceStyle = AssForceStyle & ",Bold=1"
+      'If FontString.Font.Bold Then AssForceStyle = AssForceStyle & ",Bold=1"
+      If FontString.Font.Bold Then opts.push(o("sub-text-bold", "yes"))
       If FontString.Font.Italic Then AssForceStyle = AssForceStyle & ",Italic=1" 
 
       SubFontName = FontString.Font.name
-      If FontString.Font.Bold Then SubFontName &= ":style=bold" 'fixmempv: how to do italic and strikeout?
+      'If FontString.Font.Bold Then SubFontName &= ":style=bold" 'fixmempv: how to do italic and strikeout?
       opts.Push(o("sub-text-font", "\"" & SubFontName & "\""))
       opts.Push(o("sub-text-font-size", CStr(FontString.Font.size)))
 
@@ -99,7 +100,8 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
   'osd related
   If FontStyleCHK2.value Then 
     SubFontName = FontString2.Font.name
-    If FontString2.Font.Bold Then SubFontName &= ":style=bold" 'fixmempv: how to do italic and strikeout?
+    'If FontString2.Font.Bold Then SubFontName &= ":style=bold" 'fixmempv: how to do italic and strikeout?
+    If FontString2.Font.Bold Then opts.push(o("osd-bold", "yes"))
     opts.Push(o("osd-font", "\"" & SubFontName & "\""))
     opts.Push(o("osd-font-size", CStr(FontString2.Font.size)))
   Endif

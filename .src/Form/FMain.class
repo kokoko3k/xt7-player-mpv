@@ -2419,7 +2419,7 @@ Public Sub file_options(fullpath As String) As Collection
     opts["ytdl"] = "yes"
       Else 'not youtube specific link
     If global.IsNetworkURI(fullpath) Then 'but network stream, is supported by youtube-dl?
-Stop
+
       If youtube.is_supported(fullpath) Then
         opts["ytdl"] = "yes"
           Else
@@ -2576,7 +2576,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Endif
         
   n = 0
-  Repeat  'first try to play with generated options, then try to force with ytdl
+  Repeat  'first try to play with generated options (see file_options() ), then try to force with ytdl
     'If mplayer.do_play(mplayer.Media_FullPath, mplayer.currentoptions, False, MkvSubsWorkaround, cookieopts, dumpfile, doanalyze) Then
     switchresBTN.enabled = False
     If Not mplayer.do_play(fullpath) Then Goto returnlabel
