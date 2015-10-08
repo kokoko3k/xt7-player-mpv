@@ -1048,6 +1048,7 @@ Private Function makenewrow(Optional librarygrid As Gridview, forcename As Strin
   Dim nr As String 'newrow
   Dim ts As String = TableSeparator
   Dim filesize As Long = 0
+  Dim itemname As String
 
   If track = 0 Then track = ""
   If myYear = 0 Then myYear = ""
@@ -1056,7 +1057,9 @@ Private Function makenewrow(Optional librarygrid As Gridview, forcename As Strin
   If forcename <> "" Then
     nr = nr & ts & "Filename" & ts & forcename
       Else
-    nr = nr & ts & "Filename" & ts & file.Name(filetoadd)
+    itemname = Trim(file.Name(filetoadd))
+    If itemname = "" Then itemname = filetoadd
+    nr = nr & ts & "Filename" & ts & itemname
   Endif
 
   nr = nr & ts & "Length" & ts & FormatTime(length)

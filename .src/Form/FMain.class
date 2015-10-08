@@ -10333,7 +10333,6 @@ Public Sub RenameGridItem(mygrid As Gridview, myrow As Integer, myplaylist As Pl
 
   Try fullpath = myplaylist.ColumnIndex["Full Path"]
   If Error Then Return
-  Stop
   sep = myplaylist.TableSeparator
   oldname = mygrid[myrow, myplaylist.ColumnIndex["Filename"]].text
   
@@ -10346,7 +10345,6 @@ Public Sub RenameGridItem(mygrid As Gridview, myrow As Integer, myplaylist As Pl
     global.myDebug("cannot rename, couldn't find searchtable element into ptable (!?)")
     Return
   Else
-    Stop
     myplaylist.SearchTable[myrow] = Replace(myplaylist.SearchTable[myrow], sep & "Filename" & sep & oldname & sep, sep & "Filename" & sep & newname & sep)
     myplaylist.ptable[i] = myplaylist.SearchTable[myrow]
     mygrid[myrow, 0].text = ""
