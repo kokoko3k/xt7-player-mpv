@@ -410,3 +410,10 @@ End
 Public Sub pScaleFactorComboBox_Click()
   TestBTN_Click()
 End
+
+
+Public Sub notifytest_Arrange()
+
+  panelsubtitles.h = hbox1.y + hbox1.h + Desktop.scale * 2
+
+End
