@@ -1467,7 +1467,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-17.2857,18,4)
+              MoveScaled(9.4286,-18.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -2126,8 +2126,16 @@
               ToolTip = ("Stop")
               Picture = Picture["media-playback-stop.png"]
             }
+            { ChaptersBtn Button
+              MoveScaled(15,0,4,4)
+              Visible = False
+              Font = Font["1"]
+              ToolTip = ("Chapters available")
+              Picture = Picture["icon:/22/view-detail"]
+              Border = False
+            }
             { Panel9 Panel
-              MoveScaled(15,1,54,17)
+              MoveScaled(19,1,54,17)
               Expand = True
               Arrangement = Arrange.Fill
               Padding = 8
@@ -2156,34 +2164,34 @@
               }
             }
             { ABLoopButton ToolButton
-              MoveScaled(21,0,5,4)
+              MoveScaled(24,0,5,4)
               Font = Font["Bold,-1"]
               Picture = Picture["media-loop-off.png"]
             }
             { ButtonRew ToolButton
-              MoveScaled(30,0,4.4286,4)
+              MoveScaled(27,0,4.4286,4)
               Font = Font["6"]
               ToolTip = ("Slowdown")
               Picture = Picture["media-seek-backward.png"]
             }
             { Buttonfwd ToolButton
-              MoveScaled(34,0,4.4286,4)
+              MoveScaled(30,0,4.4286,4)
               Font = Font["6"]
               ToolTip = ("Speedup")
               Picture = Picture["media-seek-forward.png"]
             }
-            { PanScan ToolButton
-              MoveScaled(37,0,5,4)
-              Font = Font["6"]
-              ToolTip = ("Hover the mouse over this button then\n* Zoom the video with mouse wheel.\n* Cycle through zoom with right mouse button.")
-              Picture = Picture["zoom-in.png"]
-            }
             { ButtonNowNext ToolButton
-              MoveScaled(40,0,4,4)
+              MoveScaled(34,0,4,4)
               Visible = False
               Font = Font["6"]
               ToolTip = ("Show/Hide current and next TV program.")
               Picture = Picture["media-info.png"]
+            }
+            { PanScan ToolButton
+              MoveScaled(39,0,5,4)
+              Font = Font["6"]
+              ToolTip = ("Hover the mouse over this button then\n* Zoom the video with mouse wheel.\n* Cycle through zoom with right mouse button.")
+              Picture = Picture["zoom-in.png"]
             }
           }
           { ControlPanelRight Panel

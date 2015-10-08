@@ -1706,6 +1706,7 @@ Public Sub ButtonStop_Click()
   Try ClearStreamsMenu()
   Try epgform.dvbsnoop.Stopit()
   ButtonNowNext.Hide()
+  ChaptersBtn.Hide()
   ArrangeCpl()
   'UpdateSeekSlider() 'fixmempv cambiati header
   'SeekBar_Change() 'fixmempv cambiati header
@@ -1866,10 +1867,11 @@ Public Sub FillChaptersMenu()
   Dim chaptermenu As Menu
   Dim i As Integer
   Try ClearMenu(menuchapters)
-
+  ChaptersBtn.visible = False
   menuchapters.enabled = False
   Try chapters = mplayer.get_chapters()
   If chapters = Null Then Return
+  ChaptersBtn.visible = chapters.count > 1
   If chapters.count = 0 Then Return
 
   menuchapters.enabled = True
@@ -11826,3 +11828,7 @@ Public Sub chaptersGrid_KeyPress()
 End
 
 
+
+Public Sub ChaptersBtn_click()
+  Try menuchapters.popup
+End

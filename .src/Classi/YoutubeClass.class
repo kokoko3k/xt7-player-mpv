@@ -28,7 +28,6 @@ Public Function is_supported(url As String) As Boolean
   For Each domain In supported_domains
     If url Like domain Then 
       global.myDebug(url & " supported by match with " & domain)
-      Stop
       Return True
     Endif
   Next
