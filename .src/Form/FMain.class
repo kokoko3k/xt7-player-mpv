@@ -9319,7 +9319,11 @@ Public Sub youtubeTree_Activate()
   'if is a moreresult link, search for more results
   If InStr(youtubetree.Current.key, "__MORERESULTS__") Then
     'more_text = InStr(youtubetree.Current.key,&q)
-    query = Right(Split(Right(youtubetree.Current.key, - InStr(youtubetree.Current.key, "&q=")), "&")[0], -2)
+    Try query = Right(Split(Right(youtubetree.Current.key, - InStr(youtubetree.Current.key, "&q=")), "&")[0], -2)
+    If Error Then 
+      global.myDebug("error")
+      Goto returnlabel
+    Endif
     pagetoken = Split(youtubetree.Current.key, Chr(8))[2]
     parentkey = youtubetree.Current.ParentKey
 
