@@ -925,17 +925,22 @@
             Expand = True
           }
           { Separator3 Separator
-            MoveScaled(23,0,2,4)
+            MoveScaled(18,0,2,4)
           }
           { ButtonSavePls Button
-            MoveScaled(25,0,4,4)
+            MoveScaled(20,0,4,4)
             ToolTip = ("Save the playlist")
             Picture = Picture["icon:/16/save"]
           }
           { ButtonDeletePls Button
-            MoveScaled(29,0,4,4)
+            MoveScaled(24,0,4,4)
             ToolTip = ("Delete the playlist")
             Picture = Picture["icon:/16/delete"]
+          }
+          { ButtonDeletePls2 Button
+            MoveScaled(28,0,4,4)
+            ToolTip = ("Open the playlist folder")
+            Picture = Picture["icon:/16/directory"]
           }
         }
         { Panel1 Panel GridPanels
@@ -1406,7 +1411,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-18.2857,18,4)
+              MoveScaled(9.4286,-19.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True

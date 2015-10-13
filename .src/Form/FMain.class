@@ -2639,6 +2639,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     StatusLabelright.show
   Endif
 
+  Fill_Playlist_from_mpv()
   FillStreamsMenu()
   FillChaptersMenu()
 
@@ -2771,45 +2772,68 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0")
 
 End
 
-' Public Function SetRightCache() As String
-'   'fixmempv anche per i dvd e dvdread, controlla bene
-'   Dim cachesize As String = "NULL"
-'   Dim mincache, seekcache As String
-'   Dim sep As String = Chr(0)
-'   
-'   With GeneralOptions
-'     If global.IsNetworkURI(mplayer.getP("fullpath")) Then
-'       If .NetCacheCheckbox.value Then cachesize = .NetCacheSpinBox.value
-'       If .NetminCacheCheckbox.value Then mincache = " --cache-initial " & Chr(0) & .cacheminspinbox.value
-'       If .NetseekCacheCheckbox.value Then seekcache = " -cache-seek-min " & Chr(0) & .cacheseekspinbox.value
-'       
-'     Else If (mplayer.getP("fullpath") Like "dvb://*") Then
-'       If .dvbtCacheCheckbox.value Then cachesize = .dvbtCacheSpinBox.value
-'       If .dvbtminCacheCheckbox.value Then mincache = " --cache-initial " & Chr(0) & .dvbtcacheminspinbox.value
-'       
-'     Else If (mplayer.getP("fullpath") Like "dvd://*") Then
-'       If .DvdCacheCheckbox.Value Then cachesize = .DVDCacheSpinBox.value
-'       
-'     Else If (mplayer.getP("fullpath") Like "dvdnav://*") Then
-'       If .DvdCacheCheckbox.Value Then cachesize = "0" 'dvdnav wont work with a cache
-'       
-'     Else If global.IsCdaudio(mplayer.getP("fullpath")) Then
-'       If .CDDACacheCheckbox.Value Then cachesize = .CDDACacheSpinBox.value & Chr(0) & " --cache-initial 0"
-'       
-'     Else
-'       If .CacheCheckbox.value Then cachesize = .CacheSpinBox.value
-'       If .CacheMinCheckbox.value Then mincache = " --cache-initial " & Chr(0) & .CacheMinSpinBoxFile.value
-'       
-'     Endif
-'   End With
-'   If cachesize = "0" Then
-'     Return " --no-cache "
-'   Else If cachesize <> "NULL" Then
-'     Return " -cache " & cachesize & "\n" & mincache & "\n" & seekcache
-'   Endif
-' 
-' End
+Public Sub Fill_Playlist_from_mpv()
+  ' 'an xt7 play item may be a playlist
+  ' 'if we catch it, then:
+  ' 'we create a New Playlist On the fly
+  ' '(ask the user what it wants to do with the previous playlist)
+  ' 'named with the xt7 play item name
+  ' 'and switch the playqueue to the playlist tab
+  Dim i, pCount As Integer = 0
+  Dim xt7Item, filename, title As String
+  Dim msg As String
+  Dim uries As String
+  Dim properties As String[]
 
+  If Not mplayer.ProcessRunningOvr() Then Return
+  
+  'Is it a playlist?
+  Try pCount = mplayer.get_property_mpv("=playlist-count")
+  If pCount < 2 Then Return
+  
+  'save the previous playlist
+  If playlistgrid.Rows.count > 0 Then 'save the previous playlist
+    PlaylistsCombo.text = "pls_" & (Replace(CStr(Now()), "/", "_")) & ".bak"
+    If Not SavePls() Then Return
+  Endif
+  
+  'Create a new playlist
+  myplaylist.clear(playlistgrid)
+  
+  xt7Item = Replace(file.BaseName(mplayer.getP("fullpath")), "/", "_")
+  If xt7Item = "" Then 
+    global.myDebug("Using a random number for playlist name")
+    xt7Item = Rnd(0, 9999999)
+  Endif
+
+  PlaylistsCombo.text = xt7Item
+
+  'switch to the playlist tab
+  If Not TabSelectedPlaylist() Then
+    For i = 0 To Leftsidetabs.Count - 1
+      Leftsidetabs.Index = i
+      If TabSelectedPlaylist() Then Break
+    Next
+  Endif
+
+  'Populate the new playlist
+  properties = New String[]
+  For i = 0 To pCount - 1
+    properties.Add("=playlist/" & i & "/filename")
+    properties.Add("=playlist/" & i & "/title")
+  Next
+
+  mplayer.get_properties_mpv(properties, True, True)
+
+  For i = 0 To pCount - 1
+    filename = mplayer.get_property_mpv("=playlist/" & i & "/filename", False, 100, True)
+    title = mplayer.get_property_mpv("=playlist/" & i & "/title", False, 100, True)
+    If title = mplayer.unavailable_str Then title = filename
+    myplaylist.AddFile(playlistgrid, filename, True, True, title)
+    global.myDebug(i, filename, title)
+  Next
+  myplaylist.AutoSizeColumns(playlistgrid)
+End
 
 Public Function SetRightCache(fullpath As String) As MpvOption[]
   'fixmempv anche per i dvd e dvdread, controlla bene
@@ -3293,9 +3317,9 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   
   If cachevalue <> "" Then
     Try cache_size = mplayer.getP("=cache-size")
-    If cache_size = "(unavailable)" Then cache_size = "0"
+    If cache_size = mplayer.unavailable_str Then cache_size = "0"
     If cache_size = "" Then cache_size = mplayer.get_property_mpv("=cache-size")
-    If cache_size = "(unavailable)" Then cache_size = "0"
+    If cache_size = mplayer.unavailable_str Then cache_size = "0"
     If cache_size = "" Then cache_size = "0"
     If CInt(cache_size) >= 1024 Then 
       Try maxcachehuman = Format$(((CFloat(cache_size) / 1024)), "##.#") & "MB"
@@ -3377,7 +3401,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
       Audioform.label18.text = CUSTOMTITLE_OLD
   
     Case "cache"
-      If data_new <> "(unavailable)" Then CACHEVALUE_OLD = data_new
+      If data_new <> mplayer.unavailable_str Then CACHEVALUE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
   
     Case Like "=duration"
@@ -10619,29 +10643,36 @@ End
 
 
 Public Sub ButtonSavePls_Click()
+  SavePls()
+End
+
+Public Function SavePls() As Boolean 
   Dim playlistsfullpath As String = global.ConfPath & "/" & global.UserPlaylistsDir
   If Trim(PlaylistsCombo.text) = "" Then 
     Message.Error(("Please, first enter a playlist name to save"), "Ok")
-    Return
+    Return False
   Endif
   If Not Exist(playlistsfullpath) Then
     Try Mkdir playlistsfullpath
     If Error Then 
       Message.Error(("Couldn't make the user playlist directory\n") & playlistsfullpath, ("Ok"))
-      Return
+      Return False
     Endif
   Endif
   If Exist(playlistsfullpath & "/" & PlaylistsCombo.text & ".xpl") Then
-    If MyQuestion.Ask(PlaylistsCombo.text & " " & ("exists."), ("Overwrite"), ("Never mind")) = 2 Then Return
+    If MyQuestion.Ask(PlaylistsCombo.text & " " & ("exists."), ("Overwrite"), ("Never mind")) = 2 Then Return False
   Endif
   Try myplaylist.SaveAs(playlistsfullpath & "/" & PlaylistsCombo.text & ".xpl")
   If Error Then 
     Message.Error(("There was an error saving the playlist:\n") & PlaylistsCombo.text, ("Ok"))
+    Return False
       Else
-    Message.Info(("Playlist saved:\n") & PlaylistsCombo.text, ("Ok"))
+    Message.Info(("Old playlist saved as:") & "\n" & PlaylistsCombo.text, (" Ok "))
     If PlaylistsCombo.Find(PlaylistsCombo.text) = -1 Then PlaylistsCombo.Add(PlaylistsCombo.text)
   Endif
+  Return True
 End
+
 
 Public Sub PlaylistsCombo_enter()
   Try fillplaylistcombo()
@@ -10936,7 +10967,7 @@ Public Sub ActivateThumbler()
   While Not mthumbler.ProcessRunningOvr()
     Wait 0.1
   Wend
-  While mthumbler.get_property_mpv("video-params/aspect") = "(unavailable)" 'needed later to size the thumbler box
+  While mthumbler.get_property_mpv("video-params/aspect") = mplayer.unavailable_str 'needed later to size the thumbler box
     Wait 0.1
   Wend
   mthumbler.Renice(GeneralOptions.NiceLevelSpinBox.value + 5, True)
@@ -11830,4 +11861,8 @@ End
 
 Public Sub ChaptersBtn_click()
   Try menuchapters.popup
+End
+
+Public Sub ButtonDeletePls2_Click()
+  Desktop.Open(global.ConfPath & "/" & global.UserPlaylistsDir)
 End

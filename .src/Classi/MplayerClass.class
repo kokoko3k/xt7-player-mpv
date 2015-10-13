@@ -125,11 +125,11 @@ Public Function FillMultitracks()
     tmp = (ID & " - " & NAME & " - " & LANG & " - " & CODEC)
     Select Case Type
       Case "audio"
-        prop["audiotracks"].Add(Replace(tmp, "(unavailable)", "*"))
+        prop["audiotracks"].Add(Replace(tmp, unavailable_str, "*"))
       ' Case "video"
         'multiple video tracks unsupported by xt7
       Case "sub"
-        prop["subtitletracks"].Add(Replace(tmp, "(unavailable)", "*"))
+        prop["subtitletracks"].Add(Replace(tmp, unavailable_str, "*"))
     End Select
   Next
 
@@ -167,6 +167,10 @@ Public Sub playerprocess_read(Optional injected As String = "")
   Dim sBuf As String, question, answer As String
   Try Read #playerprocess, sBuf, -4096
   'global.myDebug(sbuf)
+    ' If sBuf Like "*playlist/0*" Then
+    '   Stop
+    ' Endif
+
   If sBuf Like "ANS_*|*" Then
     For Each sBuf In Split(sbuf, "\n", "", True)
       question = MidC(sBuf, "_", "|")
@@ -370,10 +374,15 @@ Public Sub setP(aKey As String, aData As Variant)
   If Error Then global.myDebug("Error while trying to set: ", aKey, "=", aData)
 End
 
-Public Function getP(aKey As String) As Variant
-  'get a lowercase property from a 
+Public Function getP(aKey As String, Optional unanswered_string As String) As Variant
+  'get a lowercase property from a key
+  'if the key is not found, then return null, or return unanswered_string if specified.
   If prop.exist(Lower(aKey)) Then Return prop[Lower(aKey)]
-  Return Null
+  If unanswered_string <> Null Then 
+    Return unanswered_string
+      Else
+    Return Null
+  Endif
 End
 
 
@@ -603,6 +612,7 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
 ' '     Endif
 ' '   ''
 
+  global.mydebug("Waiting for playback to start")
   If Not waitplayback(3000) Then
     global.myDebug("EE", "Playback didn't started or timeout waiting for it to start")
     do_stop()
@@ -1504,7 +1514,9 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
   dataout &= "ANS_" & name & "|"
   dataout &= "${"
   dataout &= name
-  dataout &= ":(unavailable)}"
+  dataout &= ":"
+  dataout &= unavailable_str
+  dataout &= "}"
   'clear previous answer
    If wait_answer Then setP(name, Null)
   'say mpv to answer 
@@ -1563,7 +1575,7 @@ End
 '   Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
 ' End
 
-Public Function get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeoutcs As Integer = 500)
+Public Function OLD_get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeoutcs As Integer = 500)
   Dim name, dataout, p As String
   Dim unanswered As String = Chr(8) & "unanswered" & Chr(8) 'indica che mpv non ha risposto
   Dim got As Boolean
@@ -1581,7 +1593,7 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
   
   If Not wait_answer Then Return
   'wait for all of the answers
-  setP(name, unanswered)
+  'setP(name, unanswered)
   Repeat
     If (Not got) Then
       Wait 0.01
@@ -1589,7 +1601,8 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
     Endif
     got = True
     For Each name In names
-      p = getP(name) 
+'Stop
+      p = getP(name, unanswered) 
       If wait_unavailable Then 
         If (p <> unanswered) And (p <> "(unavailable)") Then names.Remove(names.Find(name))
           Else
@@ -1598,6 +1611,57 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
       got = (got And (p <> unanswered))
       If Not got Then 
         global.myDebug("waiting", name)
+      Endif
+    Next
+  Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
+End
+
+Private Function ask_for(name As String, not_retrived As String, clear_first As Boolean)
+  Dim dataout As String
+  dataout = "print-text "
+  dataout &= "ANS_" & name & "|"
+  dataout &= "${"
+  dataout &= name
+  dataout &= ":" & not_retrived
+  dataout &= "}"
+  'clear previous answer
+  If clear_first Then setP(name, Null)
+  'say mpv to answer 
+  send(dataout)
+End
+
+Public Const unavailable_str As String = "(unavailable)"
+
+Public Function get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeoutcs As Integer = 500)
+  Dim name, dataout, p As String
+  Dim unanswered As String = Chr(8) & "unanswered" & Chr(8) 'indica che mpv non ha risposto
+  Dim got As Boolean
+  
+  For Each name In names
+    ask_for(name, unavailable_str, wait_answer)
+  Next 'name
+  
+  If Not wait_answer Then Return
+  'wait for all of the answers
+  'setP(name, unanswered)
+  Repeat
+    If (Not got) Then
+      Wait 0.01
+      timeoutcs -= 0.01
+    Endif
+    got = True
+    For Each name In names
+'Stop
+      p = getP(name, unanswered) 
+      If wait_unavailable Then 
+        If (p <> unanswered) And (p <> unavailable_str) Then names.Remove(names.Find(name))
+          Else
+        If (p <> unanswered) Then names.Remove(names.Find(name))
+      Endif
+      got = (got And (p <> unanswered))
+      If Not got Then 
+        global.myDebug("waiting for", name, "reasking...")
+        ask_for(name, unavailable_str, wait_answer)
       Endif
     Next
   Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
@@ -1927,7 +1991,7 @@ Public Sub do_apply_restart(new_opts As Collection)
   'Restore properties changed runtime before the restart
   'more tries are needed because mpv needs to initialize
   'before giving any useful answer.
-  'so check if the answer is different from "(unavailable")
+  'so check if the answer is different from mplayer.unavailable_str
   'and don't spend too much time anyway waiting for the property.
     For Each properties_changed_runtime
       global.myDebug("Try to restore Property:", name, data)
@@ -1940,7 +2004,7 @@ Public Sub do_apply_restart(new_opts As Collection)
         set_property_mpv(name, data, False)
         Wait 0.01
         newdata = get_property_mpv(name)
-      Until (newdata <> "(unavailable)") Or ((Timer() - TimerA) > 10) Or (newdata = olddata) 'dont spend more than one second per property
+      Until (newdata <> unavailable_str) Or ((Timer() - TimerA) > 10) Or (newdata = olddata) 'dont spend more than one second per property
       'is it possible that newdata is available but still with an unset value, wo, just to be sure, restore it one more time.
       Wait 0.01
       set_property_mpv(name, data, False)
