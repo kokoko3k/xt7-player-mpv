@@ -1570,7 +1570,7 @@ End
 
 
 
-Public Function get_property_mpv(name As String, Optional wait_answer As Boolean = True, Optional timeoutcentisecs As Integer = 100, try_cached As Boolean = False) As String
+Public Function old_get_property_mpv(name As String, Optional wait_answer As Boolean = True, Optional timeoutcentisecs As Integer = 100, try_cached As Boolean = False) As String
   Dim dataout As String
   Dim cachedP As Variant
   If try_cached Then
@@ -1604,6 +1604,34 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
     Return getP(name)
   Endif
 End
+
+Public Function get_property_mpv(name As String, Optional wait_answer As Boolean = True, Optional timeoutcentisecs As Integer = 100, try_cached As Boolean = False) As String
+  Dim cachedP As Variant
+  Dim answer As String
+  If try_cached Then
+    Try cachedP = getP(name)
+     If cachedP <> Null Then Return cachedP
+  Endif
+
+  get_properties_mpv([name], wait_answer, False, timeoutcentisecs)
+
+  Try Return getP(name)
+End
+
+Private Function ask_for(name As String, not_retrived As String, clear_first As Boolean)
+  Dim dataout As String
+  dataout = "print-text "
+  dataout &= "ANS_" & name & "|"
+  dataout &= "${"
+  dataout &= name
+  dataout &= ":" & not_retrived
+  dataout &= "}"
+  'clear previous answer
+  If clear_first Then setP(name, Null)
+  'say mpv to answer 
+  send(dataout)
+End
+
 
 ' Public Function old_get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeoutcs As Integer = 500)
 '   Dim name, dataout, p As String
@@ -1684,19 +1712,6 @@ Public Function OLD_get_properties_mpv(names As String[], Optional wait_answer A
   Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
 End
 
-Private Function ask_for(name As String, not_retrived As String, clear_first As Boolean)
-  Dim dataout As String
-  dataout = "print-text "
-  dataout &= "ANS_" & name & "|"
-  dataout &= "${"
-  dataout &= name
-  dataout &= ":" & not_retrived
-  dataout &= "}"
-  'clear previous answer
-  If clear_first Then setP(name, Null)
-  'say mpv to answer 
-  send(dataout)
-End
 
 Public Const unavailable_str As String = "(unavailable)"
 

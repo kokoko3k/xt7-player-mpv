@@ -2643,6 +2643,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   FillStreamsMenu()
   FillChaptersMenu()
 
+
   If (mplayer.getP("audioonly")) Then
     c = 0
     Try c = mplayer.get_property_mpv("chapter-list/count",,, True)
