@@ -884,7 +884,7 @@ Public Sub SyncSortedTable()
     SortTable.Add(GetValue(Ptable[i], Field))
   Next 'i
   ' [GB2:TEXT] SortTable = SortTable.Sort(gb.text)
-  SortTable = SortTable.Sort(gb.IgnoreCase)
+  SortTable = SortTable.Sort(gb.language)
   'PRINT "Debug: playlistclass syncsorttable() end at: " & Time
   
   'endtime = Now
@@ -892,27 +892,66 @@ Public Sub SyncSortedTable()
   
 End
 
-
 Private Function BinarySearch(item As String) As Integer
   Dim first, Tlast, middle As Integer
 
   Dim MiddleItem As String
   first = 0
   Tlast = SortTable.count - 1
-  ' IF item = "/mnt/disco2/vcast/download/Star_trek_migliori.mp4" THEN 
-  '   PRINT "break"
-  ' ENDIF
+  If item Like "*La tavola da surf*" Then 
+     Print "break"
+     Stop
+   Endif
   Repeat
     middle = (first + tlast) / 2
     MiddleItem = SortTable[middle]
     If Trim(MiddleItem) = Trim(item) Then
       Return middle
     
-    'gb.text is a case unsensitive comparision, 
-    'we've to manage the sensitive comparision
-    'via a gb.binary search
+    ' 'gb.text is a case unsensitive comparision, 
+    ' 'we've to manage the sensitive comparision
+    ' 'via a gb.binary search
     Else If Trim(Lower(middleitem)) = Trim(Lower(item)) Then
-      If Comp(MiddleItem, item, gb.binary) < 0 Then
+      'If Comp(MiddleItem, item, gb.binary) < 0 Then
+      If Comp(MiddleItem, item, gb.language) < 0 Then
+        first = middle + 1
+          Else
+        tlast = middle - 1
+      Endif
+      
+    ' [GB2:TEXT] Else If Comp(MiddleItem, item, gb.text) < 0 Then  'ITEM > middle
+    Else If Comp(MiddleItem, item, gb.language) < 0 Then  'ITEM > middle
+        first = middle + 1
+    ' [GB2:TEXT] Else If Comp(MiddleItem, item, gb.text) > 0 Then  'ITEM < middle
+    Else If Comp(MiddleItem, item, gb.language) > 0 Then  'ITEM < middle
+        tlast = middle - 1
+    Endif
+  Until first > Tlast
+End
+
+
+Private Function old_BinarySearch(item As String) As Integer
+  Dim first, Tlast, middle As Integer
+
+  Dim MiddleItem As String
+  first = 0
+  Tlast = SortTable.count - 1
+  If item Like "*La tavola da surf*" Then 
+     Print "break"
+     Stop
+   Endif
+  Repeat
+    middle = (first + tlast) / 2
+    MiddleItem = SortTable[middle]
+    If Trim(MiddleItem) = Trim(item) Then
+      Return middle
+    
+    ' 'gb.text is a case unsensitive comparision, 
+    ' 'we've to manage the sensitive comparision
+    ' 'via a gb.binary search
+    Else If Trim(Lower(middleitem)) = Trim(Lower(item)) Then
+      'If Comp(MiddleItem, item, gb.binary) < 0 Then
+      If Comp(MiddleItem, item, gb.ignorecase) < 0 Then
         first = middle + 1
           Else
         tlast = middle - 1

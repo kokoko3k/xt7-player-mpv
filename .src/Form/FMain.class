@@ -6149,7 +6149,7 @@ Public Sub MenuLibraryUpdate_Click()
     FMain.MenuLibraryUpdate_Click()
     global.myDebug("Started at: " & Time)
     'ask user if he wants to delete non existend files
-    'AnswerRemove = Message.Question(("Do you also want to remove non existent files from library?"), ("Remove"), ("Don't remove"))
+
     AnswerRemove = MyQuestion.Ask(("Do you also want to remove non existent files from library?"), ("Remove"), ("Don't remove"))
     If AnswerRemove = 1 Then
       'remove non existing files
