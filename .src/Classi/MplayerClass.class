@@ -92,7 +92,7 @@ End
 Public osdlevel As String = ""
 
 
-Public Function FillMultitracks()
+Public Function old_FillMultitracks()
   Dim T, Tcount As Integer
   Dim Type As String
   Dim id, name, lang, tmp, codec As String
@@ -117,6 +117,55 @@ Public Function FillMultitracks()
     properties.add("track-list/" & T & "/type")
     properties.add("track-list/" & T & "/codec")
     get_properties_mpv(properties)
+    id = getP("track-list/" & T & "/id") 
+    name = getP("track-list/" & T & "/title") 
+    lang = getP("track-list/" & T & "/lang") 
+    Type = getP("track-list/" & T & "/type") 
+    codec = getP("track-list/" & T & "/codec") 
+    tmp = (ID & " - " & NAME & " - " & LANG & " - " & CODEC)
+    Select Case Type
+      Case "audio"
+        prop["audiotracks"].Add(Replace(tmp, unavailable_str, "*"))
+      ' Case "video"
+        'multiple video tracks unsupported by xt7
+      Case "sub"
+        prop["subtitletracks"].Add(Replace(tmp, unavailable_str, "*"))
+    End Select
+  Next
+
+  video_ok = (get_property_mpv("vo-configured") = "yes")
+  video_ok = video_ok And (get_property_mpv("current-vo") <> "(unavailable)")
+  setP("audioonly", (Not video_ok))
+End
+
+
+Public Function FillMultitracks()
+  Dim T, Tcount As Integer
+  Dim Type As String
+  Dim id, name, lang, tmp, codec As String
+  Dim properties As New String[]
+  Dim video_ok As Boolean = False
+
+  If getP("fullpath") = "" Then Return
+  
+  Try prop["audiotracks"].Clear
+  Try prop["subtitletracks"].Clear
+  Try Tcount = CInt(get_property_mpv("track-list/count"))
+  If Error Then
+    global.myDebug("WW", "unable to get track count")
+    Return
+  Endif
+
+  For T = 0 To Tcount - 1
+    properties.add("track-list/" & T & "/id")
+    properties.add("track-list/" & T & "/title")
+    properties.add("track-list/" & T & "/lang")
+    properties.add("track-list/" & T & "/type")
+    properties.add("track-list/" & T & "/codec")
+  Next 'T
+  get_properties_mpv(properties)
+
+  For T = 0 To Tcount - 1
     id = getP("track-list/" & T & "/id") 
     name = getP("track-list/" & T & "/title") 
     lang = getP("track-list/" & T & "/lang") 
@@ -333,18 +382,24 @@ End
 
 Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
   Dim cTime As Float = 0
-
+  Dim idling As Boolean
+  setP("idle", "no")
   Repeat
     If Not ProcessRunningOvr() Then Return False
     get_property_mpv("=time-pos", False)
     Wait 0.01
     timeoutcentisecs -= 1
     Try cTime = getP("=time-pos")
-  Until (cTime > 0) Or (timeoutcentisecs <= 0)
+    If IsInteger(timeoutcentisecs / 100) Then 'check if playback is idle (eg: no file playing) every second
+      get_property_mpv("=idle", False)
+    Endif
+  Until (cTime > 0) Or (timeoutcentisecs <= 0) Or (getP("idle") = "yes")
   If ctime > 0 Then 
     setP("=time-pos", Null)
+    setP("idle", Null)
     Return True
   Endif
+  setP("idle", Null)
   Return False
 End
 
@@ -618,7 +673,7 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
     do_stop()
     Return False
   Endif
-  
+  global.mydebug("started")
 
   'fixmempv: questa procedura sotto, cosa fa esattamente? mi sembra solo il trim (?)
     Try fileUtf8 = DConv(fullpath) 'from system charset to utf8
@@ -768,6 +823,8 @@ Public Function do_IdlePlay(filename As String) As Boolean
   'warning: call this function is mutually exclusive to calling do_play()
   'eg: if you started mpv with do_play(), you need another instance Of this class.
   'check if the process is alive || start it
+  If filename Like "*.iso" Then Stop
+  
   If Not ProcessRunningOvr() Then
     mpvoptions.Clear
     set_option("input-file", SetUpInputPipe())
