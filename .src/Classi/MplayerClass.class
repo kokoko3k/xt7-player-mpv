@@ -390,7 +390,7 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
     Wait 0.01
     timeoutcentisecs -= 1
     Try cTime = getP("=time-pos")
-    If IsInteger(timeoutcentisecs / 100) Then 'check if playback is idle (eg: no file playing) every second
+    If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
       get_property_mpv("=idle", False)
     Endif
   Until (cTime > 0) Or (timeoutcentisecs <= 0) Or (getP("idle") = "yes")
@@ -823,8 +823,7 @@ Public Function do_IdlePlay(filename As String) As Boolean
   'warning: call this function is mutually exclusive to calling do_play()
   'eg: if you started mpv with do_play(), you need another instance Of this class.
   'check if the process is alive || start it
-  If filename Like "*.iso" Then Stop
-  
+
   If Not ProcessRunningOvr() Then
     mpvoptions.Clear
     set_option("input-file", SetUpInputPipe())
