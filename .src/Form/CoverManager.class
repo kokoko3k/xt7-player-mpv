@@ -409,17 +409,21 @@ If Exist(coverfile) Then
   Endif
      Else ' IF NOT Exist(coverfile) THEN 'se la cover non esiste, ricava un nuovo coverfile:
 
-  If global.IsNetworkURI(uripath) Then
+  If global.isytdl(uripath) Then
+    coverfile = "ytdl.png"
+    defaultcover = True
+      Else If global.IsNetworkURI(uripath) Then
     coverfile = "webradio.png"
     defaultcover = True
       Else If global.IsVideoFile(uripath) Then
-        coverfile = "videocover.png"
-        defaultcover = True
+    coverfile = "videocover.png"
+    defaultcover = True
       Else 'non è una uri di rete, non è una radio e non c'è alcuna copertina già salvata:
-        found = False
-        coverfile = "emptycover.png"
-        defaultcover = True
+    found = False
+    coverfile = "emptycover.png"
+    defaultcover = True
   Endif
+  
   cachefile = coverfile & "_thumbcache" & CStr(height) & "." & File.ext(coverfile)
   Try Return CoverCacheList[cachefile].Picture
   If Error Then 'se non la trovi in memoria,
