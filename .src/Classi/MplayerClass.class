@@ -163,7 +163,12 @@ Public Function FillMultitracks()
     properties.add("track-list/" & T & "/type")
     properties.add("track-list/" & T & "/codec")
   Next 'T
+  
+  properties.Add("vo-configured")
+  properties.Add("current-vo")
+  
   get_properties_mpv(properties)
+  
 
   For T = 0 To Tcount - 1
     id = getP("track-list/" & T & "/id") 
@@ -182,8 +187,11 @@ Public Function FillMultitracks()
     End Select
   Next
 
-  video_ok = (get_property_mpv("vo-configured") = "yes")
-  video_ok = video_ok And (get_property_mpv("current-vo") <> "(unavailable)")
+  video_ok = getP("vo-configured") = "yes"
+  video_ok = video_ok And (getP("current-vo") <> "(unavailable)")
+  
+  ' video_ok = (get_property_mpv("vo-configured") = "yes")
+  ' video_ok = video_ok And (get_property_mpv("current-vo") <> "(unavailable)")
   setP("audioonly", (Not video_ok))
 End
 
