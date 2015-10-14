@@ -237,6 +237,10 @@ Public Function IsNontaggableMedia(URI As String) As Boolean
   Endif
 End
 
+Public Function isytdl(URI As String) As Boolean
+  Return (InStr(Lower(uri), "ytdl://") = 1) 
+End
+
 
 Public Function IsNetworkURI(URI As String) As Boolean
   If (InStr(NetworkURI, Lower(UriPrefix(URI))) > 0) Then
