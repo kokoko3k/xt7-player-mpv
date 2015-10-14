@@ -393,7 +393,7 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
     If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
       get_property_mpv("=idle", False)
     Endif
-  Until (cTime > 0) Or (timeoutcentisecs <= 0) Or (getP("idle") = "yes")
+  Until (cTime > 0) Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
   If ctime > 0 Then 
     setP("=time-pos", Null)
     setP("idle", Null)
