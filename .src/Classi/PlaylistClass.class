@@ -898,10 +898,7 @@ Private Function BinarySearch(item As String) As Integer
   Dim MiddleItem As String
   first = 0
   Tlast = SortTable.count - 1
-  If item Like "*La tavola da surf*" Then 
-     Print "break"
-     Stop
-   Endif
+
   Repeat
     middle = (first + tlast) / 2
     MiddleItem = SortTable[middle]
