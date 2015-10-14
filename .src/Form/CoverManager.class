@@ -1037,6 +1037,7 @@ Public Sub CoversLookerTimer_timer()
    If Not global.IsNetworkURI(fullpath) Then
      If Not Exist(fullpath) Then
        global.myDebug("Missing file! " & fullpath)
+       Stop
        FileNotFoundAdd(fullpath)
         'mygrid[row, 0].picture = picture["icon:/" & (rowheight -global.rowpadding) & "/error"]
         mygrid[row, column].text = ""
