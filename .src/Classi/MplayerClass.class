@@ -839,7 +839,7 @@ Public Function do_IdlePlay(filename As String) As Boolean
 
   mpv_command(["loadfile", SConv(FileName)])
   setP("fullpath", filename)
-  do_leave_pause()
+  do_leave_pause(False)
   If Not quick Then get_mediainfo(False)
   mpv_command(["stop"])
 End
@@ -1503,9 +1503,13 @@ Public Function do_pause() As Boolean
 End
 
 
-Public Function do_leave_pause() As Boolean
+Public Function do_leave_pause(Optional check As Boolean = True) As Boolean
   set_property_mpv("pause", "no")
-  Return get_property_mpv("pause", True) = "no"
+  If check Then 
+    Return get_property_mpv("pause", True) = "no"
+      Else
+    Return True
+  Endif
 End
 
 
