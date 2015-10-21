@@ -1303,7 +1303,9 @@ Public Sub FillPropertiesGrid()
     audioform.label14.text = PropertiesGrid[8, 1].text
     audioform.label15.text = PropertiesGrid[7, 1].text
     audioform.label16.text = PropertiesGrid[11, 1].text
-    audioform.label18.text = PropertiesGrid[1, 1].text
+    'commented out the very next because this will be filled by mpv when the name property changes.
+    'audioform.label18.text = PropertiesGrid[1, 1].text
+    
     'audioform.label19.text = PropertiesGrid[3, 1].text
     If Trim(PropertiesGrid[2, 1].text) <> "" Then 
       audioform.label20.text = PropertiesGrid[2, 1].text & "KB"
