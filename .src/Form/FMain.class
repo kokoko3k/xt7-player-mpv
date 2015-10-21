@@ -10417,19 +10417,13 @@ Public Sub RenameGridItemWrapper(g As Gridview, p As Playlistclass)
 End
 
 
-Public Sub Startdumping()
-  mplayer.Send("capturing") 'enable
-End
-
-Private Sub StopDumping(destfile As String)
-  Dim mymsg As String
+Public Sub Startdumping(destfile As String)
+ Dim mymsg As String
   Dim mynow As String = Now()
   Dim ismp3 As Boolean = False
   mynow = Replace(mynow, "/", "-")
   mynow = Replace(mynow, " ", "_")
   mynow = Replace(mynow, ":", ".")
-  
-  mplayer.Send("capturing 0") 'disable
   If Trim(destfile) = "" Then destfile = User.Home
   destfile &= "/Xt7.REC."
   destfile &= file.Name(mplayer.getP("fullpath")) & "-" & mynow
@@ -10438,19 +10432,23 @@ Private Sub StopDumping(destfile As String)
   Ismp3 = Ismp3 Or (Lower(mplayer.getP("audio-codec")) Like "*mpg123*") 
   Ismp3 = Ismp3 Or (Lower(mplayer.getP("audio-codec")) Like "*mp3*") 
   Ismp3 = Ismp3 And mplayer.getP("audioonly")
-  
+      
   If ismp3 Then 
     destfile &= ".mp3"
       Else
     destfile &= ".ts"
   Endif
-  global.myDebug("mv " & dumpfile & " " & Shell(destfile))
-  Shell "mv " & dumpfile & " " & Shell(destfile)
-  mymsg = (("Moving $(dumpfile) \nTo: \n$(destfile)"))
-  mymsg = Replace(mymsg, "$(dumpfile)", dumpfile)
-  mymsg = Replace(mymsg, "$(destfile)", destfile)
+  'destfile = "'" & destfile & "'"
+  mymsg = ("Dumping to: \n") & destfile
   mymsg &= ("\n\nYou can configure the paths in Generaloptions -> dvb-t")
   Message.Info(mymsg)
+  mplayer.set_property_mpv("stream-capture", destfile)
+End
+
+Private Sub StopDumping()
+  Dim destfile As String
+  destfile = mplayer.get_property_mpv("stream-capture")
+  mplayer.set_property_mpv("stream_capture", "")
   buttoncapture.value = 0
   buttoncapture.visible = buttoncapture.enabled
   ArrangeCpl()
@@ -10458,13 +10456,14 @@ Private Sub StopDumping(destfile As String)
   GridRefreshWorkaround(playlistgrid)
 End
 
+
 Public Sub ButtonCapture_Click()
   If mplayer.ProcessRunningOvr() Then
     If Last.value Then
       'StopDumping(generaloptions.dvbfinaldir.text)
-      Startdumping()
+      Startdumping(generaloptions.dvbfinaldir.text)
         Else
-      StopDumping(generaloptions.dvbfinaldir.text)
+      StopDumping()
     Endif
   Endif
 End
