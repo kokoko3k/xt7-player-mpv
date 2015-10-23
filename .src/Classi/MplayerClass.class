@@ -1753,6 +1753,9 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
   Dim unanswered As String = Chr(8) & "unanswered" & Chr(8) 'indica che mpv non ha risposto
   Dim got As Boolean
   Dim time_zero As Float = Timer()
+  Dim time_waited As Float
+  Dim hammer_time As Float = 0.01
+  Dim hammer_time_max As Float = 0.25
   For Each name In names
     ask_for(name, unavailable_str, wait_answer)
   Next 'name
@@ -1762,7 +1765,7 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
   'setP(name, unanswered)
   Repeat
     If (Not got) Then
-      Wait 0.01
+      Wait hammer_time
     Endif
     got = True
     For Each name In names
@@ -1776,10 +1779,16 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
       got = (got And (p <> unanswered))
       If Not got Then 
         global.myDebug("waiting for", name, "reasking...")
+        'hammer_time += 0.01
+        hammer_time *= 2
+        If (hammer_time >= hammer_time_max) Then hammer_time = hammer_time_max
+        global.myDebug(CStr(timeout_sec - time_waited) & " to timeout.", "hammering every " & CStr(hammer_time) & " seconds.")
         ask_for(name, unavailable_str, wait_answer)
       Endif
     Next
-  Until got Or (Not ProcessRunningOvr()) Or ((Timer() - time_zero) > timeout_sec)
+    time_waited = (Timer() - time_zero)
+    
+  Until got Or (Not ProcessRunningOvr()) Or (time_waited > timeout_sec)
 End
 
 Public Function paused(Optional cached As Boolean = False) As Boolean
