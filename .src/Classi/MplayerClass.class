@@ -17,6 +17,8 @@ Public modules_out As String
 Private Playerprocess As Process
 Private RenicerProcess As Process
 
+Private Const play_initialized_str As String = "MPV_PLAY_IS_FULLY_INITIALIZED"
+
 
 Private stopping As Boolean = False
 
@@ -251,6 +253,12 @@ End
 
 Public Sub playerprocess_error(err As String)
   stderr &= err & "\n"
+  If err Like "*" & play_initialized_str & "*" Then 
+    'catch statusline with the message player initialized
+    'this hopefully means the play is initialized
+    set_property_mpv("options/term-status-msg", "")
+    setP("play_initialized", "yes")
+  Endif
 End
 
 
@@ -389,27 +397,51 @@ Public Sub clear_options()
 End
 
 Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
-  Dim cTime As Float = 0
+  Dim play_initialized As Boolean = False
   Dim idling As Boolean
   setP("idle", "no")
+
   Repeat
     If Not ProcessRunningOvr() Then Return False
-    get_property_mpv("=time-pos", False)
     Wait 0.01
     timeoutcentisecs -= 1
-    Try cTime = getP("=time-pos")
     If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
       get_property_mpv("=idle", False)
+      play_initialized = (getP("play_initialized") = "yes")
     Endif
-  Until (cTime > 0) Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
-  If ctime > 0 Then 
-    setP("=time-pos", Null)
+  Until play_initialized Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
+  If play_initialized Then
     setP("idle", Null)
     Return True
   Endif
   setP("idle", Null)
   Return False
 End
+
+
+' Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
+'   Dim cTime As Float = 0
+'   Dim idling As Boolean
+'   setP("idle", "no")
+' 
+'   Repeat
+'     If Not ProcessRunningOvr() Then Return False
+'     get_property_mpv("=time-pos", False)
+'     Wait 0.01
+'     timeoutcentisecs -= 1
+'     Try cTime = getP("=time-pos")
+'     If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
+'       get_property_mpv("=idle", False)
+'     Endif
+'   Until (cTime > 0) Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
+'   If ctime > 0 Then 
+'     setP("=time-pos", Null)
+'     setP("idle", Null)
+'     Return True
+'   Endif
+'   setP("idle", Null)
+'   Return False
+' End
 
 ' Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
 '   Dim i As Integer
@@ -494,7 +526,8 @@ Private Function internal_options() As Collection
   out["input-file"] = SetUpInputPipe()
   out["msg-color"] = "no"
   out["msg-level"] = "all=v,cplayer=status,dvdnav=no,disc=no"
-  out["term-status-msg"] = "\"\""
+  'out["term-status-msg"] = "\"\""
+  out["term-status-msg"] = play_initialized_str
   out["force-seekable"] = "yes" 'this will allow seeks within the cache
   
   'this array will be needed by do_apply().
