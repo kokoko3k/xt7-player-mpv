@@ -407,13 +407,13 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
     timeoutcentisecs -= 1
     If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
       get_property_mpv("=idle", False)
-      play_initialized = (getP("play_initialized") = "yes")
-      'play_initialized is set by playerprocess_error through the hack
-      'of setting the statusline to a value recognized by playerprocess_error
-      'Hopefully, when the statusline is initialized, the playback is initialized too.
-      'In case of problems, the core-idle property may come handy (but slower), see:
-      'https://github.com/mpv-player/mpv/commit/8d414e2fe7f79f1bbf9158e8aa034e9ac9cf2222#commitcomment-13950548
     Endif
+  play_initialized = (getP("play_initialized") = "yes")
+  'play_initialized is set by playerprocess_error through the hack
+  'of setting the statusline to a value recognized by playerprocess_error
+  'Hopefully, when the statusline is initialized, the playback is initialized too.
+  'In case of problems, the core-idle property may come handy (but slower), see:
+  'https://github.com/mpv-player/mpv/commit/8d414e2fe7f79f1bbf9158e8aa034e9ac9cf2222#commitcomment-13950548
   Until play_initialized Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
   If play_initialized Then
     setP("idle", Null)
