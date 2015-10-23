@@ -618,7 +618,7 @@ Public Sub get_cdda_info(device As String, Optional cddb As Boolean = True)
     Mycdinfo = mycd.cddb_query(device, 100) 
   Endif
 
-  dcl = get_property_mpv("=chapter_list", True, 1000)
+  dcl = get_property_mpv("=chapter_list", True, 10)
   global.myDebug(dcl)
   
   dcl = Replace(dcl, "[", "")
@@ -1638,7 +1638,7 @@ Public Function old_get_property_mpv(name As String, Optional wait_answer As Boo
   Endif
 End
 
-Public Function get_property_mpv(name As String, Optional wait_answer As Boolean = True, Optional timeoutcentisecs As Integer = 100, try_cached As Boolean = False) As String
+Public Function get_property_mpv(name As String, Optional wait_answer As Boolean = True, Optional timeout_sec As Integer = 10, try_cached As Boolean = False) As String
   Dim cachedP As Variant
   Dim answer As String
   If try_cached Then
@@ -1646,7 +1646,7 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
      If cachedP <> Null Then Return cachedP
   Endif
 
-  get_properties_mpv([name], wait_answer, False, timeoutcentisecs)
+  get_properties_mpv([name], wait_answer, False, timeout_sec)
 
   Try Return getP(name)
 End
@@ -1748,11 +1748,11 @@ End
 
 Public Const unavailable_str As String = "(unavailable)"
 
-Public Function get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeoutcs As Integer = 500)
+Public Function get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeout_sec As Integer = 5)
   Dim name, dataout, p As String
   Dim unanswered As String = Chr(8) & "unanswered" & Chr(8) 'indica che mpv non ha risposto
   Dim got As Boolean
-  
+  Dim time_zero As Float = Timer()
   For Each name In names
     ask_for(name, unavailable_str, wait_answer)
   Next 'name
@@ -1763,7 +1763,6 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
   Repeat
     If (Not got) Then
       Wait 0.01
-      timeoutcs -= 0.01
     Endif
     got = True
     For Each name In names
@@ -1780,7 +1779,7 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
         ask_for(name, unavailable_str, wait_answer)
       Endif
     Next
-  Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
+  Until got Or (Not ProcessRunningOvr()) Or ((Timer() - time_zero) > timeout_sec)
 End
 
 Public Function paused(Optional cached As Boolean = False) As Boolean
@@ -2086,7 +2085,7 @@ Public Sub do_apply_restart(new_opts As Collection)
   'store old properties so that we can understand if we succeeded in restoring them
   For Each properties_changed_runtime
     name = properties_changed_runtime.key
-    data = get_property_mpv(name, True, 100, True)
+    data = get_property_mpv(name, True, 1, True)
     properties_changed_runtime_old_datas[name] = data
   Next
   
@@ -2224,7 +2223,7 @@ Public Function get_chapters(Optional cached As Boolean = False) As Chapter[]
       properties.Add("=chapter-list/" & i & "/time")
     Next
     global.myDebug("asking for chapters...")
-    get_properties_mpv(properties, True, False, 20000)
+    get_properties_mpv(properties, True, False, 5)
     global.myDebug("got chapters (or timeout?)")
   Endif
 

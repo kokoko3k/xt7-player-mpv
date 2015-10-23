@@ -1943,10 +1943,10 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
 
   ClearChaptersAndTitlesMenu()
   If Not mplayer.ProcessRunningOvr() Then Return False
-  p = mplayer.get_property_mpv("path", True, 1000, True)
+  p = mplayer.get_property_mpv("path", True, 10, True)
   If p = "" Then Return
   ddevice = "/" & dvd_device(p)
-  dtl = mplayer.get_property_mpv("=disc-title-list", True, 1000)
+  dtl = mplayer.get_property_mpv("=disc-title-list", True, 10)
 
   If dtl = "" Then
     global.myDebug(("Could not get information about the dvd structure"))
@@ -1980,7 +1980,7 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
    Next 'title
    If Not (Lower(p) Like "dvd://menu*") Then
     Try treeview1.movefirst
-      Try pt = CInt(mplayer.get_property_mpv("=disc-title", True, 100, False))
+      Try pt = CInt(mplayer.get_property_mpv("=disc-title", True, 10, False))
       For ct = 0 To pt - 1
         Try treeview1.MoveBelow()
       Next
@@ -1988,7 +1988,7 @@ Public Function FillTitlesAndChaptersMenu() As Boolean
         Try treeview1.Item.selected = True
         lk = treeview1.Item.Key
         'fill chapters
-        dcl = mplayer.get_property_mpv("=chapter-list", True, 1000)
+        dcl = mplayer.get_property_mpv("=chapter-list", True, 10)
         dcl = Replace(dcl, "[", "")
         dcl = Replace(dcl, "]", "")
         dcl = Replace(dcl, "},{", Chr(8))
@@ -2829,8 +2829,8 @@ Public Sub Fill_Playlist_from_mpv()
   mplayer.get_properties_mpv(properties, True, True)
 
   For i = 0 To pCount - 1
-    filename = mplayer.get_property_mpv("=playlist/" & i & "/filename", False, 100, True)
-    title = mplayer.get_property_mpv("=playlist/" & i & "/title", False, 100, True)
+    filename = mplayer.get_property_mpv("=playlist/" & i & "/filename", False, 1, True)
+    title = mplayer.get_property_mpv("=playlist/" & i & "/title", False, 1, True)
     If title = mplayer.unavailable_str Then title = filename
     myplaylist.AddFile(playlistgrid, filename, True, True, title)
     global.myDebug(i, filename, title)
