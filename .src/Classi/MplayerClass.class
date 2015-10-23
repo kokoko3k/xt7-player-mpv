@@ -400,7 +400,8 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
   Dim play_initialized As Boolean = False
   Dim idling As Boolean
   setP("idle", "no")
-
+  setP("play_initialized", "no")
+  set_property_mpv("options/term-status-msg", play_initialized_str)
   Repeat
     If Not ProcessRunningOvr() Then Return False
     Wait 0.01
@@ -408,12 +409,12 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
     If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
       get_property_mpv("=idle", False)
     Endif
-  play_initialized = (getP("play_initialized") = "yes")
-  'play_initialized is set by playerprocess_error through the hack
-  'of setting the statusline to a value recognized by playerprocess_error
-  'Hopefully, when the statusline is initialized, the playback is initialized too.
-  'In case of problems, the core-idle property may come handy (but slower), see:
-  'https://github.com/mpv-player/mpv/commit/8d414e2fe7f79f1bbf9158e8aa034e9ac9cf2222#commitcomment-13950548
+    play_initialized = (getP("play_initialized") = "yes")
+    'play_initialized is set by playerprocess_error through the hack
+    'of setting the statusline to a value recognized by playerprocess_error
+    'Hopefully, when the statusline is initialized, the playback is initialized too.
+    'In case of problems, the core-idle property may come handy (but slower), see:
+    'https://github.com/mpv-player/mpv/commit/8d414e2fe7f79f1bbf9158e8aa034e9ac9cf2222#commitcomment-13950548
   Until play_initialized Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
   If play_initialized Then
     setP("idle", Null)
@@ -531,8 +532,8 @@ Private Function internal_options() As Collection
   out["input-file"] = SetUpInputPipe()
   out["msg-color"] = "no"
   out["msg-level"] = "all=v,cplayer=status,dvdnav=no,disc=no"
-  'out["term-status-msg"] = "\"\""
-  out["term-status-msg"] = play_initialized_str
+  out["term-status-msg"] = "\"\""
+
   out["force-seekable"] = "yes" 'this will allow seeks within the cache
   
   'this array will be needed by do_apply().
