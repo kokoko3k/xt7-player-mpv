@@ -1755,7 +1755,7 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
   Dim time_zero As Float = Timer()
   Dim time_waited As Float
   Dim hammer_time As Float = 0.01
-  Dim hammer_time_max As Float = 0.25
+  Dim hammer_time_max As Float = 0.5
   For Each name In names
     ask_for(name, unavailable_str, wait_answer)
   Next 'name
@@ -1783,6 +1783,7 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
         hammer_time *= 2
         If (hammer_time >= hammer_time_max) Then hammer_time = hammer_time_max
         global.myDebug(CStr(timeout_sec - time_waited) & " to timeout.", "hammering every " & CStr(hammer_time) & " seconds.")
+        global.myDebug("Answer (p) is:", p)
         ask_for(name, unavailable_str, wait_answer)
       Endif
     Next
