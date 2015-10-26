@@ -474,6 +474,7 @@ Public Function IsYoutubeLink(url As String) As Boolean
   needsdecoding = needsdecoding And (Not (url Like "*fexp=*"))
   needsdecoding = needsdecoding And (Not (url Like "*expire=*"))
   needsdecoding = needsdecoding And (Not (url Like "*signature=*"))
+  If needsdecoding Then FMain.needytcookie = True
   Return needsdecoding
 End
 

@@ -2328,6 +2328,7 @@ End
 ' 
 ' End
 
+Public needytcookie As Boolean = False
 
 Private dumpfile As String
 
@@ -2467,9 +2468,7 @@ Public Sub file_options(fullpath As String) As Collection
 
 End
 
-
-
-Public Function Play(fullpath As String, Optional OtherOptions As Collection, Optional theradiolabel As String = "", Optional start_time As String = 0, Optional gapless As Boolean = False) As Boolean 
+Public Function Play(fullpath As String, Optional OtherOptions As Collection, Optional theradiolabel As String = "", Optional start_time As String = 0) As Boolean 
   Dim MkvSubsWorkaround As Boolean
   Dim cookieopts As String = ""
   'Dim cachingbox As MovieBox 'show an animation while caching...
@@ -2482,9 +2481,11 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Dim data As String
 
   global.mouse_wait(fmain, True)
-
+  
   Object.Attach(mplayer, Me, "mplayer")
   InitABLoop()
+  DOHACKIMAGE = True
+  'UserStopped = False
   CACHEVALUE_OLD = ""
   CTIME_OLD = "0"
   CUSTOMTITLE_OLD = ""
@@ -2492,6 +2493,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Wait
   Stopmthumbler()
   
+  needytcookie = False
   ButtonNowNext.visible = Lower(fullpath) Like "dvb://*"
   ArrangeCpl()
  
@@ -2541,7 +2543,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   ResizeFactor = 0
   'LogWindow.streamtextbox.text = fullpath
   PrevValuecTime = 999999
-  mplayer.watched_properties = ["pause", "volume", "=chapter", "=time-pos", "duration", "=duration", "percent-pos", "cache", "media-title", "path"]
+  mplayer.watched_properties = ["pause", "volume", "=chapter", "=time-pos", "duration", "=duration", "percent-pos", "cache", "media-title"]
   mplayer.clear_options() 
   opts = static_options()
   For Each data In opts
@@ -2578,12 +2580,10 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Endif
         
   n = 0
-
   Repeat  'first try to play with generated options (see file_options() ), then try to force with ytdl
+    'If mplayer.do_play(mplayer.Media_FullPath, mplayer.currentoptions, False, MkvSubsWorkaround, cookieopts, dumpfile, doanalyze) Then
     switchresBTN.enabled = False
-    If Not gapless Then
-      If Not mplayer.do_play(fullpath) Then Goto returnlabel
-    Endif
+    If Not mplayer.do_play(fullpath) Then Goto returnlabel
     ButtonPlay.picture = Picture["media-playback-pause.png"]
     CorrectAreaAspect() 'fixmempv: lo chiamo subito dopo il play... e funziona anche senza informazioni di larghezza e altezza con mpv !?
                         '...ho scritto fixmempv perchè lo chiamo poi due volte, anche sotto.
@@ -2641,10 +2641,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     StatusLabelright.show
   Endif
 
-  If Not gapless Then
-    Fill_Playlist_from_mpv()
-    QueueNext()
-  Endif
+  Fill_Playlist_from_mpv()
   FillStreamsMenu()
   FillChaptersMenu()
 
@@ -2791,7 +2788,7 @@ Public Sub Fill_Playlist_from_mpv()
   Dim uries As String
   Dim properties As String[]
 
-  If Not mplayer.ProcessRunningOvr() Then Return 
+  If Not mplayer.ProcessRunningOvr() Then Return
   
   'Is it a playlist?
   Try pCount = mplayer.get_property_mpv("=playlist-count")
@@ -2800,7 +2797,7 @@ Public Sub Fill_Playlist_from_mpv()
   'save the previous playlist
   If playlistgrid.Rows.count > 0 Then 'save the previous playlist
     PlaylistsCombo.text = "pls_" & (Replace(CStr(Now()), "/", "_")) & ".bak"
-    If Not SavePls() Then Return 
+    If Not SavePls() Then Return
   Endif
   
   'Create a new playlist
@@ -3277,7 +3274,7 @@ Public Function Make2(n As String) As String
 
 End
 
-
+Private DOHACKIMAGE As Boolean = True
 
 
 Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As String)
@@ -3352,24 +3349,7 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
 End
 
 
-Private Sub queuenext()
-    Dim next_medium As String
-    Dim i As Integer
-    'Stop
-    If PlayQueueIs = "playlistgrid" Then
-      'queue the next 
-      If playlistgrid.Rows.Max = playlistgrid.row Then Return 'do not add anything if we're at the end of the playlist.
-      'empty the previous playlist
-      mplayer.mpv_command(["playlist-clear"])
-      
-      For i = (playlistgrid.row + 1) To playlistgrid.Rows.Max
-        Try next_medium = Trim(Myplaylist.GetValue(Myplaylist.SearchTable[i], "Full Path"))
-        If Error Then Return
-        'append new item
-        mplayer.mpv_command(["loadfile", next_medium, "append"])
-      Next 'i
-    Endif
-End
+
 
 
 Private CACHEVALUE_OLD As String 
@@ -3433,25 +3413,12 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
     Case Like "duration"
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
 
-    Case "path"
-      If data_old = "" Then Goto ReturnLabel 'don't do nothing if it is the first item we are playing
-      If PlayQueueIs = "playlistgrid" Then
-        'Check if next item in the xt7 playlist matches with the one in mpv.
-        If Not myplaylist.SelectFromPath(data_new, playlistgrid, playlistgrid.row + 1) Then
-          myplaylist.SelectFromPath(data_new, playlistgrid, 0)
-        Endif
-
-        mplayer.setP("fullpath", data_new)
-        play(data_new,,,, True)
-      Endif
-
   End Select
 
   Returnlabel:
   Return
 
 End
-
 
 
 
@@ -3738,6 +3705,7 @@ Public Sub SeekOrSeekAndRestart(Action As String)
   Endif
   
   'or issue restarts to the current stream (youtube)
+  needytcookie = True
   If SeekingRestarting Then Return
   'Do as usual on strange errors ?
   Try newpos = CInt(mplayer.CurrentTime()) + Split(Action, " ", "", True, False)[1]
@@ -11174,7 +11142,6 @@ Private PlayQueueIs As String 'remember where the Last played item is from
     PlayQueueIs = queue
     If Right(Leftsidetabs.Current.text) <> " >" Then Leftsidetabs.Current.text = "< " & Leftsidetabs.Current.text & " >"
   End
-  
   
   Public Function GetActivePlayQueue() As String
     Return PlayQueueIs

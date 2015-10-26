@@ -1058,19 +1058,6 @@ Public Sub DeleteFromPath(fullpath As String, grid As Gridview)
   Wend
   SyncGrid(grid, SearchTable, grid.row, grid.column, grid.scrollx, grid.scrolly)
 End
-
-Public Sub SelectFromPath(fullpath As String, grid As Gridview, Optional startfrom As Integer = 0) As Boolean
-  Dim i As Integer 
-  For i = startfrom To grid.Rows.max
-    If grid[i, ColumnIndex["Full Path"]].text = fullpath Then 
-      grid.Rows.UnSelectAll()
-      grid.Rows[i].Selected = True
-      Return True
-    Endif
-  Next 'i 
-  Return False
-End
-
   
 Public Sub FormatTime(seconds As String) As String
 
