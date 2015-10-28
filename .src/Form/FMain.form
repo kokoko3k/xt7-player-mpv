@@ -1411,7 +1411,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-20.2857,18,4)
+              MoveScaled(9.4286,-21.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1976,7 +1976,7 @@
         Alignment = Align.Left
       }
       { ABLoopTimer #Timer
-        #MoveScaled(6,6)
+        #MoveScaled(1,6)
         Delay = 75
       }
       { OuterBox Panel VideoAreaGroup
@@ -1993,7 +1993,7 @@
           Tracking = True
           Drop = True
           { TimerHideShowVideo #Timer
-            #MoveScaled(-3,2)
+            #MoveScaled(4,1)
             Delay = 10
           }
         }
@@ -2011,10 +2011,6 @@
           MoveScaled(0,-1,13,10)
           Background = &H000000&
         }
-      }
-      { TimerSeekThumble #Timer
-        #MoveScaled(15,19)
-        Delay = 100
       }
       { BottomVbox VBox
         MoveScaled(0,48,71,14)
@@ -2190,12 +2186,20 @@
           }
         }
       }
+      { TimerSeekThumble #Timer
+        #MoveScaled(8,6)
+        Delay = 100
+      }
       { cachebar PictureBox
         MoveScaled(1,49,58,1)
         Background = Color.Background
         Ignore = True
         Picture = Picture["cachebar.png"]
         Stretch = True
+      }
+      { TimerQueue #Timer
+        #MoveScaled(18,6)
+        Delay = 9999999
       }
     }
     { TimerQuit #Timer

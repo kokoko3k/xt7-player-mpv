@@ -406,6 +406,7 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
     Wait 0.01
     timeoutcentisecs -= 1
     If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
+      global.myDebug("check if idle")
       get_property_mpv("=idle", False)
     Endif
   play_initialized = (getP("play_initialized") = "yes")
@@ -415,6 +416,9 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
   'In case of problems, the core-idle property may come handy (but slower), see:
   'https://github.com/mpv-player/mpv/commit/8d414e2fe7f79f1bbf9158e8aa034e9ac9cf2222#commitcomment-13950548
   Until play_initialized Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
+  global.myDebug("timeoutcentisecs=", timeoutcentisecs)
+  global.myDebug("play_initialized=", play_initialized)
+  global.myDebug("getp_idle=", getP("=idle"))
   If play_initialized Then
     setP("idle", Null)
     Return True
@@ -521,6 +525,7 @@ End
 
 Event property_change(name As String, data_old As String, data_new As String)
 
+Event seeking()
 
 Private Function internal_options() As Collection
   Dim out As New Collection
@@ -874,7 +879,8 @@ Public Function do_IdlePlay(filename As String) As Boolean
     mpvoptions.Clear
     set_option("input-file", SetUpInputPipe())
     set_option("msg-color", "no")
-    set_option("term-status-msg", "")    
+    'set_option("term-status-msg", "")    
+    set_option("term-status-msg", play_initialized_str)
     set_option("ao", "null")   
     set_option("vo", "null")   
     set_option("idle", "yes")
@@ -1858,6 +1864,7 @@ Public Function do_seek(Percentual As String, Optional osd As Boolean = False) A
       Else
     mpv_command(["no-osd", "seek", Percentual, "absolute-percent"])
   Endif
+  Raise seeking
 End
 Public Function do_seek_to(newpos As String, Optional precise As Boolean = False, Optional osd As Boolean = False) As Boolean
   If osd Then 
@@ -1865,6 +1872,7 @@ Public Function do_seek_to(newpos As String, Optional precise As Boolean = False
       Else
     mpv_command(["no-osd", "seek", newpos, "absolute"]) 'fixmempv precise paramters not implemented 
   Endif
+  Raise seeking
 End
 Public Function do_seek_by(seconds As String, Optional osd As Boolean = False) As Boolean
   If osd Then 
@@ -1872,6 +1880,7 @@ Public Function do_seek_by(seconds As String, Optional osd As Boolean = False) A
       Else
     mpv_command(["no-osd", "seek", seconds, "relative"])
   Endif
+  Raise seeking
 End
 
 Public Sub _new()

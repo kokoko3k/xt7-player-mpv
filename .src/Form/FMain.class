@@ -1685,6 +1685,7 @@ End
 Public Sub ButtonStop_Click()
   ' Return
   ' Dim a As Integer = 1 / 0
+  'timerqueue.stop 'fixme timerqueue
   switchresBTN.enabled = True
   global.mouse_wait(fmain, False)
   InitABLoop()
@@ -2644,7 +2645,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Fill_Playlist_from_mpv()
   FillStreamsMenu()
   FillChaptersMenu()
-
+  'InitTimerQueue() 'fixme timerqueue
 
   If (mplayer.getP("audioonly")) Then
     c = 0
@@ -2774,6 +2775,70 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0")
   If Not closing Then updaterecentfiles()
 
 End
+
+
+
+
+Public Function TimerQueue_update_duration() As Boolean 'fixme timerqueue
+  ' Dim duration As String
+  ' Dim timepos As String
+  ' Dim timedelta As Integer = 0
+  ' 
+  ' If Not mplayer.ProcessRunningOvr() Then Goto errorlabel
+  ' Try duration = mplayer.get_property_mpv("=duration", True, 1, True) 
+  ' If duration = mplayer.unavailable_str Then Goto errorlabel
+  ' If duration = "" Then Goto errorlabel
+  ' 
+  ' Try timepos = mplayer.get_property_mpv("=time-pos", True, 1, True) 
+  ' If timepos = mplayer.unavailable_str Then Goto errorlabel
+  ' If timepos = "" Then Goto errorlabel
+  ' 
+  ' Try timedelta = CInt(CFloat(duration)) - CInt(CFloat(timepos))
+  ' If Error Then Goto errorlabel
+  ' 
+  ' Try timerqueue.Delay = (timedelta Div 2) * 1000
+  ' If Error Then Goto errorlabel
+  ' 
+  ' global.myDebug(timedelta Div 4)
+  ' Return True
+  ' 
+  ' errorlabel:
+  ' global.myDebug("could not set timerqueue delay!")
+  ' Stop
+  ' Return False
+End
+
+
+
+Public Sub InitTimerQueue() 'fixme timerqueue
+  ' If TimerQueue_update_duration() Then timerqueue.start
+End
+
+Private TIMERQUEUE_SEEKING As Boolean = False
+Public Sub mplayer_seeking()
+  TIMERQUEUE_SEEKING = True
+  timerqueue.Trigger
+End
+
+
+' Public Sub TimerQueue_Timer() 'fixme timerqueue
+'   If TIMERQUEUE_SEEKING Then
+'     'TIMERQUEUE_SEEKING indicates that a seek has just been requested
+'     'sleep a second to allow mplayer to actually seek.
+'     Wait 1
+'     TIMERQUEUE_SEEKING = False
+'   Endif
+'   If (Not TimerQueue_update_duration()) Then timerqueue.stop
+'   If timerqueue.delay <= 1000 Then
+'     'queue next
+'     Stop
+'   Endif
+'   global.myDebug(timerqueue.delay)
+' End
+
+
+
+
 
 Public Sub Fill_Playlist_from_mpv()
   ' 'an xt7 play item may be a playlist
