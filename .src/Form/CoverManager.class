@@ -911,7 +911,7 @@ Public Sub ButtonLoad_Click()
     PrevFilter = myDialog.filter
     Prevtitle = myDialog.title
     myDialog.Title = ("Load a Jpg cover image")
-    myDialog.filter = ["*.jpg", "jpg files"]
+    myDialog.filter = ["*.jpg;*.jpeg;*.JPG;*.JPEG", "jpg files"]
   End With
   If myDialog.OpenFile() Then Return
   myDialog.filter = PrevFilter
