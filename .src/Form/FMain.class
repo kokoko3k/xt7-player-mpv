@@ -1685,7 +1685,7 @@ End
 Public Sub ButtonStop_Click()
   ' Return
   ' Dim a As Integer = 1 / 0
-  'timerqueue.stop 'fixme timerqueue
+  timerqueue.stop
   switchresBTN.enabled = True
   global.mouse_wait(fmain, False)
   InitABLoop()
@@ -2469,11 +2469,11 @@ Public Sub file_options(fullpath As String) As Collection
 
 End
 
-Public Function Play(fullpath As String, Optional OtherOptions As Collection, Optional theradiolabel As String = "", Optional start_time As String = 0) As Boolean 
+Public Function Play(fullpath As String, Optional OtherOptions As Collection, Optional theradiolabel As String = "", Optional start_time As String = 0, Optional gapless As Boolean = False) As Boolean 
   Dim MkvSubsWorkaround As Boolean
   Dim cookieopts As String = ""
   'Dim cachingbox As MovieBox 'show an animation while caching...
-
+  Dim current_queue As String
   Dim doanalyze As Boolean = False
   Dim timeA As Float = 0
   Dim n, c As Integer
@@ -2584,7 +2584,9 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Repeat  'first try to play with generated options (see file_options() ), then try to force with ytdl
     'If mplayer.do_play(mplayer.Media_FullPath, mplayer.currentoptions, False, MkvSubsWorkaround, cookieopts, dumpfile, doanalyze) Then
     switchresBTN.enabled = False
-    If Not mplayer.do_play(fullpath) Then Goto returnlabel
+    If Not gapless Then
+      If Not mplayer.do_play(fullpath) Then Goto returnlabel
+    Endif
     ButtonPlay.picture = Picture["media-playback-pause.png"]
     CorrectAreaAspect() 'fixmempv: lo chiamo subito dopo il play... e funziona anche senza informazioni di larghezza e altezza con mpv !?
                         '...ho scritto fixmempv perchè lo chiamo poi due volte, anche sotto.
@@ -2642,10 +2644,15 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     StatusLabelright.show
   Endif
 
-  Fill_Playlist_from_mpv()
+  If Not gapless Then
+    Fill_Playlist_from_mpv()
+  Endif
   FillStreamsMenu()
   FillChaptersMenu()
-  'InitTimerQueue() 'fixme timerqueue
+  current_queue = GetActivePlayQueue()
+  If current_queue = "playlistgrid" Or current_queue = "librarygrid" Or current_queue = "browse" Then
+    InitTimerQueue()
+  Endif
 
   If (mplayer.getP("audioonly")) Then
     c = 0
@@ -2779,39 +2786,42 @@ End
 
 
 
-Public Function TimerQueue_update_duration() As Boolean 'fixme timerqueue
-  ' Dim duration As String
-  ' Dim timepos As String
-  ' Dim timedelta As Integer = 0
-  ' 
-  ' If Not mplayer.ProcessRunningOvr() Then Goto errorlabel
-  ' Try duration = mplayer.get_property_mpv("=duration", True, 1, True) 
-  ' If duration = mplayer.unavailable_str Then Goto errorlabel
-  ' If duration = "" Then Goto errorlabel
-  ' 
-  ' Try timepos = mplayer.get_property_mpv("=time-pos", True, 1, True) 
-  ' If timepos = mplayer.unavailable_str Then Goto errorlabel
-  ' If timepos = "" Then Goto errorlabel
-  ' 
-  ' Try timedelta = CInt(CFloat(duration)) - CInt(CFloat(timepos))
-  ' If Error Then Goto errorlabel
-  ' 
-  ' Try timerqueue.Delay = (timedelta Div 2) * 1000
-  ' If Error Then Goto errorlabel
-  ' 
-  ' global.myDebug(timedelta Div 4)
-  ' Return True
-  ' 
-  ' errorlabel:
-  ' global.myDebug("could not set timerqueue delay!")
-  ' Stop
-  ' Return False
+Public Function TimerQueue_update_duration() As Boolean
+  Dim duration As String
+  Dim timepos As String
+  Dim timedelta As Integer = 0
+  
+  If Not mplayer.ProcessRunningOvr() Then 
+    global.myDebug("mpv has been terminated, stopping Timerqueue.")
+    timerqueue.Stop()
+    Return False
+  Endif
+  Try duration = mplayer.get_property_mpv("=duration", True, 1, True) 
+  If duration = mplayer.unavailable_str Then Goto errorlabel
+  If duration = "" Then Goto errorlabel
+
+  Try timepos = mplayer.get_property_mpv("=time-pos", True, 1, True) 
+  If timepos = mplayer.unavailable_str Then Goto errorlabel
+  If timepos = "" Then Goto errorlabel
+
+  Try timedelta = CInt(CFloat(duration)) - CInt(CFloat(timepos))
+  If Error Then Goto errorlabel
+
+  Try timerqueue.Delay = (timedelta Div 2) * 1000
+  If Error Then Goto errorlabel
+  
+  global.myDebug("timerqueue delay set to (seconds): ", timerqueue.delay Div 1000)
+  Return True
+
+  errorlabel:
+  global.myDebug("could not set timerqueue delay!")
+  Return False
 End
 
 
 
-Public Sub InitTimerQueue() 'fixme timerqueue
-  ' If TimerQueue_update_duration() Then timerqueue.start
+Public Sub InitTimerQueue()
+  If TimerQueue_update_duration() Then timerqueue.start
 End
 
 Private TIMERQUEUE_SEEKING As Boolean = False
@@ -2821,22 +2831,53 @@ Public Sub mplayer_seeking()
 End
 
 
-' Public Sub TimerQueue_Timer() 'fixme timerqueue
-'   If TIMERQUEUE_SEEKING Then
-'     'TIMERQUEUE_SEEKING indicates that a seek has just been requested
-'     'sleep a second to allow mplayer to actually seek.
-'     Wait 1
-'     TIMERQUEUE_SEEKING = False
-'   Endif
-'   If (Not TimerQueue_update_duration()) Then timerqueue.stop
-'   If timerqueue.delay <= 1000 Then
-'     'queue next
-'     Stop
-'   Endif
-'   global.myDebug(timerqueue.delay)
-' End
+Public Sub TimerQueue_Timer()
+  Dim t0 As String
+  If TIMERQUEUE_SEEKING Then
+    'TIMERQUEUE_SEEKING indicates that a seek has just been requested
+    Try t0 = CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos"))))
+    Repeat 
+      Wait 0.5
+      global.myDebug("waiting a while to allow mpv to seek before updating timerqueue")
+    Until t0 <> CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos", True, 2))))
+
+    TIMERQUEUE_SEEKING = False
+  Endif
+  If (Not TimerQueue_update_duration()) Then timerqueue.stop
+  If timerqueue.delay <= 1000 Then
+    queue_next()
+  Endif
+End
 
 
+Private Sub queue_next()
+'queue the next media by appending his fullpath to mpv playlist
+  Dim current_playlist_pos As String = "-1"
+
+  'update Media_Next_path, but don't play it
+  SelectNext(, GetActivePlayQueue(), False)
+  
+  'if something went wrong, proceed without queuing
+  If Not mplayer.ProcessRunningOvr() Then
+    play(Media_Next_path)
+    Return
+  Endif
+
+  'queue the next item:
+  mplayer.mpv_command(["playlist-clear"])
+  mplayer.mpv_command(["loadfile", Media_Next_path, "append"])
+  
+  timerqueue.Stop()
+  'wait until the next media has started
+  current_playlist_pos = mplayer.get_property_mpv("=playlist-pos")
+  Repeat
+    Wait 0.1
+  Until mplayer.get_property_mpv("=playlist-pos") <> current_playlist_pos
+  mplayer.setP("fullpath", media_next_path)
+  'the call to play here will not call another mpv instance:
+  play(Media_Next_path,,,, True)
+  InitTimerQueue()
+End
 
 
 
@@ -5328,7 +5369,7 @@ Public Sub ButtonNext_Click()
   SelectNext(False, GetActivePlayQueue())
 End
 
-Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional CurrentQueue As String = "")
+Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional CurrentQueue As String = "", Optional do_play As Boolean = True)
   Dim mplayerwasrunning As Boolean 
   Dim togglepls_value As Boolean = TogglePls.value
   Try mplayerwasrunning = mplayer.ProcessRunningOvr() Or forcerunning
@@ -5336,34 +5377,44 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
   TogglePls.value = False 'or else mykill will play the next
   
   Stopmthumbler()
-  fmain.mouse = mouse.wait
-  Object.Lock(fmain.SeekBar)
-  fmain.SeekBar.Value = 0
-  SetProgress(seekbar.value)
-  Object.unLock(fmain.SeekBar)
+  If do_play Then
+    fmain.mouse = mouse.wait
+    Object.Lock(fmain.SeekBar)
+    fmain.SeekBar.Value = 0
+    SetProgress(seekbar.value)
+    Object.unLock(fmain.SeekBar)
+  Endif
 
   If (TabSelectedPlaylist() And CurrentQueue = "") Or CurrentQueue = "playlistgrid" Then
     MyPlaylist.SelectNext(PlaylistGrid, ShufflePls.value)
     Wait 0.025
-    If mplayerwasrunning Then Play(Media_Next_path)
+    If mplayerwasrunning Then 
+      If do_play Then Play(Media_Next_path)
+    Endif
   
   
   Else If (TabSelectedLibrary() And CurrentQueue = "") Or CurrentQueue = "librarygrid" Then
     MyLibrary.SelectNext(LibraryGrid, ShufflePls.value)
     Wait 0.025
-    If mplayerwasrunning Then Play(Media_Next_path)
+    If mplayerwasrunning Then
+      If do_play Then Play(Media_Next_path)
+    Endif
   
   
   Else If TabSelectedDVB() And CurrentQueue = "" Then
     MyDVBTList.SelectNext(dvbtGrid, False)
     Wait 0.025
-    If mplayerwasrunning Then playselecteddvb()
+    If mplayerwasrunning Then
+      If do_play Then Play(Media_Next_path)
+    Endif
   
 
   Else If (TabSelectedBrowse() And CurrentQueue = "") Or CurrentQueue = "browse" Then
     Try BrowseSelectNext()
     Wait 0.025
-    If mplayerwasrunning Then Play(Media_Next_path)
+    If mplayerwasrunning Then
+      If do_play Then Play(Media_Next_path)
+    Endif
   
   
   Else If (TabSelectedCDDA() And CurrentQueue = "") Or CurrentQueue = "cdda" Then
@@ -5383,7 +5434,7 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
       Try customtitle = youtubetree.Current.text
       global.myDebug("mpv was off so hit play from here")
       mplayer.do_stop()
-      Play(Media_Next_path)
+      If do_play Then Play(Media_Next_path)
     Endif
   
   Else If (TabSelectedDVD() And CurrentQueue = "") Or Lower(CurrentQueue) = "dvd" Then
