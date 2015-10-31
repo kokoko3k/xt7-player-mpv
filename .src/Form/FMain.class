@@ -2845,7 +2845,7 @@ Public Sub TimerQueue_Timer()
   Endif
   If (Not TimerQueue_update_duration()) Then timerqueue.stop
   If timerqueue.delay <= 1000 Then
-    queue_next()
+    If (togglepls.value = True) Then queue_next()
   Endif
 End
 
@@ -11987,4 +11987,12 @@ End
 
 Public Sub ButtonDeletePls2_Click()
   Desktop.Open(global.ConfPath & "/" & global.UserPlaylistsDir)
+End
+
+Public Sub TogglePls_Click()
+  If togglepls.value = True Then
+    InitTimerQueue()
+      Else
+    timerqueue.stop
+  Endif
 End
