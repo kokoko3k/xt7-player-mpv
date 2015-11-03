@@ -2832,14 +2832,16 @@ End
 
 
 Public Sub TimerQueue_Timer()
-  Dim t0 As String
+  Dim t0 As String = "0"
+  Dim t1 As String = "0"
   If TIMERQUEUE_SEEKING Then
     'TIMERQUEUE_SEEKING indicates that a seek has just been requested
     Try t0 = CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos"))))
     Repeat 
       Wait 0.5
       global.myDebug("waiting a while to allow mpv to seek before updating timerqueue")
-    Until t0 <> CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos", True, 2))))
+      Try t1 = CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos", True, 2))))
+    Until t0 <> t1
 
     TIMERQUEUE_SEEKING = False
   Endif
