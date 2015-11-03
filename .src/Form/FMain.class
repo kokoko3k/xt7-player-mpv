@@ -2834,6 +2834,8 @@ End
 Public Sub TimerQueue_Timer()
   Dim t0 As String = "0"
   Dim t1 As String = "0"
+  Dim timer0 As Float = Timer()
+  Dim timeout As Float = 2 'do not wait more than 2 seconds.
   If TIMERQUEUE_SEEKING Then
     'TIMERQUEUE_SEEKING indicates that a seek has just been requested
     Try t0 = CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos"))))
@@ -2841,7 +2843,7 @@ Public Sub TimerQueue_Timer()
       Wait 0.5
       global.myDebug("waiting a while to allow mpv to seek before updating timerqueue")
       Try t1 = CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos", True, 2))))
-    Until t0 <> t1
+    Until (t0 <> t1) Or (Timer() - timer0 > 1)
 
     TIMERQUEUE_SEEKING = False
   Endif
@@ -4249,180 +4251,6 @@ Public Sub SwitchToFS()
 End
 
 
-' Public Sub NEW_SwitchToFS()
-'  Dim i As Integer
-'   'save the windowed information
-'   videobox.hide
-'   Wait 0.1
-'   OuterBox.Mouse = mouse.blank
-'   VideoBox.Mouse = mouse.blank
-'   Object.Lock(hsplit1)
-'   winmax = fmain.Maximized
-'   fmain.hide
-'   cachebar.hide
-'   If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
-' 
-'   If Maintoolbar.parent <> FsForm Then Maintoolbar.Reparent(FsForm)
-'   FsForm.Background = color.black
-'   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
-'   FsForm.FullScreen = True
-'   FsForm.Background = color.Default
-' 
-'   'Wait 1
-'   
-'  
-'   
-'   'execute shell commands
-'   'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
-'   
-'   'invert the HSplit with a vSplit
-'   fmain.HSplit1.Reparent(zzzFake)
-'   zzzFake.VSplit1.Reparent(FsForm)
-'   
-'   'populate the New VSplit1 With controls
-'   Leftsidepanel.Reparent(zzzFake.vsplit1)
-'   rightsidepanel.Reparent(zzzFake.VSplit1)
-' 
-'   'restore the form position
-'   LeftsideWasVisible = LeftsidePanel.Visible 
-'   
-'   'hide the upper controls
-'   Leftsidepanel.hide()
-'   
-'   'let the bottom panel adapts to the new size:
-'   Wait '<-this wait has to come before ConstrainFormSizes()
-'   CostrainFormSizes()
-'   bottomvbox.Hide
-'   BottomVbox.Reparent(rightsidepanel)
-'   toolbarbackground.hide
-'   cachebar.raise
-'   Wait '<-this wait has to come just after ConstrainFormSizes()
-'   
-'   'start the timer 
-'   TimerFullScreen.start
-'   
-'   RightSidePanel.SetFocus()
-' 
-'   
-'   If zzzfake.PanelNowNext.visible Then 
-'     PanelNowNextArrange()
-'   Endif
-'   
-'   'show all
-'   Object.unLock(hsplit1)
-'   
-'   If statusbar1.visible Then 
-'     statusbar1.ignore = True
-'     statusbar1.y = statusbar1.Parent.h - statusbar1.h
-'   Endif
-'   bottomvbox.ignore = True
-'   controlframe.ignore = True
-'   bottomvbox.w = Screenbypos(fmain.screenx, fmain.screeny).Width
-'   controlframe.w = bottomvbox.W
-' 
-'   CostrainFormSizes()
-'   Maintoolbar.hide
-' 
-'   videobox.Show
-'   FsForm.show
-'   For i = 1 To 10
-'     CorrectAreaAspect()
-'     Wait 0.1
-'   Next 'i
-' 
-' End
-' 
-' Public Sub OLD_SwitchToFS()
-'   Dim timeout_fs As Integer = 20
-'   'save the windowed information
-'   videobox.hide
-'   Wait 0.1
-'   OuterBox.Mouse = mouse.blank
-'   VideoBox.Mouse = mouse.blank
-'   Object.Lock(hsplit1)
-'   winmax = fmain.Maximized
-'   fmain.hide
-'   cachebar.hide
-'   If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
-'   FsForm.Background = color.black
-'   FsForm.x = fmain.ScreenX
-'   FsForm.y = fmain.screeny
-'   FsForm.show
-'   
-'   FsForm.FullScreen = True
-'   Repeat
-'      Wait 0.05
-'      timeout_fs -= 1
-'   Until (fsform.w >= Screenbypos(fmain.screenx, fmain.screeny).Width) Or timeout_fs = 0
-' 
-'   FsForm.Background = color.Default
-'   
-'   Maintoolbar.Reparent(FsForm)
-' 
-'   Wait
-'   'execute shell commands
-'   'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
-'   
-'   'invert the HSplit with a vSplit
-'   fmain.HSplit1.Reparent(zzzFake)
-'   zzzFake.VSplit1.Reparent(FsForm)
-'   
-'   'populate the New VSplit1 With controls
-'   Leftsidepanel.Reparent(zzzFake.vsplit1)
-'   rightsidepanel.Reparent(zzzFake.VSplit1)
-' 
-'   'restore the form position
-'   LeftsideWasVisible = LeftsidePanel.Visible 
-'   
-'   'hide the upper controls
-'   Leftsidepanel.hide()
-'   
-'   'let the bottom panel adapts to the new size:
-'   Wait '<-this wait has to come before ConstrainFormSizes()
-'   CostrainFormSizes()
-'   bottomvbox.Hide
-'   BottomVbox.Reparent(rightsidepanel)
-'   toolbarbackground.hide
-'   cachebar.raise
-'   Wait '<-this wait has to come just after ConstrainFormSizes()
-'   
-'   'start the timer 
-'   TimerFullScreen.start
-'   
-'   CorrectAreaAspect()
-'   
-'   RightSidePanel.SetFocus()
-'   Wait
-'   
-'   If zzzfake.PanelNowNext.visible Then 
-'     PanelNowNextArrange()
-'     Wait
-'   Endif
-'   
-'   'show all
-'   Object.unLock(hsplit1)
-'   
-'   If statusbar1.visible Then 
-'     statusbar1.ignore = True
-'     statusbar1.y = statusbar1.Parent.h - statusbar1.h
-'   Endif
-'   bottomvbox.ignore = True
-'   controlframe.ignore = True
-'   bottomvbox.w = Screenbypos(fmain.screenx, fmain.screeny).Width
-'   controlframe.w = bottomvbox.W
-'   Wait
-'   CostrainFormSizes()
-' 
-' 
-'   Wait 0.1
-'   videobox.Show
-' 
-'   'workaround for missing picture when switching 
-'   Wait 0.2
-'   Maintoolbar.hide
-'   CorrectAreaAspect()
-' End
-
 
 Public Sub SwitchToWindow()
   fsform.picture = Picture["black.png"]
@@ -4487,76 +4315,16 @@ Public Sub SwitchToWindow()
   fmain.Stacking = Window.below
   fmain.Maximized = winmax
   fmain.show  
+  fmain.Maximized = winmax 'openbox hack
   Wait 0.1
   fmain.Stacking = Window.normal
   FsForm.hide
   FsForm.FullScreen = False
+
   Hsplit1_MyRefresh()
+
 End
 
-' Public Sub OLD_SwitchToWindow()
-'   
-'   bottomvbox.y = rightsidepanel.h - bottomvbox.h
-'   BottomVbox.ignore = False
-'   
-'   'execute shell commands
-'   'FsCommandsExec(False, 60)
-'   
-'   If Maintoolbar.parent <> (fmain) Then Maintoolbar.Reparent(fmain)
-'   'invert the VSplit with a HSplit
-'   zzzFake.VSplit1.Reparent(zzzFake)
-'   Hsplit1.Reparent(Fmain)
-'   
-'   'populate HSplit with controls
-'   Leftsidepanel.Reparent(Hsplit1)
-'   rightsidepanel.Reparent(HSplit1)
-'   If (SplitterLayout <> Null) Then Hsplit1.Layout = SplitterLayout
-'   Wait
-'   
-'   'show the menu
-'   AllmenuVisible(True)
-'   toolbarbackground.show
-'   'restore the form position
-'   LeftsidePanel.Visible = LeftsideWasVisible
-'   
-'   UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
-'   
-'   'show the bottom controls
-'   bottomvbox.Raise() '<-make sure it is on the bottom
-'   bottomvbox.show
-'   CostrainFormSizes()
-'   
-'   TimerFullScreen.Stop()
-'   
-'   If zzzfake.PanelNowNext.visible Then 
-'     PanelNowNextArrange()
-'     Wait
-'   Endif
-'   
-'   RightSidePanel.SetFocus()
-'   
-'   OuterBox.Mouse = mouse.Default
-'   VideoBox.Mouse = mouse.Default
-'   
-'   'make the form windowed
-'   fsform.Background = color.black
-'   Wait
-'   bottomvbox.ignore = False
-'   controlframe.ignore = False
-'   statusbar1.ignore = False
-'   CostrainFormSizes()
-'   FsForm.hide
-'   FsForm.FullScreen = False
-'   fmain.Maximized = winmax
-'   fmain.show  
-'   Maintoolbar.hide 'workaround for missing picture at fs switch
-'   Wait 0.2
-'   Maintoolbar.show
-'   cachebar.Reparent(rightsidepanel)
-'   cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h)
-'   cachebar.raise
-'   cachebar.show
-' End
 
 Public Sub AllmenuVisible(AreVisible As Boolean)
 
