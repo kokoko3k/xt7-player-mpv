@@ -10704,8 +10704,6 @@ Public Sub VideoAreaGroup_MouseMove()
   '   Return
   ' Endif
   If fsform.fullscreen Then HideMouseDelayed()
-
-
 End
 
 Private Sub CantSeekMessage()
@@ -10724,10 +10722,7 @@ Public Sub ProgressFrame_MouseDrag()
   Dim relative As Float
   Dim msg As String
   If Not mplayer.ProcessRunningOvr() Then Return
-  If CanUseThumbler() Then 
-    TimerSeekThumble.start
-    movethumble()
-  Endif
+
 
   If Not mplayer.ProcessRunningOvr() Then Return
   
@@ -10749,6 +10744,12 @@ Public Sub ProgressFrame_MouseDrag()
   SetProgress(seekbar.value)
   StatusLabelLeft.text = msg
   mplayer.ShowText(msg, 1000)
+
+  If CanUseThumbler() Then 
+    TimerSeekThumble.start
+    movethumble()
+  Endif
+
 End
 
 
@@ -10756,33 +10757,6 @@ End
 Public Sub Form_Show()
   HSplit1_Resize()
 End
-
-' Public Sub FileView1_beforeArrange()
-'   ' Dim newsize As Integer = 9
-'   ' Try newsize = CInt(fileview1.Font.TextHeight("|") / 2.5) 
-'   ' If newsize > 9 Then newsize = 9
-'   ' Try shadeup.h = newsize
-'   ' shadeup.visible = True
-'   ' 
-'   ' If shadeup.parent <> fileview1.parent Then 
-'   '   shadeup.Reparent(fileview1.parent)
-'   '   Wait
-'   ' Endif
-'   ' shadelow.Reparent(Last.parent)
-' End
-' 
-' Public Sub FileView1_Arrange()
-'   ' Dim achild As Object
-'   ' For Each achild In FileView1.Children
-'   '   If achild Is Columnview Then
-'   '     If achild.proxy Is Gridview Then
-'   '       'Stop
-'   '       shadelist(achild.proxy, Object.GetProperty(FileView1.Parent, "padding") + achild.proxy.clientx - 1, FileView1.y - 1)
-'   '       If fmain.fullyloaded Then shadeup.visible = True
-'   '     Endif
-'   '   Endif
-'   ' Next
-' End
 
 
 Public Sub UrlBox_Change()
@@ -10890,13 +10864,14 @@ Private previoustimerseek As Integer = 0
 Public Sub TimerSeekThumble_Timer()
   Dim newseek As Integer
   If Not thumbleractive Then activatethumbler()
-  mthumbler.do_leave_pause()
+  mthumbler.do_leave_pause(False)
   newseek = (seekbar.value * 100) 
   If newseek > 99 Then newseek = 99
   If newseek <> previoustimerseek Then
     mthumbler.do_seek(newseek)
     previoustimerseek = newseek
   Endif
+  If Not thumblebox.visible Then movethumble()
 End
 
 Private Sub movethumble()

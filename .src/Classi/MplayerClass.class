@@ -504,22 +504,24 @@ Public Sub event_loop_timer()
   '* keep properties updated
   Dim name, data_new, data_old As String
   Dim i As Integer
+  If watched_properties.count > 0 Then
+    get_properties_mpv(watched_properties, False) 'async ask for those properties
+    Wait 0.1
+    'see if some property has changed:
 
-  get_properties_mpv(watched_properties, False) 'async ask for those properties
-  Wait 0.1
-  'see if some property has changed:
+    For i = 0 To watched_properties.count - 1
 
-  For i = 0 To watched_properties.count - 1
-    
-    name = watched_properties[i]
-    data_new = getP(name)
-    data_old = watched_properties_old_data[i]
-     
-    If data_old <> data_new Then 
-      Raise property_change(name, data_old, data_new)
-      watched_properties_old_data[i] = data_new
-    Endif
-  Next
+      name = watched_properties[i]
+      data_new = getP(name)
+      data_old = watched_properties_old_data[i]
+
+      If data_old <> data_new Then 
+        Raise property_change(name, data_old, data_new)
+        watched_properties_old_data[i] = data_new
+      Endif
+    Next
+  Endif
+
 
 End
 
@@ -1770,7 +1772,9 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
   For Each name In names
     ask_for(name, unavailable_str, wait_answer)
   Next 'name
-  
+  If get_option("vd-lavc-skiploopfilter") = "all" Then
+    'Stop
+  Endif
   If Not wait_answer Then Return
   'wait for all of the answers
   'setP(name, unanswered)
