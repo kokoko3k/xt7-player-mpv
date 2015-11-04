@@ -8067,28 +8067,47 @@ Public Sub Button3_Click()
   play("dvd://menu" & dvd_device(mplayer.last_media))
 End
 
+Private SHOUTCAST_INITIALIZED As Boolean = False
+Private ICECAST_INITIALIZED As Boolean = False
 
-Public Sub ButtonGetGenres_Click()
-  Leftsidepanel.mouse = mouse.wait
+Public Sub UpdateGenresTree(Optional force As Boolean = True)
+Stop
   If buttonshoutcast.value Then
-    Try MyRadio.GetGenres(GenresTree)
-  Else
-    'If Not fmain.fullyloaded Then Return
-    Try IceRadio.FillGenresTree(Genrestree, False)
+      Try MyRadio.GetGenres(GenresTree, ((Not force) And (SHOUTCAST_INITIALIZED)))
+      SHOUTCAST_INITIALIZED = True
+    Else
+      Try IceRadio.FillGenresTree(Genrestree, (Not force) And SHOUTCAST_INITIALIZED)
+      ICECAST_INITIALIZED = True
   Endif
+End
+
+Public Sub ShoutCast_Select()
+  Leftsidepanel.mouse = mouse.wait
+  UpdateGenresTree(False)
   Leftsidepanel.mouse = mouse.normal
 End
 
+
+Public Sub ButtonGetGenres_Click()
+  Leftsidepanel.mouse = mouse.wait
+  UpdateGenresTree(True)
+  Leftsidepanel.mouse = mouse.normal
+End
+
+
+Public Sub ButtonRadios_click()
+  If Not fmain.fullyloaded Then Return
+  UpdateGenresTree(False)
+  Last.mouse = mouse.Normal
+End
+
 Public Sub GenresTree_Click()
-  
   Dim IsChild As Boolean = False
-  
   IsChild = Not (GenresTree.moveparent())
   GenresTree.MoveCurrent
   If IsChild Then
     Media_Next_path = GenresTree.Current.key
   Endif
-  
 End
 
 
@@ -8258,15 +8277,6 @@ Public Sub Highlight_shout_results()
   
 End
 
-Public Sub ShoutCast_Select()
-  If NOSAVEVBox3.visible And GenresTree.count = 0 Then 
-    If buttonshoutcast.value = True Then
-      MyRadio.FillCachedGenres(GenresTree)
-    Else If buttonicecast.value Then
-      Try IceRadio.FillGenresTree(genrestree, True)
-    Endif
-  Endif
-End
 
 
 Public Sub TextBox1_Click()
@@ -11125,16 +11135,7 @@ Public Sub ExtractAudio(selecteditems As String[])
 End
 
 
-Public Sub ButtonRadios_click()
-  Last.mouse = mouse.Wait
-  If buttonicecast.value Then
-    If Not fmain.fullyloaded Then Return
-    IceRadio.FillGenresTree(genrestree, True)
-  Else
-    MyRadio.FillCachedGenres(genrestree)
-  Endif
-  Last.mouse = mouse.Normal
-End
+
 
 
 
