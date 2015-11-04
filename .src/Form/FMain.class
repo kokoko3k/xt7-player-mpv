@@ -10909,6 +10909,7 @@ Private Sub movethumble()
   Try ar = CFloat(mthumbler.getP("video-params/aspect"))
   If ar = -1 Then Return
   w = (Screen.width Div 6)
+  Try w = Screen.width * Eval(generaloptions.ComboPiPSize.text)
   Try h = (w / ar) 
   If Error Then Return
   x = Mouse.screenx - (thumblebox.h Div 2) - outerbox.screenx
@@ -11165,13 +11166,13 @@ End
 Public Sub Initprogress()
   Dim mycolor As Integer
 
-  If progress.tag <> Null Then Return
-  progress.tag = True
+  If (progress.tag <> Null) And (progress.tag <> "changecolor") Then Return
+
 
   progress.picture = Picture.Load("barglow.png")
 
   'fix for dark themes
-  mycolor = Color.SelectedBackground
+  mycolor = generaloptions.SeekbarColorButton.background 'Color.SelectedBackground
   While Color.Desaturate(mycolor) < (Color.white / 3)
     mycolor = Color.Merge(mycolor, Color.white, 0.1)
   Wend
@@ -11180,12 +11181,12 @@ Public Sub Initprogress()
   progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.6125).brightness(0.15).Contrast(1.3875).picture
   'progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.625).brightness(0.1625).Contrast(1.375).picture
 
-  progress.Move(0, 0, 0, progress.parent.h)
-
-  ProgressFrame.proxy = progress
-
-  Progress.proxy = progressshadow
-
+  If progress.tag <> "changecolor" Then  'if it is "changecolor", then don't reset the position.
+    progress.Move(0, 0, 0, progress.parent.h)
+    ProgressFrame.proxy = progress
+    Progress.proxy = progressshadow
+  Endif
+  progress.tag = True
 End
 
 Public Sub SetProgress(newset As Float)

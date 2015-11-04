@@ -682,13 +682,18 @@ Public Sub FontChoose_Click()
 End
 
 Public Sub ColorChoose_Click()
+  If Not fmain.fullyloaded Then Return
   myDialog.color = Last.background
   If Not (myDialog.SelectColor()) Then
     Try Last.background = myDialog.color
   Endif
+  'set progressbar color:
+  fmain.Progress.tag = "changecolor" 'force the folloging function to actually do something:
+  fmain.Initprogress()
 End
 
 Public Sub ResetButton_Click()
+  If Not fmain.fullyloaded Then Return
   Try Last.next.text = "Default"
   If Upper(Last.name) <> "RESETBUTTON2" Then
     Try Last.next.NEXT.font = ""
@@ -711,13 +716,18 @@ End
 
 
 Public Sub BackResetButton_Click()
+
   If Upper(Last.name) = "BACKRESETBUTTON2" Then 'leftside lists
     ' [GB2:BCOL] Try Last.next.background = &EEEEFF&
     Try Last.next.Background = &F5F5F5&
       Else If Upper(Last.name) = "BACKRESETBUTTON3" Then  'trayicon
         Last.next.Background = &2A2D3C&
           Else If Upper(Last.name) = "BACKRESETBUTTON1" Then  'trayicon
-            Last.next.Background = &FFFFFF&
+              Last.next.Background = &FFFFFF&
+                Else If Upper(Last.name) = "BACKRESETBUTTON6" Then 'PROGRESSBAR
+                  Last.next.Background = Color.SelectedBackground
+                  fmain.Progress.tag = "changecolor"
+                  Fmain.Initprogress()
       Else
     ' [GB2:BCOL] Try Last.next.background = color.default
     Try Last.next.Background = color.default
@@ -1267,4 +1277,13 @@ Public Sub ToggleButton7_Click()
   If ToggleButton7.value = True Then ToggleButton2.value = False
 End
 
+
+
+Public Sub BackResetButton8_Click()
+  ComboPiPSize.text = "1/5"
+End
+
+Public Sub SeekThumbsCheckbox_Click()
+  NoParseStyle12.enabled = Last.value
+End
 
