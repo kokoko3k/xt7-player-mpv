@@ -3892,15 +3892,28 @@ Public Sub MenuAbout_Click()
 End
 
 
-Public Sub ShowVolBtn_Click()
-  controlpanelright.autoresize = False
-  controlpanelright.w = 120
-  'SaveVolumeSlider.Visible = Not SaveVolumeSlider.Visible
-  volumecontainer.Visible = Not volumecontainer.Visible
-  volumecontainer.autoresize = Not volumecontainer.Visible
-  controlpanelright.refresh()
-  controlpanelright.autoresize = True
-  CostrainFormSizes()
+Public Sub ShowVolBtn_Mouseup()
+  Dim last_w As Integer = Last.w
+  If Mouse.left Then 
+    controlpanelright.autoresize = False
+    controlpanelright.w = 120
+    'SaveVolumeSlider.Visible = Not SaveVolumeSlider.Visible
+    volumecontainer.Visible = Not volumecontainer.Visible
+    volumecontainer.autoresize = Not volumecontainer.Visible
+    controlpanelright.refresh()
+    controlpanelright.autoresize = True
+      Else If Mouse.middle Then
+        If mplayer.ProcessRunningOvr() Then
+          mplayer.mpv_command(["cycle", "mute", "up"])
+        Endif
+  Endif
+  If mplayer.get_property_mpv("mute") = "yes" Then
+    ShowVolBtn.picture = Picture["volume-muted-faenza.png"]
+      Else
+    ShowVolBtn.picture = Picture["volume-faenza.png"]
+  Endif
+  Last.w = last_w
+    CostrainFormSizes()
 End
 
 Public Sub ShowVolBtn_MouseWheel()
