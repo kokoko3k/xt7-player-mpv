@@ -684,7 +684,7 @@
     }
   }
   { MainToolBar Panel
-    MoveScaled(1,-1,95,5)
+    MoveScaled(0,-1,95,5)
     Arrangement = Arrange.Horizontal
     { ButtonmenuNEWBTN MenuButton
       MoveScaled(0,1,8,4)
@@ -1760,9 +1760,17 @@
     }
     { RightSidePanel Panel VideoAreaGroup
       Name = "RightSidePanel"
-      MoveScaled(46,6,60,65)
+      MoveScaled(44,7,60,65)
       Tracking = True
       Arrangement = Arrange.Vertical
+      { ToolbarBackground PictureBox
+        MoveScaled(1,3,19,0.8571)
+        #Translate = False
+        NoTabFocus = True
+        Picture = Picture["toolbarshade.png"]
+        Stretch = True
+        Alignment = Align.Left
+      }
       { TagPanel Panel
         MoveScaled(27,3,30,45)
         Expand = True
@@ -1967,21 +1975,13 @@
           Expand = True
         }
       }
-      { ToolbarBackground PictureBox
-        MoveScaled(6,4,19,0.8571)
-        #Translate = False
-        NoTabFocus = True
-        Picture = Picture["toolbarshade.png"]
-        Stretch = True
-        Alignment = Align.Left
-      }
       { ABLoopTimer #Timer
         #MoveScaled(1,6)
         Delay = 75
       }
       { OuterBox Panel VideoAreaGroup
         Name = "OuterBox"
-        MoveScaled(3,15,24,28)
+        MoveScaled(2,15,24,28)
         Background = &H000000&
         Tracking = True
         Drop = True

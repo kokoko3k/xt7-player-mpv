@@ -4185,6 +4185,11 @@ Public Sub SwitchToFS()
   Endif
 
   If Lower(Maintoolbar.parent.name) <> Lower(FsForm.name) Then Maintoolbar.Reparent(FsForm)
+  
+  'do not move the video window when showing main toolbar
+    Maintoolbar.ignore = True
+    ToolbarBackground.ignore = True 
+  
   FsForm.Background = color.black
   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
   
@@ -4258,6 +4263,14 @@ Public Sub SwitchToWindow()
   BottomVbox.ignore = False
   'execute shell commands
   'FsCommandsExec(False, 60)
+  
+  'restore maintoolbar and shadow:
+  Maintoolbar.background = Color.Default 
+  toolbarbackground.background = Color.default
+  ToolbarBackground.lower
+  Maintoolbar.ignore = False
+  toolbarbackground.ignore = False
+  
   If Lower(Maintoolbar.parent.name) <> Lower(fmain.name) Then Maintoolbar.Reparent(fmain)
   fsform.Background = color.black
   Wait    
@@ -4299,6 +4312,7 @@ Public Sub SwitchToWindow()
   'make the form windowed
   fsform.Background = color.black
   Wait
+
   bottomvbox.ignore = False
   controlframe.ignore = False
   statusbar1.ignore = False
@@ -4418,7 +4432,18 @@ Public Sub TimerFullScreen_Timer()
   
   If AttachZone2 Then
     MainToolBar.visible = True
+
+    Maintoolbar.show
     toolbarbackground.show
+    'do not move the video window on when showing main toolbar
+      Maintoolbar.Move(0, 0, fsform.w) 
+      toolbarbackground.Move(0, Maintoolbar.h, fsform.w) 
+      Maintoolbar.Background = Color.Background 
+      toolbarbackground.background = Color.background 
+      toolbarbackground.raise 
+      Maintoolbar.raise
+    
+
     AllmenuVisible(True)
   Endif
   
@@ -8071,7 +8096,6 @@ Private SHOUTCAST_INITIALIZED As Boolean = False
 Private ICECAST_INITIALIZED As Boolean = False
 
 Public Sub UpdateGenresTree(Optional force As Boolean = True)
-Stop
   If buttonshoutcast.value Then
       Try MyRadio.GetGenres(GenresTree, ((Not force) And (SHOUTCAST_INITIALIZED)))
       SHOUTCAST_INITIALIZED = True
