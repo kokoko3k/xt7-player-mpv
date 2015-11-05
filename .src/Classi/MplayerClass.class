@@ -1040,8 +1040,8 @@ Public Sub CurrentTimeFloat() As String
 End
 
 
-Public Sub ShowText(message As String, Optional myTime As Integer = 2000)
-  mpv_command(["show_text", message, mytime])
+Public Sub ShowText(message As String, Optional myTime_ms As Integer = 2000)
+  mpv_command(["show_text", message, mytime_ms])
 End
 
 Public Function IsSubFile(SubfilePath As String) As Boolean
