@@ -106,8 +106,9 @@ Public Sub SubsView_DblClick()
   subname = subsview[subsview.row, columnindex["SubFileName"]].text
   subfile = Temp() & "." & subname
   If OpenSubs.savesub(suburl, subfile) Then
-    FMain.mplayer.SubtitleAdd(subfile) 'add the subtitle and append it to mplayer.subtitletracks
-    FMain.Displaysub(FMain.mplayer.getP("subtitletracks")[FMain.mplayer.getP("subtitletracks").count - 1])
+    'FMain.mplayer.SubtitleAdd(subfile) 'add the subtitle and append it to mplayer.subtitletracks
+    fmain.sub_add(DConv(subfile))  'add the subtitle and append it to mplayer.subtitletracks
+    'FMain.Displaysub(FMain.mplayer.getP("subtitletracks")[FMain.mplayer.getP("subtitletracks").count - 1])
   Endif
 End
 
