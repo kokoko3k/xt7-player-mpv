@@ -4572,7 +4572,7 @@ Public Sub LibraryGrid_Drop()
   
   UpdateSearchResults(mylibrary, librarygrid, True, Searchfield.text)
   ScrollLeft()
-  
+  fmain.MyLibrary.Save(fmain.LibraryGrid, global.confpath)
 End
 
 Public timerscroll As Timer
@@ -8638,7 +8638,7 @@ End
 Public Sub Button1_Click()
   
   PodCastMenuNew_Click()
-  
+  Try fmain.mypodcast.SavePods(global.confpath & "/mypods.txt", fmain.PodcastTree)
 End
 
 Public Sub PodcastTree_Activate()
@@ -8696,7 +8696,7 @@ Public Sub PodcastTree_Drop()
       If global.IsNetworkURI(droppedfile) Then Try mypodcast.Add(droppedfile, PodCastTree)
     Endif
   Next
-  
+  Try fmain.mypodcast.SavePods(global.confpath & "/mypods.txt", fmain.PodcastTree)
 End
 
 Public Sub PodCastMenuNew_Click()
