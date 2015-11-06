@@ -10625,7 +10625,7 @@ Public Function SavePls() As Boolean
     Message.Error(("There was an error saving the playlist:\n") & PlaylistsCombo.text, ("Ok"))
     Return False
       Else
-    Message.Info(("Old playlist saved as:") & "\n" & PlaylistsCombo.text, (" Ok "))
+    Message.Info(("Playlist saved as:") & "\n" & PlaylistsCombo.text, (" Ok "))
     If PlaylistsCombo.Find(PlaylistsCombo.text) = -1 Then PlaylistsCombo.Add(PlaylistsCombo.text)
   Endif
   Return True
