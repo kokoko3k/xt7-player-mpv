@@ -6155,7 +6155,7 @@ Public Sub MenuLibraryUpdate_Click()
     If Error Then global.myDebug("Error while Arranging albums view")
     global.myDebug("Ended at: " & Time)
   Endif
-  
+  fmain.MyLibrary.Save(fmain.LibraryGrid, global.confpath)
 End
 
 Public Sub MenuLibraryWatch_Click()
@@ -6626,7 +6626,7 @@ Public Sub PlaylistGrid_Drop()
   Next
   UpdateSearchResults(myplaylist, playlistgrid, True, SearchfieldPLS.text)
   ScrollLeft()
-  
+  fmain.MyPlaylist.Save(fmain.PlaylistGrid, global.confpath)
 End
 
 Function BigFactorTable(w As Integer) As Integer

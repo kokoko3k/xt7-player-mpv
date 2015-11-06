@@ -55,6 +55,8 @@ Public Sub btnOK_Click()
   End With
   btnOK.Enabled = True
   AddUriForm.mouse = Mouse.Default
+  fmain.MyLibrary.Save(fmain.LibraryGrid, global.confpath)
+  fmain.MyPlaylist.Save(fmain.PlaylistGrid, global.confpath)
 End
 
 Public Sub btnCancel_Click()
