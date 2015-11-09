@@ -1789,7 +1789,7 @@
         Margin = True
         Padding = 6
         { NoParseStyle4 HBox
-          MoveScaled(1,0,59,4)
+          MoveScaled(-2,-1,59,4)
           Spacing = True
           { Label2 Label
             MoveScaled(0,0,58,3)
@@ -1819,6 +1819,15 @@
             ToolTip = ("Generate and show video thumbnails to for the side lists, this is made runtime in background and thumbnails will be  cached on disk.")
             Expand = True
             Text = ("Show thumbnails for video files")
+          }
+        }
+        { NoParseHideTab HBox
+          MoveScaled(1,16,50,4)
+          Spacing = True
+          { HideTabTextCHK CheckBox
+            MoveScaled(1,0,47,4)
+            Expand = True
+            Text = ("Hide Tabstrip text")
           }
         }
         { NoParse5 HBox

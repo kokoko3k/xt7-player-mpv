@@ -865,6 +865,14 @@ Public Sub SetStyle_early()
   Dim forecolor As String = GeneralOptions.ColorChooseBTN1.Background
   Dim Userfont As Font = GeneralOptions.FontChooseBTN1.font
 
+  Dim i As Integer
+
+  If GeneralOptions.HideTabTextCHK.value Then
+    For i = 0 To Leftsidetabs.Count - 1
+      leftsidetabs[i].text = ""
+    Next
+  Endif
+
   If Trim(generaloptions.BottomPanelImage.text) <> "" Then
     Try picturebox1.Picture = picture.Load(generaloptions.BottomPanelImage.text)
     If Error Then global.myDebug("sorry, couldn 't load the image " & generaloptions.BottomPanelImage.text)
