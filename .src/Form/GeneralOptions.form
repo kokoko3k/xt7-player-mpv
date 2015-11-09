@@ -1255,7 +1255,7 @@
       Index = 8
       Text = ("Language")
       { ScrollView8 ScrollView
-        MoveScaled(2,1,50,48)
+        MoveScaled(2,2,50,48)
         Tag = "language"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -1270,6 +1270,7 @@
           MoveScaled(1,4,48,4)
           ToolTip = ("Add the selected language to the list of preferred languages.\nMplayer Option:\n-alang \"language list\"")
           Spacing = True
+          Indent = True
           { AlangComboBox ComboBox
             MoveScaled(0,0,24,4)
             Visible = False
@@ -1299,9 +1300,10 @@
           Text = ("Preferred Subtitle languages:")
         }
         { NoParse17 HBox
-          MoveScaled(1,13,48,4)
+          MoveScaled(0,13,48,4)
           ToolTip = ("Add the selected language to the list of preferred languages.\nmpv Option:\n--slang \"language list\"\n\nThis option also allows you to search for online subtitles at Opensubtitles.org")
           Spacing = True
+          Indent = True
           { SlangComboBox ComboBox
             MoveScaled(0,0,24,4)
             Visible = False

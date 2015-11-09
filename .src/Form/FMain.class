@@ -1801,7 +1801,7 @@ Private fakemenu As Menu
 Public Function FillStreamsMenu()
   
   Dim i As Integer
-  Dim AudioMenu, SubMenu As Menu
+  Dim AudioMenu, SubMenu, PrimaryMenu, SecondaryMenu As Menu
   Dim menuopensubtitles As Menu
   
   Dim menuopensubsearchmanual As Menu
@@ -1813,7 +1813,9 @@ Public Function FillStreamsMenu()
     Streamsaudiomenu.Enabled = (mplayer.getP("audiotracks").count > 0)
   Endif
   ClearStreamsMenu()
-  
+
+
+    
   'fill audio streams menu
   If Streamsaudiomenu.enabled Then
     For i = 0 To mplayer.getP("audiotracks").count - 1
@@ -1824,18 +1826,45 @@ Public Function FillStreamsMenu()
   Endif
   'fill sub streams menu
 
-  'add a menu item to disable subtitles:
-  SubMenu = New Menu(Streamssubtitlesmenu) As "Menuswitchsub"
-  SubMenu.name = "DisableSubs"
-  SubMenu.caption = ("Don't display subtitles")
+
+  'add submenutree to select primary subtitle
+  PrimaryMenu = New Menu(Streamssubtitlesmenu) As "MenuPrimarySub"
+  PrimaryMenu.name = "SecondarySub"
+  PrimaryMenu.caption = ("Primary subtitles")
+
+  'add submenutree to select secondary subtitle
+  SecondaryMenu = New Menu(Streamssubtitlesmenu) As "MenuSecondarySub"
+  SecondaryMenu.name = "SecondarySub"
+  SecondaryMenu.caption = ("Secondary subtitles")
+
+
+  'add a menu item to disable primary subtitles:
+  SubMenu = New Menu(PrimaryMenu) As "MenuDisablePrimarySubs"
+  SubMenu.name = "DisablePrimarySubs"
+  SubMenu.caption = ("Don't display primary subtitles")
+  
+  'add a menu item to disable secondary subtitles:
+  SubMenu = New Menu(SecondaryMenu) As "MenuDisableSecondarySubs"
+  SubMenu.name = "DisableSecondarySubs"
+  SubMenu.caption = ("Don't display secondary subtitles")
+  
+
+  'fill in available subtitles,
   If mplayer.getP("subtitletracks").count > 0 Then
     For i = 0 To mplayer.getP("subtitletracks").count - 1
-      SubMenu = New Menu(Streamssubtitlesmenu) As "Menuswitchsub"
+      'primary
+      SubMenu = New Menu(PrimaryMenu) As "MenuswitchsubPrimary"
+      SubMenu.name = "SubMenuID" & i
+      SubMenu.caption = mplayer.getP("subtitletracks")[i]
+      'secondary
+      SubMenu = New Menu(SecondaryMenu) As "MenuswitchsubSecondary"
       SubMenu.name = "SubMenuID" & i
       SubMenu.caption = mplayer.getP("subtitletracks")[i]
     Next 'i
   Endif
-  
+
+
+
   SubMenu = New Menu(Streamssubtitlesmenu) As "MenuLoadSubtitle"
   SubMenu.name = "Streamssubtitlesmenu"
   SubMenu.caption = ("Load from disk...")
@@ -2250,22 +2279,39 @@ End
 
 Public nosub As Boolean = False
 
+Public Sub MenuDisablePrimarySubs_Click()
+  mplayer.set_property_mpv("sid", "no")
+  mplayer.ShowText(("Primary subtitles disabled"))
+End
 
-Public Sub Menuswitchsub_click()
+Public Sub MenuDisableSecondarySubs_Click()
+  mplayer.set_property_mpv("secondary-sid", "no")
+  mplayer.ShowText(("Secondary subtitles disabled"))
+End
+
+Public Sub MenuswitchsubSecondary_Click()
   Dim brother As Menu
   Dim sid As String '(primo valore con uno spazio splittalo
   For Each brother In Streamssubtitlesmenu.Children
     brother.checked = False
   Next
   Last.checked = True
-  If Last.caption = ("Don't display subtitles") Then
-    mplayer.set_property_mpv("sid", "no")
-    mplayer.ShowText(("Subtitles disabled"))
-      Else
-    sid = Split(Last.caption, " ", "", True)[0]
-    mplayer.set_property_mpv("sid", sid)
-    mplayer.ShowText(("Subtitle") & ": " & Last.caption)
-  Endif
+  sid = Split(Last.caption, " ", "", True)[0]
+  mplayer.set_property_mpv("secondary-sid", sid)
+  mplayer.ShowText(("Secondary subtitle") & ": " & Last.caption)
+End
+
+
+Public Sub MenuswitchsubPrimary_click()
+  Dim brother As Menu
+  Dim sid As String '(primo valore con uno spazio splittalo
+  For Each brother In Streamssubtitlesmenu.Children
+    brother.checked = False
+  Next
+  Last.checked = True
+  sid = Split(Last.caption, " ", "", True)[0]
+  mplayer.set_property_mpv("sid", sid)
+  mplayer.ShowText(("Primary subtitle") & ": " & Last.caption)
 End
 
 

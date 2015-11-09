@@ -17,7 +17,7 @@ Public Sub Form_Open()
     SubsView.Columns[i].Width = -1
   Next 'i
   Try TextBox1.text = File.basename(FMain.mplayer.getP("fullpath"))
-  Try ComboBox1.text = GeneralOptions.SubLangList.text
+  Try ComboBox1.text = GeneralOptions.SubLangList.text 
 End
 
 Public Sub mywait(dowait As Boolean)
