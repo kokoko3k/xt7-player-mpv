@@ -773,13 +773,38 @@ graph=$graph'[spectrum][waves]overlay[out0]'
 
 
 
+Nel panello di cambiamento automatico di velocità, mettere 2 checkbox:
+  [x] Sto usando un'uscita ottica toslink
+  [x] voglio codificare un ac3 quando cambio velocità.
+
 --------------------------------------------------------------------------
+JUNK
+--------------------------------------------------------------------------          
+          Se l'utente se ha un'uscita ottica digitale che possa decomprimere gli ac3.
+            se vuole codificare un ac3 automaticamente in caso di necessità, allora:
+              aggiungere lavcac3enc alla fine del chain se:
+                Se (0) l'uscita in uso è effettivamente spdif allora
+                    Se (1) Il numero di canali in ingresso è > 2 (toslink ha una banda per max 2 canali pcm)
+                    oppure
+                    Se (2) Si sta usando il passthrough, ma si vuole filtrare l'audio
+          
+          per verificare (0) audio-params/format deve essere 
+          per verificare (1) la proprietà mpv è =audio-params/channel-count (numero secco)
+          per verificare (2) 
+          
+          L'utente può scegliere un tipo di uscita spdif.
+          
+          Se dobbiamo fare il cambio velocità al volo, 
+          funziona senza problemi con l'uscita analogica.
+          ma se l'utente ha un'uscita digitale, allora:
+          - si può cambiare velocità solo se 
+          
+          
+          Pare che per capire se NON c'è uscita verso spdif, basta controllare:
+            Se "audio-params/format" è floatp (o magari non è spdif-*, allora vuol dire c
+
+--------------------------------------------------------------------------
+/JUNK
 --------------------------------------------------------------------------
 
 
-
-
-Cambiamenti nel prossimo mpv:
-
-Riabilitare X11 :)
-mpv ha abilitato di la tag "Performer" per i .cue, traduci in artist.

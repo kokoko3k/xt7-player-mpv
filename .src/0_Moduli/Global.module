@@ -80,7 +80,7 @@ Public Sub init()
   'Please terminate ALLFILTERS with ";"!
   'ALLFilters  '= Videofilter & ";" & AudioFilter & ";" & UncommonVideoFilters & ";" & UncommonAudiofilters
   quotes = "\""       'double quotes in strings
-  aboutmessage = "\n" & ("xt7-Player-mpv version ") & Application.version & (" by Antonio Orefice.\nxt7player@gmail.com\n\nThanks to Benoît Minisini for Gambas.") & "\n\n" & "I92guboj - Spanish translation \n" & "Wackenroader - Brazilian Portuguese translation \n" & "Shimingzhou - simplified Chinese translation\n" & "Jacky Bamière - French translation\n" & "VictorR2007 - Russian Translation\n" & "SymbianFlo - Testing and 'spiritual' support\n" & "NickiNicki - Bug reports\n" & "Eloaders and all the contributors\nat https://launchpad.net/xt7-player \n" 
+  aboutmessage = "\n" & "xt7-Player-mpv" & " " & Application.version & (" by Antonio Orefice.\nxt7player@gmail.com\n\nThanks to Benoît Minisini for Gambas.") & "\n\n" & "I92guboj - Spanish translation \n" & "Wackenroader - Brazilian Portuguese translation \n" & "Shimingzhou - simplified Chinese translation\n" & "Jacky Bamière - French translation\n" & "VictorR2007 - Russian Translation\n" & "SymbianFlo - Testing and 'spiritual' support\n" & "NickiNicki - Bug reports\n" & "Eloaders and all the contributors\nat https://launchpad.net/xt7-player \n" 
   Alternatecolor = &EEEEFF&
   LSyncing = False 'is true when library is syncing.
   LSyncingMessage = ("Syncing Library, please wait...")
