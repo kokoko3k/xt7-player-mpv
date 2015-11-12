@@ -383,7 +383,7 @@
       Index = 1
       Text = ("opengl")
       { GLScrollView ScrollView
-        MoveScaled(2,-2,47,35)
+        MoveScaled(2,-2,58,44)
         Expand = True
         Arrangement = Arrange.Vertical
         Spacing = True
@@ -460,6 +460,32 @@
             Tag = "interpolation"
             AutoResize = True
             Text = "temporal interpolation"
+          }
+        }
+        { openglParseMeHBox4 HBox
+          MoveScaled(0,37,57,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox3gl3 CheckBox
+            MoveScaled(1,1,19,4)
+            #Translate = False
+            AutoResize = True
+            Text = "Additional options:"
+          }
+          { OglAddOptsTextbox TextBox
+            MoveScaled(20,1,11,4)
+            Expand = True
+          }
+          { Button1 Button
+            MoveScaled(31,1,9,4)
+            AutoResize = True
+            Picture = Picture["icon:/16/add"]
+          }
+          { ComboOglOpts ComboBox
+            MoveScaled(41,1,13,4)
+            Visible = False
+            Font = Font["Monospace"]
+            ReadOnly = True
           }
         }
       }

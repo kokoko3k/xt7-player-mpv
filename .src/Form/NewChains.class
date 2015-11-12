@@ -931,7 +931,6 @@ Public Function parse_drivers(audio As Boolean) As String
       If audio Then 
         drivers &= parse_audio_driver(item_name, item_container.tag) & ","
           Else
-            Stop
         drivers &= parse_video_Driver(item_name, item_container.tag) & ","
       Endif
     Endif
@@ -1602,3 +1601,24 @@ Public Sub AlsaDeviceTextBox_Enter()
   AlsaDeviceTextBox.text = prevtext
 End
 
+
+Public Sub Button1_Click()
+  Dim oglopts, oglopt As String
+  If combooglopts.count = 0 Then
+    Shell FMain.mplayer.executable() & " -vo opengl:help" To oglopts
+    If Trim(oglopts) = "" Then Return
+    If Error Then Return
+    For Each oglopt In Split(oglopts, "\n", "", True)
+      combooglopts.add(oglopt)
+    Next
+  Endif
+  combooglopts.Popup
+End
+
+Public Sub ComboOglOpts_Click()
+  Dim opt As String = Split(combooglopts.Current.Text, " ", "", True)[0] & "="
+  If Trim(OglAddOptsTextbox.text) <> "" Then 
+    If Right(OglAddOptsTextbox.text) <> ":" Then opt = ":" & opt
+  Endif
+  OglAddOptsTextbox.text &= opt
+End
