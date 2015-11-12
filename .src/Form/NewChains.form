@@ -389,8 +389,28 @@
         Spacing = True
         Padding = 4
         Border = False
+        { openglParseMeHBox1 HBox
+          MoveScaled(0,2,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox3gl2 CheckBox
+            MoveScaled(1,1,17,4)
+            #Translate = False
+            Tag = "backend="
+            Text = "backend"
+            Value = CheckBox.True
+          }
+          { ComboBox1gl2 ComboBox
+            MoveScaled(19,1,24,4)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["auto", "x11", "x11egl"]
+            Text = "x11"
+          }
+        }
         { openglParseMeHBox10 HBox
-          MoveScaled(0,0,45,6)
+          MoveScaled(0,9,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox3gl CheckBox
@@ -409,7 +429,7 @@
           }
         }
         { openglParseMeHBox2 HBox
-          MoveScaled(0,7,45,6)
+          MoveScaled(0,15,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox2gl CheckBox
@@ -420,7 +440,7 @@
           }
         }
         { openglParseMeHBox3 HBox
-          MoveScaled(0,13,45,6)
+          MoveScaled(0,21,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox6gl CheckBox
@@ -431,7 +451,7 @@
           }
         }
         { openglParseMeHBox11 HBox
-          MoveScaled(0,20,45,6)
+          MoveScaled(0,27,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox4gl CheckBox

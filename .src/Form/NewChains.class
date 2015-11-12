@@ -931,6 +931,7 @@ Public Function parse_drivers(audio As Boolean) As String
       If audio Then 
         drivers &= parse_audio_driver(item_name, item_container.tag) & ","
           Else
+            Stop
         drivers &= parse_video_Driver(item_name, item_container.tag) & ","
       Endif
     Endif
@@ -1458,7 +1459,7 @@ Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip)
   If Right(outline) = "" Then 
     Return driver_name
       Else
-    Return driver_name & "=" & outline 
+    Return driver_name & ":" & outline 
   Endif
 
 End
@@ -1568,7 +1569,7 @@ Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip)
   If Right(outline) = "" Then 
     Return driver_name
       Else
-    Return driver_name & "=" & outline 
+    Return driver_name & ":" & outline 
   Endif
 
 End
