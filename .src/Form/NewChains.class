@@ -273,6 +273,10 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
   Dim i As Integer
   Dim islavfi As Boolean = False
 
+  For i = 0 To atabstrip.count - 1
+    atabstrip[i].enabled = False
+  Next
+
   Try item_tab = aTabstrip.Tag.Find(Lower(item_name))
 
   If item_tab >= 0 Then 
@@ -293,6 +297,7 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
   Try islavfi = atabstrip.children[0].tag = "lavfi"
   helpbox.tag = item_name & Chr(8)
   If islavfi Then helpbox.tag &= "lavfi"
+  Try atabstrip[atabstrip.index].enabled = True
   Return
 End
 

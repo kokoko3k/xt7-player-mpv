@@ -46,6 +46,7 @@
       #Translate = False
       Expand = True
       Margin = True
+      TextFont = Font["-1"]
       Index = 0
       Text = "tabstrip1"
       { HelpBox Panel
@@ -88,6 +89,7 @@
       Expand = True
       Arrangement = Arrange.Fill
       Margin = True
+      TextFont = Font["-1"]
       Index = 0
       Text = "equalizer"
       { ScrollView1xx Panel
@@ -326,7 +328,7 @@
       MoveScaled(0,0,30,55)
       Arrangement = Arrange.Vertical
       { drivers_video_container ScrollView
-        MoveScaled(2,0,25,45)
+        MoveScaled(2,1,25,45)
         Background = Color.TextBackground
         Expand = True
         Arrangement = Arrange.Vertical
@@ -351,6 +353,7 @@
       Margin = True
       Padding = 4
       Count = 7
+      TextFont = Font["-1"]
       Index = 0
       Text = ("Xv")
       { xvScrollview ScrollView
@@ -713,6 +716,7 @@
       Arrangement = Arrange.Vertical
       Margin = True
       Count = 6
+      TextFont = Font["-1"]
       Index = 0
       Text = ("Alsa")
       { AlsaScrollview ScrollView
