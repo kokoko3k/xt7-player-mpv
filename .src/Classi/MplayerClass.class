@@ -869,6 +869,15 @@ Private Function TemporaryPlaylist(Fullpath As String) As String
 
 End
 
+Public Function do_preload(filename As String, timeout As Integer)
+  Dim cmd As String
+  cmd &= executable(timeout) & " "
+  cmd &= "--cache=no --vo null --ao=null --speed=2 "
+  cmd &= "'" & filename & "'" & " "
+  cmd &= "&>/dev/null"
+  Debug "*****************************" & cmd
+  Shell cmd
+End
 
 
 

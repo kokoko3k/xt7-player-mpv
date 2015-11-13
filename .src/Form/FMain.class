@@ -394,7 +394,6 @@ End
 
 
 Public Sub AllInit_Pre()
- 'global.preload_file_bg("/tmp/out", 1, 1)
  youtube = New YoutubeClass(youtubetree)
   shadeup.visible = False
   VersionCheck()
@@ -1701,6 +1700,7 @@ End
 Public Sub ButtonStop_Click()
   ' Return
   ' Dim a As Integer = 1 / 0
+  Try global.Preload_file_bg_stop()
   timer_runtime_infos.stop
   timerqueue.stop
   switchresBTN.enabled = True
@@ -2648,6 +2648,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     'If mplayer.do_play(mplayer.Media_FullPath, mplayer.currentoptions, False, MkvSubsWorkaround, cookieopts, dumpfile, doanalyze) Then
     switchresBTN.enabled = False
     If Not gapless Then
+      Try global.Preload_file_bg_stop()
       If Not mplayer.do_play(fullpath) Then Goto returnlabel
     Endif
     ButtonPlay.picture = Picture["media-playback-pause.png"]
@@ -2894,6 +2895,8 @@ Public Sub TimerQueue_Timer()
   Dim timer0 As Float = Timer()
   Dim timeout As Float = 2 'do not wait more than 2 seconds for seeking to complete
   Dim prequeue_time As Integer = 2 'queue next item # seconds before the previous will end.
+  Dim preload_time As Integer 'preload next item # seconds before the previous will end.
+  Dim preload_KB As Integer 'whom many KB to preload max
   Dim playtime_remaining As Float = 0
   If TIMERQUEUE_SEEKING Then
     'TIMERQUEUE_SEEKING indicates that a seek has just been requested
@@ -2913,12 +2916,43 @@ Public Sub TimerQueue_Timer()
     global.myDebug("Error retriving playtime_remaining")
     Return
   Endif
+  
   If playtime_remaining <= prequeue_time Then
-    If (togglepls.value = True) Then queue_next()
-    '   Else
-    ' global.myDebug("not prequeuing yet because playtime_remaining is: " & playtime_remaining)
-  Endif
+    If (togglepls.value = True) Then
+      queue_next()
+      global.Preload_file_bg_stop()
+      PRELOADING = False
+    Endif
+      Else 'because preloading has to occur befor queuing...
+    If generaloptions.PreloadCheckbox.value Then
+      
+      preload_time = generaloptions.PreloadSecbox.Value
+      preload_KB = generaloptions.PreloadKBbox.value
+      
+      If ((playtime_remaining - prequeue_time) <= preload_time) And Not PRELOADING Then
+        If mplayer.get_property_mpv("cache-idle", True, 1) = "yes" Then
+          Debug playtime_remaining
+          PreloadNext(preload_time, preload_KB)
+          PRELOADING = True
+        Endif
+      Endif
+    Endif 'generaloptions
+  Endif 
 End
+
+Private PRELOADING As Boolean = False
+Private Sub PreloadNext(preload_time As Integer, preload_KB As Integer)
+  Dim mNext As String
+
+  'mplayer.do_preload("/mnt/sshpi/root/media/02-coldplay-hurts_like_heaven.ogg", preload_time)
+  'Media_Next_path = "/mnt/sshpi/root/media/02-coldplay-hurts_like_heaven.ogg"
+  mNext = WhosNext() '"/mnt/sshpi/root/media/02-coldplay-hurts_like_heaven.ogg"
+  global.myDebug("Preloading " & mNext)
+  global.Preload_file_bg(mNext, preload_KB, preload_time)
+  Wait
+End
+
+
 
 
 Private Sub queue_next()
@@ -5256,6 +5290,37 @@ Public Sub ButtonNext_Click()
   SelectNext(False, GetActivePlayQueue())
 End
 
+Public Sub WhosNext() As String
+  'hackish! 
+  Dim out As String
+  Dim playqueue As String
+  playqueue = GetActivePlayQueue()
+  If playqueue = "browse" Then
+    BrowseSelectNext(True)
+    out = media_next_path
+    BrowseSelectprev(True)
+    Return out
+  Endif
+
+  If playqueue = "playlistgrid" Then
+    MyPlaylist.SelectNext(PlaylistGrid, ShufflePls.value)
+    out = media_next_path
+    MyPlaylist.SelectPrev(PlaylistGrid) 
+    Return out
+  Endif
+  
+  If playqueue = "librarygrid" Then
+    mylibrary.SelectNext(libraryGrid, ShufflePls.value)
+    out = media_next_path
+    MyPlaylist.SelectPrev(librarygrid) 
+    Return out
+  Endif
+  
+  
+End
+
+
+
 Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional CurrentQueue As String = "", Optional do_play As Boolean = True)
   Dim mplayerwasrunning As Boolean 
   Dim togglepls_value As Boolean = TogglePls.value
@@ -5346,7 +5411,7 @@ End
 
 
 Private TRIESBROWSESELECTNEXT As Integer = 0
-Public Sub BrowseSelectNext()
+Public Sub BrowseSelectNext(Optional nowait As Boolean = False)
   Dim filelist As String[]
   Dim current As String
   Dim CurrentIndex, ToSelectIndex As Integer
@@ -5367,7 +5432,7 @@ Public Sub BrowseSelectNext()
   Try nextfile = fileview1.dir & "/" & filelist[ToSelectIndex]
   If IsDir(nextfile) Then 
     fileview1.current = filelist[ToSelectIndex]
-    Wait
+    If (Not nowait) Then Wait
     If TRIESBROWSESELECTNEXT < 10 Then  'stack overflow prevention
       TRIESBROWSESELECTNEXT += 1
       BrowseSelectNext()
@@ -5378,12 +5443,12 @@ Public Sub BrowseSelectNext()
     Try Media_Next_path = fileview1.dir & "/" & filelist[ToSelectIndex]
     Try Media_Next_path = Replace(Media_Next_path, "//", "/")
     fileview1.current = filelist[ToSelectIndex]
-    Wait
+    If (Not nowait) Then Wait
   Endif
 End
 
 
-Public Sub BrowseSelectPrev()
+Public Sub BrowseSelectPrev(Optional nowait As Boolean = False)
   Dim filelist As String[]
   Dim current As String
   Dim CurrentIndex, ToSelectIndex As Integer
@@ -5402,6 +5467,8 @@ Public Sub BrowseSelectPrev()
   Try Media_Next_path = Replace(mplayer.getP("FullPath"), "//", "/")
   fileview1.current = filelist[ToSelectIndex]
 End
+
+
 
 Public Sub ButtonPrev_Click()
   

@@ -1209,3 +1209,7 @@ Public Function Preload_file_bg(pFilename As String, pKbytes As Integer, pTimeou
   Wait
 End
 
+Public Function Preload_file_bg_stop()
+  pTask.Stop()
+End
+

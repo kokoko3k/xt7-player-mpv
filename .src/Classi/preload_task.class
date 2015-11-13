@@ -28,7 +28,7 @@ Public Sub Main()
     Endif
     KB_read = Seek(pFile) Div 1024
     'Print "readed " & KB_read & " KB so far"
-
+  
     If KB_read >= pKBytes Then 
       Print "Preloading completed before timeout"
       Goto returnlabel
