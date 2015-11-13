@@ -2848,30 +2848,24 @@ End
 
 
 Public Function TimerQueue_update_duration() As Boolean
-  Dim duration As String
-  Dim timepos As String
-  Dim timedelta As Integer = 0
+  Dim timedelta As Float = 0
+  Dim tl As String
   
   If Not mplayer.ProcessRunningOvr() Then 
     global.myDebug("mpv has been terminated, stopping Timerqueue.")
     timerqueue.Stop()
     Return False
   Endif
-  Try duration = mplayer.get_property_mpv("=duration", True, 1, True) 
-  If duration = mplayer.unavailable_str Then Goto errorlabel
-  If duration = "" Then Goto errorlabel
 
-  Try timepos = mplayer.get_property_mpv("=time-pos", True, 1, True) 
-  If timepos = mplayer.unavailable_str Then Goto errorlabel
-  If timepos = "" Then Goto errorlabel
-
-  Try timedelta = CInt(CFloat(duration)) - CInt(CFloat(timepos))
+  Try tl = mplayer.get_property_mpv("=playtime-remaining", True, 1, False)
+  Try timedelta = CFloat(tl)
   If Error Then Goto errorlabel
 
-  Try timerqueue.Delay = (timedelta Div 2) * 1000
+  Try timerqueue.Delay = CInt(timedelta * 1000 / 4)
   If Error Then Goto errorlabel
-  
-  global.myDebug("timerqueue delay set to (seconds): ", timerqueue.delay Div 1000)
+
+  global.myDebug("timerqueue delay set to (seconds): ", timerqueue.delay / 1000)
+
   Return True
 
   errorlabel:
