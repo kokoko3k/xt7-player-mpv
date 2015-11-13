@@ -2890,7 +2890,9 @@ Public Sub TimerQueue_Timer()
   Dim t0 As String = "0"
   Dim t1 As String = "0"
   Dim timer0 As Float = Timer()
-  Dim timeout As Float = 2 'do not wait more than 2 seconds.
+  Dim timeout As Float = 2 'do not wait more than 2 seconds for seeking to complete
+  Dim prequeue_time As Integer = 2 'queue next item # seconds before the previous will end.
+  Dim playtime_remaining As Float = 0
   If TIMERQUEUE_SEEKING Then
     'TIMERQUEUE_SEEKING indicates that a seek has just been requested
     Try t0 = CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos"))))
@@ -2903,8 +2905,16 @@ Public Sub TimerQueue_Timer()
     TIMERQUEUE_SEEKING = False
   Endif
   If (Not TimerQueue_update_duration()) Then timerqueue.stop
-  If timerqueue.delay <= 1000 Then
+  'If timerqueue.delay <= 1000 Then
+  Try playtime_remaining = CFloat(mplayer.get_property_mpv("=playtime-remaining"))
+  If Error Then 
+    global.myDebug("Error retriving playtime_remaining")
+    Return
+  Endif
+  If playtime_remaining <= prequeue_time Then
     If (togglepls.value = True) Then queue_next()
+    '   Else
+    ' global.myDebug("not prequeuing yet because playtime_remaining is: " & playtime_remaining)
   Endif
 End
 
