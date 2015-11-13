@@ -392,8 +392,10 @@ Public Sub ShowGrid(LibraryGrid As Gridview)
 
 End
 
+
 Public Sub AllInit_Pre()
-  youtube = New YoutubeClass(youtubetree)
+ 'global.preload_file_bg("/tmp/out", 1, 1)
+ youtube = New YoutubeClass(youtubetree)
   shadeup.visible = False
   VersionCheck()
   'MakeProfilePath() <--maininit already did this

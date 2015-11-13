@@ -1,0 +1,47 @@
+' Gambas class file
+
+Inherits Task
+Public pFileName As String
+Public pKBytes As Integer
+Public pTimeout_sec As Integer
+
+Public Sub Main()
+  Dim pFile As File
+  Dim t0 As Float = Timer()
+  Dim sBuf As String
+  Dim KB_read As Integer = 0
+  
+  Print "apro " & pFilename
+  Try pFile = Open pFileName For Input
+  If Error Then 
+    Print pFilename & " non aperto, ERRORE."
+    Return
+  Endif
+  
+  Print pFilename & " aperto."
+  
+  While (Timer() - t0) < pTimeout_sec
+    Try sBuf = Read #pFile, 1024 'read 1KB at a time
+    If Error Then
+      Print "Could not read file stream after reading " & KB_read & " KBytes"
+      Goto returnlabel
+    Endif
+    KB_read = Seek(pFile) Div 1024
+    'Print "readed " & KB_read & " KB so far"
+
+    If KB_read >= pKBytes Then 
+      Print "Preloading completed before timeout"
+      Goto returnlabel
+    Endif
+  Wend
+  Print "timeout occurred before preload completion"
+  Goto returnlabel
+  
+  returnlabel:
+  Print "end:"
+  Print "speed: " & CStr(KB_read / (Timer() - t0)) & " KBps"
+  Print "speed: " & CStr(KB_read / (Timer() - t0) / 1000) & " MBps"
+  
+  
+  
+End

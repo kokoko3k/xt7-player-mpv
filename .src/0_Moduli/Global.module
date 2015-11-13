@@ -128,6 +128,7 @@ End
 
 
 
+
 Public Function proxyfromenv() As String
 
   If Application.Env["https_proxy"] <> "" Then Return Application.Env["https_proxy"]
@@ -1196,3 +1197,15 @@ Public Function get_mounted_fss() As String[]
   Shell "df -x devtmpfs -x tmpfs --output=target|grep '/'|sort -u" To df
   Return Split(df, "\n", "", True)
 End
+
+
+
+Public pTask As Preload_task
+Public Function Preload_file_bg(pFilename As String, pKbytes As Integer, pTimeout As Integer)
+  pTask = New Preload_task
+  pTask.pFileName = pFileName
+  pTask.pKBytes = pKbytes
+  pTask.pTimeout_sec = pTimeout
+  Wait
+End
+
