@@ -181,7 +181,10 @@ End
 Public Sub Form_KeyPress()
   If ModifiersOnly() Then Return 'skip modifiers
   'find which key has been pressed by testing all printable ascii characters:
-  If Not (Key.code = Key.capslock) Then GetKey()
+  If Not (Key.code = Key.capslock) Then 
+    Try GetKey()
+    If Error Then Global.myDebug("GetKey() failed")
+  Endif
 End
 
 Public Sub Form_MouseDown()

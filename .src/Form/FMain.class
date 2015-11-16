@@ -5217,7 +5217,11 @@ Public Sub VideoAreaGroup_keypress_timer_timer()
     Xt7Egg.show
     Return
   Endif
-  HotKey = HotKeyGrab.GetKey(VideoAreaGroup_keypress_timer_keycode)
+  Try HotKey = HotKeyGrab.GetKey(VideoAreaGroup_keypress_timer_keycode)
+  If Error Then 
+    global.myDebug("GetKey failed")
+    Return
+  Endif
   HotKeyToMplayer(HotKey)  
 End
 
