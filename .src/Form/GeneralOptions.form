@@ -1997,7 +1997,7 @@
           { ColorChooseBTN1 Button ColorChoose
             Name = "ColorChooseBTN1"
             MoveScaled(46,0,4,4)
-            Background = Color.Foreground
+            Background = Color.TextForeground
             Picture = Picture["icon:/16/color"]
           }
         }
@@ -2015,13 +2015,13 @@
           }
           { BackResetButton1 ToolButton BackResetButton
             Name = "BackResetButton1"
-            MoveScaled(41,1,4,4)
+            MoveScaled(41,0,4,4)
             Picture = Picture["icon:/16/clear"]
           }
           { BackColorChooseBTN1 Button ColorChoose
             Name = "BackColorChooseBTN1"
             MoveScaled(46,0,4,4)
-            Background = &HFFFFFF&
+            Background = Color.TextBackground
             Picture = Picture["icon:/16/color"]
           }
         }
@@ -2045,7 +2045,7 @@
           { BackColorChooseBTN2 Button ColorChoose
             Name = "BackColorChooseBTN2"
             MoveScaled(46,0,4,4)
-            Background = &HF5F5F5&
+            Background = Color.LightBackground
             Picture = Picture["icon:/16/color"]
           }
         }

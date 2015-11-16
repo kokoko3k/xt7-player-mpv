@@ -719,11 +719,13 @@ Public Sub BackResetButton_Click()
 
   If Upper(Last.name) = "BACKRESETBUTTON2" Then 'leftside lists
     ' [GB2:BCOL] Try Last.next.background = &EEEEFF&
-    Try Last.next.Background = &F5F5F5&
+    'Try Last.next.Background = &F5F5F5&
+    Try Last.next.Background = Color.LightBackground
       Else If Upper(Last.name) = "BACKRESETBUTTON3" Then  'trayicon
         Last.next.Background = &2A2D3C&
-          Else If Upper(Last.name) = "BACKRESETBUTTON1" Then  'trayicon
-              Last.next.Background = &FFFFFF&
+          Else If Upper(Last.name) = "BACKRESETBUTTON1" Then  'leftsidelist background color
+              'Last.next.Background = &FFFFFF&
+              Last.next.Background = Color.textbackground
                 Else If Upper(Last.name) = "BACKRESETBUTTON6" Then 'PROGRESSBAR
                   Last.next.Background = Color.SelectedBackground
                   fmain.Progress.tag = "changecolor"
