@@ -1,0 +1,204 @@
+' Gambas module file
+
+' Gambas module file
+
+Private key_down As String
+Private mouse_down As Integer = 0
+Private wheel As String = "NONE"
+Private mods As String = ""
+Private last_hotkey As String = ""
+
+
+Public Function GetLastHotKey() As String
+  Dim out As String
+  out = last_hotkey
+  last_hotkey = ""
+  Return out
+End
+
+
+Private Sub UpdateModifiers()
+  mods = ""
+  If Key.control Then mods = "Ctrl"
+  If Key.alt Then mods &= "Alt"
+  If Key.shift Then mods &= "Shift"
+  If key.meta Then mods &= "Meta"
+End
+
+Public Sub KeyPress()
+  UpdateModifiers()
+  key_down = Key.code
+  wheel = "NONE"
+  StoreHotKey() 
+End
+
+Public Sub keyRelease()
+  UpdateModifiers()
+  key_down = ""
+End
+
+Public Sub MouseDown()
+  mouse_down += Mouse.button
+  StoreHotKey() 
+End
+
+Public Sub MouseUp()
+  mouse_down -= Mouse.button
+  If mouse_down < 0 Then mouse_down = 0
+  wheel = "NONE"
+End
+
+Public Sub MouseWheel()
+  If Mouse.delta > 0 Then 
+    wheel = "UP"
+      Else If Mouse.delta < 1 Then 
+        wheel = "DOWN"
+      Else
+    wheel = "NONE"
+  Endif
+  StoreHotKey() 
+  wheel = "NONE"
+End
+
+Private Sub StoreHotKey() 
+  Dim keycode As Integer
+  Dim keytext As String
+  Dim out As String
+
+  If key_down <> "" Then
+    keytext = Lower(GetSpecialKey(key_down))
+    If keytext = "" Then keytext &= keyfromcode(key_down)
+  Endif
+
+  out = "Mouse=" & mouse_down
+  out &= " Wheel=" & wheel
+  If mods <> "" Then out &= " Mod=" & mods
+  out &= " Key=" & keytext
+  last_hotkey = out
+End
+
+
+Private Sub GetSpecialKey(keycode As Integer) As String
+  Select Case keycode
+    Case key.BackTab
+       Return "BackTab"
+    Case key.CapsLock
+       Return "CapsLock"
+    Case key.Down
+       Return "Down"
+    Case key.End
+       Return "End"
+    Case key.Enter
+       Return "Enter"
+    Case key.F1
+       Return "F1"
+    Case key.F10
+       Return "F10"
+    Case key.F11
+       Return "F11"
+    Case key.F12
+       Return "F12"
+    Case key.F13
+       Return "F13"
+    Case key.F14
+       Return "F14"
+    Case key.F15
+       Return "F15"
+    Case key.F16
+       Return "F16"
+    Case key.F17
+       Return "F17"
+    Case key.F18
+       Return "F18"
+    Case key.F19
+       Return "F19"
+    Case key.F2
+       Return "F2"
+    Case key.F20
+       Return "F20"
+    Case key.F21
+       Return "F21"
+    Case key.F22
+       Return "F22"
+    Case key.F23
+       Return "F23"
+    Case key.F24
+       Return "F24"
+    Case key.F3
+       Return "F3"
+    Case key.F4
+       Return "F4"
+    Case key.F5
+       Return "F5"
+    Case key.F6
+       Return "F6"
+    Case key.F7
+       Return "F7"
+    Case key.F8
+       Return "F8"
+    Case key.F9
+       Return "F9"
+    Case key.Help
+       Return "Help"
+    Case key.Home
+       Return "Home"
+    Case key.Ins
+       Return "Ins"
+    Case key.Insert
+       Return "Insert"
+    Case key.Left
+       Return "Left"
+    Case key.Menu
+       Return "Menu"
+    Case key.MetaKey
+       Return "MetaKey"
+    Case key.NumLock
+       Return "NumLock"
+    Case key.PageDown
+       Return "PageDown"
+    Case key.PageUp
+       Return "PageUp"
+    Case key.Pause
+       Return "Pause"
+    Case key.PgDown
+       Return "PgDown"
+    Case key.PgUp
+       Return "PgUp"
+    Case key.Print
+       Return "Print"
+    Case key.Return
+       Return "Return"
+    Case key.Right
+       Return "Right"
+    Case key.ScrollLock
+       Return "ScrollLock"
+    Case key.Space
+       Return "Space"
+    Case key.SysReq
+       Return "SysReq"
+    Case key.Tab
+       Return "Tab"
+    Case key.Up
+       Return "Up"
+    Case Key.Del
+       Return "Del"
+    Case Else
+        Return ""
+  End Select
+End
+
+Private Sub keyfromcode(keycode As Integer) As String
+  Dim i As Integer
+  'it is different from key.text because when one presses ctrl+a,
+  'Key.text returns ^ A, While this function will Return "A"
+  'printable characters goes from 32 to 126 and from 128 to 254
+  For i = 32 To 126
+    If keycode = Key[Chr(i)] Then Return Lower(Chr(i))
+  Next
+  'for extended characters, thie wont work, we fallback to key.text, sorry.
+  For i = 128 To 254
+    If keycode = Key[Chr(i)] Then Return Lower(Key.text)
+  Next
+
+  Return ""
+End
