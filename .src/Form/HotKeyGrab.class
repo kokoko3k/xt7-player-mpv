@@ -1,194 +1,45 @@
 ' Gambas class file
 
-'Copyright (C) 2007, 2008 Antonio Orefice
-' Gambas class file
-
-Public LastMouseButton As Integer = 0
-Public LastMouseWheel As String = "NONE"
-Public LastKey As String = ""
-Public LastMod As String = ""
-Private IgnoreNext As Boolean = False
 
 Public Sub Form_Show()
   'ME.center
   HotKeyGrab.x = Mouse.screenx - (HotKeyGrab.w Div 2)
   HotKeyGrab.y = Mouse.screeny - (HotKeyGrab.h Div 2)
-  LastMouseButton = 0
-  LastMouseWheel = "NONE"
-  LastKey = ""
-  LastMod = ""
-End
-
-Public Function GetKeyModifiers() As String
-  Dim mods As String = ""
-  If Key.control Then mods = "Ctrl"
-  If Key.alt Then mods = mods & "Alt"
-  If Key.shift Then mods = mods & "Shift"
-  Return mods
-End
-
-Public Function GetMouseModifiers() As String
-  Dim mods As String = ""
-  If Mouse.control Then mods = "Ctrl"
-  If mouse.alt Then mods = mods & "Alt"
-  If mouse.shift Then mods = mods & "Shift"
-  Return mods
-End
-
-Public Function GetLastKey(Optional aKeyCode As Integer = -1) As String
-  Dim i As Integer
-  Dim RetKey As String = ""
-  If aKeyCode < 0 Then aKeyCode = Key.code
-   Select Case aKeyCode
-    Case Key.Left
-      RetKey = "left"
-    Case Key.Right
-      RetKey = "right"
-    Case Key.up
-      RetKey = "up"
-    Case Key.down
-      RetKey = "down"
-    Case Key.BackSpace
-      RetKey = "backspace"
-    Case Key.Delete
-      RetKey = "del"
-    Case Key.End
-      RetKey = "end"
-    Case Key.Escape
-      RetKey = "esc"
-    Case Key.F1
-      RetKey = "f1"
-    Case Key.F2
-      RetKey = "f2"
-    Case Key.F3
-      RetKey = "f3"
-    Case Key.F4
-      RetKey = "f4"
-    Case Key.F5
-      RetKey = "f5"
-    Case Key.F6
-      RetKey = "f6"
-    Case Key.F7
-      RetKey = "f7"
-    Case Key.F8
-      RetKey = "f8"
-    Case Key.F9
-      RetKey = "f9"
-    Case Key.F10
-      RetKey = "f10"
-    Case Key.F11
-      RetKey = "f11"
-    Case Key.F12
-      RetKey = "f12"
-    Case Key.F13
-      RetKey = "f13"
-    Case Key.F14
-      RetKey = "f14"
-    Case Key.F15
-      RetKey = "f15"
-    Case Key.F16
-      RetKey = "f16"
-    Case Key.Home
-      RetKey = "home"
-    Case Key.Return
-      RetKey = "enter"
-    Case Key.PageDown
-      RetKey = "pagedown"
-    Case Key.PageUp
-      RetKey = "pageup"
-    Case Key.Insert
-      RetKey = "insert"
-    Case Key.Tab
-      RetKey = "tab"
-    Case Key.Space
-      RetKey = "space"
-    Case 65535 'there is a problem with gambas and key.code...
-      retkey = Key.text
-    Case Else
-      For i = 32 To 126
-      'FOR i = 0 TO 255
-        If aKeyCode = Key[Chr(i)] Then
-          RetKey = Lower(Chr(i))
-          Break
-        Endif
-      Next 'i
-  End Select
-  Return RetKey
 End
 
 
-Public Function GetKey(Optional aKeyCode As Integer = -1) As String
+Public Sub Form_Enter()
+  Last.SetFocus()
+End
+
+Public Sub Form_MouseDown()
+  HotKeysHelper.MouseDown()
+End
+
+Public Sub Form_MouseUp()
+  HotKeysHelper.MouseUp()
+  'Print HotKeysHelper.GetLastHotKey()
   Me.hide
-  If aKeyCode < 0 Then aKeyCode = Key.code
-  lastkey = GetLastKey(aKeycode)
-  LastMouseButton = 0
-  LastMouseWheel = "NONE"
-  'LastMod = GetKeyModifiers()
-  Return AllGrabbedData()
 End
 
-Public Function GetMouse(CheckWheel As Boolean) As String
+Public Sub Form_MouseWheel()
+  HotKeysHelper.MouseWheel()
+  'Print HotKeysHelper.GetLastHotKey()
   Me.hide
-  lastkey = ""
-  LastMouseWheel = "NONE"
-  LastMod = ""
-  LastMod = GetMouseModifiers()
-  If CheckWheel Then
-    If Mouse.delta > 0 Then
-      LastMouseWheel = "UP"
-        Else
-      If Mouse.delta < 0 Then LastMouseWheel = "DOWN"
-    Endif
-  Endif
-  LastMouseButton = Mouse.Button
-  If LastMouseButton = 0 Then
-    If mouse.left Then lastmousebutton += 1
-    If mouse.right Then lastmousebutton += 2
-    If mouse.middle Then lastmousebutton += 4
-  Endif
-  Return AllGrabbedData()
+End
+
+Public Sub Form_KeyPress()
+  HotKeysHelper.KeyPress()
+End
+
+Public Sub Form_KeyRelease()
+  HotKeysHelper.keyRelease()
+  'Print HotKeysHelper.GetLastHotKey()
+  Me.hide
 End
 
 
 Public Function AllGrabbedData() As String
-  If lastmod = "" Then  'write Mod= only if a modifier has been pressed (backward compatibility)
-    Return "Mouse=" & LastMouseButton & " " & "Wheel=" & LastMouseWheel & " " & "Key=" & LastKey
-      Else
-    Return "Mouse=" & LastMouseButton & " " & "Wheel=" & LastMouseWheel & " " & "Mod=" & LastMod & " " & "Key=" & LastKey
-  Endif
+  Return HotKeysHelper.GetLastHotKey()
 End
-
-
-Public Sub Form_MouseUp()
-  If Not IgnoreNext Then GetMouse(False)
-  IgnoreNext = True
-End
-
-Public Sub Form_MouseWheel()
-  GetMouse(True)
-  IgnoreNext = True
-End
-
-Public Function ModifiersOnly() As Boolean
-  If Key.text = "" Then
-    If GetLastKey() = "" Then Return True
-  Else
-    Return False
-  Endif
-End
-
-
-Public Sub Form_KeyPress()
-  If ModifiersOnly() Then Return 'skip modifiers
-  'find which key has been pressed by testing all printable ascii characters:
-  If Not (Key.code = Key.capslock) Then 
-    Try GetKey()
-    If Error Then Global.myDebug("GetKey() failed")
-  Endif
-End
-
-Public Sub Form_MouseDown()
-  IgnoreNext = False
-End
-
 

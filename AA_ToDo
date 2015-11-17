@@ -807,4 +807,12 @@ JUNK
 /JUNK
 --------------------------------------------------------------------------
 
-
+attualmente, get_property_mpv, per essere certo che mpv abbia risposto, imposta la variabile
+di "ritorno" ad un valore conosciuto sicuramente diverso dalla risposta.)
+Poi dopo il timeout controlla se il valore è cambiato; se è cambiato lo usa, altrimenti
+va in timeout e ripristina il valore percedente.
+Questo funziona "spesso", ma può dar problemi.
+Il modo di non cambiare il valore per aspettare che cambi è:
+nell'handler playerprocess_read, oltre a memorizzare con setP() il valore della risposta
+memorizzare pure il tempo nel quale  avvenuta la risposta, in un' altra collezione separata.
+Get_property_mpv, andrà a controllare che a cambiare sia il tempo , e non la variabile stessa.

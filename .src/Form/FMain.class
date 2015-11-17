@@ -4993,6 +4993,8 @@ Public Sub HotKeyToMplayer(HotKey As String)
   Dim Action As String 
   Dim osd_level As String = ""
   Dim n As String
+
+  global.myDebug(hotkey)
   Action = Lower(HotKeys.ActionRelatedTo(Hotkey))
   
   global.myDebug(Action)
@@ -5169,7 +5171,9 @@ Public Sub VideoAreaGroup_MouseDown()
   mouseleft = mouse.left
   If FMain.mplayer.ProcessRunningOvr() Then fmain.VideoBox.setfocus 'needed to get keypress events
   IgnoreMouse = False
-  'PanelNowNextShow()
+
+  HotKeysHelper.MouseDown()
+
 End
 
 Public Sub PanelNowNextShow()
@@ -5201,13 +5205,8 @@ End
 Public VideoAreaGroup_keypress_timer As Timer 
 Private VideoAreaGroup_keypress_timer_keycode As Integer
 Public Sub VideoAreaGroup_KeyPress() 
-  ' Dim HotKey As String
-  ' If ((Key.code = Key.space) And (Key.control) And (Key.shift) And (Key.alt)) Then Xt7Egg.show
-  ' HotKey = HotKeyGrab.GetKey()
-  ' HotKeyToMplayer(HotKey)
-  VideoAreaGroup_keypress_timer_keycode = Key.code
-  HotKeyGrab.LastMod = HotKeyGrab.GetKeyModifiers()
-  If ((VideoAreaGroup_keypress_timer_keycode = Key.space) And (Key.control) And (Key.shift) And (Key.alt)) Then VideoAreaGroup_keypress_timer_keycode = -9999
+  Dim HotKey As String
+  HotKeysHelper.KeyPress()
   VideoAreaGroup_keypress_timer.trigger
 End
 
@@ -5217,7 +5216,8 @@ Public Sub VideoAreaGroup_keypress_timer_timer()
     Xt7Egg.show
     Return
   Endif
-  Try HotKey = HotKeyGrab.GetKey(VideoAreaGroup_keypress_timer_keycode)
+
+  HotKey = HotKeysHelper.GetLastHotKey()
   If Error Then 
     global.myDebug("GetKey failed")
     Return
@@ -5233,26 +5233,27 @@ Public Sub VideoAreaGroup_MouseUp()
 
   Dim HotKey As String
   Dim mx, my As Integer
-
   LastClickTime = Timer
   If GuiDragging Then
     guidragging = False
     Return
   Endif
+  HotKeysHelper.MouseUp()
   If Not IgnoreMouse And mplayer.ProcessRunningOvr() Then
-    HotKey = HotKeyGrab.GetMouse(False)
+    'HotKey = HotKeyGrab.GetMouse(False)
+    Hotkey = HotKeysHelper.GetLastHotKey()
     HotKeyToMplayer(HotKey)
   Endif
   
   IgnoreMouse = True
   guidragging = False
   
-  'move the mouse so that a mousemove event is triggered inside the videoarea.
-  'this avoids stuck mouse buttons (gambas bug)
-  mx = mouse.screenx
-  my = mouse.screeny
-  mouse.Move(mx + 1, my) 
-  mouse.Move(mx, my)
+  ' 'move the mouse so that a mousemove event is triggered inside the videoarea.
+  ' 'this avoids stuck mouse buttons (gambas bug)
+  ' mx = mouse.screenx
+  ' my = mouse.screeny
+  ' mouse.Move(mx + 1, my) 
+  ' mouse.Move(mx, my)
   
 End
 
@@ -5260,7 +5261,9 @@ Public Sub VideoAreaGroup_MouseWheel()
   
   Dim HotKey As String
   If Not mplayer.ProcessRunningOvr() Then Return
-  HotKey = HotKeyGrab.GetMouse(True)
+  'HotKey = HotKeyGrab.GetMouse(True)
+  HotKeysHelper.MouseWheel()
+  Hotkey = HotKeysHelper.GetLastHotKey()
   IgnoreMouse = True
   HotKeyToMplayer(HotKey)
 End
@@ -7222,36 +7225,19 @@ Public Function Requote(toquote As String) As String
 End
 
 Public Sub MenuShowLog_Click()
-  
   LogWindow.show
-  
+
 End
 
 Public VolumeFocused As Boolean = False
 
 Public Sub VideoAreaGroup_Enter()
   If mplayer.ProcessRunningOvr() Then fmain.VideoBox.setfocus
-  ' If Lower(mplayer.getP("fullpath")) Like "dvd://menu*" Then
-  '   timerdvd.enabled = True
-  ' Else
-  '   timerdvd.enabled = False
-  ' Endif
 End
 
-'Public Sub VideoAreaGroup_GotFocus()
-  'VideoAreaGroup_Enter()
-'End
-
-' Public Sub VideoAreaGroup_Leave()
-'   
-'   timerdvd.enabled = False
-'   
-' End
 
 Public Sub ShowVideoEq_Click()
-  
   VideoEqualizer.visible = Not (VideoEqualizer.visible)
-  
 End
 
 Public Sub ShowAudioEq_Click()
@@ -11928,4 +11914,10 @@ Public Sub TogglePls_Click()
       Else
     timerqueue.stop
   Endif
+End
+
+Public Sub VideoAreaGroup_KeyRelease()
+
+    HotKeysHelper.keyRelease()
+
 End
