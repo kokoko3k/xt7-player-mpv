@@ -182,6 +182,8 @@ Private Sub GetSpecialKey(keycode As Integer) As String
        Return "Up"
     Case Key.Del
        Return "Del"
+    Case Key.BackSpace
+       Return "BackSpace"
     Case Else
         Return ""
   End Select
