@@ -5171,9 +5171,7 @@ Public Sub VideoAreaGroup_MouseDown()
   mouseleft = mouse.left
   If FMain.mplayer.ProcessRunningOvr() Then fmain.VideoBox.setfocus 'needed to get keypress events
   IgnoreMouse = False
-
   HotKeysHelper.MouseDown()
-
 End
 
 Public Sub PanelNowNextShow()
@@ -5248,13 +5246,6 @@ Public Sub VideoAreaGroup_MouseUp()
   IgnoreMouse = True
   guidragging = False
   
-  ' 'move the mouse so that a mousemove event is triggered inside the videoarea.
-  ' 'this avoids stuck mouse buttons (gambas bug)
-  ' mx = mouse.screenx
-  ' my = mouse.screeny
-  ' mouse.Move(mx + 1, my) 
-  ' mouse.Move(mx, my)
-  
 End
 
 Public Sub VideoAreaGroup_MouseWheel()
@@ -5271,17 +5262,26 @@ End
 '/HotKeys Handling *******************************************
 
 Public Sub VideoAreaGroup_DblClick()
-
   Dim timenow As Float = Timer
-  If mouseleft And Not TagEditMode Then 
-    If (timenow - LastClickTime) < 0.25 Then 
-      Wait 0.1
-      mplayer.Send("pause") ' keep the pausing state when switching fullscreen mode
-      global.myDebug(timenow - LastClickTime)
-    Endif
-    FullScreenSwitch()
-  Endif
+  Dim hotkey As String
 
+  If hotkeys.dblclick_fs_checkbox.value Then
+    If mouseleft And Not TagEditMode Then 
+      If (timenow - LastClickTime) < 0.25 Then 
+        Wait 0.1
+        mplayer.Send("pause") ' keep the pausing state when switching fullscreen mode
+        global.myDebug(timenow - LastClickTime)
+      Endif
+      FullScreenSwitch()
+    Endif
+        Else 
+      'handle special case when dblclicking and not going fullscreen.
+      'gambas does not generate mouseup nor mousedown events if doubleclicking
+      HotKeysHelper.MouseDown()
+      hotkey = HotKeysHelper.GetLastHotKey()
+      HotKeyToMplayer(HotKey)
+    Endif
+Debug
 End
 
 Public Sub GeneralOptionsMenu_Click()

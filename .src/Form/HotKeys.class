@@ -387,12 +387,18 @@ End
 Public Sub SaveHotKeys(ProfileName As String)
   'DIM filename AS String = ProfileName & "." & "HotKeys.txt"
   Dim filename As String = ProfileName & ".profile/" & "HotKeys.txt"
+  Dim filename_fs As String = ProfileName & ".profile/" & "HotKeys_fs.txt"
   Dim globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
   Dim xbindkeysfilename As String = ProfileName & ".profile/" & "xbindkeysrc"
   Dim HotFile As File
   Dim globalhotfile As File
-  
   Dim C, R As Integer
+
+  If dblclick_fs_checkbox.value Then
+    File.Save(filename_fs, "TRUE")
+      Else
+    File.Save(filename_fs, "FALSE")
+  Endif
 
   If Not Exist(file.Dir(filename), True) Then
     Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(filename)))))
@@ -446,12 +452,20 @@ End
 
 Public Sub LoadHotKeys(ProfileName As String)
   Dim filename As String = ProfileName & ".profile/" & "HotKeys.txt"
+  Dim filename_fs As String = ProfileName & ".profile/" & "HotKeys_fs.txt"
   Dim Globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
   Dim xbindkeysfilename As String = ProfileName & ".profile/" & "xbindkeysrc"
   Dim HotFile As File
   Dim GlobalHotFile As File
   
   Dim C, R, w1, w2 As Integer
+  
+  If Exist(filename_fs) Then
+    Try dblclick_fs_checkbox.value = (File.Load(filename_fs) = "TRUE")
+      Else
+    dblclick_fs_checkbox.value = True 'default value
+  Endif
+  
   
   DefaultFill()
   For c = 0 To HotKeysGrid.Columns.Count - 1
@@ -496,7 +510,7 @@ Public Sub LoadHotKeys(ProfileName As String)
       Close #GlobalHotFile
     Endif
    Endif
-    RestartXbindKeys(xbindkeysfilename)
+   RestartXbindKeys(xbindkeysfilename)
 End
 
 Public Sub RestartXbindKeys(xbindkeysfilename As String)

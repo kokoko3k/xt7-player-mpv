@@ -45,11 +45,25 @@
         Header = GridView.Both
       }
     }
+    { Separator1 Separator
+      MoveScaled(2,37,56,1)
+    }
+    { Panel3 Panel
+      MoveScaled(1,39,58,2)
+      Arrangement = Arrange.Fill
+      AutoResize = True
+      Margin = True
+      { dblclick_fs_checkbox CheckBox
+        MoveScaled(0,0,31,1)
+        AutoResize = True
+        Text = ("DoubleClick to switch fullscreen state")
+        Value = CheckBox.True
+      }
+    }
     { HBox1 HBox
       MoveScaled(0,42,59,6)
       Spacing = True
       Margin = True
-      Padding = 6
       { Button3 Button
         MoveScaled(0,1,19,4)
         AutoResize = True
