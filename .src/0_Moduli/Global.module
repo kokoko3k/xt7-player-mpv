@@ -123,7 +123,7 @@ Public Sub myDebug(Optional a As String = "", Optional b As String = "", Optiona
   If Not arg_debug Then Return
   Try caller = System.Backtrace[1]
   Print caller & ": " & a, b, c, d, e, f, g, h, i, j
-  Print 
+  'Print 
 End
 
 
