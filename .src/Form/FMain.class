@@ -3317,8 +3317,9 @@ End
 
 Public Sub MenuAddAudio_Click()
   Dim aTrack As String
+  Stop
   MyDialog.filter = [global.audiofilter & global.UncommonAudiofilters, ("Audio files")]
-  Try MyDialog.path = File.Dir(mplayer.getP("FullPath"))
+  Try MyDialog.path = "'" & File.Dir(mplayer.getP("FullPath")) & "'"
   MyDialog.OpenFile()
   aTrack = MyDialog.path
   If aTrack <> "" Then
@@ -4028,7 +4029,6 @@ Public Sub ShowVolBtn_Mouseup()
   Last.w = last_w
     CostrainFormSizes()
 End
-
 Public Sub ShowVolBtn_MouseWheel()
   If Mouse.delta > 0 Then
     volume_add("+2")
