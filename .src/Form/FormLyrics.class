@@ -214,7 +214,8 @@ Public Sub NextBTN_MouseDown()
     'webcontent = Replace(webcontent, "�", " ")
     global.myDebug(myurl)
 
-    textlabel1.text = webcontent
+    Try textlabel1.text = webcontent
+    If Error Then Return
     TextLabel1.adjust
     panel1.Scroll(0, 0)
     Me.mouse = Mouse.normal
