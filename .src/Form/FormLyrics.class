@@ -163,7 +163,7 @@ Private Sub GetAndShow(artist As String, song As String)
       Endif
     Endif
   Next
-  Me.mouse = Mouse.normal
+  Try Me.mouse = Mouse.normal
   'move bad domains to the end and *lyric* to the begin
   For Each blackdomain In Split(baddomains, ";")
     For i = 0 To urls.max
