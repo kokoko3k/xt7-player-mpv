@@ -494,6 +494,7 @@ Private Function getP_time(aKey As String) As Float
 End
 
 
+
 Public Function getP(aKey As String, Optional unanswered_string As String) As Variant
   'get a lowercase property from a key
   'if the key is not found, then return null, or return unanswered_string if specified.
@@ -2348,3 +2349,7 @@ Public Function get_chapters(Optional cached As Boolean = False) As Chapter[]
   Return chapter_list
 End
 
+
+Public Function audio_add(filename As String)
+  mpv_command(["audio-add", filename])
+End

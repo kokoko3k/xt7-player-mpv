@@ -1825,18 +1825,27 @@ Public Function FillStreamsMenu()
   ClearStreamsMenu()
 
 
-    
   'fill audio streams menu
   If Streamsaudiomenu.enabled Then
     For i = 0 To mplayer.getP("audiotracks").count - 1
       AudioMenu = New Menu(Streamsaudiomenu) As "Menuswitchaudio"
       AudioMenu.name = "AudioMenuID" & i
       AudioMenu.caption = mplayer.getP("audiotracks")[i]
+      AudioMenu.picture = Picture["icon:/small/audio"]
     Next 'i
   Endif
+  
+  'allow to load a track from disk
+  Streamsaudiomenu.enabled = True
+  AudioMenu = New Menu(Streamsaudiomenu) 'separator
+  AudioMenu.caption = "" 'separator
+  AudioMenu = New Menu(Streamsaudiomenu) As "MenuAddAudio"
+  AudioMenu.name = "MenuAddAudio"
+  AudioMenu.caption = ("Add an external audio track")
+  AudioMenu.picture = Picture["icon:/small/add"]
+
+
   'fill sub streams menu
-
-
   'add submenutree to select primary subtitle
   PrimaryMenu = New Menu(Streamssubtitlesmenu) As "MenuPrimarySub"
   PrimaryMenu.name = "SecondarySub"
@@ -1907,6 +1916,9 @@ Public Function FillStreamsMenu()
   fakemenu.enabled = False
 
 End
+
+
+
 
 
 
@@ -3306,7 +3318,19 @@ Public Sub sub_add(subfile As String)
     FillStreamsMenu()
 End
 
-
+Public Sub MenuAddAudio_Click()
+  Dim aTrack As String
+  MyDialog.filter = [global.audiofilter & global.UncommonAudiofilters, ("Audio files")]
+  Try MyDialog.path = File.Dir(mplayer.getP("FullPath"))
+  MyDialog.OpenFile()
+  aTrack = MyDialog.path
+  If aTrack <> "" Then
+    mplayer.ShowText(("Audio track:") & ": " & File.Name(aTrack))
+    mplayer.audio_add(aTrack)
+    mplayer.FillMultitracks()
+    FillStreamsMenu()
+  Endif
+End
 
 Public Sub VideoAreaGroup_Drop()
   
