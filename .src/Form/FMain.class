@@ -10778,6 +10778,7 @@ Public Sub fillplaylistcombo()
   Dim previous As String = ""
   Try previous = PlaylistsCombo.text
   Object.Lock(playlistscombo)
+  playlistscombo.Clear
   For Each aplaylist In Dir(playlistsfullpath, "*.xpl")
     aplaylist = Replace(aplaylist, ".xpl", "")
     If PlaylistsCombo.Find(aplaylist) = -1 Then PlaylistsCombo.Add(aplaylist)
