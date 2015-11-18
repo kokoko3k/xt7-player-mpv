@@ -2894,10 +2894,17 @@ Public Sub InitTimerQueue()
   If TimerQueue_update_duration() Then timerqueue.start
 End
 
-Private TIMERQUEUE_SEEKING As Boolean = False
 Public Sub mplayer_seeking()
-  TIMERQUEUE_SEEKING = True
-  timerqueue.Trigger
+  If Rand(0, 1) > 0.9 Then UpdateSeekSlider()
+  If timerqueue.enabled Then
+    While mplayer.get_property_mpv("seeking") = "yes"
+      Wait 0.1
+    Wend
+      'wait a while to allow seeking to complete (it should be not needed, but just in case...)
+      timerqueue.Stop
+      timerqueue.delay = 1000
+      timerqueue.start
+  Endif
 End
 
 
@@ -2910,17 +2917,7 @@ Public Sub TimerQueue_Timer()
   Dim preload_time As Integer 'preload next item # seconds before the previous will end.
   Dim preload_KB As Integer 'whom many KB to preload max
   Dim playtime_remaining As Float = 0
-  If TIMERQUEUE_SEEKING Then
-    'TIMERQUEUE_SEEKING indicates that a seek has just been requested
-    Try t0 = CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos"))))
-    Repeat 
-      Wait 0.5
-      global.myDebug("waiting a while to allow mpv to seek before updating timerqueue")
-      Try t1 = CStr(CInt(CFloat(mplayer.get_property_mpv("=time-pos", True, 2))))
-    Until (t0 <> t1) Or (Timer() - timer0 > 1)
 
-    TIMERQUEUE_SEEKING = False
-  Endif
   If (Not TimerQueue_update_duration()) Then timerqueue.stop
   'If timerqueue.delay <= 1000 Then
   Try playtime_remaining = CFloat(mplayer.get_property_mpv("=playtime-remaining"))
@@ -2928,7 +2925,7 @@ Public Sub TimerQueue_Timer()
     global.myDebug("Error retriving playtime_remaining")
     Return
   Endif
-  
+
   If playtime_remaining <= prequeue_time Then
     If (togglepls.value = True) Then
       queue_next()
@@ -3368,7 +3365,6 @@ End
 Public Sub UpdateSeekSlider(Optional percent_pos As String = "-1")
   'Get the current playing time and update seek bar accordingly
   Dim totaltime, actualtime As Float
-  
   If percent_pos = "-1" Then 
     Try percent_pos = mplayer.getP("percent-pos")
     If Error Then Return
