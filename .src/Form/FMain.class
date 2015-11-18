@@ -6355,6 +6355,7 @@ Private Sub FromLibraryToPlaylist()
   Dim r As Integer
   For r = 0 To LibraryGrid.Rows.count - 1
     If LibraryGrid.Rows[r].Selected Then CopyRow(MyLibrary, r, MyPlaylist)
+    Wait
   Next 'r
   UpdateSearchResults(MyPlaylist, PlaylistGrid, fmain.FullyLoaded, SearchfieldPLS.text)
 
@@ -9205,7 +9206,7 @@ Public Sub ItemsFromBrowseTo(theplaylist As Playlistclass, thegrid As Gridview, 
       StatType = Stat(selecteditem, True).type
       If StatType = gb.file Then
         theplaylist.AddFile(thegrid, SelectedItem, False, False)
-        UpdateSearchResults(theplaylist, thegrid, filterstring)
+        'UpdateSearchResults(theplaylist, thegrid, filterstring)
       Else If StatType = gb.Directory Then
         If MyQuestion.Ask(("Are you sure you want to recursively add this directory?\n") & selecteditem, ("Add"), ("Cancel")) = 1 Then
           thegrid.enabled = False
@@ -9214,11 +9215,13 @@ Public Sub ItemsFromBrowseTo(theplaylist As Playlistclass, thegrid As Gridview, 
           theplaylist.AddDir(thegrid, selecteditem, nulllistbox)
           Fileview1.enabled = True
           thegrid.enabled = True
-          UpdateSearchResults(theplaylist, thegrid, filterstring)
+          'UpdateSearchResults(theplaylist, thegrid, filterstring)
         Endif
       Endif
     Endif
+    Wait
   Next 'selecteditem
+  UpdateSearchResults(theplaylist, thegrid, filterstring)
   global.myDebug(Timer() - t1)
 End
 

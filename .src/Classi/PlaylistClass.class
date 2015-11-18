@@ -848,6 +848,7 @@ Public Sub AddDir(LibraryGrid As Gridview, DirToAdd As String, ExcludeList As Li
     If MyExist Then
       If Stat(DirToAdd & filename, True).Type = gb.file Then
           AddFile(LibraryGrid, DirToAdd & filename, Not (quickmode), False)
+          Wait
           If Global.LSyncing Then fmain.WaitPanel.text = Global.LSyncingMessage & "<br>" & dirtoadd
         Else If Stat(DirToAdd & filename, True).Type = gb.Directory Then
            Try AddDir(LibraryGrid, DirToAdd & filename, ExcludeList)
