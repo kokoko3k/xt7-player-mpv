@@ -80,6 +80,8 @@ End
 
 Private Sub GetSpecialKey(keycode As Integer) As String
   Select Case keycode
+    Case Key.Esc
+      Return "Esc"
     Case key.BackTab
        Return "BackTab"
     Case key.CapsLock
