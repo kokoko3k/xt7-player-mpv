@@ -12,3 +12,7 @@ Public Sub Form_Leave()
    FMain.mouseonfsform = False
 
 End
+
+Public Sub Form_Close()
+  FMain.ButtonStop_Click()
+End

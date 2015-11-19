@@ -272,6 +272,8 @@ Public Sub InitTrayIcon()
 End
 
 Public Sub Form_Open()
+
+
   SetFlexSpaceVisibility(False)
   'init dynagui toolbar objects
   DynaGuiTools.AllowedContainers = ["MainToolbar"] ', "SliderBox"]
@@ -1343,7 +1345,9 @@ End
 Public Sub Form_Close()
   Dim MySettings As New SettingsClass
   Dim t0 As Float = Timer()
-
+  
+  ButtonStop_Click()
+  
   Try Shell "rm -R " & global.ConfPath & "/" & "thumbcontainer.* &>/dev/null"
   StartClass.ProcessSignals(False)
   If buttoncapture.value Then StopDumping(generaloptions.dvbfinaldir.text)
@@ -1700,6 +1704,12 @@ End
 Public Sub ButtonStop_Click()
   ' Return
   ' Dim a As Integer = 1 / 0
+  
+  'stop timers as soon as possible
+    Try mousehider.stop
+    Try TimerFullScreen.Stop
+    Try mplayer.event_loop.stop
+  
   Try global.Preload_file_bg_stop()
   timer_runtime_infos.stop
   timerqueue.stop
