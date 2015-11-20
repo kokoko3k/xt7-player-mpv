@@ -1709,10 +1709,11 @@ Public Sub ButtonStop_Click()
     Try mousehider.stop
     Try TimerFullScreen.Stop
     Try mplayer.event_loop.stop
+    Try DelayTimer.stop
   
   Try global.Preload_file_bg_stop()
-  timer_runtime_infos.stop
-  timerqueue.stop
+  Try timer_runtime_infos.stop()
+  Try timerqueue.stop()
   switchresBTN.enabled = True
   global.mouse_wait(fmain, False)
   InitABLoop()
