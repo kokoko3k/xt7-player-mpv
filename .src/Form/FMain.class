@@ -3518,6 +3518,55 @@ End
 
 Private DOHACKIMAGE As Boolean = True
 
+Public Sub UpdateCacheDuration(cache_percent As String)
+  
+  Dim TotalKBPS As Float
+  Dim filesize_KB As Float = -1
+  Dim Duration_sec As Float
+  Dim cache_duration As Integer
+  Dim cache_size_KB As Float
+  Dim total_cache_KB As Integer
+  Dim stream_pos_KB As Float
+  Dim time_pos As Float
+
+Stop
+  Try total_cache_KB = CInt(mplayer.get_property_mpv("=cache-size", False, 1, True))
+  If Error Then Return
+
+  Try cache_size_KB = total_cache_KB * (cache_percent / 100)
+  If Error Then Return
+
+  'è nota la dimensione del file?
+  Try filesize_KB = CFloat(Stat(mplayer.get_property_mpv("FullPath", False, 1, True), True).size) / 1024
+  If Error Then
+    'se non è nota ricava altri dati:
+    global.myDebug(mplayer.get_property_mpv("=stream-pos", True, 1, False))
+    Try stream_pos_KB = CFloat(CInt(mplayer.get_property_mpv("=stream-pos", True, 1, False)) / 1024)
+    If Error Then Return
+    Try time_pos = CFloat(mplayer.get_property_mpv("=time-pos", False, 1, True))
+    If Error Then Return
+    Try TotalKBPS = stream_pos_KB / time_pos
+    If Error Then Return
+      Else
+    'se è nota la dimensione del file, il calcolo è semplice:
+    Try Duration_sec = CFloat(mplayer.get_property_mpv("=duration", False, 1, True))
+    If Error Then Return
+
+    Try TotalKBPS = filesize_KB / Duration_sec
+    If Error Then Return
+  Endif
+
+
+
+
+  cache_duration = CInt(cache_size_KB / TotalKBPS)
+  If Error Then Return
+
+  global.myDebug("Cache duration left: " & cache_duration & " seconds.")
+
+End
+
+
 
 Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As String)
   'Print the current filename and playing time on the status bar
@@ -3648,6 +3697,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
     Case "cache"
       If data_new <> mplayer.unavailable_str Then CACHEVALUE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
+      UpdateCacheDuration(data_new)
   
     Case Like "=duration"
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)

@@ -225,24 +225,27 @@ Private Function MidC(s As String, a As String, Optional b As String) As String
 End
 
 Public Sub playerprocess_read(Optional injected As String = "")
-  Dim sBuf As String, question, answer As String
-  Try Read #playerprocess, sBuf, -4096
+  Dim sBufs, sBuf As String
+  Dim question, answer As String
+  Try Read #playerprocess, sBufs, -4096
   'global.myDebug(sbuf)
-    ' If sBuf Like "*playlist/0*" Then
-    '   Stop
-    ' Endif
+     If sBufs Like "*stream*" Then
+       Stop
+     Endif
 
-  If sBuf Like "ANS_*|*" Then
-    For Each sBuf In Split(sbuf, "\n", "", True)
-      question = MidC(sBuf, "_", "|")
-      answer = (MidC(sBuf, "|"))
-      ' If Left(question, 1) = "=" Then 
-      '   question = Right(question, -1)
-      ' Endif
-      Try prop.Remove(question)
-      setP(question, answer)
-      setP_time(question, Timer())
-      'Debug question, "=", getP(question)
+  If sBufs Like "*ANS_*|*" Then
+    For Each sBuf In Split(sbufs, "\n", "", True)
+      If sBuf Like "*ANS_*|*" Then
+        question = MidC(sBuf, "_", "|")
+        answer = (MidC(sBuf, "|"))
+        ' If Left(question, 1) = "=" Then 
+        '   question = Right(question, -1)
+        ' Endif
+        Try prop.Remove(question)
+        setP(question, answer)
+        setP_time(question, Timer())
+        'Debug question, "=", getP(question)
+      Endif
     Next 'sbuf
       Else
     If sbuf Like "\\[*\\] *" Then
