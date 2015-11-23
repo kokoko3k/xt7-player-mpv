@@ -3518,8 +3518,8 @@ End
 
 Private DOHACKIMAGE As Boolean = True
 
-Public Sub UpdateCacheDuration(cache_percent As String)
-  
+Public Function GetCacheDuration_secs(cache_percent As String) As Integer
+
   Dim TotalKBPS As Float
   Dim filesize_KB As Float = -1
   Dim Duration_sec As Float
@@ -3529,7 +3529,6 @@ Public Sub UpdateCacheDuration(cache_percent As String)
   Dim stream_pos_KB As Float
   Dim time_pos As Float
 
-Stop
   Try total_cache_KB = CInt(mplayer.get_property_mpv("=cache-size", False, 1, True))
   If Error Then Return
 
@@ -3546,6 +3545,7 @@ Stop
     Try time_pos = CFloat(mplayer.get_property_mpv("=time-pos", False, 1, True))
     If Error Then Return
     Try TotalKBPS = stream_pos_KB / time_pos
+
     If Error Then Return
       Else
     'se è nota la dimensione del file, il calcolo è semplice:
@@ -3556,13 +3556,12 @@ Stop
     If Error Then Return
   Endif
 
-
-
-
   cache_duration = CInt(cache_size_KB / TotalKBPS)
   If Error Then Return
 
   global.myDebug("Cache duration left: " & cache_duration & " seconds.")
+
+  Return cache_duration
 
 End
 
@@ -3575,6 +3574,8 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   Dim PreText As String = ""
   Dim PostText As String
   Dim SmallWindow As Boolean = False
+  Dim cache_duration_secs As Integer
+  Dim fmain_caption As String
 
   'If Not mplayer.ProcessRunningOvr() Then Return 
 
@@ -3607,9 +3608,11 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   Endif
   'If Trim(pretext) <> "" Then
   'If mplayer.maxcache = "" Then Return
-  fmain.caption = pretext
-  
+  fmain_caption = pretext
+
+
   If cachevalue <> "" Then
+    cache_duration_secs = GetCacheDuration_secs(cachevalue)
     Try cache_size = mplayer.getP("=cache-size")
     If cache_size = mplayer.unavailable_str Then cache_size = "0"
     If cache_size = "" Then cache_size = mplayer.get_property_mpv("=cache-size")
@@ -3621,14 +3624,19 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
       MaxCacheHuman = cache_size & "KB"
     Endif
     If maxcachehuman <> "0KB" Then 
-      fmain.caption &= " - [ cache: " & cachevalue & "%" & (" of: ") & MaxCacheHuman & " ]"
+      fmain_caption &= " - [ cache: " & cachevalue & "%" & (" of: ") & MaxCacheHuman 
     Else
-      fmain.caption &= " [ cache: " & cachevalue & "% (Auto) ]"
+      fmain_caption &= " [ cache: " & cachevalue & "% (Auto)"
     Endif
-    fmain.caption &= " - " & global.AppName
+    If cache_duration_secs <> "" Then fmain_caption &= " (" & cache_duration_secs & "s)" & " ]"
+
+    fmain_caption &= " - " & global.AppName
     cachebar.w = (cachevalue / 100) * Rightsidepanel.w
     prevcache = cachevalue
   Endif
+  
+  
+  fmain.caption = fmain_caption
   
   StatusLabelLeft.text = " " & Pretext
   If (Not volumefocused) Then 
@@ -3697,7 +3705,6 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
     Case "cache"
       If data_new <> mplayer.unavailable_str Then CACHEVALUE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
-      UpdateCacheDuration(data_new)
   
     Case Like "=duration"
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)

@@ -229,9 +229,9 @@ Public Sub playerprocess_read(Optional injected As String = "")
   Dim question, answer As String
   Try Read #playerprocess, sBufs, -4096
   'global.myDebug(sbuf)
-     If sBufs Like "*stream*" Then
-       Stop
-     Endif
+     ' If sBufs Like "*stream*" Then
+     '   Stop
+     ' Endif
 
   If sBufs Like "*ANS_*|*" Then
     For Each sBuf In Split(sbufs, "\n", "", True)
