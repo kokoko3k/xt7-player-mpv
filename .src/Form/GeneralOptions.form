@@ -670,17 +670,17 @@
         }
         { NoParse56 HBox
           MoveScaled(1,15,50,4)
-          ToolTip = ("When using autoadvancing feature, this may help\nto have smoother transitions (gapless playback)\non slow media like mounted network shares or slow usb sticks.\nWorks only for files, not uries.\n\nNB: it uses the VFS Linux cache, so it could be completely useless\nor even bad for filesystems that do not make use of it.\nPlease, refer to the filesystem implementation.\n\nEg od famous fuse filesystems:\n* sshfs uses vfs cache by default\n* curlftpfs does not.")
+          ToolTip = ("When using autoadvancing feature, this may help\nto have smoother transitions (gapless playback)\non slow media like mounted network shares or slow usb sticks.\nWorks only for files, not uries.\n\nNB: it uses the VFS Linux cache, so it could be completely useless\nor even bad for filesystems that do not make use of it.\nPlease, refer to the filesystem implementation.\n\nExamples of popular fuse filesystems:\n* sshfs uses vfs cache by default\n* curlftpfs does not.")
           Spacing = True
           { PreloadCheckbox CheckBox notifyobj
             Name = "PreloadCheckbox"
-            MoveScaled(1,0,10,4)
+            MoveScaled(1,0,8,4)
             AutoResize = True
             Text = ("Preload next file at most for")
           }
           { PreloadKBbox SpinBox notifyobj
             Name = "PreloadKBbox"
-            MoveScaled(11,0,11,4)
+            MoveScaled(10,0,11,4)
             Expand = True
             MinValue = 100
             MaxValue = 100000
@@ -688,20 +688,26 @@
           }
           { Label6 Label labelcheck
             Name = "Label6"
-            MoveScaled(22,0,6,4)
+            MoveScaled(21,0,6,4)
             AutoResize = True
             Text = ("KBytes")
           }
+          { Label4 Label labelcheck
+            Name = "Label4"
+            MoveScaled(27,0,6,4)
+            AutoResize = True
+            Text = ("and")
+          }
           { PreloadSecbox SpinBox notifyobj
             Name = "PreloadSecbox"
-            MoveScaled(29,0,10,4)
+            MoveScaled(33,0,10,4)
             Expand = True
             MinValue = 1
             Value = 10
           }
           { Label8 Label labelcheck
             Name = "Label8"
-            MoveScaled(40,0,7,4)
+            MoveScaled(43,0,7,4)
             AutoResize = True
             Text = ("seconds")
           }

@@ -3452,8 +3452,6 @@ Public subnotset As Boolean = True
 
 Private alreadypaused As Boolean = False
 
-Private PrevCache As String = ""
-
 Private eiNow As Eventinfo
 Private eiNext As EventInfo
 Private PrevEiNow As EventInfo
@@ -3566,6 +3564,8 @@ Public Function GetCacheDuration_secs(cache_percent As String) As Integer
 End
 
 
+Private OLD_CACHEVALUE As Integer
+Private OLD_CACHE_MSG As String
 
 Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As String)
   'Print the current filename and playing time on the status bar
@@ -3610,31 +3610,41 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   'If mplayer.maxcache = "" Then Return
   fmain_caption = pretext
 
-
+  
   If cachevalue <> "" Then
-    cache_duration_secs = GetCacheDuration_secs(cachevalue)
-    Try cache_size = mplayer.getP("=cache-size")
-    If cache_size = mplayer.unavailable_str Then cache_size = "0"
-    If cache_size = "" Then cache_size = mplayer.get_property_mpv("=cache-size")
-    If cache_size = mplayer.unavailable_str Then cache_size = "0"
-    If cache_size = "" Then cache_size = "0"
-    If CInt(cache_size) >= 1024 Then 
-      Try maxcachehuman = Format$(((CFloat(cache_size) / 1024)), "##.#") & "MB"
-    Else
-      MaxCacheHuman = cache_size & "KB"
+    If cachevalue <> OLD_CACHEVALUE Then
+      cache_duration_secs = GetCacheDuration_secs(cachevalue)
+      Try cache_size = mplayer.getP("=cache-size")
+      If cache_size = mplayer.unavailable_str Then cache_size = "0"
+      If cache_size = "" Then cache_size = mplayer.get_property_mpv("=cache-size")
+      If cache_size = mplayer.unavailable_str Then cache_size = "0"
+      If cache_size = "" Then cache_size = "0"
+      If CInt(cache_size) >= 1024 Then 
+        Try maxcachehuman = Format$(((CFloat(cache_size) / 1024)), "##.#") & "MB"
+      Else
+        MaxCacheHuman = cache_size & "KB"
+      Endif
+      If maxcachehuman <> "0KB" Then 
+        fmain_caption &= " - [ cache: " & cachevalue & "%" & (" of: ") & MaxCacheHuman 
+      Else
+        fmain_caption &= " [ cache: " & cachevalue & "% (Auto)"
+      Endif
+      If cache_duration_secs <> "" Then fmain_caption &= " (" & cache_duration_secs & "s)" & " ]"
+  
+      fmain_caption &= " - " & global.AppName
+      OLD_CACHE_MSG = fmain_caption
+      OLD_CACHEVALUE = cachevalue
+      cachebar.w = (OLD_CACHEVALUE / 100) * Rightsidepanel.w
+      
+        Else
+      'same cachevalue, just repaint old caption
+      fmain_caption = OLD_CACHE_MSG
     Endif
-    If maxcachehuman <> "0KB" Then 
-      fmain_caption &= " - [ cache: " & cachevalue & "%" & (" of: ") & MaxCacheHuman 
-    Else
-      fmain_caption &= " [ cache: " & cachevalue & "% (Auto)"
-    Endif
-    If cache_duration_secs <> "" Then fmain_caption &= " (" & cache_duration_secs & "s)" & " ]"
-
-    fmain_caption &= " - " & global.AppName
-    cachebar.w = (cachevalue / 100) * Rightsidepanel.w
-    prevcache = cachevalue
   Endif
   
+
+  
+
   
   fmain.caption = fmain_caption
   
