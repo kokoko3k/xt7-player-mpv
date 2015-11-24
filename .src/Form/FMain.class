@@ -886,8 +886,8 @@ Public Sub SetStyle_early()
   ' 
   shadeup.visible = False
 
-  cachebar.w = 0
-  cachebar.h = (fmain.font.textHeight("iJ") Div 4)
+  'cachebar removed: cachebar.w = 0
+  'cachebar removed: cachebar.h = (fmain.font.textHeight("iJ") Div 4)
   
   'Set font size AND stile OF the whole form; beware the AudioForm!
 
@@ -3205,13 +3205,13 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
         If audioform.AudioPanel.parent <> outerbox Then audioform.AudioPanel.Reparent(outerbox)
         BottomVbox.raise() ' Reparent(rightsidepanel)
         bottomvbox.show
-        If cachebar.parent <> Rightsidepanel Then cachebar.Reparent(rightsidepanel)
-        If fsform.visible Then 
-          cachebar.Move(0, audioform.AudioPanel.h - cachebar.h, 0)
-            Else
-          cachebar.Move(0, audioform.AudioPanel.h + toolbarbackground.h - cachebar.h, 0)
-        Endif
-        'cachebar.raise
+        'cachebar removed: If cachebar.parent <> Rightsidepanel Then cachebar.Reparent(rightsidepanel)
+        'cachebar removed: If fsform.visible Then 
+          'cachebar removed: cachebar.Move(0, audioform.AudioPanel.h - cachebar.h, 0)
+            'cachebar removed: Else
+          'cachebar removed: cachebar.Move(0, audioform.AudioPanel.h + toolbarbackground.h - cachebar.h, 0)
+        'cachebar removed: Endif
+
       Endif
     Endif
     If Not samecover Then
@@ -3235,12 +3235,12 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
     fmain.OuterBox.ignore = False
     OuterBox.visible = True
     If audioform.AudioPanel.parent.name <> "AudioForm" Then audioform.AudioPanel.Reparent(audioform)
-    If cachebar.parent <> rightsidepanel Then cachebar.Reparent(rightsidepanel)
-    If fsform.visible Then 
-      cachebar.Move(0, outerbox.h - cachebar.h, 0)
-        Else
-      cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h, 0)
-    Endif
+    'cachebar removed: If cachebar.parent <> rightsidepanel Then cachebar.Reparent(rightsidepanel)
+    'cachebar removed: If fsform.visible Then 
+      'cachebar removed: cachebar.Move(0, outerbox.h - cachebar.h, 0)
+        'cachebar removed: Else
+      'cachebar removed: cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h, 0)
+    'cachebar removed: En'cachebar removed: dif
     audioform.refresh
   Endif
 End
@@ -3634,7 +3634,7 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
       fmain_caption &= " - " & global.AppName
       OLD_CACHE_MSG = fmain_caption
       OLD_CACHEVALUE = cachevalue
-      cachebar.w = (OLD_CACHEVALUE / 100) * Rightsidepanel.w
+      'cachebar removed: cachebar.w = (OLD_CACHEVALUE / 100) * Rightsidepanel.w
       
         Else
       'same cachevalue, just repaint old caption
@@ -3749,7 +3749,7 @@ Public Sub Mplayer_mykill(return_value As Integer)
   Dim playlistfinished As Boolean = False
   Fmain.caption = global.AppName
   Stopmthumbler()
-  cachebar.w = 0
+  'cachebar removed cachebar.w = 0
   ButtonPlay.picture = Picture["media-playback-start.png"]
   SubNotSet = True
   If (Not mplayer.user_stopped) And (Shutdown = "MEDIA") Then CountDown.engage
@@ -4405,7 +4405,7 @@ Public Sub SwitchToFS()
   Object.Lock(hsplit1)
   winmax = fmain.Maximized
   fmain.hide
-  cachebar.hide
+  'cachebar removed: cachebar.hide
   If HSplit1.Layout.count > 0 Then
     If Not (Hsplit1.Layout[0] = 0) Then SplitterLayout = Hsplit1.Layout
   Endif
@@ -4446,7 +4446,7 @@ Public Sub SwitchToFS()
   bottomvbox.Hide
   If BottomVbox.parent <> rightsidepanel Then BottomVbox.Reparent(rightsidepanel)
   toolbarbackground.hide
-  cachebar.raise
+  'cachebar removed: cachebar.raise
   Wait '<-this wait has to come just after ConstrainFormSizes()
   
   'start the timer 
@@ -4547,11 +4547,11 @@ Public Sub SwitchToWindow()
   Wait 
   Maintoolbar.show
   Wait 
-  If cachebar.parent <> rightsidepanel Then cachebar.Reparent(rightsidepanel)
-  cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h)
-  cachebar.raise
-  cachebar.show
-  Wait
+  'cachebar removed: If cachebar.parent <> rightsidepanel Then cachebar.Reparent(rightsidepanel)
+  'cachebar removed: cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h)
+  'cachebar removed: cachebar.raise
+  'cachebar removed: cachebar.show
+  'cachebar removed: wait
   fmain.Stacking = Window.below
   fmain.Maximized = winmax
   fmain.show  
@@ -4652,8 +4652,8 @@ Public Sub TimerFullScreen_Timer()
     bottomvbox.y = rightsidepanel.h - bottomvbox.h
     Audioform.AudioPanel.ignore = True
     BottomVbox.visible = True
-    cachebar.Move(0, bottomvbox.y - cachebar.h)
-    cachebar.show
+    'cachebar removed: cachebar.Move(0, bottomvbox.y - cachebar.h)
+    'cachebar removed: cachebar.show
   Endif
   
   If AttachZone2 Then
@@ -4677,7 +4677,7 @@ Public Sub TimerFullScreen_Timer()
   If ReleaseZone1 And Not (thumblebox.visible) Then
     BottomVbox.ignore = False
     BottomVbox.visible = False
-    cachebar.hide
+    'cachebar removed: cachebar.hide
     Audioform.AudioPanel.ignore = False
     Wait
     If global.IsImgFile(mplayer.getP("fullpath")) Then mplayer.do_seek(0)
@@ -6102,11 +6102,11 @@ End
 Public Sub Hsplit1_MyRefresh()
 
   Dim RightPanel As Integer = 0
-  If fsform.visible Then 
-    cachebar.Move(0, outerbox.h - cachebar.h, 0)
-      Else
-    cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h, 0)
-  Endif
+  'cachebar removed: If fsform.visible Then 
+    'cachebar removed: cachebar.Move(0, outerbox.h - cachebar.h, 0)
+      'cachebar removed: Else
+    'cachebar removed: cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h, 0)
+  'cachebar removed: Endif
   If mplayer.ProcessRunningOvr() Then 
     If (Not mplayer.getP("audioonly")) Then CorrectAreaAspect()  
     UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
@@ -11189,7 +11189,7 @@ Private Sub movethumble()
   Try h = (w / ar) 
   If Error Then Return
   x = Mouse.screenx - (thumblebox.h Div 2) - outerbox.screenx
-  y = controlframe.screeny - outerbox.screeny - thumblebox.h - cachebar.h  'outerbox.screeny + outerbox.h - thumblebox.h - 1
+  y = controlframe.screeny - outerbox.screeny - thumblebox.h 'cachebar removed: - cachebar.h  'outerbox.screeny + outerbox.h - thumblebox.h - 1
   thumblebox.Move(x, y, w, h)
   Wait
   thumblebox.show()
