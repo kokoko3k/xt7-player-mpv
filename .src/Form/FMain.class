@@ -2906,7 +2906,8 @@ Public Sub InitTimerQueue()
 End
 
 Public Sub mplayer_seeking()
-  If Rand(0, 1) > 0.9 Then UpdateSeekSlider()
+  'If Rand(0, 1) > 0.9 Then UpdateSeekSlider()
+  'UpdateSeekSlider()
   If timerqueue.enabled Then
     While mplayer.get_property_mpv("seeking") = "yes"
       Wait 0.1
@@ -2949,7 +2950,7 @@ Public Sub TimerQueue_Timer()
       preload_time = generaloptions.PreloadSecbox.Value
       preload_KB = generaloptions.PreloadKBbox.value
       
-      If ((playtime_remaining - prequeue_time) <= preload_time) And Not PRELOADING Then
+      If ((playtime_remaining - prequeue_time) <= preload_time) And Not PRELOADING And Then
         If mplayer.get_property_mpv("cache-idle", True, 1) = "yes" Then
           Debug playtime_remaining
           PreloadNext(preload_time, preload_KB)
@@ -2969,6 +2970,7 @@ Private Sub PreloadNext(preload_time As Integer, preload_KB As Integer)
   global.myDebug("Preloading " & mNext)
   global.Preload_file_bg(mNext, preload_KB, preload_time)
   Wait
+  PRELOADED = True
 End
 
 
@@ -3557,7 +3559,7 @@ Public Function GetCacheDuration_secs(cache_percent As String) As Integer
   cache_duration = CInt(cache_size_KB / TotalKBPS)
   If Error Then Return
 
-  global.myDebug("Cache duration left: " & cache_duration & " seconds.")
+  'global.myDebug("Cache duration left: " & cache_duration & " seconds.")
 
   Return cache_duration
 
@@ -4137,16 +4139,19 @@ Public Sub ProgressFrame_MouseUp()
     If Not Mouse.left Then Return
     If Not global.MouseInside(bottomvbox) Then Return
   Endif
+  If Not mplayer.ProcessRunningOvr() Then Return
   If (mplayer.getP("partially-seekable") = "yes") Then 
     CantSeekMessage()
     Return
   Endif
   'seekbar.value = mouse.x / seekbar.w
   seekbar.value = mouse.x / Last.w
-  
+  SetProgress(seekbar.value)
+  Wait
+
   global.myDebug("seeking")
   SeekBar_Change()
-  SetProgress(seekbar.value)
+  'SetProgress(seekbar.value)
 End
 
 Public Sub ProgressFrame_DblClick()
@@ -11224,14 +11229,15 @@ End
 Public Sub ProgressFrame_MouseWheel()
   If mplayer.ProcessRunningOvr() Then
     If Mouse.delta > 0 Then
-      seekbar.value += 0.01
-      SetProgress(seekbar.value)
+      seekbar.value += 0.02
+      'SetProgress(seekbar.value)
         Else
-      seekbar.value -= 0.01
-      SetProgress(seekbar.value)
+      seekbar.value -= 0.02
+      'SetProgress(seekbar.value)
     Endif
+     SetProgress(seekbar.value)
+    SeekBar_Change()
   Endif
-  SeekBar_Change()
 End
 
 
