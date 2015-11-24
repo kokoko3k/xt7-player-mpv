@@ -3666,7 +3666,6 @@ Private CTIME_OLD As String = "0"
 Private CUSTOMTITLE_OLD As String
 
 Public Sub mplayer_property_change(name As String, data_old As String, data_new As String)
-  'Debug name, data_old, data_new
   If Not mplayer.ProcessRunningOvr() Then Return
   
   Select Case name
@@ -3696,12 +3695,12 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
     Endif
   
     Case "volume"
-
       UpdateVolumeSlider(data_new)
   
     Case "percent-pos"
       UpdateSeekSlider(data_new)
-  
+      Update_cache_percent(mplayer.get_property_mpv("cache", True, 1, True))
+      
     Case "=time-pos"
       Try CTIME_OLD = Split(data_new, ".")[0]
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
@@ -3715,10 +3714,11 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
     Case "cache"
       If data_new <> mplayer.unavailable_str Then CACHEVALUE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
-  
+      Update_cache_percent(data_new)
+
     Case Like "=duration"
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
-  
+
     Case Like "duration"
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
 
@@ -3727,6 +3727,20 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
   Returnlabel:
   Return
 
+End
+
+Public Sub Update_cache_percent(cachevalue As String)
+  Dim percent_pos, percent_cache, duration, cache_duration_secs As Float
+  duration = -1
+  Try duration = CFloat(mplayer.get_property_mpv("=duration", True, 1, True))
+  If duration = -1 Then 
+    Try SetProgressCache(CInt(cachevalue) / 100)
+      Else
+    Try percent_pos = CInt(mplayer.get_property_mpv("percent-pos", True, 1, True))
+    Try cache_duration_secs = GetCacheDuration_secs(cachevalue) 
+    Try percent_cache = cache_duration_secs / duration 
+    Try SetProgressCache((percent_pos / 100) + percent_cache)
+  Endif
 End
 
 
@@ -3784,6 +3798,7 @@ Public Sub Mplayer_mykill(return_value As Integer)
 
     SeekBar.value = 0
     SetProgress(seekbar.value)
+    SetProgressCache(0)
     Fmain.caption = global.AppName
 
 End
@@ -5438,6 +5453,7 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
     Object.Lock(fmain.SeekBar)
     fmain.SeekBar.Value = 0
     SetProgress(seekbar.value)
+    SetProgressCache(0)
     Object.unLock(fmain.SeekBar)
   Endif
 
@@ -5584,6 +5600,7 @@ Public Sub ButtonPrev_Click()
   Object.Lock(fmain.SeekBar)
   fmain.SeekBar.Value = 0
   SetProgress(seekbar.value)
+  SetProgressCache(0)
   Object.unLock(fmain.SeekBar)
   If TabSelectedPlaylist() Then
     MyPlaylist.SelectPrev(PlaylistGrid) ', ShufflePls.value)
@@ -11411,13 +11428,12 @@ End
 
 
 
-
+Private ProgressCache As Panel
 
 Public Sub Initprogress()
   Dim mycolor As Integer
 
   If (progress.tag <> Null) And (progress.tag <> "changecolor") Then Return
-
 
   progress.picture = Picture.Load("barglow.png")
 
@@ -11426,6 +11442,7 @@ Public Sub Initprogress()
   While Color.Desaturate(mycolor) < (Color.white / 3)
     mycolor = Color.Merge(mycolor, Color.white, 0.1)
   Wend
+  progressframe.tag = mycolor
   progressshadow.Picture = progressshadow.Picture.Image.Opacity(0.8).picture
   'progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.60).brightness(0.15).Contrast(1.4).picture
   progress.Picture = progress.Picture.Image.Colorize(mycolor).Saturation(-0.6125).brightness(0.15).Contrast(1.3875).picture
@@ -11437,6 +11454,17 @@ Public Sub Initprogress()
     Progress.proxy = progressshadow
   Endif
   progress.tag = True
+
+  Try progresscache.tag = "exists"
+  If Error Then progresscache = New Panel(progressframe) As "progresscache"
+
+  ProgressCache.background = Color.SetAlpha(mycolor, 200)
+  ProgressCache.Move(progress.x, progress.y, 0, 0)
+  progressframe.lower
+  progressshadow.raise
+  'ProgressCache.proxy = progressshadow
+  progressshadow.proxy = progresscache
+
 End
 
 Public Sub SetProgress(newset As Float)
@@ -11447,6 +11475,17 @@ Public Sub SetProgress(newset As Float)
   If newpos < border Then newpos = border
   progress.Raise
   progress.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)
+
+End
+
+Public Sub SetProgressCache(newset As Float)
+  Dim border As Integer = 0 '2
+  Dim bor As Integer = 0 '1
+  Dim newpos As Integer = CInt(ProgressFrame.clientw * newset - ProgressFrame.padding)
+  
+  If newpos < border Then newpos = border
+  progress.Raise
+  progresscache.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)
 
 End
 
