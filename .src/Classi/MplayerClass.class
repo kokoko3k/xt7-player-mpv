@@ -228,33 +228,22 @@ Public Sub playerprocess_read(Optional injected As String = "")
   Dim sBufs, sBuf As String
   Dim question, answer As String
   Try Read #playerprocess, sBufs, -4096
-  'global.myDebug(sbuf)
-     ' If sBufs Like "*stream*" Then
-     '   Stop
-     ' Endif
-
-  If sBufs Like "*ANS_*|*" Then
-    For Each sBuf In Split(sbufs, "\n", "", True)
-      If sBuf Like "*ANS_*|*" Then
-        question = MidC(sBuf, "_", "|")
-        answer = (MidC(sBuf, "|"))
-        ' If Left(question, 1) = "=" Then 
-        '   question = Right(question, -1)
-        ' Endif
-        Try prop.Remove(question)
-        setP(question, answer)
-        setP_time(question, Timer())
-        'Debug question, "=", getP(question)
-      Endif
-    Next 'sbuf
-      Else
-    If sbuf Like "\\[*\\] *" Then
-      'filter some noisy ladspa plugins
-      If Not (sbuf Like "*Parsed_ladspa_*") Then modules_out &= sBuf & "\n"
+  For Each sBuf In Split(sbufs, "\n", "", True)
+    If sBuf Like "*ANS_*|*" Then
+      question = MidC(sBuf, "_", "|")
+      answer = (MidC(sBuf, "|"))
+      Try prop.Remove(question)
+      setP(question, answer)
+      setP_time(question, Timer())
+        Else If sbuf Like "\\[*\\] *" Then
+          'filter some noisy ladspa plugins
+          If Not (sbuf Like "*Parsed_ladspa_*") Then 
+            modules_out &= sBuf & "\n"
+          Endif
         Else
-      stdout &= sBuf & "\n"
+        stdout &= sBuf & "\n"
     Endif
-  Endif
+  Next 'sbuf
 End
 
 Public Sub playerprocess_error(err As String)
