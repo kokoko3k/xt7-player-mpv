@@ -55,8 +55,9 @@
         Spacing = True
         Margin = True
         Padding = 6
-        { NoParse10 HBox
+        { NoParse101 HBox
           MoveScaled(0,1,51,4)
+          Visible = False
           ToolTip = ("If you zoomed-in a video, this will allow you to pan it with mouse-drag operation.\nWorks in full-screen mode only.")
           Spacing = True
           { PanTagCHK CheckBox notifyobj
@@ -67,8 +68,9 @@
             Text = ("Allow video panning via mouse-drag")
           }
         }
-        { NoParse14 HBox
+        { NoParse141 HBox
           MoveScaled(1,6,51,4)
+          Visible = False
           ToolTip = ("If your video card doesn't support brightness, gamma, contrast or hue settings,\nyou may want to try this (slower method) for video equalizer to work properly.\nNote that this does not conflict with configuration you explicitly set in eq2 and hue filters.")
           Spacing = True
           { EqCHK CheckBox notifyobj
