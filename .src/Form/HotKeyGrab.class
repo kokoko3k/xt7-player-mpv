@@ -17,8 +17,17 @@ Public Sub Form_MouseDown()
 End
 
 Public Sub Form_MouseUp()
+  Dim mx, my As Integer
   HotKeysHelper.MouseUp()
   'Print HotKeysHelper.GetLastHotKey()
+
+  'move the mouse so that a mousemove event is triggered inside the videoarea.
+  'this avoids stuck mouse buttons (gambas bug)
+  mx = mouse.screenx
+  my = mouse.screeny
+  mouse.Move(mx + 1, my) 
+  mouse.Move(mx, my)
+  
   Me.hide
 End
 

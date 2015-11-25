@@ -5375,6 +5375,13 @@ Public Sub VideoAreaGroup_MouseUp()
   IgnoreMouse = True
   guidragging = False
   
+  'move the mouse so that a mousemove event is triggered inside the videoarea.
+  'this avoids stuck mouse buttons (gambas bug)
+  mx = mouse.screenx
+  my = mouse.screeny
+  mouse.Move(mx + 1, my) 
+  mouse.Move(mx, my)
+  
 End
 
 Public Sub VideoAreaGroup_MouseWheel()
@@ -11011,15 +11018,9 @@ End
 
 
 Public Sub VideoAreaGroup_MouseMove()
-
-   If mplayer.ProcessRunningOvr() Then videobox.SetFocus()  
-   outerbox.mouse = Mouse.default
-   videobox.mouse = Mouse.default
-  ' If Mouse.screenx < (outerbox.screenx + 10) Then UseFakeSplit()
-  ' If Lower(mplayer.Media_FullPath_Playing) Like "dvdnav*" Then
-  '   Try mplayer.Send("set_mouse_pos " & (mouse.screenx - VideoBox.screenx) & " " & (mouse.screeny - VideoBox.screeny))
-  '   Return
-  ' Endif
+  If mplayer.ProcessRunningOvr() Then videobox.SetFocus()  
+  outerbox.mouse = Mouse.default
+  videobox.mouse = Mouse.default
   If fsform.fullscreen Then HideMouseDelayed()
 End
 
