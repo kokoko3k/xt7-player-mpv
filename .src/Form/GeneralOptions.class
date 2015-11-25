@@ -74,6 +74,7 @@ Public Sub Init()
   Try Optionslist.Add("Audio", ("Audio"), Stock["large/audio"])
   Try Optionslist.Add("Screen", ("Screen"), Stock["large/screen"])
   Try Optionslist.Add("Library", ("Library"), Stock["large/book"])
+  Try Optionslist.Add("Cache", ("Cache"), Stock["large/next"])
   Try Optionslist.Add("Tweaks", ("Tweaks"), Stock["large/wizard"])
   Try Optionslist.Add("CD/DVD", ("CD/DVD"), Stock["large/cdrom"])
   Try Optionslist.Add("Network", ("Network"), Stock["large/network"])
@@ -1195,6 +1196,8 @@ Private Sub AlignObjects()
   containers.Add(ScrollView8)
   containers.Add(ScrollView3)
   containers.Add(ScrollView9)
+  containers.Add(ScrollView12)
+
   containers.Add(ScrollViewUserOptions)
   
   'find the width of an empty checkbox
@@ -1234,6 +1237,9 @@ Private Sub AlignObjects()
 
     'align labels
     For Each child In align_objs
+
+      'Try acontainer.autoresize = False
+
       indented = False
       Try indented = (child.Parent.indent = 1)
       Try Object.SetProperty(child, "autoresize", False)
@@ -1242,9 +1248,15 @@ Private Sub AlignObjects()
           Else
         Try Object.SetProperty(child, "w", max_obj_w + Desktop.scale)
       Endif
+      
+      'Wait
+      'Try acontainer.autoresize = True
+      
     Next
     
-    
+    ' Try acontainer.autoresize = False
+    ' Wait
+
   Next 'acontainer
 End
 
