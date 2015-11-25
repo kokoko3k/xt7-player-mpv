@@ -527,8 +527,11 @@
             Expand = True
           }
         }
+        { Separator1 Separator
+          MoveScaled(1,5,52,2)
+        }
         { NOPARSEVBox2 VBox
-          MoveScaled(1,5,51,23)
+          MoveScaled(1,8,51,23)
           ToolTip = ("Directories specified here are recursively added to the playlist\nwhen you commit a playlist update.\nUse add/delete button or drag 'n drop.")
           Spacing = True
           { NoParseWatchedLabel Label
@@ -536,7 +539,7 @@
             Font = Font["Bold"]
             AutoResize = True
             Text = ("Watched Directories")
-            Alignment = Align.Center
+            Alignment = Align.Left
           }
           { NoParseWatchedListbox ListBox
             MoveScaled(2,4,38,12)
@@ -568,8 +571,11 @@
             }
           }
         }
+        { VBox9 VBox
+          MoveScaled(1,32,50,1)
+        }
         { NOPARSEVBox1 VBox
-          MoveScaled(1,29,51,26)
+          MoveScaled(1,34,51,26)
           ToolTip = ("Directories specified here will excluded\nwhen you commit a playlist update.\nUse add/delete button or drag 'n drop.")
           Spacing = True
           { NoParseExcludedLabel2 Label
@@ -577,7 +583,7 @@
             Font = Font["Bold"]
             AutoResize = True
             Text = ("Excluded Directories")
-            Alignment = Align.Center
+            Alignment = Align.Left
           }
           { NoParseExcludedListbox ListBox
             MoveScaled(2,4,38,9)
@@ -610,7 +616,7 @@
           }
         }
         { VBox7 VBox
-          MoveScaled(2,51,50,1)
+          MoveScaled(2,54,50,1)
         }
       }
       Index = 4
