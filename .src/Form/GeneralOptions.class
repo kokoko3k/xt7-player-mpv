@@ -1295,6 +1295,10 @@ Public Sub BackResetButton8_Click()
 End
 
 Public Sub SeekThumbsCheckbox_Click()
-  NoParseStyle12.enabled = Last.value
+  NoParseStyle12.enabled = SeekThumbsCheckbox.value Or SeekThumbsYoutubeCheckbox.value
 End
 
+
+Public Sub SeekThumbsYoutubeCheckbox_Click()
+ NoParseStyle12.enabled = SeekThumbsCheckbox.value Or SeekThumbsYoutubeCheckbox.value
+End
