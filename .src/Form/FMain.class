@@ -3712,7 +3712,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
   
     Case "percent-pos"
       UpdateSeekSlider(data_new)
-      Update_cache_percent(mplayer.get_property_mpv("cache", True, 1, True))
+      If generaloptions.ShowCacheGaugeCHK.value Then Update_cache_percent(mplayer.get_property_mpv("cache", True, 1, True))
       
     Case "=time-pos"
       Try CTIME_OLD = Split(data_new, ".")[0]
@@ -3727,7 +3727,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
     Case "cache"
       If data_new <> mplayer.unavailable_str Then CACHEVALUE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
-      Update_cache_percent(data_new)
+      If generaloptions.ShowCacheGaugeCHK.value Then Update_cache_percent(data_new)
 
     Case Like "=duration"
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)

@@ -1302,3 +1302,12 @@ End
 Public Sub SeekThumbsYoutubeCheckbox_Click()
  NoParseStyle12.enabled = SeekThumbsCheckbox.value Or SeekThumbsYoutubeCheckbox.value
 End
+
+Public Sub ShowCacheGaugeCHK_Click()
+  If Not fmain.fullyloaded Then Return
+  If Last.value = False Then 
+    fmain.SetProgressCache(0)
+      Else
+   If fmain.mplayer.ProcessRunningOvr() Then fmain.Update_cache_percent(fmain.mplayer.get_property_mpv("cache", True, 1, True))
+  Endif
+End

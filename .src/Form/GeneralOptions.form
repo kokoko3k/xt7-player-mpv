@@ -623,21 +623,36 @@
         Spacing = True
         Margin = True
         Padding = 6
+        { NoParse10 HBox
+          MoveScaled(3,1,48,4)
+          ToolTip = ("If enabled, you will see a light gauge into the seekbar.\n\nFor media whith known total duration, \nit will represent which parts of the streams are cached.\n(this is an estimation)\n\nFor media with unknown duration,\nit will represent the total cache fill.")
+          Spacing = True
+          Indent = True
+          { ShowCacheGaugeCHK CheckBox
+            MoveScaled(1,0,41,4)
+            AutoResize = True
+            Text = ("Show cache status into the seek bar")
+            Value = CheckBox.True
+          }
+        }
+        { noparseISeparator4 Separator
+          MoveScaled(1,6,55,1)
+        }
         { NoParseTitleLabel1 Panel
-          MoveScaled(1,1,54,3)
+          MoveScaled(2,8,54,3)
           Arrangement = Arrange.Vertical
-          { Label5 Label
+          { noparseILabel5 Label
             MoveScaled(0,0,24,3)
             Font = Font["Bold"]
             AutoResize = True
             Text = ("Local Files")
           }
-          { Separator1 Separator
+          { noparseISeparator1 Separator
             MoveScaled(0,2,43,1)
           }
         }
         { NoParse27 HBox
-          MoveScaled(1,5,48,4)
+          MoveScaled(2,12,48,4)
           Spacing = True
           Indent = True
           { CacheCheckbox CheckBox notifyobj
@@ -656,7 +671,7 @@
           }
         }
         { NoParse44 HBox
-          MoveScaled(1,9,50,4)
+          MoveScaled(2,16,50,4)
           ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           Indent = True
@@ -680,20 +695,20 @@
           }
         }
         { NoParseTitleLabel2 Panel
-          MoveScaled(1,13,54,3)
+          MoveScaled(2,20,54,3)
           Arrangement = Arrange.Vertical
-          { Label11 Label
+          { noparseILabel11 Label
             MoveScaled(0,0,24,3)
             Font = Font["Bold"]
             AutoResize = True
             Text = ("CD/DVD")
           }
-          { Separator2 Separator
+          { noparseISeparator2 Separator
             MoveScaled(0,2,43,1)
           }
         }
         { NoParse25 HBox
-          MoveScaled(1,16,48,4)
+          MoveScaled(2,23,48,4)
           Spacing = True
           Indent = True
           { CDDACacheCheckbox CheckBox notifyobj
@@ -712,7 +727,7 @@
           }
         }
         { NoParse24 HBox
-          MoveScaled(1,20,48,4)
+          MoveScaled(2,27,48,4)
           ToolTip = ("Set the cache for DVD playback.\nNote that enabling it may lead to problems.")
           Spacing = True
           Indent = True
@@ -731,7 +746,7 @@
           }
         }
         { NoParseTitleLabel3 Panel
-          MoveScaled(1,24,54,3)
+          MoveScaled(2,31,54,3)
           Arrangement = Arrange.Vertical
           { Label14 Label
             MoveScaled(0,0,24,3)
@@ -739,12 +754,12 @@
             AutoResize = True
             Text = ("Network")
           }
-          { Separator5 Separator
+          { noparseISeparator5 Separator
             MoveScaled(0,2,43,1)
           }
         }
         { NoParse26 HBox
-          MoveScaled(1,27,48,4)
+          MoveScaled(2,34,48,4)
           ToolTip = ("Maximum cache size.\nmpv option: --cache ")
           Spacing = True
           Indent = True
@@ -764,7 +779,7 @@
           }
         }
         { NoParse32 HBox
-          MoveScaled(1,31,50,4)
+          MoveScaled(2,38,50,4)
           ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           Indent = True
@@ -788,7 +803,7 @@
           }
         }
         { NoParse34 HBox
-          MoveScaled(0,35,53,4)
+          MoveScaled(1,42,53,4)
           ToolTip = ("HINT: For youtube, enable this option and set 0.\n--\n If a seek is to be made to a position within <percentage> of the cache size from the current position, \nmpv will wait  for  the cache to be filled to this position rather than performing a stream seek (default: 50).\nmpv option: --cache-seek-min")
           Spacing = True
           Indent = True
@@ -812,20 +827,20 @@
           }
         }
         { NoParseTitleLabel4 Panel
-          MoveScaled(1,40,54,3)
+          MoveScaled(2,47,54,3)
           Arrangement = Arrange.Vertical
-          { Label15 Label
+          { noparseILabel15 Label
             MoveScaled(0,0,24,3)
             Font = Font["Bold"]
             AutoResize = True
             Text = ("DVB-T")
           }
-          { Separator3 Separator
+          { noparseISeparator3 Separator
             MoveScaled(0,2,43,1)
           }
         }
         { NoParse38 HBox
-          MoveScaled(1,43,50,4)
+          MoveScaled(2,50,50,4)
           ToolTip = ("Maximum cache size.\nmpv option: --cache ")
           Spacing = True
           Indent = True
@@ -845,7 +860,7 @@
           }
         }
         { NoParse39 HBox
-          MoveScaled(1,47,50,4)
+          MoveScaled(2,54,50,4)
           ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           Indent = True
