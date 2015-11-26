@@ -1210,6 +1210,7 @@ Public Function Preload_file_bg(pFilename As String, pKbytes As Integer, pTimeou
 End
 
 Public Function Preload_file_bg_stop()
-  pTask.Stop()
+  Try pTask.Stop()
+  If Error Then global.myDebug("Error while doing pTask.Stop()")
 End
 
