@@ -408,8 +408,8 @@ Public Sub AllInit_Pre()
   'mplayer.FillLog = TRUE
   InitPropertiesGrid()
   AspectMenu.visible = False
-  Try Kill "/tmp/FakeInput.conf"
-  Try Copy "FakeInput.conf" To "/tmp/FakeInput.conf"
+  'Try Kill "/tmp/FakeInput.conf"
+  'Try Copy "FakeInput.conf" To "/tmp/FakeInput.conf"
   If Not (Exist(global.confpath & "/" & "Factory_Defaults.profile")) Then
     'inizializza prma tutto:
     InitEarlyForms()
@@ -2436,7 +2436,7 @@ Public Sub static_options() As Collection
   Dim opts As New Collection
   opts["config"] = "no"
   'opts["config-dir"] = global.confpath & "/mpv_config" 'not needed since we won't load an mpv_profile anymore
-  opts["input-conf"] = "/tmp/FakeInput.conf"
+  'opts["input-conf"] = "/tmp/FakeInput.conf"
   opts["load-scripts"] = "no"
   opts["osc"] = "no"
   opts["dvbin-file"] = User.home & "/.config/mpv/channels.conf.ter"
@@ -3418,7 +3418,7 @@ End
 Public customtitle As String = ""
 
 
-'Private LASTVOLUME As String = -2 'remember the exit volume so that we can set it when opening new media
+
 
 Public Sub UpdateVolumeSlider(volume As String)
   Dim newvolume As Integer
@@ -11127,7 +11127,8 @@ Public Sub ActivateThumbler()
   mthumbler = New Mplayerclass
 
   mthumbler.set_option("config", "no")
-  mthumbler.set_option("input-conf", "/tmp/FakeInput.conf")
+  'mthumbler.set_option("input-conf", "/tmp/FakeInput.conf")
+  mthumbler.set_option("input-default-bindings", "no")
   mthumbler.set_option("load-scripts", "no")
   mthumbler.set_option("osc", "no")
   mthumbler.set_option("input-cursor", "no")
