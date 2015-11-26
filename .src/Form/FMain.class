@@ -3394,13 +3394,12 @@ Public Sub UpdateSeekSlider(Optional percent_pos As String = "-1")
     Try percent_pos = mplayer.getP("percent-pos")
     If Error Then Return
   Endif
-  
-  
+
   If SeekingRestarting Then Return
   SeekBar.tag = "timer" 'this will avoid seekbar to send seek to mplayer
   Try totaltime = mplayer.getP("=duration")
   'Try actualtime = mplayer.CurrentTime()
-  Try actualtime = mplayer.CurrentTimeFloat()
+  Try actualtime = mplayer.CurrentTimeFloat(True)
   If actualtime <> 0 Then 
     Try SeekBar.value = (actualtime / totaltime)
       Else
