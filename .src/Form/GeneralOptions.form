@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,113,85.7143)
+  MoveScaled(0,0,113,85.8)
   Tag = "12"
   Text = ("General options")
   Icon = Picture["icon:/16/options"]
@@ -93,13 +93,13 @@
           Alignment = Align.TopLeft
         }
         { NoParseBox123 Panel
-          MoveScaled(2,16,47,4.5714)
+          MoveScaled(2,16,47,4.6)
           ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
           Arrangement = Arrange.Horizontal
           Spacing = True
           Indent = True
           { PictureBox3 PictureBox
-            MoveScaled(1,1,4.5714,4.5714)
+            MoveScaled(1,1,4.6,4.6)
             Picture = Picture["icon:/large/hardware"]
             AutoResize = True
           }
@@ -119,7 +119,7 @@
           Spacing = True
           Indent = True
           { Panel5 Panel
-            MoveScaled(1,0,4.5714,4.5714)
+            MoveScaled(1,0,4.6,4.6)
           }
           { vdpauooverlaycheck CheckBox
             MoveScaled(18,0,28,3)
@@ -200,7 +200,7 @@
           Enabled = False
           Spacing = True
           { ShowVmeterCHK CheckBox
-            MoveScaled(1,0,17.1429,4)
+            MoveScaled(1,0,17.2,4)
             Expand = True
             AutoResize = True
             Text = ("Visualization:")
@@ -527,7 +527,7 @@
             Expand = True
           }
         }
-        { Separator1 Separator
+        { NOPARSESeparator1434 Separator
           MoveScaled(1,5,52,2)
         }
         { NOPARSEVBox2 VBox
@@ -1938,7 +1938,7 @@
           }
         }
         { NOPARSESEPARATOR5 Separator
-          MoveScaled(0,6,50,0.5714)
+          MoveScaled(0,6,50,0.6)
         }
         { NoParse29 HBox
           MoveScaled(1,7,50,4)
@@ -2070,7 +2070,7 @@
           }
         }
         { NOPARSESEPARATOR1 Separator
-          MoveScaled(3,48,50,0.5714)
+          MoveScaled(3,48,50,0.6)
         }
         { NoParseStyle1 HBox
           MoveScaled(2,49,50,4)
@@ -2151,7 +2151,7 @@
           }
         }
         { NOPARSESEPARATOR2 Separator
-          MoveScaled(3,64,50,0.5714)
+          MoveScaled(3,64,50,0.6)
         }
         { NoParseStyle8 HBox
           MoveScaled(2,65,50,4)
@@ -2209,7 +2209,7 @@
           }
         }
         { NOPARSESEPARATOR3 Separator
-          MoveScaled(2,75,50,0.5714)
+          MoveScaled(2,75,50,0.6)
         }
         { NoParseStyle6 HBox
           MoveScaled(2,76,50,4)
@@ -2254,7 +2254,7 @@
       Expand = True
     }
     { SaveBTN Button
-      MoveScaled(29,0,14,3.7143)
+      MoveScaled(29,0,14,3.8)
       ToolTip = ("Save and use new settings")
       AutoResize = True
       Text = ("Save")
