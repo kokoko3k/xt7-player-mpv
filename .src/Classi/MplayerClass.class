@@ -1042,10 +1042,10 @@ Public Function CurrentTime() As String
   If Error Then Return "0"
 End
 
-Public Sub CurrentTimeFloat() As String
+Public Sub CurrentTimeFloat(Optional cached As Integer = False) As String
   Dim out As String
   If Not ProcessRunningOvr() Then Return "0"
-  out = get_property_mpv("=time-pos")
+  out = get_property_mpv("=time-pos", True,, cached)
     If out = "" Then 
       Return "0"
     Else
