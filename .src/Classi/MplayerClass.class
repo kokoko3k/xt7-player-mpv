@@ -1034,10 +1034,10 @@ End
 
 
 
-Public Function CurrentTime() As String
+Public Function CurrentTime(Optional cached As Boolean = False) As String
   Dim reply As String
   If Not ProcessRunningOvr() Then Return "0" 
-  reply = get_property_mpv("=time-pos")
+  reply = get_property_mpv("=time-pos", True,, cached)
   Try Return Split(reply, ".")[0]
   If Error Then Return "0"
 End
