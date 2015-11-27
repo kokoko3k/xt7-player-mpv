@@ -2962,7 +2962,6 @@ Public Sub TimerQueue_Timer()
       
       If togglepls.value And ((playtime_remaining - prequeue_time) <= preload_time) And (Not PRELOADING) And (Not PRELOADED) Then
         If mplayer.get_property_mpv("cache-idle", True, 1) = "yes" Then
-          Debug playtime_remaining
           PreloadNext(preload_time, preload_KB)
           PRELOADING = True
         Endif

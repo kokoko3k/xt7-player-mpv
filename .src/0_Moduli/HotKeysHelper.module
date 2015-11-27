@@ -9,7 +9,6 @@ Private mods As String = ""
 Private last_hotkey As String = ""
 
 Public Function init()
-  Debug
   key_down = ""
   mouse_down = 0
   wheel = "NONE"
@@ -47,8 +46,6 @@ End
 
 Public Sub MouseDown()
   mouse_down += Mouse.button
-  Debug "Mouse.button=" & mouse.button 
-  Debug "mouse_down=" & mouse_down  
   StoreHotKey() 
 End
 
@@ -56,8 +53,6 @@ Public Sub MouseUp()
   mouse_down -= Mouse.button
   If mouse_down < 0 Then mouse_down = 0
   wheel = "NONE"
-  Debug "Mouse.button=" & mouse.button 
-  Debug "mouse_down=" & mouse_down
 End
 
 Public Sub MouseWheel()

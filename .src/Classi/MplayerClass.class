@@ -882,7 +882,6 @@ Public Function do_preload(filename As String, timeout As Integer)
   cmd &= "--cache=no --vo null --ao=null --speed=2 "
   cmd &= "'" & filename & "'" & " "
   cmd &= "&>/dev/null"
-  Debug "*****************************" & cmd
   Shell cmd
 End
 
