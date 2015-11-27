@@ -4175,7 +4175,6 @@ End
 
 Public Sub VideoAreaGroup_MouseDrag()
   Dim threshold As Integer = videobox.w Div 20
-
   Dim isimgfile As Boolean = global.IsImgFile(mplayer.getP("fullpath")) 
   global.myDebug(" ")
   If (Not fsform.FullScreen) And (Not isimgfile) Then
@@ -11018,6 +11017,7 @@ End
 
 Public Sub VideoAreaGroup_MouseMove()
   If mplayer.ProcessRunningOvr() Then videobox.SetFocus()  
+  If Mouse.state = 0 Then HotKeysHelper.init()
   outerbox.mouse = Mouse.default
   videobox.mouse = Mouse.default
   If fsform.fullscreen Then HideMouseDelayed()
