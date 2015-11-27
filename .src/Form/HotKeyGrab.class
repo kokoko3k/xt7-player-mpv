@@ -2,7 +2,7 @@
 
 
 Public Sub Form_Show()
-  'ME.center
+  HotKeysHelper.init()
   HotKeyGrab.x = Mouse.screenx - (HotKeyGrab.w Div 2)
   HotKeyGrab.y = Mouse.screeny - (HotKeyGrab.h Div 2)
 End
@@ -13,11 +13,13 @@ Public Sub Form_Enter()
 End
 
 Public Sub Form_MouseDown()
+  Debug
   HotKeysHelper.MouseDown()
 End
 
 Public Sub Form_MouseUp()
   Dim mx, my As Integer
+  Debug
   HotKeysHelper.MouseUp()
   'Print HotKeysHelper.GetLastHotKey()
 
@@ -52,3 +54,11 @@ Public Function AllGrabbedData() As String
   Return HotKeysHelper.GetLastHotKey()
 End
 
+
+
+
+Public Sub Form_Activate()
+
+  
+
+End
