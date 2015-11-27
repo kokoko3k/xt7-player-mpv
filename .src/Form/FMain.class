@@ -10409,7 +10409,13 @@ Public Function pixelspaces(width As Integer, singlewidth As Integer) As String
 
 End
 
-Public Sub ShowGridTooltipIn(mygrid As Gridview, myplaylist As Playlistclass)
+Private SHOGRIDTOOLTIP_GRID As Gridview
+Private SHOWGRIDTOOLTIP_PLAYLIST As Playlistclass
+
+
+Public Sub ShowGridTooltip_timer()
+  Dim mygrid As Gridview = SHOGRIDTOOLTIP_GRID
+  Dim myplaylist As Playlistclass = SHOWGRIDTOOLTIP_PLAYLIST
 
   Dim currentpath, album As String
   Dim popupmsg As String
@@ -10417,18 +10423,11 @@ Public Sub ShowGridTooltipIn(mygrid As Gridview, myplaylist As Playlistclass)
   Dim crow, fpcolumn, ccolumn As Integer
   Dim msx, msy As Integer
 
-  If mouse.left Or mouse.right Or mouse.middle Then Return
-  
-  Repeat 'wait until mouse finished moving
-    msx = mouse.screenx
-    msy = mouse.ScreenY
-    Wait 0.01
-  Until ((msx = mouse.screenx) And (msy = mouse.ScreenY)) 'wait until mouse is still
   
   Try crow = global.MyRowAt(mygrid, mouse.screeny - mygrid.screeny)
   If ( Error Or (crow = -1)) Then 
     Application.ShowTooltips = False
-    Return
+    Goto returnlabel
   Endif
   
   fpcolumn = myplaylist.ColumnIndex["Full Path"]
@@ -10436,11 +10435,11 @@ Public Sub ShowGridTooltipIn(mygrid As Gridview, myplaylist As Playlistclass)
     Try currentpath = mygrid[crow, fpcolumn].text
     If Error Then
       Application.ShowTooltips = False
-      Return
+      Goto returnlabel
     Endif
   Else 'is albumgrid
     ccolumn = mygrid.ColumnAt(mouse.screenx - mygrid.screenx)
-    If ccolumn = -1 Then Return
+    If ccolumn = -1 Then Goto returnlabel
     currentpath = MyAlbumsLib.PathFromCoordinates(crow, ccolumn)
   Endif
   Application.ShowTooltips = Buttonshowtooltips.value
@@ -10448,10 +10447,13 @@ Public Sub ShowGridTooltipIn(mygrid As Gridview, myplaylist As Playlistclass)
     Try popupmsg = maketooltip(currentpath, mygrid, myplaylist)
   Else
     album = MyAlbumsLib.AlbumFromCoordinates(crow, ccolumn)
-    If album = "" Then Return
+    If album = "" Then Goto returnlabel
     Try popupmsg = MyAlbumsLib.AlbumToolTip(album)
   Endif
   mygrid.tooltip = popupmsg
+
+  returnlabel:
+  ShowGridTooltip.stop
 
 End
 
@@ -10470,15 +10472,20 @@ Public Sub LibraryGrid_MouseMove()
     mmliblocked = False
     Return
   Endif
-  ShowGridTooltipIn(librarygrid, mylibrary)
+  If Mouse.state = 0 Then 
+    SHOGRIDTOOLTIP_GRID = librarygrid
+    SHOWGRIDTOOLTIP_PLAYLIST = mylibrary
+    ShowGridTooltip.delay = 250
+    ShowGridTooltip.start
+  Endif
   mmliblocked = False
 
 End
 
 Private mmplslocked As Boolean = False
+Public ShowGridTooltip As New Timer As "ShowGridTooltip"
 
 Public Sub PlaylistGrid_MouseMove()
-
   If mmplslocked Then Return
   mmplslocked = True
   If generaloptions.HighlightCHK.value Then
@@ -10490,7 +10497,13 @@ Public Sub PlaylistGrid_MouseMove()
     mmplslocked = False
     Return
   Endif
-  ShowGridTooltipIn(playlistgrid, myplaylist)
+
+  If Mouse.state = 0 Then 
+    SHOGRIDTOOLTIP_GRID = playlistgrid
+    SHOWGRIDTOOLTIP_PLAYLIST = myplaylist
+    ShowGridTooltip.delay = 250
+    ShowGridTooltip.start
+  Endif
   mmplslocked = False
 
 End
@@ -10503,7 +10516,12 @@ Public Sub AlbumGridView_MouseMove()
   If mmalblocked Then Return
   mmalblocked = True
   If Not (Buttonshowtooltips.value) Then Return
-  ShowGridTooltipIn(AlbumGridView, mylibrary)
+  If Mouse.state = 0 Then 
+    SHOGRIDTOOLTIP_GRID = AlbumGridView
+    SHOWGRIDTOOLTIP_PLAYLIST = mylibrary
+    ShowGridTooltip.delay = 250
+    ShowGridTooltip.start
+  Endif
   mmalblocked = False
 
 End
@@ -10816,6 +10834,7 @@ End
 
 Public Sub PlaylistGrid_MouseDown()
   Dim MouseRow As Integer
+
   Try mouserow = playlistgrid.RowAt(mouse.y)
   If mouse.left And Not (mouse.Control Or mouse.Shift) Then 
     playlistgrid.UnSelectAll
