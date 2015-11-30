@@ -465,7 +465,6 @@ Public Sub AllInit_Post()
   InitLibrary(MyLibrary, LibraryGrid, True)
   InitLibrary(MyPlaylist, PlayListGrid, True)
   InitLibrary(MyDVBTList, DVBTGrid, False)
-
   If TabSelectedAlbums() Then 
     Albums_Select()
   Endif  
@@ -11819,10 +11818,23 @@ Public Sub Leftsidetabs_Arrange()
 End
 
 Public Sub switchresBTN_Click()
+ Debug 
+  menu_modes_MyShow()
+End
+
+Public Sub switchresBTN_Menu()
+ Debug 
+   menu_modes_MyShow()
+End
+
+
+Public Sub menu_modes_MyShow()
   If (Not global.initearlyformsdone) Then InitEarlyForms()
   Make_modes_menu()
   menu_modes.popup
 End
+
+
 
 Public menu_modes As Menu
 
@@ -11838,7 +11850,7 @@ Public Sub Make_modes_menu()
   Dim output_name, w, h, hz, err As String
   
   'configure menu is always visible
-    menu_modes = New Menu(fmain)
+    menu_modes = New Menu(fmain) As "menu_modes"
     menu_mode = New Menu(menu_modes) As "menu_mode_configure"
     menu_mode.text = ("Configure...")
     menu_mode.picture = Picture["icon:/small/options"]
@@ -12098,3 +12110,10 @@ Public Sub VideoAreaGroup_KeyRelease()
     HotKeysHelper.keyRelease()
 
 End
+
+Public Sub switchresBTN_Enter()
+
+  switchresBTN.menu = "menu_modes"
+
+End
+
