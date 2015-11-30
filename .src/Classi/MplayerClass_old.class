@@ -1542,7 +1542,7 @@ Private gridpriv As Gridview
 
 
 Public Sub savethumb(fullpath As String, newfilename As String, Optional width As Integer = 256, Optional seconds As Integer = 300, mygrid As Gridview, row As Integer, column As Integer) 
-  Dim outdir As String = Shell(Temp()) & Rnd(0, 99999)
+  Dim outdir As String = Temp() & Rnd(0, 99999)
   Dim cmdline As String = ""
 
   Mkdir outdir
