@@ -544,7 +544,6 @@ Private Function internal_options() As Collection
   out["input-file"] = SetUpInputPipe()
   out["msg-color"] = "no"
   out["msg-level"] = "all=v,cplayer=status,dvdnav=no,disc=no"
-  'out["term-status-msg"] = "\"\""
   out["input-default-bindings"] = "no"
   out["term-status-msg"] = play_initialized_str
   out["force-seekable"] = "yes" 'this will allow seeks within the cache
@@ -554,8 +553,7 @@ Private Function internal_options() As Collection
   'with the previous one. But since changed options are set from the outside,
   'which has no clue about those internal_options, we say to do_apply to ignore
   'the following:
-  ignore_opts = ["input-file", "msg-color", "msg-level", "term-status-msg", "start", "force-seekable", "volume"]
-
+  ignore_opts = ["input-file", "term-status-msg", "msg-color", "msg-level", "input-default-bindings", "start", "force-seekable", "volume"]
   Return out
 End
 
