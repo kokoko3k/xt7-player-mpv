@@ -13,13 +13,11 @@ Public Sub Form_Enter()
 End
 
 Public Sub Form_MouseDown()
-  Debug
   HotKeysHelper.MouseDown()
 End
 
 Public Sub Form_MouseUp()
   Dim mx, my As Integer
-  Debug
   HotKeysHelper.MouseUp()
   'Print HotKeysHelper.GetLastHotKey()
 
