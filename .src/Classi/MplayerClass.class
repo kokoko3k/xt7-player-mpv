@@ -331,11 +331,13 @@ End
 
 Public mpvoptions As New Collection
 
-Public Sub set_option(name As String, data As String)
+Public Sub set_option(name As String, data As String, Optional allow_dupes As Boolean = True)
  'chr(8) is used instead of null because the collection doesn't keep null values
-  While mpvoptions.Exist(name)
-    name = " " & name 'prefix white spaces to use multiple options with the same name
-  Wend
+  If allow_dupes Then
+    While mpvoptions.Exist(name)
+      name = " " & name 'prefix white spaces to use multiple options with the same name
+    Wend
+  Endif
   mpvOptions[name] = data
   global.myDebug(name, data)
 End

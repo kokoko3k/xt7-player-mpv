@@ -2509,7 +2509,7 @@ Public Sub file_options(fullpath As String) As Collection
     opts["ytdl"] = "yes"
       Else 'not youtube specific link
     If global.IsNetworkURI(fullpath) Then 'but network stream, is supported by youtube-dl?
-    
+Stop
       If youtube.is_supported(fullpath) Then
         opts["ytdl"] = "yes"
           Else
@@ -2635,16 +2635,16 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next
-  
+
   opts = file_options(fullpath)
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next  
 
   opts = user_options(fullpath)
-Stop
+
   For Each data In opts
-    mplayer.set_option(opts.key, data)
+    mplayer.set_option(opts.key, data, False)
   Next  
 
   If OtherOptions <> Null Then
@@ -2655,7 +2655,7 @@ Stop
       Next        
     Endif
   Endif
-Stop
+
 
   mplayer.set_option("volume", Initialvolume())
 
@@ -2694,11 +2694,10 @@ Stop
       If zzzfake.parent <> zzzfake Then zzzfake.YTPanel.Reparent(zzzfake)
       zzzfake.ytpic.Picture = Picture["black.png"]
     Endif
-Stop
+
     If Not mplayer.ProcessRunningOvr() Then 
       If mplayer.return_value <> 0 Then 'try to use youtube-dl 
-        'If Not mplayer.get_option("ytdl") = "no" Then
-        mplayer.set_option("ytdl", "yes")
+        If mplayer.get_option("ytdl") = Null Then mplayer.set_option("ytdl", "yes")
       Endif
       n = n + 1
     Endif
