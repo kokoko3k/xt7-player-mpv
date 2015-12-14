@@ -1617,6 +1617,10 @@ Public Sub Button1_Click()
       combooglopts.add(oglopt)
     Next
   Endif
+  combooglopts.x = OglAddOptsTextbox.x
+  combooglopts.w = OglAddOptsTextbox.w
+  combooglopts.y = OglAddOptsTextbox.y
+  Wait
   combooglopts.Popup
 End
 
