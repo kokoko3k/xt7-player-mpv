@@ -114,8 +114,8 @@ Public Sub init_tree(tree As Treeview)
   'Tree.Add("related", ("*Related Videos"), picture["youtubeicon.png"])
 End
 
-Public Sub _new(tree As Treeview)
-  init_tree(tree)
+Public Sub _new(tree As Treeview, Optional doInit As Boolean = True)
+  If doinit Then init_tree(tree)
 End
 
 

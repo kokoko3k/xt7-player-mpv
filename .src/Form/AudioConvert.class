@@ -22,7 +22,7 @@ Public ffproc As Process
   
 Public Sub ConvertandSaveAudio()
   Dim i As Integer
-  Dim youtube As New Youtubeclass(FMain.youtubetree)
+  Dim youtube As New Youtubeclass(FMain.youtubetree, False)
   Dim currentstream As String
   Dim outputfolder As String
   Dim outfmt, q As String

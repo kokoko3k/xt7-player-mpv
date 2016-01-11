@@ -17,7 +17,7 @@ Static Public Function MidC(s As String, a As String, Optional b As String) As S
 End
 
 'Fill a treeview with genres and streams; optionally use a previously cached YP file
-Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = True)
+Public Function FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = True) As Boolean
   Dim mywget As Wgetclass
   Dim YPdata, YPLine As String
   Dim genres, genresu As New String[]
@@ -27,6 +27,7 @@ Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = Tru
   mytree.parent.mouse = Mouse.wait
     Wait
   yplines.clear
+  Stop
   'update YP cache
   If Not Exist(Global.YPCacheFile, True) Or UseCache = False Then
     If UseCache = True Then 
@@ -34,17 +35,19 @@ Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = Tru
     Else
       global.myDebug("Downloading yellow pages now...")
     Endif
-    
-    mywget = New Wgetclass
   
-    YPData = mywget.DownloadAsync(YPurl, False)
+    mywget = New Wgetclass
+    If MyQuestion.Ask(("Icecast Yellow Pages are missing or outdated.\ndo you want to download them now?"), "Yes", "No") = 1 Then
+      YPData = mywget.DownloadAsync(YPurl, False)
+    Endif
     mytree.parent.mouse = Mouse.default
     Wait
     Try file.Save(Global.YPCacheFile, YPData)
     If Error Then 
       message.Error(("Could not download the Yellow pages"))
       mytree.Enabled = True
-      Return
+      mytree.parent.mouse = Mouse.normal
+      Return False
     Endif
     yplines = Split(YPData, "\n")
   Else
@@ -70,7 +73,12 @@ Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = Tru
       count = 0
     Endif
   Next
-  genresu[genresu.max] = genres[i - 1] & Chr((8)) & " [" & count & "]"
+  Try genresu[genresu.max] = genres[i - 1] & Chr((8)) & " [" & count & "]"
+  If Error Then 
+    mytree.parent.mouse = Mouse.default
+    mytree.Enabled = True
+    Return False
+  Endif
   For Each genre In genresu
     Try mytree.Add(Split(genre, Chr(8))[0], Replace(genre, Chr(8), ""), stock["small/directory"]) ' picture["small/folder"])
   Next
@@ -105,6 +113,7 @@ Public Sub FillGenresTree(mytree As Treeview, Optional UseCache As Boolean = Tru
   Next 'ypline
   mytree.Enabled = True
   mytree.parent.mouse = Mouse.default
+  Return True
 End
 
 
