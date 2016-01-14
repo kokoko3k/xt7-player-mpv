@@ -27,7 +27,6 @@ Public Function FillGenresTree(mytree As Treeview, Optional UseCache As Boolean 
   mytree.parent.mouse = Mouse.wait
     Wait
   yplines.clear
-  Stop
   'update YP cache
   If Not Exist(Global.YPCacheFile, True) Or UseCache = False Then
     If UseCache = True Then 

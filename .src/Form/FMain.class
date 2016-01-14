@@ -502,8 +502,8 @@ Public Sub AllInit_Post()
   Try UpdateProfilesTabList()
   UpdateMenuTabVisibility()
   If GeneralOptions.TrayCHK1.value Then Try InitTrayIcon()
-  If TabSelectedShoutcast() Then
-    ShoutCast_Select()
+   If TabSelectedShoutcast() Then
+     ShoutCast_Select()
   Else If TabSelectedLibrary() Then
     LibraryGrid_Select()
   Else If TabSelectedPlaylist() Then
@@ -2509,7 +2509,7 @@ Public Sub file_options(fullpath As String) As Collection
     opts["ytdl"] = "yes"
       Else 'not youtube specific link
     If global.IsNetworkURI(fullpath) Then 'but network stream, is supported by youtube-dl?
-Stop
+
       If youtube.is_supported(fullpath) Then
         opts["ytdl"] = "yes"
           Else
@@ -8386,14 +8386,14 @@ Public Sub UpdateGenresTree(Optional force As Boolean = True)
       SHOUTCAST_INITIALIZED = True
     Else
       Try ICECAST_INITIALIZED = IceRadio.FillGenresTree(Genrestree, (Not force)) ' And ICECAST_INITIALIZED)
-      
   Endif
 End
 
 Public Sub ShoutCast_Select()
-  Leftsidepanel.mouse = mouse.wait
-  UpdateGenresTree(False)
-  Leftsidepanel.mouse = mouse.normal
+'stubbed
+'  Leftsidepanel.mouse = mouse.wait
+'  UpdateGenresTree(False)
+'  Leftsidepanel.mouse = mouse.normal
 End
 
 

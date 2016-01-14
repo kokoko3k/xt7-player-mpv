@@ -789,6 +789,9 @@ Geometry=[1276,-3,210,210]
 [DebugWindow/Split(dtl, Chr(8), "", True)]
 Geometry=[44,0,551,748]
 
+[DebugWindow/Split(file.Load(Global.YPCacheFile), "\n")]
+Geometry=[1280,0,224,280]
+
 [DebugWindow/Split(file.Load(chanfile), "\n")]
 Geometry=[962,20,210,899]
 
@@ -2374,7 +2377,7 @@ Geometry=[1280,-3,517,474]
 Geometry=[1280,-3,224,280]
 
 [DebugWindow/yplines]
-Geometry=[1280,-3,688,733]
+Geometry=[1280,0,688,733]
 
 [DebugWindow/yt_item]
 Geometry=[1280,-3,1020,747]
@@ -2397,9 +2400,9 @@ SearchString=True
 
 [OpenFile]
 File[1]=".src/Form/FMain.form"
-File[2]=".src/Form/FMain.class:29.1131"
-Active=38
-Count=40
+File[2]=".src/Form/FMain.class:0.2511"
+Active=2
+Count=47
 File[3]=".src/Form/HotKeys.form"
 File[4]=".src/Form/HotKeys.class:24.465"
 File[5]=".src/Form/GeneralOptions.form"
@@ -2438,6 +2441,13 @@ File[37]="FakeInput.conf:8.279"
 File[38]=".src/Form/zzzFake.class:110.15"
 File[39]=".src/Form/zzzFake.form"
 File[40]=".src/Classi/randr.class:0.2"
+File[41]=".src/Form/AudioConvert.form"
+File[42]=".src/Form/AudioConvert.class:33.24"
+File[43]=".src/Classi/YoutubeClass.class:17.117"
+File[44]=".src/Classi/ShoutCastClass.class:0.75"
+File[45]=".src/Classi/IceCastClass.class:0.29"
+File[46]=".src/Form/MyQuestion.class:0.79"
+File[47]=".src/Classi/WgetClass.class:24.25"
 
 [Watches]
 Count=6
