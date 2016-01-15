@@ -1422,7 +1422,6 @@ Public Sub Form_Close()
   If (fsform.FullScreen = True) Then FullScreenSwitch()
   If mplayer.ProcessRunningOvr() Then
     mplayer.do_stop()
-    ExecutePostCmd()
   Endif
   global.myDebug("post command executed")
   global.kill_players()
@@ -2566,6 +2565,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Dim opts As New Collection
   Dim data As String
 
+  mplayer.Precommand = generaloptions.NoParsePreCommand.text
+
   global.mouse_wait(fmain, True)
   PRELOADED = False
   Object.Attach(mplayer, Me, "mplayer")
@@ -2612,9 +2613,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   'fixmempv 
   'mplayer.subfile = ""
-  If Trim(GeneralOptions.NoParsePreCommand.text) <> "" Then 
-    Shell DConv(GeneralOptions.NoParsePreCommand.text) Wait
-  Endif
+
   ' Seekbar.tag = "timer"
   ' VideoBox.Visible = False
 
@@ -3456,11 +3455,6 @@ End
 '   
 ' End
 
-Public Sub ExecutePostCmd()
-  If Trim(GeneralOptions.NoParsePostCommand.text) <> "" Then 
-    Shell DConv(GeneralOptions.NoParsePostCommand.text) Wait
-  Endif
-End
 
 Public subnotset As Boolean = True
 
@@ -3761,6 +3755,7 @@ End
 
 Public Sub Mplayer_mykill(return_value As Integer)
   Dim playlistfinished As Boolean = False
+  mplayer.Postcommand = generaloptions.NoParsePostCommand.text
   Fmain.caption = global.AppName
   Stopmthumbler()
   'cachebar removed cachebar.w = 0
@@ -3782,7 +3777,6 @@ Public Sub Mplayer_mykill(return_value As Integer)
    '   Try mymeters.stopp
    ' Endif
 
-  ExecutePostCmd()
   videobox.cached = False
   'delete export file
   'Try Kill mymeters.exportfile 'mpv 0.11 removed af_export filter :(

@@ -57,6 +57,8 @@ Public Function executable(Optional timeout As Integer = -1) As String
   Return out
 End
 
+Public Precommand As String = ""
+Public Postcommand As String = ""
 
 Public CurrentOptions As String = ""
 
@@ -573,7 +575,9 @@ Public Function do_play(filename As String, Optional string_options As String = 
     Return 'fixmempv
   Endif
   
-  If ProcessRunningOvr() Then do_stop()
+  If ProcessRunningOvr() Then 
+    do_stop()
+  Endif
   user_stopped = False 'take this right after the call to do_stop()
   
   internal_opts = internal_options()
@@ -593,7 +597,8 @@ Public Function do_play(filename As String, Optional string_options As String = 
   stdout = ""
   stderr = ""
   modules_out = ""
-  
+
+  ExecutePreCmd()
   playerprocess = Shell commandline For Read Write As "playerprocess"
 
   'The following will be a script that will kill mpv if xt7 crashes:
@@ -965,6 +970,21 @@ Private SUPPORTEDAUDIOFILTERS As New String[]
 
 
 
+Public Sub ExecutePreCmd()
+Stop
+  If Trim(PreCommand) <> "" Then 
+    Shell DConv(preCommand) Wait
+  Endif
+End
+
+Public Sub ExecutePostCmd()
+Stop
+  If Trim(PostCommand) <> "" Then 
+    Shell DConv(PostCommand) Wait
+  Endif
+End
+
+
 Public Function ProcessRunningOvr() As Boolean
   'As gambas returns runtime error if process is not ready,
   'we'll catch it here
@@ -1333,6 +1353,8 @@ Public Sub playerprocess_kill()
   If (Not restarting) Then 
     ClearMediaProperties()
     Raise mykill(return_value)
+    'post cmd is supposed to be filled in the mykill() event handler.
+    ExecutePostCmd()
   Endif
 End
 
