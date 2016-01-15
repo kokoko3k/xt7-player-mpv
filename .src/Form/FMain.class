@@ -2612,7 +2612,9 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   'fixmempv 
   'mplayer.subfile = ""
-  Shell DConv(GeneralOptions.NoParsePreCommand.text) Wait
+  If Trim(GeneralOptions.NoParsePreCommand.text) <> "" Then 
+    Shell DConv(GeneralOptions.NoParsePreCommand.text) Wait
+  Endif
   ' Seekbar.tag = "timer"
   ' VideoBox.Visible = False
 
@@ -3455,9 +3457,9 @@ End
 ' End
 
 Public Sub ExecutePostCmd()
-  
-  Shell DConv(GeneralOptions.NoParsePostCommand.text) Wait
-  
+  If Trim(GeneralOptions.NoParsePostCommand.text) <> "" Then 
+    Shell DConv(GeneralOptions.NoParsePostCommand.text) Wait
+  Endif
 End
 
 Public subnotset As Boolean = True
