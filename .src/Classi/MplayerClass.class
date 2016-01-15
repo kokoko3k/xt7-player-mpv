@@ -971,14 +971,12 @@ Private SUPPORTEDAUDIOFILTERS As New String[]
 
 
 Public Sub ExecutePreCmd()
-Stop
   If Trim(PreCommand) <> "" Then 
     Shell DConv(preCommand) Wait
   Endif
 End
 
 Public Sub ExecutePostCmd()
-Stop
   If Trim(PostCommand) <> "" Then 
     Shell DConv(PostCommand) Wait
   Endif
