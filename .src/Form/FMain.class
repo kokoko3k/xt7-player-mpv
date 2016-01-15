@@ -11336,7 +11336,8 @@ Private PlayQueueIs As String 'remember where the Last played item is from
       If Leftsidetabs[i].text Like "< * >" Then Leftsidetabs[i].text = Replace(Replace(Leftsidetabs[i].text, " >", ""), "< ", "")
     Next
     PlayQueueIs = queue
-    If Right(Leftsidetabs.Current.text) <> " >" Then Leftsidetabs.Current.text = "< " & Leftsidetabs.Current.text & " >"
+    Stop
+    If Right(Leftsidetabs.Current.text) <> ">" Then Leftsidetabs.Current.text = "< " & Leftsidetabs.Current.text & " >"
   End
   
   Public Function GetActivePlayQueue() As String
