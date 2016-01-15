@@ -2564,7 +2564,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   ' Dim exportfile As String 'mpv 0.11 removed af_export filter :(
   Dim opts As New Collection
   Dim data As String
-
+'Stop
   mplayer.Precommand = generaloptions.NoParsePreCommand.text
 
   global.mouse_wait(fmain, True)
@@ -2603,11 +2603,11 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   'avoid a graphical glitch when hitting stop after a song and then play again
   'it will be turned on at the end of this play function
-  videobox.visible = False
-  Wait
-  videobox.cached = False  'here we have a segfault with gambas 2.99.7, seems to be solved by changing visibility twice
-  Wait
-  videobox.visible = True
+  ' videobox.visible = False
+  ' Wait
+  ' videobox.cached = False  'here we have a segfault with gambas 2.99.7, seems to be solved by changing visibility twice
+  ' Wait
+  ' videobox.visible = True
   
   SubNotSet = True
 
@@ -11336,7 +11336,6 @@ Private PlayQueueIs As String 'remember where the Last played item is from
       If Leftsidetabs[i].text Like "< * >" Then Leftsidetabs[i].text = Replace(Replace(Leftsidetabs[i].text, " >", ""), "< ", "")
     Next
     PlayQueueIs = queue
-    Stop
     If Right(Leftsidetabs.Current.text) <> ">" Then Leftsidetabs.Current.text = "< " & Leftsidetabs.Current.text & " >"
   End
   
