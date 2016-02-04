@@ -109,7 +109,7 @@ Public Function old_FillMultitracks()
   
   Try prop["audiotracks"].Clear
   Try prop["subtitletracks"].Clear
-  Try Tcount = CInt(get_property_mpv("track-list/count"))
+  Try Tcount = CInt(get_property_mpv("track-list/count", True, 10, True))
   If Error Then
     global.myDebug("WW", "unable to get track count")
     Return
@@ -153,6 +153,7 @@ Public Function FillMultitracks()
   Dim video_ok As Boolean = False
   Dim t0 As Float
   Dim timeout As Integer = 1 'seconds
+  Dim videotracks As Integer = 0
 
   If getP("fullpath") = "" Then Return
   
@@ -203,16 +204,36 @@ Public Function FillMultitracks()
         'multiple video tracks unsupported by xt7
       Case "sub"
         prop["subtitletracks"].Add(Replace(tmp, unavailable_str, "*"))
+      Case "video"
+        videotracks += 1
     End Select
   Next
 
   video_ok = getP("vo-configured") = "yes"
   video_ok = video_ok And (getP("current-vo") <> "(unavailable)")
-  
-  ' video_ok = (get_property_mpv("vo-configured") = "yes")
-  ' video_ok = video_ok And (get_property_mpv("current-vo") <> "(unavailable)")
-  setP("audioonly", (Not video_ok))
+
+  If (Not video_ok) And (videotracks > 0) Then 'something is not right...
+    If idleplaying Then
+      t0 = Timer()
+      Repeat
+        Wait 0.01
+        video_ok = getP("vo-configured") = "yes"
+        video_ok = video_ok And (getP("current-vo") <> "(unavailable)")
+      Until video_ok Or (Timer() - t0) > timeout
+      If (Timer() - t0) > timeout Then
+        global.myDebug("?? video_ok is false but there are video tracks ??")
+        'at least we tried.
+        'since we are in idleplaying, there is no need to wait for vo-configured and current-vo.
+      Endif
+    Endif
+  Endif
+  If idleplaying Then
+    setP("audioonly", (videotracks = 0))
+      Else
+    setP("audioonly", (Not video_ok))
+  Endif
   If global.IsVideoFile(getP("fullpath")) And (Not video_ok) Then Stop
+  If getP("audioonly") = True Then Stop
 End
 
 Public Function get_length() As String
@@ -264,6 +285,7 @@ Public Sub playerprocess_read(Optional injected As String = "")
 End
 
 Public Sub playerprocess_error(err As String)
+  'global.mydebug(err)
   stderr &= err & "\n"
   If err Like "*" & play_initialized_str & "*" Then 
     'catch statusline with the message player initialized
@@ -419,12 +441,13 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
   Dim play_initialized As Boolean = False
   Dim idling As Boolean
   Dim tc As Integer = 0
+  Dim waittime As Float = 0.01
   setP("idle", "no")
 
   Repeat
     If Not ProcessRunningOvr() Then Return False
-    Wait 0.01
-    timeoutcentisecs -= 1
+    Wait waittime
+    timeoutcentisecs -= CInt(waittime * 100)
     If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
       global.myDebug("check if idle")
       get_property_mpv("=idle", False)
@@ -437,12 +460,15 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
     'https://github.com/mpv-player/mpv/commit/8d414e2fe7f79f1bbf9158e8aa034e9ac9cf2222#commitcomment-13950548
     
     '...however sometimes the track count is still 0, so use track-list/count too.
-    Try tc = get_property_mpv("track-list/count")
-    play_initialized = play_initialized And tc <> 0
+    Try tc = get_property_mpv("track-list/count", True, 10, False)
+    play_initialized = play_initialized And (tc <> 0)
+    waittime += 0.01
+    If waittime >= 0.2 Then waittime = 0.2
   Until play_initialized Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
   global.myDebug("timeoutcentisecs=", timeoutcentisecs)
   global.myDebug("play_initialized=", play_initialized)
   global.myDebug("getp_idle=", getP("=idle"))
+  global.myDebug("track-list/count=", getP("track-list/count"))
   If play_initialized Then
     setP("idle", Null)
     Return True
@@ -914,13 +940,13 @@ Public Function do_preload(filename As String, timeout As Integer)
   Shell cmd
 End
 
-
+Public idleplaying As Boolean = False
 
 Public Function do_IdlePlay(filename As String) As Boolean
   'warning: call this function is mutually exclusive to calling do_play()
   'eg: if you started mpv with do_play(), you need another instance Of this class.
   'check if the process is alive || start it
-
+  ClearMediaProperties()
   If Not ProcessRunningOvr() Then
     mpvoptions.Clear
     set_option("input-file", SetUpInputPipe())
@@ -932,9 +958,12 @@ Public Function do_IdlePlay(filename As String) As Boolean
     set_option("idle", "yes")
     set_option("cache", "no")
     commandline = executable(600) & set_options()
+    idleplaying = True
     playerprocess = Shell commandline For Read Write As "playerprocess"
+      Else
+    set_property_mpv("options/term-status-msg", play_initialized_str)
   Endif
-
+  
   mpv_command(["loadfile", SConv(FileName)])
   setP("fullpath", filename)
   do_leave_pause(False)
