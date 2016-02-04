@@ -151,12 +151,25 @@ Public Function FillMultitracks()
   Dim id, name, lang, tmp, codec As String
   Dim properties As New String[]
   Dim video_ok As Boolean = False
+  Dim t0 As Float
+  Dim timeout As Integer = 1 'seconds
 
   If getP("fullpath") = "" Then Return
   
   Try prop["audiotracks"].Clear
   Try prop["subtitletracks"].Clear
   Try Tcount = CInt(get_property_mpv("track-list/count"))
+  ' If Tcount = 0 Then
+  '   '0 tracks is unlikely; probably mpv is not answering correctly
+  '   'keep asking till the timeout or a real answer
+  '   t0 = Timer()
+  '   Repeat
+  '     global.myDebug("0 tracks is unlikely, reasking")
+  '     Wait 0.01
+  '     Try Tcount = CInt(get_property_mpv("track-list/count"))
+  '   Until Tcount <> 0 Or (Timer() - t0) > timeout
+  ' Endif
+
   If Error Then
     global.myDebug("WW", "unable to get track count")
     Return
@@ -199,6 +212,7 @@ Public Function FillMultitracks()
   ' video_ok = (get_property_mpv("vo-configured") = "yes")
   ' video_ok = video_ok And (get_property_mpv("current-vo") <> "(unavailable)")
   setP("audioonly", (Not video_ok))
+  If global.IsVideoFile(getP("fullpath")) And (Not video_ok) Then Stop
 End
 
 Public Function get_length() As String
@@ -404,6 +418,7 @@ End
 Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
   Dim play_initialized As Boolean = False
   Dim idling As Boolean
+  Dim tc As Integer = 0
   setP("idle", "no")
 
   Repeat
@@ -414,12 +429,16 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
       global.myDebug("check if idle")
       get_property_mpv("=idle", False)
     Endif
-  play_initialized = (getP("play_initialized") = "yes")
-  'play_initialized is set by playerprocess_error through the hack
-  'of setting the statusline to a value recognized by playerprocess_error
-  'Hopefully, when the statusline is initialized, the playback is initialized too.
-  'In case of problems, the core-idle property may come handy (but slower), see:
-  'https://github.com/mpv-player/mpv/commit/8d414e2fe7f79f1bbf9158e8aa034e9ac9cf2222#commitcomment-13950548
+    play_initialized = (getP("play_initialized") = "yes")
+    'play_initialized is set by playerprocess_error through the hack
+    'of setting the statusline to a value recognized by playerprocess_error
+    'Hopefully, when the statusline is initialized, the playback is initialized too.
+    'In case of problems, the core-idle property may come handy (but slower), see:
+    'https://github.com/mpv-player/mpv/commit/8d414e2fe7f79f1bbf9158e8aa034e9ac9cf2222#commitcomment-13950548
+    
+    '...however sometimes the track count is still 0, so use track-list/count too.
+    Try tc = get_property_mpv("track-list/count")
+    play_initialized = play_initialized And tc <> 0
   Until play_initialized Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
   global.myDebug("timeoutcentisecs=", timeoutcentisecs)
   global.myDebug("play_initialized=", play_initialized)
@@ -807,15 +826,15 @@ Public Function get_mediainfo(Optional cddb As Boolean = True) As Boolean
 
 
       If Not (global.IsCdaudio(Fullpath))
-        Try setP("Artist", get_property_mpv("metadata/by-key/ARTIST"))
-        Try setP("Author", get_property_mpv("metadata/by-key/AUTHOR"))
-        Try setP("Genre", get_property_mpv("metadata/by-key/GENRE"))
-        Try setP("Album", get_property_mpv("metadata/by-key/ALBUM"))
-        Try setP("Year", get_property_mpv("metadata/by-key/DATE"))
+        Try setP("Artist", get_property_mpv("metadata/by-key/ARTIST", True, 2))
+        Try setP("Author", get_property_mpv("metadata/by-key/AUTHOR", True, 2))
+        Try setP("Genre", get_property_mpv("metadata/by-key/GENRE", True, 2))
+        Try setP("Album", get_property_mpv("metadata/by-key/ALBUM", True, 2))
+        Try setP("Year", get_property_mpv("metadata/by-key/DATE", True, 2))
         ' Try Media_CreationDate = DConv(FindAudioTag("creation date")) 'fixmempv
-        Try setP("TrackNo", get_property_mpv("metadata/by-key/track"))
-        Try setP("Title", get_property_mpv("metadata/by-key/TITLE"))
-        If getP("Title") = "" Then Try setP("name", get_property_mpv("metadata/by-key/TITLE"))
+        Try setP("TrackNo", get_property_mpv("metadata/by-key/track", True, 2))
+        Try setP("Title", get_property_mpv("metadata/by-key/TITLE", True, 2))
+        If getP("Title") = "" Then Try setP("name", get_property_mpv("metadata/by-key/TITLE", True, 2))
         ' Try Media_Comment = DConv(FindAudioTag("comment")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
         ' Try Media_Comments = DConv(FindAudioTag("comments")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
       Endif
