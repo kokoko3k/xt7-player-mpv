@@ -1571,9 +1571,9 @@ Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip)
   aTabstrip.index = tab_index_old
   If Right(outline) = ":" Then outline = Left(outline, -1)
   If Right(outline) = "" Then 
-    Return driver_name
+    Return driver_name 
       Else
-    Return driver_name & ":" & outline 
+    Return driver_name & ":" & outline
   Endif
 
 End
