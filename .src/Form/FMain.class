@@ -2565,7 +2565,7 @@ End
 Public Function Play(fullpath As String, Optional OtherOptions As Collection, Optional theradiolabel As String = "", Optional start_time As String = 0, Optional gapless As Boolean = False) As Boolean 
   Dim MkvSubsWorkaround As Boolean
   Dim cookieopts As String = ""
-  'Dim cachingbox As MovieBox 'show an animation while caching...
+  Dim force_audio_only As Boolean
   Dim current_queue As String
   Dim doanalyze As Boolean = False
   Dim timeA As Float = 0
@@ -2694,7 +2694,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
     timeA = Timer()
     If Not global.IsImgFile(fullpath) Then
-      mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value)
+      force_audio_only = (Left(generaloptions.NoParseVisType2.text) <> "0") And global.IsAudioFile(fullpath)
+      mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value, force_audio_only)
       global.myDebug("mplayer.get_mediainfo()", Timer() - timeA)
     Endif
 
@@ -2724,7 +2725,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   'fimempv qui l'equalizzatore video deve vedere cosa fare (overbright dinamico oppure applicare i valori)
 
 
-  If (mplayer.getP("audioonly")) Or ((Left(generaloptions.NoParseVisType2.text) <> "0") And global.IsAudioFile(fullpath)) Then
+  If (mplayer.getP("audioonly")) Then
     If Lower(audioform.AudioPanel.parent.name) <> Lower(outerbox.name) Then
       If (Not tageditmode) Then
         ShowAudioPanel(True)
