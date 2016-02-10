@@ -816,3 +816,32 @@ Il modo di non cambiare il valore per aspettare che cambi è:
 nell'handler playerprocess_read, oltre a memorizzare con setP() il valore della risposta
 memorizzare pure il tempo nel quale  avvenuta la risposta, in un' altra collezione separata.
 Get_property_mpv, andrà a controllare che a cambiare sia il tempo , e non la variabile stessa.
+
+
+
+
+visualizzazione audio:
+
+spectrum sotto con onde sopra:
+10.5%cpu
+build/mpv /mnt/nas.crypt/Musica/BestOfBowie/CD1/01.Space.Oddity.ogg  --lavfi-complex='[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=20,crop=h=(ih/2):y=(0),crop=h=(ih/2):y=ih,colorlevels=romax=0.5[waves];[spectrum][waves]overlay[vo]' -ao null
+
+Spectrum con onde sovraimpresse:
+28%cpu
+build/mpv /mnt/nas.crypt/Musica/BestOfBowie/CD1/01.Space.Oddity.ogg  --lavfi-complex='[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=20,crop=h=(in_h):y=(in_h/2),colorlevels=romax=0.5,colorkey=0x000000:0.1:0.5[waves];[spectrum][waves]overlay[vo]' -ao null
+
+
+
+
+solo spectrum; l'immagine png è un gradiente da trasparente a nero.
+5,5%cpu
+-lavfi-complex='[aid1]asplit [a][ao];[a]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x256:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h[spectrum];movie=/tmp/out.png,scale=h=(in_h/1.5)[pic]              ;[spectrum][pic]overlay[vo]'  --no-keepaspect
+
+frequenze
+7%cpu
+--lavfi-complex='[aid1]asplit[ao][a1];[a1]showfreqs=s=256x256:mode=bar           :colors=#ff0000|#aa0000  :averaging=0.6
+
+Vectorscope sovraimpresso con hack per la sovraimpressione
+17% cpu
+build/mpv /mnt/nas.crypt/Musica/BestOfBowie/CD1/01.Space.Oddity.ogg  --lavfi-complex='[aid1]asplit=3[a1][a2][ao]; [a2]adrawgraph=bg=#00000000:size=256x256[blank];                            movie=/home/root/Gambas3/xt7-player-mpv-gtk/shade1.png,scale=256x256[pic]; [blank][pic]overlay[back] ; [a1]avectorscope=size=256x256[sp];[back][sp]overlay[vo]'
+

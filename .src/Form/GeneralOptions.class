@@ -84,6 +84,16 @@ Public Sub Init()
   Try Optionslist.Add("User options", ("User options"), Stock["large/terminal"])
   Try Optionslist.Add("Style", ("Style"), Stock["large/color"])
   DrawFiltersGui()
+  
+  NoParseVisType2.Add("0 - Disabled")
+  NoParseVisType2.Add("1 - Waves over spectrum")
+  NoParseVisType2.Add("2 - Waves and spectrum")
+  NoParseVisType2.Add("3 - Spectrum")
+  NoParseVisType2.Add("4 - Frequencies")
+  NoParseVisType2.Add("5 - Vectorscope")
+  
+  
+  
   InitDone = True
 End
 
@@ -340,12 +350,44 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   If Right(pt) = "," Then pt = Left(pt, -1)
   'If pt <> "" Then myopts.Add(newopt("ad", pt))
   If pt <> "" Then myopts.Add(newopt("audio-spdif", pt))
-  
   Return myopts.Insert(parse_custom_options())
 
 End
 
+Public Function Visualization_opts() As MpvOption[]
+  Dim myopts As New MpvOption[]
+  Dim visstring As String
+  Dim t1 As String
+
+  t1 = Temp()
+  Select Case Left(NoParseVisType2.text)
+    Case "1"
+      visstring = "'[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=20,crop=h=(ih/2):y=(0),crop=h=(ih/2):y=ih,colorlevels=romax=0.5[waves];[spectrum][waves]overlay[vo]'"
+    Case "2"
+      visstring = "'[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=20,crop=h=(in_h):y=(in_h/2),colorlevels=romax=0.5,colorkey=0x000000:0.1:0.5[waves];[spectrum][waves]overlay[vo]'"
+    Case "3"
+      Copy "shade_alpha.png" To t1
+      visstring = "'[aid1]asplit [a][ao];[a]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x256:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h[spectrum];movie=" & t1 & ",scale=h=(in_h/1.5)[pic];[spectrum][pic]overlay[vo]'"
+    Case "4"
+      visstring = "'[aid1]asplit[ao][a1];[a1]showfreqs=s=256x256:mode=bar:colors=#ff0000|#aa0000:averaging=0.6[vo]'"
+    Case "5"
+      Copy "shade1.png" To t1
+      visstring = "'[aid1]asplit=3[a1][a2][ao]; [a2]adrawgraph=bg=#00000000:size=256x256[blank];movie=" & t1 & ",scale=256x256[pic];[blank][pic]overlay[back];[a1]avectorscope=size=256x256[sp];[back][sp]overlay[vo]'"
+  End Select
+  If visstring <> "" Then
+    myopts.Add(newopt("keepaspect", "no"))
+    myopts.Add(newopt("lavfi-complex", visstring))
+  Endif
+  
+  Return myopts
+End
+
+
+
 Public Sub ApplyBTN_Click()
+
+Debug NoParse55ab.visible
+
   FMain.Apply
   Wait 0.1
   'IF ((NOT FMain.mplayer.ProcessRunningOvr()) OR (Fmain.mplayer.paused)) OR (GeneralOptions.Tabstrip1.caption = ("Style")) THEN 'apply style changes only if mplayer is not running.
@@ -834,12 +876,12 @@ End
 Public Sub Form_Show()
  'mpv 0.11 removed af_export filter :(
   '8 5 42 40 43
-  noparse8.visible = False
-  noparse5.visible = True
-  noparse42.visible = False
-  noparse40.visible = False
-  noparse43.visible = False
-  noparse55.visible = False
+  ' NoParse8a.visible = False
+  ' noparse5.visible = True
+  ' noparse42.visible = False
+  ' noparse40.visible = False
+  ' noparse43.visible = False
+  ' NoParse55ab.visible = False
   
   FillCdAndDvdDevices()
   If Not aligned Then
@@ -886,12 +928,12 @@ Public Sub NOPARSESCANBTN_Click()
 End
 
  'mpv 0.11 removed af_export filter :(
-' Public Sub ShowVmeterCHK_Click()
-'   noparse42.enabled = Last.value
-'   noparse40.enabled = Last.value
-'   noparse43.enabled = Last.value
-'   NoParseVisType.enabled = Last.value
-' End
+ ' Public Sub ShowVmeterCHK2_Click()
+ '   noparse42.enabled = Last.value
+ '   noparse40.enabled = Last.value
+ '   noparse43.enabled = Last.value
+ '   NoParseVisType2.enabled = Last.value
+ ' End
 
 
 

@@ -2478,6 +2478,15 @@ Public Sub user_options(fullpath As String) As Collection
     Wend
     opts[opt.name] = opt.data
   Next
+  
+  If global.IsAudioFile(fullpath) Then
+    For Each opt In generaloptions.visualization_opts()
+      opts[opt.name] = opt.data
+      opts["wid"] = audioform.PictureBox1.Handle
+      
+    Next
+  Endif
+
 
   For Each opt In SubAndOsd.ParseSubGui(fullpath)
     opts[opt.name] = opt.data
@@ -2715,7 +2724,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   'fimempv qui l'equalizzatore video deve vedere cosa fare (overbright dinamico oppure applicare i valori)
 
 
-  If (mplayer.getP("audioonly")) Then
+  If (mplayer.getP("audioonly")) Or ((Left(generaloptions.NoParseVisType2.text) <> "0") And global.IsAudioFile(fullpath)) Then
     If Lower(audioform.AudioPanel.parent.name) <> Lower(outerbox.name) Then
       If (Not tageditmode) Then
         ShowAudioPanel(True)
@@ -3234,15 +3243,16 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
       audioform.refresh
     Endif
 
-  If GeneralOptions.ShowVmeterCHK.value = True Then
-    global.myDebug("sorry, mpv 0.11 removed export filter, no visualization available") 'mpv 0.11 removed af_export filter :(
-    '   Try mymeters.stopp
-    '   mymeters = New Meters As "mymeters"
-    '   Try vis = Split(generaloptions.NoParseVisType.text, " ")[0]
-    '   mymeters.init(audioform.barbox, GeneralOptions.latencyspinbox.value, audioform.BarBox.h, fmain.exportfile, 6, GeneralOptions.fpsspinbox.value, vis)
-    '   mymeters.startt
-    Endif
+  ' If GeneralOptions.ShowVmeterCHK.value = True Then
+  '   global.myDebug("sorry, mpv 0.11 removed export filter, no visualization available") 'mpv 0.11 removed af_export filter :(
+  '   '   Try mymeters.stopp
+  '   '   mymeters = New Meters As "mymeters"
+  '   '   Try vis = Split(generaloptions.NoParseVisType.text, " ")[0]
+  '   '   mymeters.init(audioform.barbox, GeneralOptions.latencyspinbox.value, audioform.BarBox.h, fmain.exportfile, 6, GeneralOptions.fpsspinbox.value, vis)
+  '   '   mymeters.startt
+  '   Endif
   Else
+
     fmain.OuterBox.Arrangement = Arrange.none
     ' Try mymeters.stopp 'mpv 0.11 removed af_export filter :(
     'If Not tageditmode Then rightsidepanel.Background = audioform.AudioPanel.Background

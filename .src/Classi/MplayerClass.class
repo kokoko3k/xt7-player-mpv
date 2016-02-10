@@ -232,8 +232,8 @@ Public Function FillMultitracks()
       Else
     setP("audioonly", (Not video_ok))
   Endif
-  If global.IsVideoFile(getP("fullpath")) And (Not video_ok) Then Stop
-  If getP("audioonly") = True Then Stop
+  ' If global.IsVideoFile(getP("fullpath")) And (Not video_ok) Then Stop
+  ' If getP("audioonly") = True Then Stop
 End
 
 Public Function get_length() As String

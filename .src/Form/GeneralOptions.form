@@ -194,29 +194,30 @@
         Spacing = True
         Margin = True
         Padding = 6
-        { NoParse8 HBox
+        { NoParse8as HBox
           MoveScaled(0,0,50,4)
           Visible = False
-          Enabled = False
           Spacing = True
-          { ShowVmeterCHK CheckBox
+          { ShowVmeterCHK3 CheckBox
             MoveScaled(1,0,17.1429,4)
-            Expand = True
+            Visible = False
             AutoResize = True
             Text = ("Visualization:")
           }
         }
-        { NoParse55 HBox
+        { NoParse55ab HBox
           MoveScaled(0,4,50,4)
-          Visible = False
-          Enabled = False
           Spacing = True
           Indent = True
-          { NoParseVisType ComboBox
-            MoveScaled(1,0,26,4)
+          { Label5 Label
+            MoveScaled(1,0,18,4)
+            Text = ("Visualization:")
+          }
+          { NoParseVisType2 ComboBox
+            MoveScaled(22,0,26,4)
             Expand = True
             ReadOnly = True
-            List = [("vmeters - Audio meters"), ("DFT - Spectrum analyzer")]
+            List = Null
             Text = ("vmeters - Audio meters")
           }
         }
