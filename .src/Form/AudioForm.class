@@ -198,6 +198,10 @@ Public Sub ShowBackground()
   
   pictureback.picture = blurred.picture
   pictureback.show
+  
+  picturebox1.picture = pictureback.Picture.Image.Stretch(2, 32).Mirror(False, True).picture
+  
+  
 End
 
 Private Function c_mean(img As Image) As Integer
