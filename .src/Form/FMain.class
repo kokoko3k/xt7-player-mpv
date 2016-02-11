@@ -2728,6 +2728,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   If (mplayer.getP("audioonly")) Then
     If Lower(audioform.AudioPanel.parent.name) <> Lower(outerbox.name) Then
       If (Not tageditmode) Then
+        CoverManager.HitCancel = True
+        If GeneralOptions.CoverCHK2.value Then CoverRefresh()
         ShowAudioPanel(True)
       Endif
     Endif
@@ -2772,9 +2774,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     MenuTitles.Enabled = False
   Endif
 
-  CoverManager.HitCancel = True
-  If GeneralOptions.CoverCHK2.value Then CoverRefresh()
-
   ButtonPlay.enabled = True
   MenumediaExplorer.Enabled = True
   addhistory(FullPath)
@@ -2799,7 +2798,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
  
   videobox.cached = True 
 
-   If TabSelectedLibrary() Then 
+ If TabSelectedLibrary() Then 
     Try ComboHistory.AddHistory(Searchfield, (Searchfield.text))
   Else If TabSelectedPlaylist() Then
     Try ComboHistory.AddHistory(SearchfieldPLS, (SearchfieldPLS.text))
@@ -3192,13 +3191,13 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
       Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
       If Error Then Try audioform.CoverBox.picture = covermanager.keepaspect((image.Load(file.Dir(mplayer.getP("fullpath")) & "/" & covermanager.FolderPicture(file.Dir(mplayer.getP("fullpath"))))), 160)
       If Error Then audioform.CoverBox.picture = covermanager.DefaultLibraryIcon(mplayer.getP("fullpath"), 160)
+      Audioform.ShowBackground()
     Endif
     ShowAudioPanel(True, Samecover)
   Endif
   audioform.coverbox.refresh
   'AlbumGridView.Current.Refresh()
   MyAlbumsLib.selectcell(AlbumGridView.Row, AlbumGridView.Column)
-
 End
 
 Private currentfile_cover As String = ""
@@ -3267,7 +3266,9 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
       'cachebar removed: cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h, 0)
     'cachebar removed: En'cachebar removed: dif
     audioform.refresh
+    AudioForm.PictureBack.hide
   Endif
+  
 End
 
 Public Sub SetChaptersTabVisibility(visibility As Boolean)
@@ -5825,7 +5826,8 @@ Public Sub LibraryGrid_DblClick()
   If MouseInsideGrid(Librarygrid) Then
     If global.IsPlaylist(selectedpath) Then myradiolabel = LibraryGrid[librarygrid.row, MyLibrary.Columnindex["Filename"]].text
     SetActivePlayQueue("librarygrid")
-    Try Play(SelectedPath,, myradiolabel)
+'findme tolto il try
+    Play(SelectedPath,, myradiolabel)
   Endif
   Try Last.mouse = mouse.Default
   
@@ -7559,7 +7561,6 @@ Public Sub EditTagModeSwitch1_Click()
     Else
       Rightsidepanel.background = Color.Black
       tagpanel.visible = False
-      
       OuterBox.visible = True
       If mplayer.ProcessRunningOvr() And GeneralOptions.CoverCHK2.value Then
         If mplayer.getP("audioonly") Then

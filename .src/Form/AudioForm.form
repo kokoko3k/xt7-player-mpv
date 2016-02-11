@@ -9,7 +9,6 @@
     Name = "AudioPanel"
     Move(-7,-7,630,504)
     Font = Font["1"]
-    Background = &H000000&
     Tracking = True
     Drop = True
     Expand = True
@@ -22,14 +21,13 @@
     }
     { HBox7 HBox AudioAreaGroup
       Name = "HBox7"
-      Move(21,21,588,392)
+      Move(7,14,588,392)
       Font = Font["1"]
       Tracking = True
       Drop = True
       { VBox7 VBox AudioAreaGroup
         Name = "VBox7"
         Move(7,77,21,182)
-        Background = &H000000&
         Tracking = True
         Expand = True
       }
@@ -37,7 +35,6 @@
         Name = "VBox5"
         Move(42,7,490,378)
         Font = Font["Bitstream Vera Sans,1"]
-        Background = &H000000&
         Tracking = True
         Drop = True
         { HBox3 HBox AudioAreaGroup
@@ -51,7 +48,6 @@
           Name = "HBox2"
           Move(42,14,434,203)
           Font = Font["Bitstream Vera Sans,1"]
-          Background = &H000000&
           Tracking = True
           Margin = True
           { TimerZoomIn #Timer
@@ -63,9 +59,8 @@
           }
           { Panel1 Panel AudioAreaGroup
             Name = "Panel1"
-            Move(63,0,161,203)
+            Move(63,-14,161,203)
             Font = Font["Bitstream Vera Sans,1"]
-            Background = &H000000&
             Tracking = True
             Drop = True
             Spacing = True
@@ -85,7 +80,6 @@
             { CoverBox PictureBox
               Move(0,28,28,28)
               Font = Font["1"]
-              Background = &H000000&
               Foreground = Color.SelectedBackground
               Tracking = True
               Picture = Picture["emptycover.png"]
@@ -100,7 +94,6 @@
           { VBox1 VBox AudioAreaGroup
             Name = "VBox1"
             Move(231,14,133,182)
-            Background = &H000000&
             Tracking = True
             Drop = True
             AutoResize = True
@@ -116,7 +109,6 @@
               Name = "Label2"
               Move(14,14,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               AutoResize = True
@@ -126,7 +118,6 @@
               Name = "Label3"
               Move(14,35,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               AutoResize = True
@@ -136,7 +127,6 @@
               Name = "Label4"
               Move(14,56,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               AutoResize = True
@@ -146,7 +136,6 @@
               Name = "Label5"
               Move(14,77,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               AutoResize = True
@@ -156,7 +145,6 @@
               Name = "Label6"
               Move(14,98,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               AutoResize = True
@@ -171,7 +159,6 @@
             { Label17 Label
               Move(7,147,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               AutoResize = True
@@ -181,7 +168,6 @@
           { VBox2 VBox AudioAreaGroup
             Name = "VBox2"
             Move(371,14,56,182)
-            Background = &H000000&
             Tracking = True
             AutoResize = True
             Margin = True
@@ -196,7 +182,6 @@
               Name = "Label12"
               Move(14,14,21,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -204,7 +189,6 @@
               Name = "Label13"
               Move(14,35,21,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -212,7 +196,6 @@
               Name = "Label14"
               Move(14,56,21,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -220,7 +203,6 @@
               Name = "Label15"
               Move(14,77,14,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -228,7 +210,6 @@
               Name = "Label16"
               Move(14,105,14,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -255,7 +236,6 @@
           { VBox3 VBox AudioAreaGroup
             Name = "VBox3"
             Move(77,7,126,133)
-            Background = &H000000&
             Tracking = True
             Drop = True
             AutoResize = True
@@ -266,7 +246,6 @@
               Move(14,0,98,28)
               Visible = False
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               Text = ("Radio")
@@ -275,7 +254,6 @@
               Name = "Label10"
               Move(14,28,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               Text = ("Name")
@@ -284,7 +262,6 @@
               Name = "Label9"
               Move(14,49,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               Text = ("Length")
@@ -293,7 +270,6 @@
               Name = "Label8"
               Move(14,77,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               Text = ("FileSize")
@@ -302,7 +278,6 @@
               Name = "Label7"
               Move(14,98,98,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
               Text = ("Audio Info")
@@ -311,7 +286,6 @@
           { VBox4 VBox AudioAreaGroup
             Name = "VBox4"
             Move(217,7,203,133)
-            Background = &H000000&
             Tracking = True
             Drop = True
             AutoResize = True
@@ -321,7 +295,6 @@
               Name = "RadioLabel"
               Move(14,0,182,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -329,7 +302,6 @@
               Name = "Label18"
               Move(14,28,182,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -337,7 +309,6 @@
               Name = "Label19"
               Move(14,49,182,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -345,7 +316,6 @@
               Name = "Label20"
               Move(14,77,175,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -353,7 +323,6 @@
               Name = "Label21"
               Move(14,98,182,28)
               Font = Font["Bold,12"]
-              Background = &H000000&
               Foreground = &HFFFFFF&
               Tracking = True
             }
@@ -376,12 +345,22 @@
     }
     { PictureBox1 PictureBox AudioAreaGroup
       Name = "PictureBox1"
-      Move(28,427,231,63)
+      Move(21,434,231,63)
       Background = &HFFFFFF&
       Tracking = True
       Drop = True
       Expand = True
       Picture = Picture["shade1.png"]
+      Stretch = True
+    }
+    { PictureBack PictureBox AudioAreaGroup
+      Name = "PictureBack"
+      Move(301,308,231,63)
+      Tracking = True
+      Drop = True
+      Expand = True
+      Ignore = True
+      Picture = Picture["icon:/large/access"]
       Stretch = True
     }
   }
