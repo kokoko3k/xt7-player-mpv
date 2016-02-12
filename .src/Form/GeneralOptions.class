@@ -369,9 +369,10 @@ Public Function Visualization_opts() As MpvOption[]
       Copy "shade_alpha.png" To t1
       visstring = "'[aid1]asplit [a][ao];[a]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x256:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h[spectrum];movie=" & t1 & ",scale=h=(in_h/1.5)[pic];[spectrum][pic]overlay[vo]'"
     Case "4"
-      visstring = "'[aid1]asplit[ao][a1];[a1]showfreqs=s=256x256:mode=bar:colors=#ff0000|#aa0000:averaging=0.6[vo]'"
+      Copy "black.png" To t1
+      visstring = "'[aid1]asplit=3[ao][a1][a2];[a1]showfreqs=s=512x256:mode=bar:colors=#ff0000|#aa0000:averaging=0.6[freqs];movie=" & t1 & ",scale=512x256[pic];[a2]adrawgraph=bg=#00000000:size=512x256[blank];[blank][pic]overlay[back];[back][freqs]overlay[vo]'"
     Case "5"
-      Copy "shade1.png" To t1
+      Copy "black.png" To t1
       visstring = "'[aid1]asplit=3[a1][a2][ao]; [a2]adrawgraph=bg=#00000000:size=256x256[blank];movie=" & t1 & ",scale=256x256[pic];[blank][pic]overlay[back];[a1]avectorscope=size=256x256[sp];[back][sp]overlay[vo]'"
   End Select
   If visstring <> "" Then
