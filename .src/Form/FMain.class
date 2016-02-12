@@ -2729,10 +2729,10 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     If Lower(audioform.AudioPanel.parent.name) <> Lower(outerbox.name) Then
       If (Not tageditmode) Then
         CoverManager.HitCancel = True
-        If GeneralOptions.CoverCHK2.value Then CoverRefresh()
         ShowAudioPanel(True)
       Endif
     Endif
+    If GeneralOptions.CoverCHK2.value Then CoverRefresh()
       Else
     CorrectAreaAspect() 
     ShowAudioPanel(False)
