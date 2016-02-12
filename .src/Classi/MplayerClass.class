@@ -2247,21 +2247,24 @@ Public Sub do_apply_restart(new_opts As Collection)
   'so check if the answer is different from mplayer.unavailable_str
   'and don't spend too much time anyway waiting for the property.
     For Each properties_changed_runtime
-      global.myDebug("Try to restore Property:", name, data)
-      timerA = Timer()
-      Repeat
-        name = properties_changed_runtime.key
-        data = properties_changed_runtime[name]
-        olddata = Null
-        Try olddata = properties_changed_runtime_old_datas[name]
-        set_property_mpv(name, data, False)
+        global.myDebug("Try to restore Property:", name, data)
+        Stop
+        timerA = Timer()
+        Repeat
+          name = properties_changed_runtime.key
+          If name <> "options/start" Then 'we don't want to restore start property...
+            data = properties_changed_runtime[name]
+            olddata = Null
+            Try olddata = properties_changed_runtime_old_datas[name]
+            set_property_mpv(name, data, False)
+            Wait 0.01
+            newdata = get_property_mpv(name)
+          Endif
+        Until (newdata <> unavailable_str) Or ((Timer() - TimerA) > 10) Or (newdata = olddata) 'dont spend more than one second per property
+        'is it possible that newdata is available but still with an unset value, so, just to be sure, restore it one more time.
         Wait 0.01
-        newdata = get_property_mpv(name)
-      Until (newdata <> unavailable_str) Or ((Timer() - TimerA) > 10) Or (newdata = olddata) 'dont spend more than one second per property
-      'is it possible that newdata is available but still with an unset value, wo, just to be sure, restore it one more time.
-      Wait 0.01
-      set_property_mpv(name, data, False)
-      global.myDebug("Restore property:", name, newdata, data)
+        set_property_mpv(name, data, False)
+        global.myDebug("Restore property:", name, newdata, data)
     Next
 
   'do_apply(new_opts, only_check_vdpaurb)
