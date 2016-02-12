@@ -2235,6 +2235,8 @@ Public Sub do_apply_restart(new_opts As Collection)
     timepos = get_property_mpv("=time-pos")
     set_option("start", timepos)
     do_play(fullpath,, restart = True)
+    Wait 1
+    set_property_mpv("options/start", "0")
   Endif
 
   waitplayback(500)

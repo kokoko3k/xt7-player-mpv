@@ -2592,7 +2592,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   needytcookie = False
   ButtonNowNext.visible = Lower(fullpath) Like "dvb://*"
   ArrangeCpl()
- 
+
   'generaloptions.Init() it seems not needed.
   generaloptions.FirstLoadIfNeeded() 'we need the temporary directory to store captured streams
   dumpfile = generaloptions.dvbtmpdir.text & "/" & "xt7.dumpfile.ts"
