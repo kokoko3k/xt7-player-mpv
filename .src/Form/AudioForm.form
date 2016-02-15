@@ -59,7 +59,7 @@
           }
           { Panel1 Panel AudioAreaGroup
             Name = "Panel1"
-            Move(63,-14,161,203)
+            Move(63,-14,161,210)
             Font = Font["Bitstream Vera Sans,1"]
             Tracking = True
             Drop = True
@@ -345,11 +345,12 @@
     }
     { PictureBox1 Panel
       Move(70,420,238,70)
+      Background = &H000000&
       Expand = True
     }
     { PictureBack PictureBox AudioAreaGroup
       Name = "PictureBack"
-      Move(301,308,231,63)
+      Move(504,259,231,63)
       Tracking = True
       Drop = True
       Expand = True

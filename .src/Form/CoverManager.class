@@ -317,7 +317,7 @@ End
 
 Public Sub Form_Open()
   Global.Center(Fmain, Me)
-  Try hsplit1.Layout = [160, hsplit1.w - 160]
+  Try hsplit1.Layout = [AudioForm.coversize, hsplit1.w - audioform.coversize]
   CoverManager.Show
   combobox1.readonly = True
   combobox1.index = 0
@@ -1333,9 +1333,9 @@ End
 Public Function keepaspect(img As Image, width As Integer) As Picture
   Dim aspect As Float = img.w / img.h
   If aspect >= 1 Then 
-    Return cornice(img.Stretch(width, CInt(width / aspect)), 160, 160)
+    Return cornice(img.Stretch(width, CInt(width / aspect)), AudioForm.coversize, AudioForm.coversize)
       Else
-    Return cornice(img.Stretch(CInt(width * aspect), width), 160, 160)
+    Return cornice(img.Stretch(CInt(width * aspect), width), AudioForm.coversize, AudioForm.coversize)
   Endif
 End
 

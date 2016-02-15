@@ -3164,6 +3164,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
   Dim coverfile As String
   Dim tl As New Taglib
   Dim samecover As Boolean
+  Dim i As Image
   
   If mplayer.ProcessRunningOvr() And mplayer.getP("audioonly") Then
     'coverfile = global.confpath& "/covers/" & global.fixfilename(Upper(Trim(mplayer.Media_Artist))) & "^^^" & global.fixfilename(Upper(Trim(mplayer.Media_Album))) & ".jpg"
@@ -3189,9 +3190,18 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
     audioform.coverbox.refresh
     
     If (Not samecover) Or force Then 
-      Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
-      If Error Then Try audioform.CoverBox.picture = covermanager.keepaspect((image.Load(file.Dir(mplayer.getP("fullpath")) & "/" & covermanager.FolderPicture(file.Dir(mplayer.getP("fullpath"))))), 160)
-      If Error Then audioform.CoverBox.picture = covermanager.DefaultLibraryIcon(mplayer.getP("fullpath"), 160)
+       Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
+
+       'or with shadow
+       ' Try i = Image.Load(coverfile)
+       '  If Error Then Goto Errore
+       '   i = covermanager.Shadowed(i.picture)
+       '   audioform.CoverBox.picture = covermanager.keepaspect(i, 200)
+
+
+      errore:
+      If Error Then Try audioform.CoverBox.picture = covermanager.keepaspect((image.Load(file.Dir(mplayer.getP("fullpath")) & "/" & covermanager.FolderPicture(file.Dir(mplayer.getP("fullpath"))))), AudioForm.coversize)
+      If Error Then audioform.CoverBox.picture = covermanager.DefaultLibraryIcon(mplayer.getP("fullpath"), AudioForm.coversize)
       Audioform.ShowBackground()
     Endif
     audioform.PictureBack.show
