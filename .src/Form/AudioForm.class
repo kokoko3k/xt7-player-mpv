@@ -164,8 +164,10 @@ End
 Public Sub ShowBackground()
   Dim blurred As Image
   Dim gradient As Image
+  Dim t As Image
   Dim pw, ph, cw, ch As Integer
   Dim max_light As Integer = 150 'normalize bright images to this value
+  Dim max_light_down As Integer = 75 'normalize bright images to this value
   Dim mean As Integer
   
   pictureback.lower
@@ -198,10 +200,20 @@ Public Sub ShowBackground()
   
   pictureback.picture = blurred.picture
   pictureback.show
-  
-  picturebox1.picture = pictureback.Picture.Image.Stretch(2, 32).Mirror(False, True).picture
-  
-  
+
+
+
+'   If mean > max_light_down Then
+'     picturebox1.Background = Color.black
+'     picturebox1.picture = pictureback.Picture.Image.Stretch(2, 32).Mirror(False, True).Brightness(- (1 - (max_light_down / mean))).picture
+'       Else
+'     picturebox1.picture = pictureback.Picture.Image.Stretch(2, 32).Mirror(False, True).picture
+'   Endif
+'   ' t = pictureback.Picture.Image.Stretch(1, 1).Stretch(16, 256)
+'   ' picturebox1.Picture.Image.PaintImage(t, 0, 0)
+' 'pictureback.Picture.Image.Stretch(1, 1).picture
+
+
 End
 
 Private Function c_mean(img As Image) As Integer
