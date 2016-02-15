@@ -3193,13 +3193,13 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
     audioform.coverbox.refresh
     
     If (Not samecover) Or force Then 
-       Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
+       'Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
 
        'or with shadow
-       ' Try i = Image.Load(coverfile)
-       '  If Error Then Goto Errore
-       '   i = covermanager.Shadowed(i.picture)
-       '   audioform.CoverBox.picture = covermanager.keepaspect(i, 200)
+       Try i = Image.Load(coverfile)
+        If Error Then Goto Errore
+         i = covermanager.Shadowed(i.picture)
+         audioform.CoverBox.picture = covermanager.keepaspect(i, audioform.coversize)
 
 
       errore:
