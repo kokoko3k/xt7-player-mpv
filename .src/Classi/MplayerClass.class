@@ -2248,7 +2248,6 @@ Public Sub do_apply_restart(new_opts As Collection)
   'and don't spend too much time anyway waiting for the property.
     For Each properties_changed_runtime
         global.myDebug("Try to restore Property:", name, data)
-        Stop
         timerA = Timer()
         Repeat
           name = properties_changed_runtime.key

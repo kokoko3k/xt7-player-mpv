@@ -1641,8 +1641,9 @@ End
 Public Sub ButtonOpen_Click()
   If Not fullyloaded Then Return
   With Global
+    Stop
     If MyDialog.path = "" Then myDialog.Path = .StartFolder
-    myDialog.filter = [.videofilter, .videofiltername, .audiofilter, .audiofiltername]
+    myDialog.filter = [.Multimediafilter, .Multimediafiltername, .videofilter, .videofiltername, .audiofilter, .audiofiltername]
   End With
   If myDialog.OpenFile() Then Return
   Media_Next_path = DConv(myDialog.Path)

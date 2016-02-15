@@ -10,6 +10,8 @@ Public videofiltername As String
 Public UncommonAudiofilters As String
 Public Audiofilter As String
 Public audiofiltername As String
+Public Multimediafilter As String
+Public Multimediafiltername As String
 Public imgfilters As String
 Public Slowmedia As String 
 Public NonTaggableMedia As String
@@ -72,6 +74,8 @@ Public Sub init()
   UncommonAudiofilters = "*.wma;*.ram;*.ac3;*.wav;*.aiff;*.aiffc;*.aac;*.8svx;*.pls;*.dts;*.cue"
   Audiofilter = "*.mp3;*.ogg;*.aac;*.flac;*.mpc;*.ac3;"
   audiofiltername = ("Common Audio Files")
+  Multimediafilter = Videofilter & UncommonVideoFilters & Audiofilter & UncommonAudiofilters
+  Multimediafiltername = ("Multimedia files")
   imgfilters = ("*.jpg;*.jpeg;*.bmp;*.png;")
   Slowmedia = "cddb:// cdda:// mms:// http:// http_proxy:// rtp:// rtsp:// ftp:// udp:// smb:// "  'we'll get tag information on user prefs
   NonTaggableMedia = "tv:// radio:// cdda:// cddb:// mf:// pvr:// dvb:// unsv:// sdp:// mpst:// tivo://"
