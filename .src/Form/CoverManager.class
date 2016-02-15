@@ -1317,6 +1317,8 @@ Public Sub ResizeShadowTemplate(w As Integer, Optional h As Integer = -1)
   shadowimg = shadowimg.Stretch(w + ShadowOffset, h + ShadowOffset)
 End
 
+
+
 Public Function Shadowed(src As Picture) As Image
   Dim offset As Integer = 0
   Dim w As Integer = src.w

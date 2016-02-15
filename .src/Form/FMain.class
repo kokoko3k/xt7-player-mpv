@@ -3195,12 +3195,15 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
     If (Not samecover) Or force Then 
        'Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
 
-       'or with shadow
-       Try i = Image.Load(coverfile)
-        If Error Then Goto Errore
-         i = covermanager.Shadowed(i.picture)
-         audioform.CoverBox.picture = covermanager.keepaspect(i, audioform.coversize)
-
+       ' 'or with shadow
+         Try i = Image.Load(coverfile)
+         If Error Then Goto Errore
+         Try i = Shadow(i, audioform.coversize, CInt(audioform.coversize / 8))
+         If Error Then Goto Errore
+         Try audioform.CoverBox.picture = covermanager.keepaspect(i, audioform.coversize)
+         If Error Then Goto Errore
+          
+       ' 
 
       errore:
       If Error Then Try audioform.CoverBox.picture = covermanager.keepaspect((image.Load(file.Dir(mplayer.getP("fullpath")) & "/" & covermanager.FolderPicture(file.Dir(mplayer.getP("fullpath"))))), AudioForm.coversize)
@@ -3214,6 +3217,15 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
   'AlbumGridView.Current.Refresh()
   MyAlbumsLib.selectcell(AlbumGridView.Row, AlbumGridView.Column)
 End
+
+Public Function shadow(src As Image, final_size As Integer, offset As Integer) As Image
+  Dim s, t As Image
+  s = Image.Load("shadow.png").Stretch(final_size, final_size)
+  t = src.Stretch(final_size - offset, final_size - offset)
+  Return s.DrawImage(t, CInt(offset / 2.25), CInt(offset / 2.25))
+End
+
+
 
 Private currentfile_cover As String = ""
 Private previousfile_cover As String = ""
