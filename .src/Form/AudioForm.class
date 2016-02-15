@@ -4,9 +4,39 @@
 Public CoverSize As Integer = 160
 Public CSTEP As Integer = 8
 
+
+Public Sub init()
+
+  GridUp.columns.count = 2
+  GridUp.rows.count = 6
+  GridUp[0, 0].text = "Artist"
+  GridUp[1, 0].text = "Album"
+  GridUp[2, 0].text = "Year"
+  GridUp[3, 0].text = "Title"
+  GridUp[4, 0].text = "Comment"
+  GridUp[5, 0].text = "Lyrics"
+  GridUp[5, 1].picture = Picture["icon:/22/microphone"]
+  GridUp.Columns[0].w = -1
+  GridUp.Columns[1].w = -1
+  
+  GridDown.columns.count = 2
+  GridDown.rows.count = 5
+  GridDown[0, 0].text = "Radio"
+  GridDown[1, 0].text = "Name"
+  GridDown[2, 0].text = "Length"
+  GridDown[3, 0].text = "Size"
+  GridDown[4, 0].text = "Audio Info"
+  
+  GridDown.Columns[0].w = -1
+  GridDown.Columns[1].w = -1
+  coverpanel.w = coversize
+  CoverBox.h = CoverBox.w 
+  
+End
+
 Public Sub UpdateLength(length As String)
   
-  Label19.text = length
+  GridDown[2, 1].text = length
   
 End
 
@@ -224,4 +254,15 @@ Dim skiprows As Integer = img.Pixels.count Div 8
     s += Color[img.Pixels[i]].value
   Next
   Return CInt(s / (img.Pixels.count - (skiprows * 2))) * 3
+End
+
+
+Public Sub audioareagroup_Click()
+  If Lower(Last.name) = "gridup" Then
+    If GridUp.row = 5 Then 
+      PictureBox2_MouseDown()
+        Else
+      AudioAreaGroup_click()
+    Endif
+  Endif
 End

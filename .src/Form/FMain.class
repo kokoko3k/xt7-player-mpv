@@ -538,6 +538,7 @@ Public Sub AllInit_Post()
   
   timer_runtime_infos = New Timer As "timer_runtime_infos"
   timer_runtime_infos.enabled = False
+  audioform.init()
   
 End
 
@@ -897,30 +898,32 @@ Public Sub SetStyle_early()
   Endif
 
   ArrangeCpl(9)
+  audioform.audiopanel.font = GeneralOptions.FontChooseBTN2.font
 
+  audioform.audiopanel.Foreground = GeneralOptions.ColorChooseBTN2.Background
   If audioform.AudioPanel.parent = Rightsidepanel Then
     If (Not mplayer.ProcessRunningOvr()) Then ShowAudioPanel(False) 
     SetSubControlsStyles(Fmain)
-    For Each TheObject In Audioform.controls
-      If theobject Is Label Then
-        Try TheObject.font = GeneralOptions.FontChooseBTN2.font
-        Try TheObject.Foreground = GeneralOptions.ColorChooseBTN2.Background
-      Endif
-    Next 'TheForm
+    ' For Each TheObject In Audioform.controls
+    '   If theobject Is Label Then
+    '     Try TheObject.font = GeneralOptions.FontChooseBTN2.font
+    '     Try TheObject.Foreground = GeneralOptions.ColorChooseBTN2.Background
+    '   Endif
+    ' Next 'TheForm
     ShowAudioPanel(True)
   Else
     SetSubControlsStyles(Fmain)
-    For Each TheObject In Audioform.controls
-      If theobject Is Label Then
-        Try TheObject.font = GeneralOptions.FontChooseBTN2.font
-        Try TheObject.foreground = GeneralOptions.ColorChooseBTN2.Background
-      Endif
-    Next 'TheForm
+    ' For Each TheObject In Audioform.controls
+    '   If theobject Is Label Then
+    '     Try TheObject.font = GeneralOptions.FontChooseBTN2.font
+    '     Try TheObject.foreground = GeneralOptions.ColorChooseBTN2.Background
+    '   Endif
+    ' Next 'TheForm
   Endif
 
   audioform.Label1.Foreground = &HFFFF00&
   audioform.Label1.Font.Italic = True
-  Audioform.Label1.Font.size = Audioform.Label2.Font.size + 4
+  Audioform.Label1.Font.size = Audioform.audiopanel.Font.size + 4
   fmain.Statusbar1.Foreground = &HF0F0F0&
   fmain.Statusbar1.Background = &000000&
   
@@ -1314,25 +1317,25 @@ Public Sub FillPropertiesGrid()
   
   'init pretty panel too
   If GeneralOptions.CoverCHK2.value Then
-    audioform.label12.text = PropertiesGrid[6, 1].text
-    audioform.label13.text = PropertiesGrid[5, 1].text
-    audioform.label14.text = PropertiesGrid[8, 1].text
-    audioform.label15.text = PropertiesGrid[7, 1].text
-    audioform.label16.text = PropertiesGrid[11, 1].text
+    audioform.GridUp[0, 1].text = PropertiesGrid[6, 1].text
+    audioform.GridUp[1, 1].text = PropertiesGrid[5, 1].text
+    audioform.GridUp[2, 1].text = PropertiesGrid[8, 1].text
+    audioform.GridUp[3, 1].text = PropertiesGrid[7, 1].text
+    audioform.GridUp[4, 1].text = PropertiesGrid[11, 1].text
     'commented out the very next because this will be filled by mpv when the name property changes.
     'audioform.label18.text = PropertiesGrid[1, 1].text
     
     'audioform.label19.text = PropertiesGrid[3, 1].text
     If Trim(PropertiesGrid[2, 1].text) <> "" Then 
-      audioform.label20.text = PropertiesGrid[2, 1].text & "KB"
+      audioform.GridDown[3, 1].text = PropertiesGrid[2, 1].text & "KB"
     Else
-      audioform.label20.text = ("Unknown")
+      audioform.GridDown[3, 1].text = ("Unknown")
     Endif
     Try audio_codec = Split(Trim(PropertiesGrid[14, 1].text), " ", "", True)[0]
-    If audio_codec <> "" Then audioform.label21.text = audio_codec
-    If (Trim(PropertiesGrid[15, 1].text) <> "") Then audioform.label21.text &= "@" & PropertiesGrid[15, 1].text
-    If (Trim(PropertiesGrid[12, 1].text) <> "") Then audioform.label21.text &= ", " & ("Channels") & ": " & PropertiesGrid[12, 1].text
-    If (Trim(PropertiesGrid[13, 1].text) <> "") Then audioform.label21.text &= ", " & ("Rate") & ": " & PropertiesGrid[13, 1].text & "Hz"
+    If audio_codec <> "" Then audioform.GridDown[4, 1].text = audio_codec
+    If (Trim(PropertiesGrid[15, 1].text) <> "") Then audioform.GridDown[4, 1].text &= "@" & PropertiesGrid[15, 1].text
+    If (Trim(PropertiesGrid[12, 1].text) <> "") Then audioform.GridDown[4, 1].text &= ", " & ("Channels") & ": " & PropertiesGrid[12, 1].text
+    If (Trim(PropertiesGrid[13, 1].text) <> "") Then audioform.GridDown[4, 1].text &= ", " & ("Rate") & ": " & PropertiesGrid[13, 1].text & "Hz"
   Endif
   
   If (global.IsAudioFile(mplayer.getP("fullpath"))) Or (global.IsNetworkURI(mplayer.getP("fullpath"))) Or (Lower(mplayer.getP("fullpath")) Like "cdd?://*") Then
@@ -2553,7 +2556,7 @@ Public Sub file_options(fullpath As String) As Collection
   '   export_opts = VmetersOptionsAndInitIfNeeded(fullpath)
   '   If export_opts <> "" Then opts["af-pre"] = "export=" & export_opts
   ' Endif
-    audioform.BarBox.visible = False  'mpv 0.11 removed af_export filter :(
+    'audioform.BarBox.visible = False  'mpv 0.11 removed af_export filter :(
   
   For Each opt In SetRightCache(fullpath)
     opts[opt.name] = opt.data
@@ -2784,13 +2787,13 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   VEqHasBeenSet = False
 
 
-  audioform.Label11.visible = (Trim(theradiolabel) <> "")
   If Trim(theradiolabel) <> "" Then
-    audioform.RadioLabel.text = theradiolabel
-    audioform.RadioLabel.visible = True
+    audioform.GridDown[0, 0].text = ("Radio")
+    audioform.GridDown[0, 1].text = theradiolabel
     audioform.cutstrings()
   Else
-    audioform.RadioLabel.visible = False
+    audioform.GridDown[0, 0].text = ""
+    audioform.GridDown[0, 1].text = ""
   Endif
 
   Wait 
@@ -3719,8 +3722,8 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
         CUSTOMTITLE_OLD = cdda_track_name(data_new)
         UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
         propertiesGrid[7, 1].text = CUSTOMTITLE_OLD
-        Audioform.label15.text = CUSTOMTITLE_OLD
-        Audioform.label18.text = CUSTOMTITLE_OLD
+        Audioform.GridUp[3, 1].text = CUSTOMTITLE_OLD
+        Audioform.GridDown[1, 1].text = CUSTOMTITLE_OLD
         AutoresizeAudioForm()
           Else If PlayQueueIs = "chapters" Then
             Try chaptersgrid.row = data_new
@@ -3741,7 +3744,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
       If global.IsCdaudio(mplayer.getP("fullpath")) Then Goto ReturnLabel 'cd title is treated differently
       Try CUSTOMTITLE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
-      Audioform.label18.text = CUSTOMTITLE_OLD
+      Audioform.GridDown[1, 1].text = CUSTOMTITLE_OLD
   
     Case "cache"
       If data_new <> mplayer.unavailable_str Then CACHEVALUE_OLD = data_new
@@ -6181,6 +6184,8 @@ Public Sub Hsplit1_MyRefresh()
     Wait
     PanelNowNextArrange()
   Endif
+
+  If audioform.AudioPanel.Parent = outerbox Then AutoresizeAudioForm()
   
   ' ' ' zzzfake.cachingbox.x = (outerbox.w Div 2) - 33
   ' ' ' zzzfake.cachingbox.y = (outerbox.h Div 2) - 33
@@ -7816,67 +7821,51 @@ Public Sub Shutcfg_Click()
 End
 
 Public Sub AutoresizeAudioForm()
+' audioform.GridDown.AutoResize = False
+' audioform.audiopanel.autoresize = False
+' 
+'   Wait
+'   audioform.audiopanel.autoresize = True
+'  audioform.GridDown.AutoResize = True
+
+  Dim lastrow As _gridview_row
+  Dim lastcolumn As _gridview_column
+  Dim upWidth, downWidth As Integer
+
+  'autoresize grid columns:
+   audioform.GridDown.Columns[0].w = -1
+   audioform.GridDown.Columns[1].w = -1
+   audioform.GridUp.Columns[0].w = -1
+   audioform.GridUp.Columns[1].w = -1
+  'Stop
+  audioform.GridUp.Columns[0].w += audioform.GridUp.Font.TextWidth("__")
+  audioform.GridDown.Columns[0].w += audioform.GridDown.Font.TextWidth("__")
+
+  'resize height of up and down panels
+  lastrow = audioform.GridUp.rows[audioform.GridUp.Rows.max]
+  audioform.GridUp.h = Max(lastrow.y + lastrow.h, audioform.coversize)
   
-  Dim oggetto As Object
-  Dim MaxLabel_12__16 As Integer = 0
-  Dim MaxLabel_18__21 As Integer = 0
-  Dim upperboxW As Integer = 0
-  Dim lowerboxW As Integer = 0
-  Dim labelheight As Integer
+  lastrow = audioform.GridDown.rows[audioform.GridDown.rows.max]
+  audioform.GridDown.h = lastrow.y + lastrow.h
+
+  'resize width of up and down panels
+  lastcolumn = audioform.GridUp.columns[audioform.GridUp.columns.max]
+  audioform.GridUp.w = lastcolumn.x + lastcolumn.w
+  UpWidth = audioform.GridUp.w + audioform.coverpanel.w
   
-  For Each oggetto In audioform.VBox2.children
-    If oggetto Is Label Then
-      If oggetto.Font.TextWidth(oggetto.text) > MaxLabel_12__16 Then MaxLabel_12__16 = oggetto.Font.TextWidth(oggetto.text)
-      
-      'PRINT "oggetto.text = " & oggetto.Font.TextWidth(oggetto.text) & " text= " & " " & oggetto.text 
-    Endif
-  Next 'oggetto
+  lastcolumn = audioform.Griddown.columns[audioform.Griddown.columns.max]
+  audioform.griddown.w = lastcolumn.x + lastcolumn.w
+  DownWidth = audioform.griddown.w 
   
-  For Each oggetto In audioform.VBox4.children
-    If oggetto Is Label Then
-      If oggetto.Font.TextWidth(oggetto.text) > MaxLabel_18__21 Then MaxLabel_18__21 = oggetto.Font.TextWidth(oggetto.text)
-    Endif
-  Next 'oggetto
-  
-  upperboxW = 300 + vbox1.w + MaxLabel_12__16 ' +32 '++Relevant correction
-  lowerboxW = audioform.VBox3.w + MaxLabel_18__21 '+32 '++Relevant correction
-  audioform.vbox5.w = Max(upperboxW, lowerboxW) + 32
-  hbox2.w = upperboxW + 16
-  hbox1.w = lowerboxW + 16
-  audioform.VBox4.w = MaxLabel_18__21 + 32 '+ 32 '++Relevant correction
-  audioform.VBox2.w = MaxLabel_12__16 + 32 '+ 32 '++Relevant correction
-  
-  labelheight = Label2.Font.TextHeight("IJ") + (Label2.Font.TextHeight("IJ") Div 2)
-  
-  For Each oggetto In audioform.VBox1.children
-    If oggetto Is Label Then
-      oggetto.h = labelheight
-      oggetto.w = oggetto.Font.TextWidth(oggetto.text)
-    Endif
-  Next 'oggetto
-  
-  For Each oggetto In audioform.VBox3.children
-    If oggetto Is Label Then
-      oggetto.h = labelheight
-      oggetto.w = oggetto.Font.TextWidth(oggetto.text)
-    Endif
-  Next 'oggetto
-  
-  For Each oggetto In audioform.VBox2.children
-    If oggetto Is Label Then
-      oggetto.h = labelheight
-      oggetto.w = oggetto.Font.TextWidth(oggetto.text)
-      'oggetto.w = 2000
-    Endif
-  Next 'oggetto
-  
-  For Each oggetto In audioform.VBox4.children
-    If oggetto Is Label Then
-      oggetto.h = labelheight
-      oggetto.w = oggetto.Font.TextWidth(oggetto.text)
-      'oggetto.w = 2000
-    Endif
-  Next 'oggetto
+
+  audioform.leftalignup.w = (audioform.AudioPanel.w - Max(upwidth, downWidth)) Div 2
+  audioform.leftaligndown.w = audioform.leftalignup.w 
+
+  ' audioform.GridDown.Columns[0].w = -1
+  ' audioform.GridDown.Columns[1].w = -1
+  ' audioform.GridUp.Columns[0].w = -1
+  ' audioform.GridUp.Columns[1].w = -1
+
   
 End
 
