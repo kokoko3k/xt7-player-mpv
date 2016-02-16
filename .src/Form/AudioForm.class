@@ -142,7 +142,7 @@ Public Function cutstring(mystr As String, MaxL As Integer) As String
 End
 
 Public Sub cutstrings()
-  audioform.RadioLabel.text = cutstring(audioform.RadioLabel.text, 50)
+  audioform.GridDown[0, 1].text = cutstring(audioform.GridDown[0, 1].text, 50)
 End
 
 
