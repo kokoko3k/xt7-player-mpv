@@ -3192,8 +3192,8 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
     audioform.coverbox.refresh
     
     If (Not samecover) Or force Then 
+       Audioform.ShowBackground()
        'Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
-
        ' 'or with shadow
          Try i = Image.Load(coverfile)
          If Error Then Goto Errore
@@ -3207,7 +3207,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
       errore:
       If Error Then Try audioform.CoverBox.picture = covermanager.keepaspect((image.Load(file.Dir(mplayer.getP("fullpath")) & "/" & covermanager.FolderPicture(file.Dir(mplayer.getP("fullpath"))))), AudioForm.coversize)
       If Error Then audioform.CoverBox.picture = covermanager.DefaultLibraryIcon(mplayer.getP("fullpath"), AudioForm.coversize)
-      Audioform.ShowBackground()
+
     Endif
     audioform.PictureBack.show
     ShowAudioPanel(True, Samecover)
@@ -3246,6 +3246,7 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
     If ((currentfile_cover <> previousfile_cover) Or (audioform.AudioPanel.Parent <> outerbox)) Then  'avoid showing twice
       'fmain.OuterBox.ignore = True
       fmain.OuterBox.Arrangement = Arrange.fill
+
       If Not samecover Then audioform.CoverBox.Resize(0, 0)
       If Lower(audioform.AudioPanel.Parent.name) <> Lower(outerbox.name) Then
         BottomVbox.hide
@@ -3254,12 +3255,6 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
         If audioform.AudioPanel.parent <> outerbox Then audioform.AudioPanel.Reparent(outerbox)
         BottomVbox.raise() ' Reparent(rightsidepanel)
         bottomvbox.show
-        'cachebar removed: If cachebar.parent <> Rightsidepanel Then cachebar.Reparent(rightsidepanel)
-        'cachebar removed: If fsform.visible Then 
-          'cachebar removed: cachebar.Move(0, audioform.AudioPanel.h - cachebar.h, 0)
-            'cachebar removed: Else
-          'cachebar removed: cachebar.Move(0, audioform.AudioPanel.h + toolbarbackground.h - cachebar.h, 0)
-        'cachebar removed: Endif
 
       Endif
     Endif

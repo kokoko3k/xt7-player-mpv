@@ -10,6 +10,7 @@
     Move(7,28,672,420)
     Background = Color.Black
     Expand = True
+    Spacing = True
     { HBox1 HBox audioareagroup
       Name = "HBox1"
       Move(203,7,161,14)
@@ -33,7 +34,7 @@
         Move(7,21,14,77)
       }
       { CoverPanel Panel
-        Move(35,14,126,77)
+        Move(35,21,126,77)
         { CoverBox PictureBox
           Move(0,0,28,28)
           Font = Font["1"]
@@ -50,15 +51,13 @@
         Background = &HFF000000&
         Border = False
         Grid = False
+        ScrollBar = Scroll.None
         AutoResize = False
       }
       { TimerZoomOut #Timer
         #Move(210,56)
         Delay = 30
       }
-    }
-    { PanelSpacer Panel
-      Move(70,203,427,28)
     }
     { Panel1 Panel
       Move(35,252,588,63)
@@ -75,6 +74,7 @@
         Background = &HFF000000&
         Border = False
         Grid = False
+        ScrollBar = Scroll.None
         AutoResize = False
       }
     }
