@@ -31,7 +31,7 @@ Public Sub init()
   GridDown.Columns[1].w = -1
   coverpanel.w = coversize
   CoverBox.h = CoverBox.w 
-  
+  panelspacer.h = panelspacer.Font.Height 
 End
 
 Public Sub UpdateLength(length As String)
@@ -185,7 +185,13 @@ End
 
 Public Sub AudioAreaGroup_Arrange()
   pictureback.lower
-  pictureback.Move(0, 0, audiopanel.w, AudioPanel.h - picturebox1.h)
+  If Left(GeneralOptions.NoParseVisType2.text) = 0 Then
+    picturebox1.Background = Color.Transparent
+    pictureback.Move(0, 0, audiopanel.w, AudioPanel.h)
+      Else
+    picturebox1.Background = Color.black
+    pictureback.Move(0, 0, audiopanel.w, AudioPanel.h - picturebox1.h)
+  Endif
 End
 
 Public Sub ShowBackground()
@@ -229,7 +235,6 @@ Public Sub ShowBackground()
   pictureback.show
 
 
-
 '   If mean > max_light_down Then
 '     picturebox1.Background = Color.black
 '     picturebox1.picture = pictureback.Picture.Image.Stretch(2, 32).Mirror(False, True).Brightness(- (1 - (max_light_down / mean))).picture
@@ -260,4 +265,55 @@ Public Sub audioareagroup_Click()
       PictureBox2_MouseDown()
     Endif
   Endif
+End
+
+
+
+Public Sub AutoresizeAudioForm()
+' audioform.GridDown.AutoResize = False
+' audioform.audiopanel.autoresize = False
+' 
+'   Wait
+'   audioform.audiopanel.autoresize = True
+'  audioform.GridDown.AutoResize = True
+
+  Dim lastrow As _gridview_row
+  Dim lastcolumn As _gridview_column
+  Dim upWidth, downWidth As Integer
+
+  'autoresize grid columns:
+   GridDown.Columns[0].w = -1
+   GridDown.Columns[1].w = -1
+   GridUp.Columns[0].w = -1
+   GridUp.Columns[1].w = -1
+  'Stop
+  GridUp.Columns[0].w += GridUp.Font.TextWidth("__")
+  GridDown.Columns[0].w += GridDown.Font.TextWidth("__")
+
+  'resize height of up and down panels
+  lastrow = GridUp.rows[GridUp.Rows.max]
+  GridUp.h = Max(lastrow.y + lastrow.h, coversize)
+  
+  lastrow = GridDown.rows[GridDown.rows.max]
+  GridDown.h = lastrow.y + lastrow.h
+
+  'resize width of up and down panels
+  lastcolumn = GridUp.columns[GridUp.columns.max]
+  GridUp.w = lastcolumn.x + lastcolumn.w
+  UpWidth = GridUp.w + coverpanel.w
+  
+  lastcolumn = Griddown.columns[Griddown.columns.max]
+  audioform.griddown.w = lastcolumn.x + lastcolumn.w
+  DownWidth = griddown.w 
+  
+
+  leftalignup.w = (AudioPanel.w - Max(upwidth, downWidth)) Div 2
+  leftaligndown.w = leftalignup.w 
+
+  ' audioform.GridDown.Columns[0].w = -1
+  ' audioform.GridDown.Columns[1].w = -1
+  ' audioform.GridUp.Columns[0].w = -1
+  ' audioform.GridUp.Columns[1].w = -1
+
+  
 End

@@ -1338,7 +1338,7 @@ Public Sub FillPropertiesGrid()
   Endif
   
   If (global.IsAudioFile(mplayer.getP("fullpath"))) Or (global.IsNetworkURI(mplayer.getP("fullpath"))) Or (Lower(mplayer.getP("fullpath")) Like "cdd?://*") Then
-    AutoresizeAudioForm()
+    audioform.AutoresizeAudioForm()
   Endif
 
 End
@@ -3735,7 +3735,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
         propertiesGrid[7, 1].text = CUSTOMTITLE_OLD
         Audioform.GridUp[3, 1].text = CUSTOMTITLE_OLD
         Audioform.GridDown[1, 1].text = CUSTOMTITLE_OLD
-        AutoresizeAudioForm()
+        audioform.AutoresizeAudioForm()
           Else If PlayQueueIs = "chapters" Then
             Try chaptersgrid.row = data_new
     Endif
@@ -6196,7 +6196,7 @@ Public Sub Hsplit1_MyRefresh()
     PanelNowNextArrange()
   Endif
 
-  If audioform.AudioPanel.Parent = outerbox Then AutoresizeAudioForm()
+  If audioform.AudioPanel.Parent = outerbox Then audioform.AutoresizeAudioForm()
   
   ' ' ' zzzfake.cachingbox.x = (outerbox.w Div 2) - 33
   ' ' ' zzzfake.cachingbox.y = (outerbox.h Div 2) - 33
@@ -7828,55 +7828,6 @@ Public Sub Shutcfg_Click()
   
   GeneralOptions.Show()
   GeneralOptions.OptionsList["Misc"].selected = True
-  
-End
-
-Public Sub AutoresizeAudioForm()
-' audioform.GridDown.AutoResize = False
-' audioform.audiopanel.autoresize = False
-' 
-'   Wait
-'   audioform.audiopanel.autoresize = True
-'  audioform.GridDown.AutoResize = True
-
-  Dim lastrow As _gridview_row
-  Dim lastcolumn As _gridview_column
-  Dim upWidth, downWidth As Integer
-
-  'autoresize grid columns:
-   audioform.GridDown.Columns[0].w = -1
-   audioform.GridDown.Columns[1].w = -1
-   audioform.GridUp.Columns[0].w = -1
-   audioform.GridUp.Columns[1].w = -1
-  'Stop
-  audioform.GridUp.Columns[0].w += audioform.GridUp.Font.TextWidth("__")
-  audioform.GridDown.Columns[0].w += audioform.GridDown.Font.TextWidth("__")
-
-  'resize height of up and down panels
-  lastrow = audioform.GridUp.rows[audioform.GridUp.Rows.max]
-  audioform.GridUp.h = Max(lastrow.y + lastrow.h, audioform.coversize)
-  
-  lastrow = audioform.GridDown.rows[audioform.GridDown.rows.max]
-  audioform.GridDown.h = lastrow.y + lastrow.h
-
-  'resize width of up and down panels
-  lastcolumn = audioform.GridUp.columns[audioform.GridUp.columns.max]
-  audioform.GridUp.w = lastcolumn.x + lastcolumn.w
-  UpWidth = audioform.GridUp.w + audioform.coverpanel.w
-  
-  lastcolumn = audioform.Griddown.columns[audioform.Griddown.columns.max]
-  audioform.griddown.w = lastcolumn.x + lastcolumn.w
-  DownWidth = audioform.griddown.w 
-  
-
-  audioform.leftalignup.w = (audioform.AudioPanel.w - Max(upwidth, downWidth)) Div 2
-  audioform.leftaligndown.w = audioform.leftalignup.w 
-
-  ' audioform.GridDown.Columns[0].w = -1
-  ' audioform.GridDown.Columns[1].w = -1
-  ' audioform.GridUp.Columns[0].w = -1
-  ' audioform.GridUp.Columns[1].w = -1
-
   
 End
 
