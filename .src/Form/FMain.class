@@ -538,8 +538,7 @@ Public Sub AllInit_Post()
   
   timer_runtime_infos = New Timer As "timer_runtime_infos"
   timer_runtime_infos.enabled = False
-  audioform.init()
-  
+
 End
 
 Private Sub MakeProfileMenu()
@@ -1015,7 +1014,7 @@ Public Sub SetStyle_early()
     progressframe.background = Color.rgb(0, 0, 0, 210)
     progressframe.tag = True
   Endif
-
+  audioform.init()
   'progressframe.background = Color.SetAlpha(Color.Darker(Color.Darker(Color.SelectedBackground)), 200)
   Initprogress()
 End
