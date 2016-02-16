@@ -63,7 +63,7 @@ Public Sub AudioAreaGroup_KeyPress()
 End
 
 Public Sub AudioAreaGroup_MouseUp()
-  
+  Stop
   FMain.VideoAreaGroup_MouseUp()
   
 End
@@ -260,8 +260,6 @@ Public Sub audioareagroup_Click()
   If Lower(Last.name) = "gridup" Then
     If GridUp.row = 5 Then 
       PictureBox2_MouseDown()
-        Else
-      AudioAreaGroup_click()
     Endif
   Endif
 End
