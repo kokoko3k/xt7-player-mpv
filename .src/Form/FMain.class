@@ -3192,7 +3192,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
     audioform.coverbox.refresh
     
     If (Not samecover) Or force Then 
-       Audioform.ShowBackground()
+        Audioform.ShowBackground()
        'Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
        ' 'or with shadow
          Try i = Image.Load(coverfile)
@@ -4430,7 +4430,6 @@ Public Sub FullScreenSwitch()
   SwitchingFullScreen = False
   UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
   UpdateSeekSlider()
-  'Audioform.AutoresizeAudioForm()
 
 End
 
@@ -4462,10 +4461,10 @@ Public Sub SwitchToFS()
   
   FsForm.Background = color.black
   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
-  Stop
+
   FsForm.FullScreen = True
   FsForm.Background = color.Default
-Wait
+
   'execute shell commands
   'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
 
@@ -4518,11 +4517,14 @@ Wait
   Maintoolbar.hide
 
   videobox.Show
+  If Lower(audioform.AudioPanel.parent.name) = Lower(outerbox.name) Then Audioform.AutoresizeAudioForm()
   For i = 1 To 10
     CorrectAreaAspect()
     Wait 0.1
   Next 'i
   fsform.picture = Null
+
+
 End
 
 
@@ -4606,7 +4608,7 @@ Public Sub SwitchToWindow()
   FsForm.FullScreen = False
 
   Hsplit1_MyRefresh()
-
+  If Lower(audioform.AudioPanel.parent.name) = Lower(outerbox.name) Then Audioform.AutoresizeAudioForm()
 End
 
 

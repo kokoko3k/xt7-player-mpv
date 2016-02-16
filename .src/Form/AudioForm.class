@@ -186,17 +186,13 @@ Public Sub Label17_MouseDown()
 End
 
 Public Sub AudioAreaGroup_Arrange()
-  ' If GridDown[0, 1].text <> "" Then 
-  '   panelspacer.h = CInt(panelspacer.Font.Height * 0.4)
-  '     Else
-  '   panelspacer.h = 0
-  ' Endif
+
   If GridDown[0, 1].text = "" Then 
     GridDown.Rows[0].h = 0
       Else
     GridDown.Rows[0].h = Griddown.Rows.H
   Endif
-  Wait
+
   pictureback.lower
   If Left(GeneralOptions.NoParseVisType2.text) = 0 Then
     picturebox1.Background = Color.Transparent
