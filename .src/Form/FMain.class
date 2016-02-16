@@ -4430,6 +4430,7 @@ Public Sub FullScreenSwitch()
   SwitchingFullScreen = False
   UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
   UpdateSeekSlider()
+  'Audioform.AutoresizeAudioForm()
 
 End
 
@@ -4461,10 +4462,10 @@ Public Sub SwitchToFS()
   
   FsForm.Background = color.black
   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
-  
+  Stop
   FsForm.FullScreen = True
   FsForm.Background = color.Default
-
+Wait
   'execute shell commands
   'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
 
