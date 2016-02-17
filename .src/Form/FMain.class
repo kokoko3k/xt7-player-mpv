@@ -1316,25 +1316,27 @@ Public Sub FillPropertiesGrid()
   
   'init pretty panel too
   If GeneralOptions.CoverCHK2.value Then
-    audioform.GridUp[0, 1].text = PropertiesGrid[6, 1].text
-    audioform.GridUp[1, 1].text = PropertiesGrid[5, 1].text
-    audioform.GridUp[2, 1].text = PropertiesGrid[8, 1].text
-    audioform.GridUp[3, 1].text = PropertiesGrid[7, 1].text
-    audioform.GridUp[4, 1].text = PropertiesGrid[11, 1].text
+    audioform.UpdateCell(audioform.gridup, 0, 1, PropertiesGrid[6, 1].text)
+    audioform.UpdateCell(audioform.gridup, 1, 1, PropertiesGrid[5, 1].text)
+    audioform.UpdateCell(audioform.gridup, 2, 1, PropertiesGrid[8, 1].text)
+    audioform.UpdateCell(audioform.gridup, 3, 1, PropertiesGrid[7, 1].text)
+    audioform.UpdateCell(audioform.gridup, 4, 1, PropertiesGrid[11, 1].text)
+    
     'commented out the very next because this will be filled by mpv when the name property changes.
     'audioform.label18.text = PropertiesGrid[1, 1].text
     
     'audioform.label19.text = PropertiesGrid[3, 1].text
     If Trim(PropertiesGrid[2, 1].text) <> "" Then 
-      audioform.GridDown[3, 1].text = PropertiesGrid[2, 1].text & "KB"
+      audioform.UpdateCell(audioform.griddown, 3, 1, PropertiesGrid[2, 1].text & "KB")
     Else
-      audioform.GridDown[3, 1].text = ("Unknown")
+      audioform.UpdateCell(audioform.griddown, 3, 1, ("Unknown"))
     Endif
     Try audio_codec = Split(Trim(PropertiesGrid[14, 1].text), " ", "", True)[0]
-    If audio_codec <> "" Then audioform.GridDown[4, 1].text = audio_codec
-    If (Trim(PropertiesGrid[15, 1].text) <> "") Then audioform.GridDown[4, 1].text &= "@" & PropertiesGrid[15, 1].text
-    If (Trim(PropertiesGrid[12, 1].text) <> "") Then audioform.GridDown[4, 1].text &= ", " & ("Channels") & ": " & PropertiesGrid[12, 1].text
-    If (Trim(PropertiesGrid[13, 1].text) <> "") Then audioform.GridDown[4, 1].text &= ", " & ("Rate") & ": " & PropertiesGrid[13, 1].text & "Hz"
+    If audio_codec <> "" Then audioform.UpdateCell(audioform.griddown, 4, 1, audio_codec)
+    If (Trim(PropertiesGrid[15, 1].text) <> "") Then audioform.UpdateCell(audioform.griddown, 4, 1, audioform.griddown[4, 1].text & "@" & PropertiesGrid[15, 1].text)
+    If (Trim(PropertiesGrid[12, 1].text) <> "") Then audioform.UpdateCell(audioform.griddown, 4, 1, audioform.griddown[4, 1].text & ", " & ("Channels") & ": " & PropertiesGrid[12, 1].text)
+    If (Trim(PropertiesGrid[13, 1].text) <> "") Then audioform.UpdateCell(audioform.griddown, 4, 1, audioform.griddown[4, 1].text & ", " & ("Rate") & ": " & PropertiesGrid[13, 1].text & "Hz")
+
   Endif
   
   If (global.IsAudioFile(mplayer.getP("fullpath"))) Or (global.IsNetworkURI(mplayer.getP("fullpath"))) Or (Lower(mplayer.getP("fullpath")) Like "cdd?://*") Then
@@ -2787,12 +2789,12 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
 
   If Trim(theradiolabel) <> "" Then
-    audioform.GridDown[0, 0].text = ("Radio")
-    audioform.GridDown[0, 1].text = theradiolabel
+    audioform.UpdateCell(audioform.griddown, 0, 0, ("Radio"))
+    audioform.UpdateCell(audioform.griddown, 0, 1, theradiolabel)
     audioform.cutstrings()
   Else
-    audioform.GridDown[0, 0].text = ""
-    audioform.GridDown[0, 1].text = ""
+    audioform.UpdateCell(audioform.griddown, 0, 0, "")
+    audioform.UpdateCell(audioform.griddown, 0, 1, "")
   Endif
 
   Wait 
@@ -3642,7 +3644,6 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
     PostText = "-" & RemainingTime & " / " & mplayer.getP("=duration")
   Endif
 
-  
   smallwindow = (Statusbar1.Font.TextWidth(PreText & PostText) > Statusbar1.Width)
   pretext = Replace(pretext, "\n", " ")
   If SmallWindow Then
@@ -3677,7 +3678,7 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
       OLD_CACHE_MSG = fmain_caption
       OLD_CACHEVALUE = cachevalue
       'cachebar removed: cachebar.w = (OLD_CACHEVALUE / 100) * Rightsidepanel.w
-      
+
         Else
       'same cachevalue, just repaint old caption
       fmain_caption = OLD_CACHE_MSG
@@ -3686,7 +3687,6 @@ Public Sub UpdateStatusBar(customtitle As String, cTime As String, cachevalue As
   
 
   
-
   
   fmain.caption = fmain_caption
   
@@ -3729,8 +3729,8 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
         CUSTOMTITLE_OLD = cdda_track_name(data_new)
         UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
         propertiesGrid[7, 1].text = CUSTOMTITLE_OLD
-        Audioform.GridUp[3, 1].text = CUSTOMTITLE_OLD
-        Audioform.GridDown[1, 1].text = CUSTOMTITLE_OLD
+        audioform.UpdateCell(audioform.gridup, 3, 1, CUSTOMTITLE_OLD)
+        audioform.UpdateCell(audioform.griddown, 1, 1, CUSTOMTITLE_OLD)
         audioform.AutoresizeAudioForm()
           Else If PlayQueueIs = "chapters" Then
             Try chaptersgrid.row = data_new
@@ -3751,7 +3751,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
       If global.IsCdaudio(mplayer.getP("fullpath")) Then Goto ReturnLabel 'cd title is treated differently
       Try CUSTOMTITLE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
-      Audioform.GridDown[1, 1].text = CUSTOMTITLE_OLD
+      audioform.UpdateCell(audioform.griddown, 1, 1, CUSTOMTITLE_OLD)
   
     Case "cache"
       If data_new <> mplayer.unavailable_str Then CACHEVALUE_OLD = data_new

@@ -9,37 +9,40 @@ Public Sub init()
 
   GridUp.columns.count = 2
   GridUp.rows.count = 6
-  GridUp[0, 0].text = "Artist"
-  GridUp[1, 0].text = "Album"
-  GridUp[2, 0].text = "Year"
-  GridUp[3, 0].text = "Title"
-  GridUp[4, 0].text = "Comment"
-  GridUp[5, 0].text = "Lyrics"
+  GridUp[0, 0].text = ("Artist")
+  GridUp[1, 0].text = ("Album")
+  GridUp[2, 0].text = ("Year")
+  GridUp[3, 0].text = ("Title")
+  GridUp[4, 0].text = ("Comment")
+  GridUp[5, 0].text = ("Lyrics")
   GridUp[5, 1].picture = Picture["icon:/22/microphone"]
   GridUp.Columns[0].w = -1
   GridUp.Columns[1].w = -1
   
   GridDown.columns.count = 2
   GridDown.rows.count = 5
-  GridDown[0, 0].text = "Radio"
-  GridDown[1, 0].text = "Name"
-  GridDown[2, 0].text = "Length"
-  GridDown[3, 0].text = "Size"
-  GridDown[4, 0].text = "Audio Info"
+  GridDown[0, 0].text = ("Radio")
+  GridDown[1, 0].text = ("Name")
+  GridDown[2, 0].text = ("Length")
+  GridDown[3, 0].text = ("Size")
+  GridDown[4, 0].text = ("Audio Info")
   
   GridDown.Columns[0].w = -1
   GridDown.Columns[1].w = -1
   
-  coversize = CInt(GridUp.Rows[0].Height * GridUp.Rows.Count * 1.2)
+  coversize = CInt(audioform.gridup.Rows[0].Height * GridUp.Rows.Count * 1.2)
   coverpanel.w = coversize
   CoverBox.h = CoverBox.w 
-
+  
+  MakeGridShadow(audioform.gridupShadow, GridUp)
+  MakeGridShadow(audioform.griddownShadow, GridDown)
 End
 
+
+
+
 Public Sub UpdateLength(length As String)
-  
-  GridDown[2, 1].text = length
-  
+  audioform.UpdateCell(audioform.griddown, 2, 1, length)
 End
 
 Public Sub AudioAreaGroup_Drop()
@@ -144,25 +147,15 @@ Public Function cutstring(mystr As String, MaxL As Integer) As String
 End
 
 Public Sub cutstrings()
-  audioform.GridDown[0, 1].text = cutstring(audioform.GridDown[0, 1].text, 50)
+  Audioform.UpdateCell(audioform.griddown, 0, 1, cutstring(audioform.GridDown[0, 1].text, 50))
 End
 
-
-Public Sub Form_Open()
-
-  
-
-End
 
 Public Sub AudioAreaGroup_MouseMove()
 
   FMain.VideoAreaGroup_MouseMove()
 End
 
-'mpv 0.11 removed af_export filter :(
-' Public Sub BarBox_MouseDown()
-'   Try FMain.mymeters.nextvis()
-' End
 
 Public Sub PictureBox2_Enter()
   
@@ -201,7 +194,40 @@ Public Sub AudioAreaGroup_Arrange()
     picturebox1.Background = Color.black
     pictureback.Move(0, 0, audiopanel.w, AudioPanel.h - picturebox1.h)
   Endif
+  MakeGridShadow(audioform.gridupShadow, GridUp)
+  MakeGridShadow(audioform.griddownShadow, GridDown)
 End
+
+
+Public Function MakeGridShadow(sgrid As Gridview, dgrid As Gridview)
+  Dim c, r As Integer
+  Dim sr, dr As _gridview_row
+  Dim offset As Integer = CInt(sgrid.Font.h / 11)
+
+    sgrid.ignore = True
+    sgrid.background = Color.transparent
+    sgrid.foreground = Color.black
+
+  With dgrid
+    sgrid.font = .font
+    sgrid.Columns.count = .Columns.Count
+    sgrid.rows.count = .rows.Count
+    
+    sgrid.Move(.x + offset, .y + offset, .w, .h)
+
+    For c = 0 To .Columns.max
+      sgrid.Columns[c].W = dgrid.columns[c].w
+      For r = 0 To .Rows.Max
+        sgrid[r, c].text = dgrid[r, c].text
+        sgrid[r, c].Foreground = Color.RGB(32, 32, 32, 32)
+        sgrid.Rows[r].h = dgrid.Rows[r].h
+      Next
+    Next
+  End With
+
+  dgrid.raise
+End
+
 
 Public Sub ShowBackground()
   Dim blurred As Image
@@ -323,6 +349,14 @@ Public Sub AutoresizeAudioForm()
   ' audioform.GridDown.Columns[1].w = -1
   ' audioform.GridUp.Columns[0].w = -1
   ' audioform.GridUp.Columns[1].w = -1
-
-  
 End
+
+Public Sub UpdateCell(g As Gridview, row As Integer, column As Integer, t As String)
+  g[row, column].text = t
+  If g = gridup Then 
+    Try GridUpShadow[row, column].text = t
+      Else If g = griddown Then 
+      GridDownShadow[row, column].text = t
+   Endif
+End
+
