@@ -3222,7 +3222,7 @@ End
 
 Public Function shadow(src As Image, final_size As Integer, offset As Integer) As Image
   Dim s, t As Image
-  s = Image.Load("shadow.png").Stretch(final_size, final_size)
+  s = Image.Load("shadow.png").Stretch(final_size, final_size).Opacity(0.5)
   t = src.Stretch(final_size - offset, final_size - offset)
   Return s.DrawImage(t, CInt(offset / 2.25), CInt(offset / 2.25))
 End
