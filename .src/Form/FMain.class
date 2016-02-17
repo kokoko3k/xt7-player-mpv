@@ -3192,7 +3192,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
     audioform.coverbox.refresh
     
     If (Not samecover) Or force Then 
-        Audioform.ShowBackground()
+
        'Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
        ' 'or with shadow
          Try i = Image.Load(coverfile)
@@ -3208,6 +3208,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
       If Error Then Try audioform.CoverBox.picture = covermanager.keepaspect((image.Load(file.Dir(mplayer.getP("fullpath")) & "/" & covermanager.FolderPicture(file.Dir(mplayer.getP("fullpath"))))), AudioForm.coversize)
       If Error Then audioform.CoverBox.picture = covermanager.DefaultLibraryIcon(mplayer.getP("fullpath"), AudioForm.coversize)
 
+      Audioform.ShowBackground()
     Endif
     audioform.PictureBack.show
     ShowAudioPanel(True, Samecover)

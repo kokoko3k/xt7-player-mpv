@@ -1,7 +1,6 @@
 [Bookmarks]
-FMain=[7687]
+FMain=[7697]
 GeneralOptions=[1251]
-CoverManager=[]
 
 [Breakpoints]
 Count=0
@@ -411,6 +410,9 @@ Geometry=[0,0,344,731]
 
 [DebugWindow/LAST.next.NEXT.next]
 Geometry=[0,0,344,344]
+
+[DebugWindow/Label2]
+Geometry=[45,0,224,280]
 
 [DebugWindow/Last]
 Geometry=[681,124,482,602]
@@ -1188,7 +1190,10 @@ Geometry=[45,-3,210,210]
 Geometry=[0,0,344,344]
 
 [DebugWindow/audioform.AudioPanel.Parent]
-Geometry=[1280,0,210,210]
+Geometry=[1280,0,224,645]
+
+[DebugWindow/audioform.GridUp.Font]
+Geometry=[45,0,297,439]
 
 [DebugWindow/audios]
 Geometry=[1525,157,777,754]
@@ -2099,7 +2104,7 @@ Geometry=[1390,192,397,476]
 Geometry=[1280,0,224,280]
 
 [DebugWindow/properties_changed_runtime]
-Geometry=[44,0,210,210]
+Geometry=[45,0,224,280]
 
 [DebugWindow/properties_changed_runtime_old_datas]
 Geometry=[1280,0,210,210]
@@ -2135,7 +2140,7 @@ Geometry=[47,0,210,210]
 Geometry=[0,41,344,344]
 
 [DebugWindow/s]
-Geometry=[1280,0,210,210]
+Geometry=[1280,0,224,280]
 
 [DebugWindow/samples]
 Geometry=[47,0,210,210]
@@ -2214,6 +2219,9 @@ Geometry=[48,-4,210,210]
 
 [DebugWindow/supported_domains]
 Geometry=[47,0,224,280]
+
+[DebugWindow/t]
+Geometry=[45,0,224,280]
 
 [DebugWindow/tArea]
 Geometry=[1280,0,210,745]
@@ -2413,33 +2421,33 @@ SearchString=True
 
 [OpenFile]
 File[1]=".src/Form/FMain.form"
-File[2]=".src/Form/FMain.class:217.3202"
-Active=51
-Count=55
+File[2]=".src/Form/FMain.class:41.488"
+Active=21
+Count=56
 File[3]=".src/Form/HotKeys.form"
 File[4]=".src/Form/HotKeys.class:24.465"
 File[5]=".src/Form/GeneralOptions.form"
-File[6]=".src/Form/GeneralOptions.class:12.370"
-File[7]=".src/0_Moduli/Global.module:7.1178"
+File[6]=".src/Form/GeneralOptions.class:0.396"
+File[7]=".src/0_Moduli/Global.module:48.91"
 File[8]=".src/Form/AddUriForm.form"
 File[9]=".src/Form/AddUriForm.class:2.58"
 File[10]=".src/Form/RealtimeForm.form"
 File[11]=".src/Form/DVBTuner.form"
 File[12]=".src/Form/DVBTuner.class:2.67"
 File[13]=".src/Form/EpgForm.form"
-File[14]=".src/Form/CoverManager.class:101.1337"
+File[14]=".src/Form/CoverManager.class:20.848"
 File[15]=".src/Form/NewChains.form"
 File[16]=".src/Form/NewChains.class:3.626"
-File[17]=".src/Classi/MplayerClass.class:0.524"
+File[17]=".src/Classi/MplayerClass.class:12.524"
 File[18]=".src/Classi/MplayerClass_old.class:22.1240"
 File[19]=".src/Form/OpenSubtitesForm.class:55.19"
 File[20]=".src/Form/OpenSubtitesForm.form"
-File[21]="AA_ToDo:7.844"
+File[21]="AA_ToDo:37.631"
 File[22]=".src/Form/ladspahelper.class:17.20"
 File[23]=".src/Form/HotKeyGrab.form"
 File[24]=".src/Form/HotKeyGrab.class:2.28"
 File[25]="CHANGELOG_GIT:48.161"
-File[26]=".src/Classi/StartClass.class:17.22"
+File[26]=".src/Classi/StartClass.class:17.37"
 File[27]=".src/0_Moduli/HotKeysHelper.module:19.185"
 File[28]=".src/Form/ladspahelper.form"
 File[29]=".src/Form/FormLyrics.class:12.58"
@@ -2451,12 +2459,12 @@ File[34]=".src/Form/FsForm.class:0.18"
 File[35]=".src/0_Moduli/MyDialog.class:0.5"
 File[36]=".src/Classi/SettingsClass.class:492.14"
 File[37]="FakeInput.conf:8.279"
-File[38]=".src/Form/zzzFake.class:110.15"
+File[38]=".src/Form/zzzFake.class:18.49"
 File[39]=".src/Form/zzzFake.form"
 File[40]=".src/Classi/randr.class:0.2"
 File[41]=".src/Form/AudioConvert.form"
 File[42]=".src/Form/AudioConvert.class:30.121"
-File[43]=".src/Classi/YoutubeClass.class:58.683"
+File[43]=".src/Classi/YoutubeClass.class:30.674"
 File[44]=".src/Classi/ShoutCastClass.class:0.75"
 File[45]=".src/Classi/IceCastClass.class:0.29"
 File[46]=".src/Form/MyQuestion.class:0.79"
@@ -2464,11 +2472,12 @@ File[47]=".src/Classi/WgetClass.class:24.25"
 File[48]=".src/Form/TextDialog.form"
 File[49]=".src/Form/LogWindow.form"
 File[50]=".src/Form/AudioForm.form"
-File[51]=".src/Form/AudioForm.class:36.28"
-File[52]="shade1.png"
-File[53]=".src/Classi/VSlider.class:25.17"
-File[54]=".src/Classi/Meters.class:16.94"
-File[55]="shade_alpha.png"
+File[51]=".src/Form/AudioForm.class:31.198"
+File[52]=".src/Classi/VSlider.class:25.17"
+File[53]=".src/Classi/Meters.class:16.94"
+File[54]="shade_alpha.png"
+File[55]=".src/Form/OverlayTrayTip.class:15.125"
+File[56]="3dglassess.png"
 
 [Watches]
 Count=6

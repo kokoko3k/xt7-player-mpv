@@ -394,7 +394,7 @@ Debug NoParse55ab.visible
   'IF ((NOT FMain.mplayer.ProcessRunningOvr()) OR (Fmain.mplayer.paused)) OR (GeneralOptions.Tabstrip1.caption = ("Style")) THEN 'apply style changes only if mplayer is not running.
     FMain.SetStyle_early()
     FMain.SetStyle_later()
-    AudioForm.init()
+    AudioForm.init(True)
     AudioForm.CoverPanel.Resize(AudioForm.CoverSize, AudioForm.coversize)
     AudioForm.CoverBox.Resize(AudioForm.CoverSize, AudioForm.coversize)
     

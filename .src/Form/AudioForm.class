@@ -30,7 +30,7 @@ Public Sub init()
   GridDown.Columns[0].w = -1
   GridDown.Columns[1].w = -1
   
-  coversize = CInt(Me.Font.H * GridUp.Rows[0].Height * GridUp.Rows.Count * 1.2)
+  coversize = CInt(GridUp.Rows[0].Height * GridUp.Rows.Count * 1.2)
   coverpanel.w = coversize
   CoverBox.h = CoverBox.w 
 
