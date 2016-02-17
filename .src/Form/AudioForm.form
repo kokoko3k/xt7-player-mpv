@@ -9,11 +9,13 @@
     Name = "AudioPanel"
     Move(7,28,672,420)
     Background = Color.Black
+    Tracking = True
     Expand = True
     Spacing = True
     { HBox1 HBox audioareagroup
       Name = "HBox1"
       Move(203,7,161,14)
+      Tracking = True
       Expand = True
     }
     { Label1 Label VideoAreaGroup
@@ -27,11 +29,13 @@
     { GridUpBox HBox audioareagroup
       Name = "GridUpBox"
       Move(21,63,651,119)
+      Tracking = True
       AutoResize = True
       Spacing = True
       { LeftAlignUp VBox audioareagroup
         Name = "LeftAlignUp"
         Move(7,21,14,77)
+        Tracking = True
       }
       { CoverPanel Panel
         Move(35,21,126,77)
@@ -67,7 +71,8 @@
         AutoResize = False
       }
     }
-    { Panel1 Panel
+    { Panel1 Panel audioareagroup
+      Name = "Panel1"
       Move(35,210,588,150)
       Arrangement = Arrange.Horizontal
       AutoResize = True
@@ -75,6 +80,7 @@
       { LeftAlignDown VBox audioareagroup
         Name = "LeftAlignDown"
         Move(0,0,14,77)
+        Tracking = True
       }
       { GridDownShadow GridView
         Move(21,0,504,56)
@@ -96,8 +102,9 @@
     }
     { PictureBox1 Panel audioareagroup
       Name = "PictureBox1"
-      Move(112,329,420,63)
+      Move(133,357,420,63)
       Background = Color.Black
+      Tracking = True
       Expand = True
     }
     { PictureBack PictureBox AudioAreaGroup
