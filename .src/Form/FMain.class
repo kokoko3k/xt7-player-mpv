@@ -3834,8 +3834,15 @@ Public Sub Mplayer_mykill(return_value As Integer)
       Playstarted = False
       'UserStopped = False
       FirstPlay = False
-      If ((Not TogglePls.value) And fsform.FullScreen) Then FullScreenSwitch()
-      ShowAudioPanel(False)
+      
+      ' Qui fai partire un Timer, che se il player è ancora fermo dopo qualche secondo:
+      ' 1 - disabilita il pannello audioconvert
+      ' 2 - esce dal fullscreen
+      'If ((Not TogglePls.value) And fsform.FullScreen) Then FullScreenSwitch()
+      'ShowAudioPanel(False)
+      timer_player_idle = New Timer As "timer_player_idle"
+      timer_player_idle.delay = 2000
+      timer_player_idle.start
   Endif
 
     StatusLabelLeft.text = (" Stopped")
@@ -3847,6 +3854,18 @@ Public Sub Mplayer_mykill(return_value As Integer)
     Fmain.caption = global.AppName
 
 End
+
+
+Public timer_player_idle As Timer 
+
+Public Sub timer_player_idle_timer()
+  If Not mplayer.ProcessRunningOvr() Then
+    If ((Not TogglePls.value) And fsform.FullScreen) Then FullScreenSwitch()
+    ShowAudioPanel(False)
+  Endif
+  timer_player_idle.stop
+End
+
 
 Private PrevValuecTime As Integer = 0 'so that the first value will be used
 

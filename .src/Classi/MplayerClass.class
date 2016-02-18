@@ -1361,7 +1361,9 @@ Public Sub playerprocess_kill()
   return_value = playerprocess.value
   If (Not restarting) Then 
     ClearMediaProperties()
+
     Raise mykill(return_value)
+
     'post cmd is supposed to be filled in the mykill() event handler.
     ExecutePostCmd()
   Endif
