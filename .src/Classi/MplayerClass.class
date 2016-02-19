@@ -779,7 +779,7 @@ Public Function get_mediainfo(Optional cddb As Boolean = True, Optional force_au
       setP("album", media_taglib.Album)
       setP("genre", media_taglib.Genre)
       setP("year", media_taglib.MyYear)
-      setP("comment", media_taglib.Comment)
+      setP("comment", Replace(Replace(media_taglib.Comment, "\n", " "), "\r", " "))
       setP("comments", media_taglib.Comment)
       setP("trackno", media_taglib.Track)
       setP("=duration", media_taglib.Length)
