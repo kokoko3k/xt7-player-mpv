@@ -71,8 +71,7 @@ Public Sub Startit()
   Dim options As String = " -s sec -nohexdumpbuffer 0x12 |grep --binary-files=text 'Service_ID^|Table_ID^|===^|Event_ID^|Start_time^|Duration^|Free_CA_mode^|Content_nibble_level_^|event_name^|text_char'"
   Dim options2 As String = " -s sec -nohexdumpbuffer 0x11|grep --binary-files=text -i 'service_id:^|service_name:'"
   Dim state As Integer = 999
-'  StartitUfficio()
-'  Return
+
   
   
   'Dim options As String = " -s sec -nohexdumpbuffer 0x12"
@@ -95,23 +94,6 @@ Public Sub Startit()
 
 End
 
-
-Public Sub StartitUfficio()
-  Dim options As String = " |grep 'Service_ID^|Table_ID^|===^|Event_ID^|Start_time^|Duration^|Free_CA_mode^|event_name^|Content_nibble_level_^|text_char'"
-  Dim options2 As String = " |grep -i 'service_id:^|service_name:'"
-  'Dim options As String = " -s sec -nohexdumpbuffer 0x12"
-  InitSidChanTable()
-  options = Replace(options, "^", Chr(92))
-  options2 = Replace(options2, "^", Chr(92))
-  'dvbsnoop = Shell dvbsnoopexe For Input As "dvbsnoop"
-  'dvbsnoop = Shell dvbsnoopexe & " -s sec -nohexdumpbuffer 0x12" For Input As "dvbsnoop"
-  'dvbsnoop = Shell dvbsnoopexe & " -s sec -nohexdumpbuffer 0x12" For Input As "dvbsnoop"
-
-  dvbsnoopcMap = Shell "/root/Desktop2_kde4/dvbsnoop2" & options2 For Input As "dvbsnoopcMap"
-  Wait 0.1
-  dvbsnoop = Shell "/root/Desktop2_kde4/dvbsnoop1" & options For Input As "dvbsnoop"
-
-End
 
 
 
