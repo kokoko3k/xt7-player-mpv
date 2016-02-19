@@ -5387,6 +5387,7 @@ Private VideoAreaGroup_keypress_timer_keycode As Integer
 Public Sub VideoAreaGroup_KeyPress() 
   Dim HotKey As String
   HotKeysHelper.KeyPress()
+  If Not fmain.fullyloaded Then Return
   VideoAreaGroup_keypress_timer.trigger
 End
 

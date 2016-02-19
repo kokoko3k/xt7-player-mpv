@@ -18,8 +18,11 @@ End
 
 ' 
 Static Public Sub Application_error()
+
   Dim bt As String[]
   Dim et As String
+  
+  Return
   If BugReport.Already_shown Then Return
   bt = Error.Backtrace
   et = Error.Text
