@@ -3165,7 +3165,7 @@ Private PreviousCoverFile As String = "NOPE"
 
 Public Sub CoverRefresh(Optional force As Boolean = False)
   
-  Dim coverfile As String
+  Dim coverfile, folderpicture, fullpath As String
   Dim tl As New Taglib
   Dim samecover As Boolean
   Dim i As Image
@@ -3180,7 +3180,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
         Try tl.tlfree
       Endif
     Endif
-    
+
     CoverManager.MediaFileFullPath = mplayer.getP("fullpath")
     
     coverfile = CoverManager.Coverfile(mplayer.getP("artist"), mplayer.getP("album"), mplayer.getP("fullpath"))
@@ -3198,8 +3198,14 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
        'Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
        ' 'or with shadow
          Try i = Image.Load(coverfile)
-         If Error Then Goto Errore
-         
+
+         If Error Then 
+          fullpath = mplayer.getP("fullpath")
+          folderpicture = covermanager.FolderPicture(file.Dir(fullpath))
+          i = image.Load(file.Dir(fullpath) & "/" & folderpicture)
+          'Try i = covermanager.keepaspect((image.Load(file.Dir(mplayer.getP("fullpath")) & "/" & covermanager.FolderPicture(file.Dir(mplayer.getP("fullpath"))).image)), AudioForm.coversize)
+         Endif
+
          Try glass = Image.Load("cdtemplate.png").Stretch(audioform.coversize, audioform.coversize)
          i = i.Stretch(audioform.coversize, audioform.coversize)
          i.PaintImage(glass, 0, 0)
@@ -3210,7 +3216,6 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
           
 
       errore:
-      If Error Then Try audioform.CoverBox.picture = covermanager.keepaspect((image.Load(file.Dir(mplayer.getP("fullpath")) & "/" & covermanager.FolderPicture(file.Dir(mplayer.getP("fullpath"))))), AudioForm.coversize)
       If Error Then audioform.CoverBox.picture = covermanager.DefaultLibraryIcon(mplayer.getP("fullpath"), AudioForm.coversize)
 
       Audioform.ShowBackground()
