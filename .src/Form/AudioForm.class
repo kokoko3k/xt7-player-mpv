@@ -232,7 +232,7 @@ Public Sub AudioAreaGroup_MouseMove()
   FMain.VideoAreaGroup_MouseMove()
 End
 
-Public Sub ShowBackground()
+Public Sub ShowBackground(Optional i As Image = Null)
   Dim blurred As Image
   Dim gradient As Image
   Dim t As Image
@@ -248,7 +248,11 @@ Public Sub ShowBackground()
   gradient = Image.Load("shadeaudiopanel.png") '.Mirror(False, True)
   
   'take the background from the current cover
-  blurred = CoverBox.Picture.Image
+  If i = Null Then 
+    blurred = CoverBox.Picture.Image
+      Else
+    blurred = i
+  Endif
   
   'get a good blur effect without using gb.image.effects by resizing the image multiple times.
   'it works!

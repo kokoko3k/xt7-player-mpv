@@ -3168,7 +3168,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
   Dim coverfile, folderpicture, fullpath As String
   Dim tl As New Taglib
   Dim samecover As Boolean
-  Dim i As Image
+  Dim i, forbackground As Image
   Dim glass As Image 
   If mplayer.ProcessRunningOvr() And mplayer.getP("audioonly") Then
     'coverfile = global.confpath& "/covers/" & global.fixfilename(Upper(Trim(mplayer.Media_Artist))) & "^^^" & global.fixfilename(Upper(Trim(mplayer.Media_Album))) & ".jpg"
@@ -3182,11 +3182,10 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
     Endif
 
     CoverManager.MediaFileFullPath = mplayer.getP("fullpath")
-    
     coverfile = CoverManager.Coverfile(mplayer.getP("artist"), mplayer.getP("album"), mplayer.getP("fullpath"))
     samecover = (coverfile = PreviousCoverFile)
     PreviousCoverFile = coverfile
-    
+
     If Not (Exist(coverfile)) Then
       If Exist(Trim(coverfile)) Then coverfile = Trim(coverfile)
     Endif
@@ -3195,8 +3194,6 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
     
     If (Not samecover) Or force Then 
 
-       'Try audioform.CoverBox.picture = covermanager.keepaspect(Image.Load(coverfile), 160)
-       ' 'or with shadow
          Try i = Image.Load(coverfile)
 
          If Error Then 
@@ -3208,6 +3205,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
 
          Try glass = Image.Load("cdtemplate.png").Stretch(audioform.coversize, audioform.coversize)
          i = i.Stretch(audioform.coversize, audioform.coversize)
+         forbackground = i.Copy()
          i.PaintImage(glass, 0, 0)
          i = Shadow(i, audioform.coversize, CInt(audioform.coversize / 8))
          If Error Then Goto Errore
@@ -3218,7 +3216,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
       errore:
       If Error Then audioform.CoverBox.picture = covermanager.DefaultLibraryIcon(mplayer.getP("fullpath"), AudioForm.coversize)
 
-      Audioform.ShowBackground()
+      Audioform.ShowBackground(forbackground)
     Endif
     audioform.PictureBack.show
     ShowAudioPanel(True, Samecover)
