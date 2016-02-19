@@ -3202,8 +3202,8 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
          If Error Then 
           fullpath = mplayer.getP("fullpath")
           folderpicture = covermanager.FolderPicture(file.Dir(fullpath))
-          i = image.Load(file.Dir(fullpath) & "/" & folderpicture)
-          'Try i = covermanager.keepaspect((image.Load(file.Dir(mplayer.getP("fullpath")) & "/" & covermanager.FolderPicture(file.Dir(mplayer.getP("fullpath"))).image)), AudioForm.coversize)
+          Try i = image.Load(file.Dir(fullpath) & "/" & folderpicture)
+          If Error Then Goto errore
          Endif
 
          Try glass = Image.Load("cdtemplate.png").Stretch(audioform.coversize, audioform.coversize)
