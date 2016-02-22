@@ -581,6 +581,7 @@ Public Sub updaterecentfiles()
   ClearRecentFilesSub()
   historyarray = Split(history, "\n", "", True)
   historyarray.Reverse()
+
   For Each entry In historyarray
     RecentFileEntry = New Menu(MenuOpenRecent) As "RecentFileEntry"
     RecentFileEntry.name = Timer & Rnd(0, 10000)
@@ -1354,7 +1355,19 @@ End
 Public Sub Form_Close()
   Dim MySettings As New SettingsClass
   Dim t0 As Float = Timer()
+  Dim wasrunning As Boolean = False
+
+  Closing = True
   
+  Stop
+  Try wasrunning = mplayer.ProcessRunningOvr()
+
+  If wasrunning Then
+    If Not (global.IsNetworkURI(mplayer.getP("fullpath"))) Then
+      AddHistory(mplayer.getP("fullpath"), mplayer.CurrentTime()) 
+    Endif
+  Endif
+
   ButtonStop_Click()
   
   Try Shell "rm -R " & global.ConfPath & "/" & "thumbcontainer.* &>/dev/null"
@@ -1372,16 +1385,11 @@ Public Sub Form_Close()
   ChooseAspect.visible = False
   'it is needed for lockfile and local socket to be correctly freed:
   Try TrayIcon2.Delete 'fixme trayicon
-  Closing = True
+
   
 
   fmain.SaveFormGeometry()
   Me.hide
-  If mplayer.ProcessRunningOvr() Then
-    If Not (global.IsNetworkURI(mplayer.getP("fullpath"))) Then
-      AddHistory(mplayer.getP("fullpath"), mplayer.CurrentTime()) 
-    Endif
-  Endif
 
   ButtonStop_Click() 'don't remove me.
   
@@ -2857,7 +2865,7 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0")
   Dim history, entry As String
   Dim historyarray As New String[]
   Dim sep As String = Chr(8)
-
+Stop
   If Not (Exist(fullpath)) Then Return
   If Not global.IsNetworkURI(fullpath) Then
     If Not (Exist(global.historyfile)) Then file.Save(global.historyfile, "")
