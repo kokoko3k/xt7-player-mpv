@@ -388,6 +388,7 @@ Public Sub SaveHotKeys(ProfileName As String)
   'DIM filename AS String = ProfileName & "." & "HotKeys.txt"
   Dim filename As String = ProfileName & ".profile/" & "HotKeys.txt"
   Dim filename_fs As String = ProfileName & ".profile/" & "HotKeys_fs.txt"
+  Dim filename_global_hk As String = ProfileName & ".profile/" & "HotKeys_global_enabled.txt"
   Dim globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
   Dim xbindkeysfilename As String = ProfileName & ".profile/" & "xbindkeysrc"
   Dim HotFile As File
@@ -395,6 +396,11 @@ Public Sub SaveHotKeys(ProfileName As String)
   Dim C, R As Integer
 
   If dblclick_fs_checkbox.value Then
+    File.Save(filename_fs, "TRUE")
+      Else
+    File.Save(filename_fs, "FALSE")
+  Endif
+  If CheckBoxEnableGlobalHotkeys.value Then
     File.Save(filename_fs, "TRUE")
       Else
     File.Save(filename_fs, "FALSE")
@@ -453,17 +459,23 @@ End
 Public Sub LoadHotKeys(ProfileName As String)
   Dim filename As String = ProfileName & ".profile/" & "HotKeys.txt"
   Dim filename_fs As String = ProfileName & ".profile/" & "HotKeys_fs.txt"
+  Dim filename_global_hk As String = ProfileName & ".profile/" & "HotKeys_global_enabled.txt"
   Dim Globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
   Dim xbindkeysfilename As String = ProfileName & ".profile/" & "xbindkeysrc"
   Dim HotFile As File
   Dim GlobalHotFile As File
   
   Dim C, R, w1, w2 As Integer
-  
+
   If Exist(filename_fs) Then
     Try dblclick_fs_checkbox.value = (File.Load(filename_fs) = "TRUE")
       Else
     dblclick_fs_checkbox.value = True 'default value
+  Endif
+  If Exist(filename_global_hk) Then
+    Try checkboxenableglobalhotkeys.value = (File.Load(filename_global_hk) = "TRUE")
+      Else
+    checkboxenableglobalhotkeys.value = False 'default value
   Endif
   
   
@@ -514,12 +526,14 @@ Public Sub LoadHotKeys(ProfileName As String)
 End
 
 Public Sub RestartXbindKeys(xbindkeysfilename As String)
-  If FMain.closing Then Return
-  global.myDebug("Hotkeys: RestartXbindKeys()")
+  If (checkboxenableglobalhotkeys.value = checkboxenableglobalhotkeys.true) Then 
+    If FMain.closing Then Return
+    global.myDebug("Hotkeys: RestartXbindKeys()")
     Try xbindkeys.Kill
     If Stat(xbindkeysfilename).Size > 0 Then
       xbindkeys = Shell Global.XbindkeysBIN & " -n -f " & xbindkeysfilename For Read As "xbindkeys"
     Endif
+  Endif
 End
 
 
@@ -615,7 +629,9 @@ Public Sub GlobalHotKeysGrid_DblClick()
   Dim GrabbedData As String
   Dim w1, w2 As Integer = 0
   Dim profilename As String
-  
+
+  If Not Last.enabled Then Return
+
   If MouseInsideGrid(GlobalHotKeysGrid) Then
     GlobalHotKeysGrid.mouse = Mouse.wait
     Try xbindkeys.Kill
@@ -628,11 +644,13 @@ Public Sub GlobalHotKeysGrid_DblClick()
     Endif
    
     'Expand the column
-    w1 = GlobalHotKeysGrid.Columns[PointedCol].width
+    Try w1 = GlobalHotKeysGrid.Columns[PointedCol].width
     ' [GB2:FNTW] w2 = GlobalHotKeysGrid.Font.TextWidth(GlobalHotKeysGrid[pointedrow, PointedCol].Text)
-    w2 = GlobalHotKeysGrid.Font.TextWidth(GlobalHotKeysGrid[pointedrow, PointedCol].Text)
-    If w1 < w2 Then
-      GlobalHotKeysGrid.Columns[PointedCol].width = w2 + 8
+    If Not Error Then
+      w2 = GlobalHotKeysGrid.Font.TextWidth(GlobalHotKeysGrid[pointedrow, PointedCol].Text)
+      If w1 < w2 Then
+        GlobalHotKeysGrid.Columns[PointedCol].width = w2 + 8
+      Endif
     Endif
   Endif
   
@@ -694,4 +712,45 @@ Public Sub Form_Show()
   GlobalHotKeysGrid.H = CInt(GlobalHotKeysGrid.Font.TextHeight("Ij|") * 1.5)
 End
 
+Public Function checkxbindkeys() As Boolean
+  If Not global.Which("xbindkeys") Then 
+    Message.Error(("Sorry, could not find xbindkeys"), "Ok")
+    Return False
+      Else
+    Return True
+  Endif
+End
 
+
+Public Sub Panel2_Arrange()
+   If Not fmain.fullyloaded Then Return
+   globalhotkeysgrid.visible = (checkboxenableglobalhotkeys.value = checkboxenableglobalhotkeys.true)
+   Wait
+   GlobalHotKeysGrid.Move(0, 0, Panel2.clientw, Panel2.clienth)
+End
+
+Public Sub CheckBoxEnableGlobalHotkeys_Click()
+  Dim profilename As String
+  Wait
+  If Not fmain.fullyloaded Then Return
+  If checkboxenableglobalhotkeys.value = CheckBox.true Then 
+    If checkxbindkeys() Then
+      globalhotkeysgrid.visible = checkxbindkeys()
+      Profilename = global.confpath & "/" & Global.CurrentProfile
+      RestartXbindKeys(ProfileName & ".profile/" & "xbindkeysrc.tmp")
+        Else
+      checkboxenableglobalhotkeys.value = CheckBox.false
+    Endif
+      Else
+    globalhotkeysgrid.visible = False
+    Try xbindkeys.Kill
+  Endif
+
+End
+
+
+Public Sub TabStrip1_Click()
+  If TabStrip1.Children[0] = CheckBoxEnableGlobalHotkeys Then
+   If checkboxenableglobalhotkeys.value = CheckBox.true Then checkxbindkeys()
+  Endif
+End

@@ -25,7 +25,7 @@
     }
   }
   { TabStrip1 TabStrip
-    MoveScaled(1,1,63,53)
+    MoveScaled(1,0,63,53)
     Tracking = True
     Expand = True
     Arrangement = Arrange.Vertical
@@ -39,7 +39,7 @@
       Arrangement = Arrange.Fill
       Border = Border.Plain
       { HotKeysGrid GridView
-        MoveScaled(0,0,45,31)
+        MoveScaled(0,0,43,31)
         Tracking = True
         Expand = True
         Border = False
@@ -97,14 +97,18 @@
     }
     Index = 1
     Text = ("Global Hotkeys")
+    { CheckBoxEnableGlobalHotkeys CheckBox
+      MoveScaled(2,2,57,4)
+      Text = ("Enable Global Hotkeys")
+    }
     { Panel2 Panel
-      MoveScaled(0,0,45,28)
+      MoveScaled(3,11,45,28)
       Background = Color.TextBackground
       Expand = True
       Arrangement = Arrange.Fill
       Border = Border.Plain
       { GlobalHotKeysGrid GridView
-        MoveScaled(0,0,44,27)
+        MoveScaled(1,2,44,27)
         Expand = True
         Border = False
         Mode = Select.Single

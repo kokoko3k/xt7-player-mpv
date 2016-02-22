@@ -488,8 +488,14 @@ Public Sub AllInit_Post()
   'kill prevoiusly launched xbindkeys
   Shell ("killall " & global.CustomBindKeys) For Read
   Application.ShowTooltips = GeneralOptions.ToolTipsCHK.value
-  'Prepare our xbindkeys link, we'll need it to ensure only one at time.
-  Shell ("ln -s $(which xbindkeys) " & global.confpath & "/Xt7BindKeys") For Read
+  
+  If global.Which("xbindkeys") Then
+    'Prepare our xbindkeys link, we'll need it to ensure only one at time.
+    Shell ("ln -s $(which xbindkeys) " & global.confpath & "/" & global.CustomBindKeys) For Read
+      Else
+    global.myDebug("xbindkeys doesn't seem to be installed")
+  Endif
+
   'start to listen for remote commands, one connection is ok.
   Mysocket.type = Net.Unix
   Mysocket.path = global.confpath & "/.localsocket"
