@@ -35,7 +35,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "earwax", "scaletempo", "dynaudnorm", "volume"]
+  filters_audio_list = ["equalizer", "earwax", "extrastereo", "scaletempo", "dynaudnorm", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -324,11 +324,7 @@ Private Sub draw_filters_audio_cfg()
   ladspacompiledin = FMain.mplayer.supportsladspa()
 
 
-  ' 'extrastereo[=mul]
-  ' AllParams.Add(["TITLE", "- Adds live effect to playback -", "ExtraStereo0", ""])
-  ' AllParams.add(["RANGEFLOAT", ("Amount"), "0", "2.25", "10", "ExtraStereo1", ""])
-  ' Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable)
-  ' AllParams.Clear
+
 
 
   'lavcac3enc
@@ -377,6 +373,11 @@ Private Sub draw_filters_audio_cfg()
     AllParams.Clear
     
 
+  'extrastereo lavfi
+  AllParams.Add(["TITLE", "- Adds live effect to playback (ffmpeg >=3.0 only)-", "ExtraStereo0", ""])
+  AllParams.add(["RANGEFLOAT", ("Amount"), "0", "2.25", "10", "ExtraStereo1", ""])
+  Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable,,, "lavfi")
+  AllParams.Clear
 
   'Dynaudnorm lavfi
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
