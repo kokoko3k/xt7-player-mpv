@@ -401,9 +401,9 @@ Public Sub SaveHotKeys(ProfileName As String)
     File.Save(filename_fs, "FALSE")
   Endif
   If CheckBoxEnableGlobalHotkeys.value Then
-    File.Save(filename_fs, "TRUE")
+    File.Save(filename_global_hk, "TRUE")
       Else
-    File.Save(filename_fs, "FALSE")
+    File.Save(filename_global_hk, "FALSE")
   Endif
 
   If Not Exist(file.Dir(filename), True) Then

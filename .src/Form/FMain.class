@@ -1358,8 +1358,8 @@ Public Sub Form_Close()
   Dim wasrunning As Boolean = False
 
   Closing = True
-  
-  Stop
+
+
   Try wasrunning = mplayer.ProcessRunningOvr()
 
   If wasrunning Then
@@ -2865,7 +2865,7 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0")
   Dim history, entry As String
   Dim historyarray As New String[]
   Dim sep As String = Chr(8)
-Stop
+
   If Not (Exist(fullpath)) Then Return
   If Not global.IsNetworkURI(fullpath) Then
     If Not (Exist(global.historyfile)) Then file.Save(global.historyfile, "")
