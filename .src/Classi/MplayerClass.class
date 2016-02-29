@@ -994,6 +994,8 @@ Public Sub ExecutePostCmd()
 End
 
 
+Event user_stopping(fullpath As String, timepos As String)
+
 Public Function ProcessRunningOvr() As Boolean
   'As gambas returns runtime error if process is not ready,
   'we'll catch it here
@@ -1011,7 +1013,10 @@ Public Function do_stop() As Boolean
   stopping = True
 
   If Not restarting Then 
-    If ProcessRunningOvr() Then user_stopped = True
+    If ProcessRunningOvr() Then 
+      user_stopped = True
+      Raise user_stopping(getP("fullpath"), getP("=time-pos"))
+    Endif
     ClearMediaProperties()
     properties_changed_runtime.clear
     StopOverBrightAnalyze()

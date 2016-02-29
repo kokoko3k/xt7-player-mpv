@@ -563,6 +563,24 @@ Private Sub MakeProfileMenu()
   
 End
 
+Public Function get_history_leftoff_time(fullpath As String) As String
+  Dim history, entry As String
+  Dim historyarray As String[]
+  Dim sep As String = Chr(8)
+  Try history = file.Load(global.Historyfile)
+  If Error Then Return 0
+  historyarray = Split(history, "\n", "", True)
+  For Each entry In historyarray
+    If entry Like fullpath & "*" & sep & "*" Then
+      Try Return Split(entry, sep, "", True, "")[1]
+      Return "0"
+    Endif
+  Next
+End
+
+
+
+
 Private RecentFileEntry As Menu
 
 Private HaveToPlay As String = ""
@@ -585,7 +603,7 @@ Public Sub updaterecentfiles()
   For Each entry In historyarray
     RecentFileEntry = New Menu(MenuOpenRecent) As "RecentFileEntry"
     RecentFileEntry.name = Timer & Rnd(0, 10000)
-    If entry Like "*" & sep & "*" Then 
+    If entry Like "*" & sep & "*" & "leftoff" Then 
       If HaveToPlay = "" Then
         Try HaveToPlay = Split(entry, sep, "", True, "")[0]
         If Not Error Then 
@@ -618,6 +636,7 @@ Public Sub updaterecentfiles()
     Endif
   Endif
 End
+
 
 Public Sub RecentFileEntry_Click()
 
@@ -1352,24 +1371,33 @@ Public Sub FillPropertiesGrid()
 
 End
 
+
+Public Sub mplayer_user_stopping(fullpath As String, timepos As String)
+  If Not (global.IsNetworkURI(mplayer.getP("fullpath"))) Then
+    addhistory(fullpath, Split(timepos, ".,")[0])
+  Endif
+End
+
 Public Sub Form_Close()
   Dim MySettings As New SettingsClass
   Dim t0 As Float = Timer()
   Dim wasrunning As Boolean = False
+  Dim fullpath, currenttime As String
 
   Closing = True
 
-
   Try wasrunning = mplayer.ProcessRunningOvr()
+  Object.Detach(mplayer)
 
   If wasrunning Then
-    If Not (global.IsNetworkURI(mplayer.getP("fullpath"))) Then
-      AddHistory(mplayer.getP("fullpath"), mplayer.CurrentTime()) 
+    fullpath = mplayer.getP("fullpath")
+    currenttime = mplayer.CurrentTime()
+    ButtonStop_Click() 'this one has to come after the previous two assignments
+    If Not (global.IsNetworkURI(fullpath)) Then
+      AddHistory(fullpath, CurrentTime, True) 
     Endif
   Endif
 
-  ButtonStop_Click()
-  
   Try Shell "rm -R " & global.ConfPath & "/" & "thumbcontainer.* &>/dev/null"
   StartClass.ProcessSignals(False)
   If buttoncapture.value Then StopDumping(generaloptions.dvbfinaldir.text)
@@ -1721,13 +1749,13 @@ End
 Public Sub ButtonStop_Click()
   ' Return
   ' Dim a As Integer = 1 / 0
-  
+    'Stop
   'stop timers as soon as possible
-    Try mousehider.stop
-    Try TimerFullScreen.Stop
-    Try mplayer.event_loop.stop
-    Try DelayTimer.stop
-  
+  Try mousehider.stop
+  Try TimerFullScreen.Stop
+  Try mplayer.event_loop.stop
+  Try DelayTimer.stop
+
   Try global.Preload_file_bg_stop()
   Try timer_runtime_infos.stop()
   Try timerqueue.stop()
@@ -2735,6 +2763,14 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   'Until (n = 2) Or (mplayer.return_value = 0) Or Youtube.IsYoutubeLink(fullpath) Or Not (global.IsNetworkURI(fullpath))
   Until (n = 2) Or (mplayer.return_value = 0) Or Youtube.is_supported(fullpath) Or Not (global.IsNetworkURI(fullpath))
 
+  'if not forced, see if the current medium were left off and seek to that point
+
+  If start_time = "0" Then
+    If (generaloptions.RememberPlayTimeCHK.value = CheckBox.true) Then
+      start_time = get_history_leftoff_time(fullpath)
+    Endif
+  Endif
+  
   If start_time <> "0" Then mplayer.do_seek_to(start_time, True, True)
 
   'mplayer.StartOverbrightAnalyze() 'fixmempv
@@ -2860,7 +2896,7 @@ Private Sub StartOverbrightAnalyze()
 End
 
 
-Public Sub addhistory(fullpath As String, Optional Savetime As String = "0")
+Public Sub addhistory(fullpath As String, Optional Savetime As String = "0", Optional leftoff As Boolean = False)
 
   Dim history, entry As String
   Dim historyarray As New String[]
@@ -2875,13 +2911,18 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0")
       Return
     Endif
     For Each entry In Split(history, "\n", "", True)
-      If entry Like "*" & sep & "*" Then 
-        If savetime = "0" Then Try entry = Split(entry, sep, "", True)[0]
-      Endif
-      If entry <> fullpath Then historyarray.Add(entry) 'no dupes and last on top
+      ' If entry Like "*" & sep & "*" Then 
+      '   If savetime = "0" Then Try entry = Split(entry, sep, "", True)[0]
+      ' Endif
+      If Split(entry, sep)[0] <> fullpath Then historyarray.Add(entry) 'no dupes and last on top
     Next
+
     If Savetime <> "0" Then 
-      historyarray.Add(fullpath & sep & Savetime)
+      If leftoff Then 
+        historyarray.Add(fullpath & sep & Savetime & sep & "leftoff")
+          Else
+        historyarray.Add(fullpath & sep & Savetime)
+      Endif
     Else
       historyarray.Add(fullpath)
     Endif

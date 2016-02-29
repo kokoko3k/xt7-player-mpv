@@ -217,7 +217,6 @@
             MoveScaled(22,0,26,4)
             Expand = True
             ReadOnly = True
-            List = Null
             Text = ("vmeters - Audio meters")
           }
         }
@@ -1472,7 +1471,7 @@
       Index = 10
       Text = ("Misc")
       { ScrollView3 ScrollView
-        MoveScaled(4,4,55,55)
+        MoveScaled(4,5,55,55)
         Tag = "misc"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -1560,8 +1559,31 @@
         { NOPARSESEP2 Separator
           MoveScaled(1,25,46,1)
         }
+        { NoParse47 HBox
+          MoveScaled(1,26,44,4)
+          ToolTip = ("Enable/Disbale Tooltips")
+          Spacing = True
+          { RestorePlayCHK CheckBox
+            MoveScaled(1,0,41,4)
+            ToolTip = ("If you close xt7-player while playing a local file,\nxt7 will start just were you left the next time.")
+            Expand = True
+            Text = ("Start were you left")
+          }
+        }
+        { NoParse8 HBox
+          MoveScaled(1,30,44,4)
+          ToolTip = ("Enable/Disbale Tooltips")
+          Spacing = True
+          { RememberPlayTimeCHK CheckBox
+            MoveScaled(1,0,41,4)
+            ToolTip = ("This will cause xt7 to restore the playback\ntime position of any recently played file.")
+            Expand = True
+            Text = ("Restore playback time position")
+            Value = CheckBox.True
+          }
+        }
         { NoParse6 HBox
-          MoveScaled(1,27,44,4)
+          MoveScaled(1,34,44,4)
           ToolTip = ("Enable/Disbale Tooltips")
           Spacing = True
           { ToolTipsCHK CheckBox
@@ -1572,7 +1594,7 @@
           }
         }
         { NoParse46 HBox
-          MoveScaled(1,31,44,4)
+          MoveScaled(1,38,44,4)
           ToolTip = ("Enable this if you want xt7 to be controlled through an mpris2 compliant client.\n")
           Spacing = True
           { ToolTipsCHKDBUS CheckBox
@@ -1589,19 +1611,8 @@
             Alignment = Align.Right
           }
         }
-        { NoParse47 HBox
-          MoveScaled(1,36,44,4)
-          ToolTip = ("Enable/Disbale Tooltips")
-          Spacing = True
-          { RestorePlayCHK CheckBox
-            MoveScaled(1,0,41,4)
-            ToolTip = ("If you close xt7-player while playing a local file,\nxt7 will start just were you left the next time.")
-            Expand = True
-            Text = ("Start were you left")
-          }
-        }
         { NoParse18 HBox
-          MoveScaled(1,40,50,4)
+          MoveScaled(1,43,50,4)
           ToolTip = ("When an audio file is played, the right panel will show\ninformations on the file played, allowing to set covers\nfor your library items.")
           Spacing = True
           { CoverCHK2 CheckBox
@@ -1613,7 +1624,7 @@
           }
         }
         { NoParse20 HBox
-          MoveScaled(1,44,50,4)
+          MoveScaled(1,47,50,4)
           ToolTip = ("Enable/Disbale the tray icon")
           Spacing = True
           { TrayCHK1 CheckBox
@@ -1627,7 +1638,7 @@
           MoveScaled(4,48,45,1)
         }
         { NoParse12 HBox
-          MoveScaled(1,49,50,4)
+          MoveScaled(1,51,50,4)
           Spacing = True
           { SaveOnExitCHK CheckBox
             MoveScaled(1,0,47,4)
@@ -1636,7 +1647,7 @@
           }
         }
         { NoParse21 HBox
-          MoveScaled(1,53,50,4)
+          MoveScaled(1,55,50,4)
           ToolTip = ("Save xt7 position and size on program exit.")
           Spacing = True
           { SaveGeometryCHK CheckBox
@@ -1646,11 +1657,11 @@
           }
         }
         { NoParse22 HBox
-          MoveScaled(1,57,50,4)
+          MoveScaled(1,59,50,4)
           ToolTip = ("If your window manager is not kwin\nand you find that form position is not correctly restored,\ntry checking this.")
           Spacing = True
           { SaveGeometryCompizCHK CheckBox
-            MoveScaled(0,0,51,4)
+            MoveScaled(-1,0,48,4)
             Text = ("Alternative saving method (compiz/emerald)")
           }
         }
