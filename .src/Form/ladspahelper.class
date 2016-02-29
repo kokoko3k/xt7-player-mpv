@@ -178,7 +178,9 @@ Public Sub gui_to_text()
       TextBox1.text &= "ladspa=file=" & LADSPA_FILE 
       TextBox1.text &= ":p=" & LADSPA_LABEL 
       TextBox1.text &= ":c='" & controls & "'"
-      TextBox1.text &= ",aformat=channel_layouts=" & combooutputchannels.Text
+      If Not (Lower(combooutputchannels.Text) Like "auto*") Then
+        TextBox1.text &= ",aformat=channel_layouts=" & combooutputchannels.Text
+      Endif
     TextBox1.text &= "]" 
 End
 
