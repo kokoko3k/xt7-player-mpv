@@ -35,7 +35,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "earwax", "extrastereo", "scaletempo", "dynaudnorm", "volume"]
+  filters_audio_list = ["equalizer", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -374,10 +374,24 @@ Private Sub draw_filters_audio_cfg()
     
 
   'extrastereo lavfi
-  AllParams.Add(["TITLE", "- Adds live effect to playback (ffmpeg >=3.0 only)-", "ExtraStereo0", ""])
+  AllParams.Add(["TITLE", "- Adds live effect to playback - (ffmpeg >=3.0 only)", "ExtraStereo0", ""])
   AllParams.add(["RANGEFLOAT", ("Amount"), "0", "2.25", "10", "ExtraStereo1", ""])
   Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable,,, "lavfi")
   AllParams.Clear
+
+  ' 'alimiter lavfi
+  AllParams.Add(["TITLE", "Keep input signal under a desired threshold - (ffmpeg >=3.0 only)", "alimiter0", ""])
+  AllParams.add(["RANGEFLOAT", "Input gain", "0.1", "2", "64", "alimiter1", ""])
+  AllParams.add(["RANGEFLOAT", "output gain", "0.1", "1", "64", "alimiter2", ""])
+  AllParams.add(["RANGEFLOAT", "limit", "0.1", "1", "1", "alimiter3", ""]) 
+  AllParams.add(["RANGE", "attack", "1", "5", "80", "alimiter4", ""]) 
+  AllParams.add(["RANGE", "release", "1", "2000", "8000", "alimiter5", ""]) 
+  AllParams.Add(["TIP", ("This filter is a good volume normalizer"), "alimiter6", ""])
+  Global.DrawGui(AllParams, "alimiter", aTabstrip, False,,, "lavfi")
+  AllParams.Clear
+
+
+
 
   'Dynaudnorm lavfi
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
