@@ -1014,7 +1014,7 @@ Public Function do_stop() As Boolean
   If Not restarting Then 
     If ProcessRunningOvr() Then 
       user_stopped = True
-      Raise user_stopping(getP("fullpath"), getP("=time-pos"))
+      Raise user_stopping(getP("fullpath"), get_property_mpv("=time_pos", True, 1, True))
     Endif
     ClearMediaProperties()
     properties_changed_runtime.clear

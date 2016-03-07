@@ -1374,7 +1374,11 @@ End
 
 Public Sub mplayer_user_stopping(fullpath As String, timepos As String)
   If Not (global.IsNetworkURI(mplayer.getP("fullpath"))) Then
-    addhistory(fullpath, Split(timepos, ".,")[0])
+    Try addhistory(fullpath, Split(timepos, ".,")[0])
+    If Error Then 
+      global.myDebug("could not add timepos to " & fullpath)
+      addhistory(fullpath)
+    Endif
   Endif
 End
 
