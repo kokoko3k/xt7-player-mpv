@@ -5475,8 +5475,9 @@ Public Sub VideoAreaGroup_keypress_timer_timer()
     Return
   Endif
 
-  HotKey = HotKeysHelper.GetLastHotKey()
+  Try HotKey = HotKeysHelper.GetLastHotKey()
   If Error Then 
+    Stop
     global.myDebug("GetKey failed")
     Return
   Endif
