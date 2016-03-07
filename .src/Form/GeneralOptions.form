@@ -976,6 +976,18 @@
             Text = ("Disable Kde Effects in fullscreen mode")
           }
         }
+        { NoParse14 HBox
+          MoveScaled(1,26,48,4)
+          ToolTip = ("Player nice level.\nThe lower the value, the higher the priority\nthe player will get against other processes.")
+          Spacing = True
+          { CHKpausefullscreen CheckBox
+            MoveScaled(1,0,43,4)
+            ToolTip = ("It has been noticed that with some intel drivers when used\nwith SNA acceleration produces video tearing.\nActivating this option may help at the cost oc pausing the video\nfor a while when going to fullscreen mode.")
+            AutoResize = True
+            Text = ("Pause video when going fullscreen (helps with tearing)")
+            Value = CheckBox.True
+          }
+        }
       }
       Index = 6
       Text = ("CD/DVD")

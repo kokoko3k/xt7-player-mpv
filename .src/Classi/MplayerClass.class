@@ -230,7 +230,6 @@ Public Sub playerprocess_read(Optional injected As String = "")
       answer = (MidC(sBuf, "|"))
       Try prop.Remove(question)
       setP(question, answer)
-      If sbuf Like "*metadata/by-key/ARTIST*" Then Stop
       setP_time(question, Timer())
         Else If sbuf Like "\\[*\\] *" Then
           'filter some noisy ladspa plugins
@@ -810,7 +809,6 @@ Public Function get_mediainfo(Optional cddb As Boolean = True, Optional force_au
 
 
       If Not (global.IsCdaudio(Fullpath))
-      Stop
         Try setP("Artist", get_property_mpv("metadata/by-key/ARTIST", True, 20))
         Try setP("Author", get_property_mpv("metadata/by-key/AUTHOR", True, 2))
         Try setP("Genre", get_property_mpv("metadata/by-key/GENRE", True, 2))
@@ -1849,7 +1847,6 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
     Endif
     got = True
     For Each name In names
-      If name = "metadata/by-key/ARTIST" Then Stop
       p = getP(name) 
       p_timestamp = getP_time(name)
       Debug p_timestamp

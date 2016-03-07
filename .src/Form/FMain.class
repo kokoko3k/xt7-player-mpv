@@ -4521,6 +4521,17 @@ Private winmax As Boolean
 
 Public Sub SwitchToFS()
  Dim i As Integer
+ Dim waspaused As Boolean = False
+ Dim dopauseworkaround As Boolean = False
+ dopauseworkaround = (generaloptions.CHKpausefullscreen.value = CheckBox.True)
+ If dopauseworkaround Then 
+   If mplayer.ProcessRunningOvr() Then
+     If Not mplayer.getP("audioonly") Then
+       waspaused = mplayer.paused(True)
+       If Not waspaused Then mplayer.do_pause()
+     Endif
+   Endif
+ Endif
   'save the windowed information
   videobox.hide
   Wait 0.1
@@ -4604,6 +4615,10 @@ Public Sub SwitchToFS()
     Wait 0.1
   Next 'i
   fsform.picture = Null
+
+ If dopauseworkaround Then 
+   If (Not waspaused) Then mplayer.do_leave_pause()
+ Endif
 
 End
 

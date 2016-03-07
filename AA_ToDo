@@ -799,3 +799,40 @@ Vectorscope sovraimpresso con hack per la sovraimpressione
 17% cpu
 build/mpv /mnt/nas.crypt/Musica/BestOfBowie/CD1/01.Space.Oddity.ogg  --lavfi-complex='[aid1]asplit=3[a1][a2][ao]; [a2]adrawgraph=bg=#00000000:size=256x256[blank];                            movie=/home/root/Gambas3/xt7-player-mpv-gtk/shade1.png,scale=256x256[pic]; [blank][pic]overlay[back] ; [a1]avectorscope=size=256x256[sp];[back][sp]overlay[vo]'
 
+
+filtri presenti solo in ffmpeg >=3.0:
+ ... acompressor       A->A       Audio compressor.
+ ... aemphasis         A->A       Audio emphasis.
+ ... afftfilt          A->A       Apply arbitrary expressions to samples in 
+ ... agate             A->A       Audio gate.
+ ... alimiter          A->A       Audio lookahead limiter.
+ ... allpass           A->A       Apply a two-pole all-pass filter.
+ ... amerge            N->A       Merge two or more audio streams into a single multi-channel stream.
+ T.. ametadata         A->A       Manipulate audio frame metadata.
+ ..C anequalizer       A->N       Apply high-order audio parametric multi band equalizer.
+ ... apulsator         A->A       Audio pulsator.
+ ... arealtime         A->A       Slow down filtering to match realtime.
+ ..C astreamselect     N->N       Select audio streams
+ ... compensationdelay A->A       Audio Compensation Delay Line.
+ ... extrastereo       A->A       Increase difference between stereo audio channels.
+ ... sidechaingate     AA->A      Audio sidechain gate.
+ ... stereotools       A->A       Apply various stereo tools.
+ ... stereowiden       A->A       Apply stereo widening effect.
+ ... tremolo           A->A       Apply tremolo effect.
+ ... vibrato           A->A       Apply vibrato effect.
+ TS. chromakey         V->V       Turns a certain color into transparency. Operates on YUV colors.
+ T.. convolution       V->V       Apply convolution filter.
+ T.. displace          VVV->V     Displace pixels.
+ T.. maskedmerge       VVV->V     Merge first stream with second stream 
+ T.. metadata          V->V       Manipulate video frame metadata.
+ T.. nnedi             V->V       Apply neural network edge directed interpolation intra-only deinterlacer.
+ ... realtime          V->V       Slow down filtering to match realtime.
+ TS. selectivecolor    V->V       Apply CMYK adjustments to specific color ranges.
+ T.. shuffleframes     V->V       Shuffle video frames.
+ ..C streamselect      N->N       Select video streams
+ T.. swaprect          V->V       Swap 2 rectangular objects in video.
+ ... testsrc           |->V       Generate test pattern.
+ ... testsrc2          |->V       Generate another test pattern.
+ ... ahistogram        A->V       Convert input audio to histogram video output.
+ ... showspectrumpic   A->V       Convert input audio to a spectrum video output single picture.
+ ... spectrumsynth     VV->A      Convert input spectrum videos to audio output.
