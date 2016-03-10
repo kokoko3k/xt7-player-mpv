@@ -6254,19 +6254,18 @@ End
 Public Sub Hsplit1_MyRefresh()
 
   Dim RightPanel As Integer = 0
-  'cachebar removed: If fsform.visible Then 
-    'cachebar removed: cachebar.Move(0, outerbox.h - cachebar.h, 0)
-      'cachebar removed: Else
-    'cachebar removed: cachebar.Move(0, outerbox.h - cachebar.h + toolbarbackground.h, 0)
-  'cachebar removed: Endif
+
+  CostrainFormSizes()
+
   If mplayer.ProcessRunningOvr() Then 
     If (Not mplayer.getP("audioonly")) Then CorrectAreaAspect()  
     UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
     UpdateSeekSlider()
+    Update_cache_percent(mplayer.get_property_mpv("cache", True, 1, True))
   Endif
 
-  CostrainFormSizes()
-  CorrectAreaAspect()
+
+
   Try RightPanel = HSplit1.layout[1]
   If RightPanel < 10 Then
     OuterBox.Background = Me.Background
@@ -6293,9 +6292,6 @@ Public Sub Hsplit1_MyRefresh()
   Endif
 
   If audioform.AudioPanel.Parent = outerbox Then audioform.AutoresizeAudioForm()
-  
-  ' ' ' zzzfake.cachingbox.x = (outerbox.w Div 2) - 33
-  ' ' ' zzzfake.cachingbox.y = (outerbox.h Div 2) - 33
 
 End
 
