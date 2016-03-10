@@ -5529,7 +5529,7 @@ Public Sub VideoAreaGroup_DblClick()
   Dim timenow As Float = Timer
   Dim hotkey As String
   
-  If hotkeys.dblclick_fs_checkbox.value Then
+  If ((hotkeys.dblclick_fs_checkbox.value) Or mplayer.getP("audioonly")) Then
     If mouseleft And Not TagEditMode Then 
       If WasPausedOnMouseDown Then 
         mplayer.do_pause()
