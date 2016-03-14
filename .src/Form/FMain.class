@@ -6264,8 +6264,6 @@ Public Sub Hsplit1_MyRefresh()
     Update_cache_percent(mplayer.get_property_mpv("cache", True, 1, True))
   Endif
 
-
-
   Try RightPanel = HSplit1.layout[1]
   If RightPanel < 10 Then
     OuterBox.Background = Me.Background
@@ -6284,8 +6282,10 @@ Public Sub Hsplit1_MyRefresh()
     toolbarbackground.show
   Endif
   YouVideoInfo.w = scrollviewyt.w - 64
-  Try MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, albumviewtexlen)
-  
+  If TabSelectedAlbums() Then 
+    Try MyAlbumsLib.Arrange(generaloptions.IconWidthAlbums.text, albumviewtexlen)
+  Endif
+
   If zzzFake.PanelNowNext.visible Then 
     Wait
     PanelNowNextArrange()

@@ -381,7 +381,7 @@ Private Sub draw_filters_audio_cfg()
 
   ' 'alimiter lavfi
   AllParams.Add(["TITLE", "Keep input signal under a desired threshold - (ffmpeg >=3.0 only)", "alimiter0", ""])
-  AllParams.add(["RANGEFLOAT", "Input gain", "0.1", "2", "64", "alimiter1", ""])
+  AllParams.add(["RANGEFLOAT", "Input gain", "0.1", "5", "64", "alimiter1", ""])
   AllParams.add(["RANGEFLOAT", "output gain", "0.1", "1", "64", "alimiter2", ""])
   AllParams.add(["RANGEFLOAT", "limit", "0.1", "1", "1", "alimiter3", ""]) 
   AllParams.add(["RANGE", "attack", "1", "5", "80", "alimiter4", ""]) 
