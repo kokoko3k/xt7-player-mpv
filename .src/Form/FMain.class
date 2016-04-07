@@ -1404,7 +1404,7 @@ Public Sub Form_Close()
 
   Try Shell "rm -R " & global.ConfPath & "/" & "thumbcontainer.* &>/dev/null"
   StartClass.ProcessSignals(False)
-  If buttoncapture.value Then StopDumping(generaloptions.dvbfinaldir.text)
+  If buttoncapture.value Then StopDumping()
   
   Try Unlock hLock
   Repeat
@@ -1770,7 +1770,7 @@ Public Sub ButtonStop_Click()
   previousfile_cover = ""
   videobox.cached = False
   zzzfake.PanelNowNext.visible = False
-  If buttoncapture.value Then StopDumping(generaloptions.dvbfinaldir.text)
+  If buttoncapture.value Then StopDumping()
   buttoncapture.enabled = False
   buttoncapture.visible = buttoncapture.enabled
   ABLoopButton.visible = False
@@ -3862,7 +3862,7 @@ Public Sub Mplayer_mykill(return_value As Integer)
   SubNotSet = True
   If (Not mplayer.user_stopped) And (Shutdown = "MEDIA") Then CountDown.engage
 
-  If buttoncapture.value Then StopDumping(generaloptions.dvbfinaldir.text) 'fixmempv dumping
+  If buttoncapture.value Then StopDumping() 'fixmempv dumping
   buttoncapture.enabled = False
   buttoncapture.visible = buttoncapture.enabled  
   ArrangeCpl()
@@ -12173,11 +12173,4 @@ Public Sub VideoAreaGroup_KeyRelease()
     HotKeysHelper.keyRelease()
 
 End
-' 
-' Public Sub switchresBTN_Enter()
-'   switchresBTN.menu = ""
-' End
-' 
-' Public Sub switchresBTN_Leave()
-'   switchresBTN.menu = ""
-' End
+

@@ -727,16 +727,6 @@ e cachata all'occorrenza che il server vada giù
 ciò è fondamentale per youtube.
 
 
-
-Cambiamenti nel prossimo mpv:
-
---------------------------------------------------------------------------
---------------------------------------------------------------------------
-
-
-
-
-
 Nel panello di cambiamento automatico di velocità, mettere 2 checkbox:
   [x] Sto usando un'uscita ottica toslink
   [x] voglio codificare un ac3 quando cambio velocità.
@@ -774,65 +764,7 @@ JUNK
 
 
 
-visualizzazione audio:
 
-spectrum sotto con onde sopra:
-10.5%cpu
-build/mpv /mnt/nas.crypt/Musica/BestOfBowie/CD1/01.Space.Oddity.ogg  --lavfi-complex='[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=20,crop=h=(ih/2):y=(0),crop=h=(ih/2):y=ih,colorlevels=romax=0.5[waves];[spectrum][waves]overlay[vo]' -ao null
-
-Spectrum con onde sovraimpresse:
-28%cpu
-build/mpv /mnt/nas.crypt/Musica/BestOfBowie/CD1/01.Space.Oddity.ogg  --lavfi-complex='[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=20,crop=h=(in_h):y=(in_h/2),colorlevels=romax=0.5,colorkey=0x000000:0.1:0.5[waves];[spectrum][waves]overlay[vo]' -ao null
-
-
-
-
-solo spectrum; l'immagine png è un gradiente da trasparente a nero.
-5,5%cpu
--lavfi-complex='[aid1]asplit [a][ao];[a]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x256:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h[spectrum];movie=/tmp/out.png,scale=h=(in_h/1.5)[pic]              ;[spectrum][pic]overlay[vo]'  --no-keepaspect
-
-frequenze
-7%cpu
---lavfi-complex='[aid1]asplit[ao][a1];[a1]showfreqs=s=256x256:mode=bar           :colors=#ff0000|#aa0000  :averaging=0.6
-
-Vectorscope sovraimpresso con hack per la sovraimpressione
-17% cpu
-build/mpv /mnt/nas.crypt/Musica/BestOfBowie/CD1/01.Space.Oddity.ogg  --lavfi-complex='[aid1]asplit=3[a1][a2][ao]; [a2]adrawgraph=bg=#00000000:size=256x256[blank];                            movie=/home/root/Gambas3/xt7-player-mpv-gtk/shade1.png,scale=256x256[pic]; [blank][pic]overlay[back] ; [a1]avectorscope=size=256x256[sp];[back][sp]overlay[vo]'
-
-
-filtri presenti solo in ffmpeg >=3.0:
- ... acompressor       A->A       Audio compressor.
- ... aemphasis         A->A       Audio emphasis.
- ... afftfilt          A->A       Apply arbitrary expressions to samples in 
- ... agate             A->A       Audio gate.
- ... alimiter          A->A       Audio lookahead limiter.
- ... allpass           A->A       Apply a two-pole all-pass filter.
- ... amerge            N->A       Merge two or more audio streams into a single multi-channel stream.
- T.. ametadata         A->A       Manipulate audio frame metadata.
- ..C anequalizer       A->N       Apply high-order audio parametric multi band equalizer.
- ... apulsator         A->A       Audio pulsator.
- ... arealtime         A->A       Slow down filtering to match realtime.
- ..C astreamselect     N->N       Select audio streams
- ... compensationdelay A->A       Audio Compensation Delay Line.
- ... extrastereo       A->A       Increase difference between stereo audio channels.
- ... sidechaingate     AA->A      Audio sidechain gate.
- ... stereotools       A->A       Apply various stereo tools.
- ... stereowiden       A->A       Apply stereo widening effect.
- ... tremolo           A->A       Apply tremolo effect.
- ... vibrato           A->A       Apply vibrato effect.
- TS. chromakey         V->V       Turns a certain color into transparency. Operates on YUV colors.
- T.. convolution       V->V       Apply convolution filter.
- T.. displace          VVV->V     Displace pixels.
- T.. maskedmerge       VVV->V     Merge first stream with second stream 
- T.. metadata          V->V       Manipulate video frame metadata.
- T.. nnedi             V->V       Apply neural network edge directed interpolation intra-only deinterlacer.
- ... realtime          V->V       Slow down filtering to match realtime.
- TS. selectivecolor    V->V       Apply CMYK adjustments to specific color ranges.
- T.. shuffleframes     V->V       Shuffle video frames.
- ..C streamselect      N->N       Select video streams
- T.. swaprect          V->V       Swap 2 rectangular objects in video.
- ... testsrc           |->V       Generate test pattern.
- ... testsrc2          |->V       Generate another test pattern.
- ... ahistogram        A->V       Convert input audio to histogram video output.
- ... showspectrumpic   A->V       Convert input audio to a spectrum video output single picture.
- ... spectrumsynth     VV->A      Convert input spectrum videos to audio output.
+Cambiamenti nel prossimo mpv:
+--------------------------------------------------------------------------
+  aspect: make video-zoom logarithmic: funzionano ancora il taglia bande nere e taglia metà bande nere?
