@@ -1849,7 +1849,6 @@ Public Function get_properties_mpv(names As String[], Optional wait_answer As Bo
     For Each name In names
       p = getP(name) 
       p_timestamp = getP_time(name)
-      Debug p_timestamp
       If wait_unavailable Then 
         If (p_timestamp > time_zero) And (p <> unavailable_str) Then names.Remove(names.Find(name))
           Else

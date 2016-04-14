@@ -1566,12 +1566,14 @@ Public Sub CorrectAreaAspect()
   Dim dH As Integer = 3
   Dim AR As Float = 1.333
   Dim ARv As Float = videobox.w / videobox.h
-  Dim NoBarResize As Float
+  Dim f As Float
+  Dim videodisplay_w, videodisplay_h As Integer
+  Dim barsize As Integer 
+  Dim NoBarResize, halfbarresize As Float
 
   Dim no_video As Boolean = True
  
   If zzzfake.YTPanel.Parent = outerbox Then YTPanel_myrefresh()
- 
  
   Try no_video = mplayer.getP("audioonly")
   If no_video Then Return
@@ -1585,10 +1587,19 @@ Public Sub CorrectAreaAspect()
   Try dH = mplayer.getP("video-params/dh")
   AR = dW / dH
 
+
   If AR > ARv Then
-    NoBarResize = (videobox.h / (VideoBox.w / AR)) - 1
+    videodisplay_w = videobox.w
+    videodisplay_h = videobox.w / AR
+    barsize = videobox.h - videodisplay_h
+    Try nobarresize = Log2((videobox.h / videodisplay_h)) 
+    Try Halfbarresize = Log2(((barsize / 2) + videodisplay_h) / videodisplay_h)
       Else
-    NoBarResize = ((videobox.w / ar) / VideoBox.h) - 1
+    videodisplay_h = videobox.h
+    videodisplay_w = videobox.h * ar
+    barsize = videobox.w - videodisplay_w
+    Try nobarresize = Log2((videobox.w / videodisplay_w))
+    Try Halfbarresize = Log2(((barsize / 2) + videodisplay_w) / videodisplay_w) 
   Endif
 
   'apply the zoom factor:
@@ -1596,14 +1607,13 @@ Public Sub CorrectAreaAspect()
     Case "NOBARS"
       ResizeFactor = NoBarResize
     Case "HALFBARS"
-      ResizeFactor = NoBarResize / 2
+      ResizeFactor = Halfbarresize 
   End Select
+
   Object.Lock(realtimeform.PanscanSlider)
   realtimeform.PanscanSlider.value = resizefactor * 10000
   Object.unLock(realtimeform.PanscanSlider)
-
   VideoBox.move(0, 0, outerbox.w, outerbox.h)
-
   mplayer.set_property_mpv("video-zoom", Replace(CStr(resizefactor), ",", "."))
 
 End
@@ -6248,13 +6258,12 @@ Private Hsplit1ResizeDelayed As New Timer
 Public Sub Hsplit1ResizeDelayed_timer()
   
   If Not fsform.fullscreen Then Hsplit1_MyRefresh
-  
 End
 
 Public Sub Hsplit1_MyRefresh()
 
   Dim RightPanel As Integer = 0
-
+Stop
   CostrainFormSizes()
 
   If mplayer.ProcessRunningOvr() Then 
