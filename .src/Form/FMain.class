@@ -1586,6 +1586,10 @@ Public Sub CorrectAreaAspect()
   Try dW = mplayer.getP("video-params/dw")
   Try dH = mplayer.getP("video-params/dh")
   AR = dW / dH
+'   Repeat
+' 
+'   Until videobox.visible
+' Debug videobox.w
 
 
   If AR > ARv Then
@@ -6263,7 +6267,7 @@ End
 Public Sub Hsplit1_MyRefresh()
 
   Dim RightPanel As Integer = 0
-Stop
+
   CostrainFormSizes()
 
   If mplayer.ProcessRunningOvr() Then 
@@ -6301,6 +6305,8 @@ Stop
   Endif
 
   If audioform.AudioPanel.Parent = outerbox Then audioform.AutoresizeAudioForm()
+
+
 
 End
 
@@ -10023,18 +10029,21 @@ Public Sub HSplit1_Resize()
   ' 'old_workaround for missing picture, maybe not needed with mpv.
 
 'check if drag has stopped
+
   prevlayout = hsplit1.Layout
   Wait 0.025
   If prevlayout[0] <> hsplit1.layout[0] Then Return
 
   timerhideshowvideo.start
-
+  'Hsplit1_MyRefresh
 End
 
 
  Public Sub timerhideshowvideo_Timer()
   Dim prevlayout As Integer[]
   Dim xy As Integer
+
+  If Not mplayer.ProcessRunningOvr() Then Return
 
   timerhideshowvideo.stop
   prevlayout = hsplit1.Layout
@@ -10052,6 +10061,9 @@ End
   Endif
 
   Hsplit1_MyRefresh
+  Hsplit1_MyRefresh
+    
+
   videobox.show
   Wait 0.025
   Wait 0.025
@@ -10074,45 +10086,6 @@ End
   '   videobox.y = xy
   '   Wait
   ' Endif
-
-End
-
- Public Sub OLD_timerhideshowvideo_Timer()
-  Dim prevlayout As Integer[]
-  Dim xy As Integer
-  timerhideshowvideo.stop
-  prevlayout = hsplit1.Layout
-  If Not fsform.fullscreen Then
-    'If (rightsidepanel.width < (ControlPanel.w + 64)) Then
-    'If (seekbar.w < 64) Then
-    If (rightsidepanel.width < 480) Then
-      If (BottomVbox.Parent.name <> "FMain") Then 
-        BottomVbox.Reparent(fmain)
-      Endif
-    Else
-      If (BottomVbox.Parent.name <> "RightSidePanel") And (Not (fsform.FullScreen)) Then
-          BottomVbox.Reparent(RightSidePanel)
-      Endif
-    Endif
-    hsplit1.Layout = prevlayout
-  Endif
-
-  'prevent glitches near the hsplit border
-  If Not fsform.fullscreen Then 
-    xy = videobox.x
-    Wait
-    videobox.x = 20
-    Wait
-    videobox.x = xy
-    Wait
-    Hsplit1_MyRefresh  
-      Else
-    xy = videobox.y
-    videobox.y = 20
-    Wait
-    videobox.y = xy
-    Wait
-  Endif
 
 End
 
