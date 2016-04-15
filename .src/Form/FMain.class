@@ -2704,7 +2704,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   ResizeFactor = 0
   'LogWindow.streamtextbox.text = fullpath
   PrevValuecTime = 999999
-  mplayer.watched_properties = ["pause", "volume", "=chapter", "=time-pos", "duration", "=duration", "percent-pos", "cache", "media-title"]
+  mplayer.watched_properties = ["pause", "volume", "=chapter", "=time-pos", "duration", "=duration", "percent-pos", "cache", "media-title", "=aid", "=vid", "=sid"]
   mplayer.clear_options() 
   opts = static_options()
   For Each data In opts
@@ -10043,7 +10043,7 @@ End
   Dim prevlayout As Integer[]
   Dim xy As Integer
 
-  If Not mplayer.ProcessRunningOvr() Then Return
+  'If Not mplayer.ProcessRunningOvr() Then Return
 
   timerhideshowvideo.stop
   prevlayout = hsplit1.Layout
@@ -12156,3 +12156,10 @@ Public Sub VideoAreaGroup_KeyRelease()
 
 End
 
+
+Public Sub ButtonStop_Enter()
+
+  ' Debug mplayer.get_property_mpv("=aid")
+  ' Debug mplayer.get_property_mpv("track-list/${=aid}/decoder-desc")
+
+End
