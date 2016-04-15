@@ -2704,7 +2704,20 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   ResizeFactor = 0
   'LogWindow.streamtextbox.text = fullpath
   PrevValuecTime = 999999
-  mplayer.watched_properties = ["pause", "volume", "=chapter", "=time-pos", "duration", "=duration", "percent-pos", "cache", "media-title", "=aid", "=vid", "=sid"]
+  
+  mplayer.watched_properties_old_data.Add("", "pause")
+  mplayer.watched_properties_old_data.Add("", "volume")
+  mplayer.watched_properties_old_data.Add("", "=chapter")
+  mplayer.watched_properties_old_data.Add("", "=time-pos")
+  mplayer.watched_properties_old_data.Add("", "duration")
+  mplayer.watched_properties_old_data.Add("", "=duration")
+  mplayer.watched_properties_old_data.Add("", "percent-pos")
+  mplayer.watched_properties_old_data.Add("", "cache")
+  mplayer.watched_properties_old_data.Add("", "media-title")
+  mplayer.watched_properties_old_data.Add("", "=aid")
+  mplayer.watched_properties_old_data.Add("", "=vid")
+  mplayer.watched_properties_old_data.Add("", "=sid")
+
   mplayer.clear_options() 
   opts = static_options()
   For Each data In opts

@@ -513,33 +513,31 @@ End
 Public event_loop As Timer
 
 
-Public watched_properties As New String[]
-Public watched_properties_old_data As New String[]
+Public watched_properties_old_data As New Collection 'name holds property name, data holds old data value
 
 Public Sub event_loop_timer()
   '* generate events on property changes 
   '* keep properties updated
   Dim name, data_new, data_old As String
-  Dim i As Integer
+  Dim watched_properties As New String[]
+
+  For Each data_old In watched_properties_old_data
+     watched_properties.Add(watched_properties_old_data.key)
+  Next
   If watched_properties.count > 0 Then
     get_properties_mpv(watched_properties, False) 'async ask for those properties
     Wait 0.1
     'see if some property has changed:
 
-    For i = 0 To watched_properties.count - 1
-
-      name = watched_properties[i]
+    For Each data_old In watched_properties_old_data
+      name = watched_properties_old_data.Key
       data_new = getP(name)
-      data_old = watched_properties_old_data[i]
-
       If data_old <> data_new Then 
         Raise property_change(name, data_old, data_new)
-        watched_properties_old_data[i] = data_new
+        watched_properties_old_data[name] = data_new
       Endif
     Next
   Endif
-
-
 End
 
 Event property_change(name As String, data_old As String, data_new As String)
@@ -615,7 +613,7 @@ Public Function do_play(filename As String, Optional string_options As String = 
     Shell killer_script & " " & Application.id & " " & playerprocess.id
     global.myDebug(killer_script & " " & Application.id & " " & playerprocess.id)
 
-  watched_properties_old_data.Resize(watched_properties.count)
+
   event_loop = New Timer As "event_loop"
   event_loop.delay = 500
   event_loop.start
