@@ -10726,6 +10726,10 @@ Public Sub Startdumping(destfile As String)
  Dim mymsg As String
   Dim mynow As String = Now()
   Dim ismp3 As Boolean = False
+  Dim audiocodec As String
+  Dim tracklist_current_audio As Integer = 0
+  Try tracklist_current_audio = mplayer.getP("tracklist-current-audio")
+  audiocodec = mplayer.getP("track-list/" & tracklist_current_audio & "/codec")
   mynow = Replace(mynow, "/", "-")
   mynow = Replace(mynow, " ", "_")
   mynow = Replace(mynow, ":", ".")
@@ -10733,9 +10737,9 @@ Public Sub Startdumping(destfile As String)
   destfile &= "/Xt7.REC."
   destfile &= file.Name(mplayer.getP("fullpath")) & "-" & mynow
   destfile = Replace(destfile, ".pls", "")
-  Ismp3 = Ismp3 Or (Lower(mplayer.getP("fullpath")) Like "*.mp3") 
-  Ismp3 = Ismp3 Or (Lower(mplayer.getP("audio-codec")) Like "*mpg123*") 
-  Ismp3 = Ismp3 Or (Lower(mplayer.getP("audio-codec")) Like "*mp3*") 
+  Ismp3 = Ismp3 Or (Lower(audiocodec) Like "*.mp3") 
+  Ismp3 = Ismp3 Or (Lower(audiocodec) Like "*mpg123*") 
+  Ismp3 = Ismp3 Or (Lower(audiocodec) Like "*mp3*") 
   Ismp3 = Ismp3 And mplayer.getP("audioonly")
       
   If ismp3 Then 
