@@ -1272,6 +1272,7 @@ Public Sub FillPropertiesGrid()
   Dim cTime As Integer = 0
   Dim audio_codec As String = ""
   Dim chapter As Integer
+  Dim tracklist_current_audio As Integer = 0
   
   If Not mplayer.ProcessRunningOvr() Then Return
   
@@ -1288,7 +1289,9 @@ Public Sub FillPropertiesGrid()
 
   PropertiesGrid[12, 1].text = mplayer.getP("=audio-params/channels")
   PropertiesGrid[13, 1].text = mplayer.getP("=audio-params/samplerate")
-  PropertiesGrid[14, 1].text = mplayer.getP("audio-codec")
+  'PropertiesGrid[14, 1].text = mplayer.getP("audio-codec")
+  Try tracklist_current_audio = mplayer.getP("tracklist-current-audio")
+  PropertiesGrid[14, 1].text = mplayer.getP("track-list/" & tracklist_current_audio & "/codec")
   'Try PropertiesGrid[15, 1].text = (CInt(mplayer.get_property_mpv("=audio-bitrate")) Div 1000) & "Kbps"
   Try PropertiesGrid[15, 1].text = mplayer.get_property_mpv("audio-bitrate")
 
@@ -2715,8 +2718,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   mplayer.watched_properties_old_data.Add("", "cache")
   mplayer.watched_properties_old_data.Add("", "media-title")
   mplayer.watched_properties_old_data.Add("", "=aid")
-  mplayer.watched_properties_old_data.Add("", "=vid")
-  mplayer.watched_properties_old_data.Add("", "=sid")
+  ' mplayer.watched_properties_old_data.Add("", "=vid")
+  ' mplayer.watched_properties_old_data.Add("", "=sid")
 
   mplayer.clear_options() 
   opts = static_options()
@@ -3801,7 +3804,7 @@ Private CUSTOMTITLE_OLD As String
 
 Public Sub mplayer_property_change(name As String, data_old As String, data_new As String)
   If Not mplayer.ProcessRunningOvr() Then Return
-  
+
   Select Case name
   
     Case "pause"
@@ -3856,12 +3859,31 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
     Case Like "duration"
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
 
+    Case "=aid"
+      global.myDebug("changed aid:", data_old, data_new)
+      mplayer.setP("tracklist-current-audio", TracklistCurrentAudioTrack())
+
   End Select
 
   Returnlabel:
   Return
 
 End
+
+Public Function TracklistCurrentAudioTrack() As Integer
+  Dim n, t As Integer
+  Dim current_aid, id As String
+  t = mplayer.getP("track-list/count")
+  For n = 0 To t - 1
+    If mplayer.get_property_mpv("track-list/" & n & "/type", True, 1, True) = "audio" Then
+      If mplayer.get_property_mpv("track-list/" & n & "/selected", True, 1, False) = "yes" Then
+        Return n
+      Endif
+    Endif
+  Next
+  Return 0
+End
+
 
 Public Sub Update_cache_percent(cachevalue As String)
   Dim percent_pos, percent_cache, duration, cache_duration_secs As Float
@@ -12164,15 +12186,6 @@ Public Sub TogglePls_Click()
 End
 
 Public Sub VideoAreaGroup_KeyRelease()
-
     HotKeysHelper.keyRelease()
-
 End
 
-
-Public Sub ButtonStop_Enter()
-
-  ' Debug mplayer.get_property_mpv("=aid")
-  ' Debug mplayer.get_property_mpv("track-list/${=aid}/decoder-desc")
-
-End

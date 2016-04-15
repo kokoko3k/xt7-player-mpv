@@ -136,6 +136,7 @@ Public Function FillMultitracks(Optional force_audio_only As Boolean = False)
     properties.add("track-list/" & T & "/lang")
     properties.add("track-list/" & T & "/type")
     properties.add("track-list/" & T & "/codec")
+    properties.add("track-list/" & T & "/selected")
   Next 'T
   
   properties.Add("vo-configured")
@@ -544,6 +545,7 @@ Event property_change(name As String, data_old As String, data_new As String)
 
 Event seeking()
 
+
 Private Function internal_options() As Collection
   Dim out As New Collection
 
@@ -722,7 +724,6 @@ Public Function get_mediainfo(Optional cddb As Boolean = True, Optional force_au
   Dim properties As String[]
   Dim cuetext As String 
   Dim fullpath As String
-  
   fullpath = getP("fullpath") 
   
   If fullpath = "" Then Return
@@ -754,7 +755,6 @@ Public Function get_mediainfo(Optional cddb As Boolean = True, Optional force_au
   FillMultitracks(force_audio_only) 'will set prop[audioonly] too.
 
   Try setP("size", (Stat(fullpath, True).Size Div 1024))
-  
   properties = New String[]
   properties.insert(["filename", "partially-seekable", "file-format", "audio-codec"]) 'common
   'properties.Insert(["=audio-bitrate", "audio-channels", "=audio-channels", "=audio-samplerate"]) 'common
