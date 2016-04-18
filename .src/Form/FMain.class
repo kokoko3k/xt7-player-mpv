@@ -452,6 +452,9 @@ End
 Public Sub AllInit_Post()
   Dim cscreen As Screen  
   Dim savefileview1path As String
+  If Not Panel2.visible Then Panel2.visible = True
+  If MyLibraryProgressBar.visible Then MyLibraryProgressBar.visible = False
+  
   Hsplit1ResizeDelayed = New Timer As "Hsplit1ResizeDelayed" 'used to delay the hsplit resize and better performance
   Hsplit1ResizeDelayed.delay = 300
   Hsplit1ResizeDelayed.Enabled = False
