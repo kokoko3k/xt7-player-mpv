@@ -1102,6 +1102,8 @@ Private FirstTimeXt7 As Boolean = True ' has the user ever used xt7?
 Public havetoshowbrowsetab As Boolean = False
 Private PlayFromCommandline As Boolean = False
 
+Private timer_delay_play As Timer
+
 Public Sub MainInit()
   
   Dim AlreadyRunning As Boolean = False
@@ -1151,9 +1153,9 @@ Public Sub MainInit()
 
   Try UpdateProfilesTabList()
 
-  If (global.arg_file <> "") Then
+  AllInit_pre()
 
-    AllInit_pre()
+  If (global.arg_file <> "") Then
 
     FirstPlay = True 'used to  avoid playing media at start when togglepls button is toggled
     Me.mouse = mouse.Wait
@@ -1164,14 +1166,20 @@ Public Sub MainInit()
       Media_Next_path = DConv(global.arg_file)
       PlayFromCommandline = True 
       If Exist(DConv(global.arg_file)) Then SetActivePlayQueue("browse")
-      Play(DConv(global.arg_file))
+      If global.IsPlaylist(global.arg_file) Then
+        timer_delay_play = New Timer As "timer_delay_play"
+        timer_delay_play.delay = 500
+        timer_delay_play.Start()
+          Else
+        Play(DConv(global.arg_file))
+      Endif
+      
     Endif
     Me.Mouse = mouse.Default
     havetoshowbrowsetab = True
 
       Else
 
-    AllInit_pre()
     FMain.LoadFormGeometry()
     fmain.Show
   Endif
@@ -1185,6 +1193,16 @@ Public Sub MainInit()
   global.myDebug("Myinit ended at: " & Timer)
 
 End
+
+
+Public Sub timer_delay_play_Timer()
+
+  If Not fmain.FullyLoaded Then Return
+  timer_delay_play.stop
+  Play(DConv(global.arg_file))
+
+End
+
 
 
 Public Sub ShowBrowseTabTo(fullpath As String)
@@ -10084,7 +10102,6 @@ End
   Dim xy As Integer
 
   If Not fmain.fullyloaded Then Return
-  'If Not mplayer.ProcessRunningOvr() Then Return
 
   timerhideshowvideo.stop
   prevlayout = hsplit1.Layout
