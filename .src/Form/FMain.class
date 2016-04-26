@@ -3903,7 +3903,8 @@ End
 Public Function TracklistCurrentAudioTrack() As Integer
   Dim n, t As Integer
   Dim current_aid, id As String
-  t = mplayer.getP("track-list/count")
+  Try t = mplayer.getP("track-list/count")
+  If Error Then Return
   For n = 0 To t - 1
     If mplayer.get_property_mpv("track-list/" & n & "/type", True, 1, True) = "audio" Then
       If mplayer.get_property_mpv("track-list/" & n & "/selected", True, 1, False) = "yes" Then
