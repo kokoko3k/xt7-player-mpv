@@ -1168,7 +1168,7 @@ Public Sub MainInit()
       If Exist(DConv(global.arg_file)) Then SetActivePlayQueue("browse")
       If global.IsPlaylist(global.arg_file) Then
         timer_delay_play = New Timer As "timer_delay_play"
-        timer_delay_play.delay = 500
+        timer_delay_play.delay = 100
         timer_delay_play.Start()
           Else
         Play(DConv(global.arg_file))
@@ -1200,7 +1200,9 @@ Public Sub timer_delay_play_Timer()
   If Not fmain.FullyLoaded Then Return
   timer_delay_play.stop
   Play(DConv(global.arg_file))
-
+  
+  'hacky.
+    audioform.AutoresizeAudioForm()
 End
 
 
