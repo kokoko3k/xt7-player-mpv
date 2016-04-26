@@ -235,7 +235,7 @@ Private Const TabStripMediaInfo As Integer = 2
 Public SwitchingFullScreen As Boolean = False
 
 'Private UserStopped As Boolean = False 'if user has hit stop, don't advance in playlist.
-Private FirstPlay As Boolean = False ' used to avoid playing the media at startup if togglepls button is toggled
+Public FirstPlay As Boolean = False ' used to avoid playing the media at startup if togglepls button is toggled
 
 Public LastDvdID As String = ""            'used to manage dvd disk changes
 
@@ -2698,7 +2698,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   ' VideoBox.Visible = False
 
 
-  firstplay = False
+                                                      ' searchme firstplay = False
 
   ButtonPlay.enabled = False
 
@@ -2922,6 +2922,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Endif
 
   ReturnLabel:
+  firstplay = False
   global.mouse_wait(fmain, False)
   switchresBTN.enabled = True
   Return True
@@ -3316,6 +3317,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
   audioform.coverbox.refresh
   'AlbumGridView.Current.Refresh()
   MyAlbumsLib.selectcell(AlbumGridView.Row, AlbumGridView.Column)
+  'timerhideshowvideo.start
 End
 
 Public Function shadow(src As Image, final_size As Integer, offset As Integer) As Image
@@ -3363,6 +3365,11 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
       audioform.coverbox.Refresh
       AudioForm.TimerZoomIn.start
       audioform.refresh
+                                            Debug "searchme"
+                                            Hsplit1_MyRefresh()
+                                            Wait 1
+                                            Hsplit1_MyRefresh()
+                                            timerhideshowvideo.Trigger()
     Endif
 
   ' If GeneralOptions.ShowVmeterCHK.value = True Then
@@ -3390,7 +3397,7 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
     audioform.refresh
     AudioForm.PictureBack.hide
   Endif
-  
+
 End
 
 Public Sub SetChaptersTabVisibility(visibility As Boolean)
@@ -6342,7 +6349,9 @@ Public Sub Hsplit1_MyRefresh()
     PanelNowNextArrange()
   Endif
 
-  If audioform.AudioPanel.Parent = outerbox Then audioform.AutoresizeAudioForm()
+  If audioform.AudioPanel.Parent = outerbox Then 
+    audioform.AutoresizeAudioForm()
+  Endif
 
 
 
@@ -10053,7 +10062,6 @@ End
 Public Sub HSplit1_Resize()
   Dim prevlayout As Integer[]
 
-
   bp.ignore = True
   bp.move(0, 0, outerbox.w, outerbox.h)
   bp.show
@@ -10061,12 +10069,6 @@ Public Sub HSplit1_Resize()
   videobox.hide
   thumblebox.hide
 
-  ' If Rnd(0, 1) > 0.75 Then
-  '   Hsplit1_MyRefresh   
-  ' Endif
-  ' 'old_workaround for missing picture, maybe not needed with mpv.
-
-'check if drag has stopped
 
   prevlayout = hsplit1.Layout
   Wait 0.025
@@ -10081,6 +10083,7 @@ End
   Dim prevlayout As Integer[]
   Dim xy As Integer
 
+  If Not fmain.fullyloaded Then Return
   'If Not mplayer.ProcessRunningOvr() Then Return
 
   timerhideshowvideo.stop
@@ -10097,10 +10100,9 @@ End
     Endif
     hsplit1.Layout = prevlayout
   Endif
-
-  Hsplit1_MyRefresh
-  Hsplit1_MyRefresh
-    
+  
+  'If firstplay = True Then Wait 1
+  Hsplit1_MyRefresh()
 
   videobox.show
   Wait 0.025

@@ -388,10 +388,7 @@ Public Sub AutoresizeAudioForm()
   leftalignup.w = (AudioPanel.w - Max(upwidth, downWidth)) Div 2
   leftaligndown.w = leftalignup.w 
 
-  ' audioform.GridDown.Columns[0].w = -1
-  ' audioform.GridDown.Columns[1].w = -1
-  ' audioform.GridUp.Columns[0].w = -1
-  ' audioform.GridUp.Columns[1].w = -1
+
 End
 
 Public Sub UpdateCell(g As Gridview, row As Integer, column As Integer, t As String)

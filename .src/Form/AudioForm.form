@@ -48,6 +48,10 @@
           Alignment = Align.Center
         }
       }
+      { TimerZoomOut #Timer
+        #Move(140,63)
+        Delay = 30
+      }
       { GridUp GridView audioareagroup
         Name = "GridUp"
         Move(189,14,364,133)
@@ -57,12 +61,8 @@
         ScrollBar = Scroll.None
         AutoResize = False
       }
-      { TimerZoomOut #Timer
-        #Move(210,56)
-        Delay = 30
-      }
       { GridUpShadow GridView
-        Move(217,28,364,100)
+        Move(301,7,364,100)
         Background = &HFF000000&
         Border = False
         Grid = False
@@ -108,7 +108,7 @@
     }
     { PictureBack PictureBox AudioAreaGroup
       Name = "PictureBack"
-      Move(406,63,231,63)
+      Move(315,84,231,63)
       Tracking = True
       Drop = True
       Expand = True
@@ -117,7 +117,7 @@
     }
   }
   { TimerZoomIn #Timer
-    #Move(182,161)
+    #Move(49,154)
     Delay = 30
   }
 }

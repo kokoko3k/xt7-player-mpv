@@ -1484,6 +1484,7 @@ Public Sub AutoSizeColumns(MyGrid As GridView)
     'find the maximum Gambas column width
     For TextW = 3000 DownTo 0 Step 4
       Try MyGrid.Columns[0].w = TextW
+      If Error Then Return
       If MyGrid.Columns[0].w = TextW Then Break
     Next
     maxgbw = TextW
