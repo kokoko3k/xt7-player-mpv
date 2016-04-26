@@ -2718,8 +2718,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   ' VideoBox.Visible = False
 
 
-                                                      ' searchme firstplay = False
-
   ButtonPlay.enabled = False
 
   ' fixmempv  
@@ -3385,11 +3383,6 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
       audioform.coverbox.Refresh
       AudioForm.TimerZoomIn.start
       audioform.refresh
-                                            Debug "searchme"
-                                            Hsplit1_MyRefresh()
-                                            Wait 1
-                                            Hsplit1_MyRefresh()
-                                            timerhideshowvideo.Trigger()
     Endif
 
   ' If GeneralOptions.ShowVmeterCHK.value = True Then
