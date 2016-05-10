@@ -1021,6 +1021,10 @@ Public Sub SetStyle_early()
   GenresTree.Foreground = forecolor
   GenresTree.Background = backcolor
   
+  ShutResultGrid.font = userfont
+  ShutResultGrid.Foreground = forecolor
+  ShutResultGrid.Background = backcolor
+  
   PodcastTree.font = Userfont
   PodcastTree.Foreground = forecolor
   PodcastTree.Background = backcolor
@@ -1791,6 +1795,7 @@ End
 
 
 Public Sub ButtonStop_Click()
+ 
   ' Return
   ' Dim a As Integer = 1 / 0
     'Stop
@@ -7211,6 +7216,8 @@ Public Sub Gridviews_Data(MyGrid As GridView, MyLibrary As Playlistclass, Row As
   If row = hirow Then mygrid.Data.Font.bold = True
   MyGrid.data.text = MyLibrary.CellValue(MyGrid, row, column)
 
+  mygrid.Data.Foreground = GeneralOptions.ColorChooseBTN1.Background
+  
 End
 
 Public Sub OLD_Gridviews_Data(MyGrid As GridView, MyLibrary As Playlistclass, Row As Integer, Column As Integer)
@@ -7302,9 +7309,7 @@ Public Sub OLD_Gridviews_Data(MyGrid As GridView, MyLibrary As Playlistclass, Ro
 End
 
 Public Sub LibraryGrid_Data(Row As Integer, Column As Integer)
-
   Gridviews_Data(LibraryGrid, mylibrary, Row, Column)
-
 End
 
 Public Sub PlaylistGrid_Data(Row As Integer, Column As Integer)
