@@ -862,6 +862,9 @@
             Grid = False
             Header = GridView.Horizontal
           }
+          { timervolume #Timer
+            #MoveScaled(21,14)
+          }
         }
         { LibrarySelInfo Label
           MoveScaled(1,47,36,4)
@@ -1410,7 +1413,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-33.2857,18,4)
+              MoveScaled(9.4286,-34.2857,18,4)
               #Translate = False
               Expand = True
               ReadOnly = True

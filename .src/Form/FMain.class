@@ -8008,11 +8008,26 @@ End
 
 Public Sub TrayIcon2_Scroll(Delta As Float, Orientation As Integer)
   If delta > 0 Then
-    volume_add("+2")
+    v = "UP"
+    'volume_add("+2")
   Else
+    v = "DOWN"
+    'volume_add("-2")
+  Endif
+  timervolume.Trigger()
+End
+Private v As String
+Public Sub timervolume_Timer()
+  If v = "UP" Then 
+    volume_add("+2")
+      Else
     volume_add("-2")
   Endif
 End
+
+
+
+
 
 Public Sub TrayIcon2_click()
   Dim iconified As Boolean = False
