@@ -1613,13 +1613,14 @@ Public Sub CorrectAreaAspect()
   If fmain.closing Then Return
   If global.IsImgFile(mplayer.getP("fullpath")) Then mplayer.do_seek(0)
   
-  Try dW = mplayer.getP("video-params/dw")
-  Try dH = mplayer.getP("video-params/dh")
-  AR = dW / dH
-'   Repeat
-' 
-'   Until videobox.visible
-' Debug videobox.w
+  If ForcedAspectRT = "default" Then
+    Try dW = mplayer.getP("video-params/dw")
+    Try dH = mplayer.getP("video-params/dh")
+    AR = dW / dH
+      Else
+    Try AR = CFloat(ForcedAspectRT)
+    If Error Then AR = 16 / 9
+  Endif
 
 
   If AR > ARv Then
