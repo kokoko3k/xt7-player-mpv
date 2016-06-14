@@ -4374,7 +4374,7 @@ Public Sub VideoAreaGroup_MouseDrag()
     If SwitchingFullScreen Then Return
     If mouse.left Then
      GuiDragging = True
-      fmain.Move(fmain.screenx + (mouse.x - mouse.StartX), fmain.screeny + (mouse.y - mouse.Starty))
+      fmain.Move(fmain.x + (mouse.x - mouse.StartX), fmain.y + (mouse.y - mouse.Starty))
     Endif
   Else
     global.myDebug(" ")
@@ -12231,4 +12231,5 @@ End
 Public Sub VideoAreaGroup_KeyRelease()
     HotKeysHelper.keyRelease()
 End
+
 
