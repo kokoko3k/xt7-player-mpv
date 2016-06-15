@@ -575,7 +575,7 @@ Public Sub Save(TheForm As Object, FileName As String)
   If (Not TheFormIsAlreadyLoaded) Then Goto returnlabel 'why save a form that hasn't been even loaded?
   'FMain.GetOptionsFromGui()
   FileName = Filename & ".profile/" & TheForm.name
-  If Not Exist(file.Dir(filename, True), True) Then
+  If Not Exist(file.Dir(filename), True) Then
     Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(filename)))))
     Try Mkdir File.Dir(File.dir(File.Dir(File.Dir(filename))))
     Try Mkdir File.dir(File.Dir(File.Dir(filename)))
