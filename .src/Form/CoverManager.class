@@ -385,14 +385,14 @@ If (global.isvideofile(uripath) And (generaloptions.ShowThumbsChk.value = False)
   Return cornice(Stock[CStr(height + shadowoffset) & "/video"].Image, neww)
 Endif
 
-If Exist(coverfile) Then
+If Exist(coverfile, True) Then
   Try Return CoverCacheList[cachefile].picture 'Se esiste l 'immagine in memoria dai l 'immagine in memoria ed esci
   If Error Then 'Se non esiste l 'immagine in memoria, allora
-    If Exist(cachefile) Then  'Se esiste una cache su disco allora
+    If Exist(cachefile, True) Then  'Se esiste una cache su disco allora
       Try CoverCacheList.Add(cachefile, "", cornice(Shadowed(picture.Load(cachefile)), neww)) 'mettila IN memoria **************************************
       If Not Error Then Return CoverCacheList[cachefile].picture 'ritornala
         Else 'Altrimenti(non esiste cache su disco)
-      If Exist(coverfile) 'se esiste la cover su disco, ma non la cache
+      If Exist(coverfile, True) 'se esiste la cover su disco, ma non la cache
         tmpimage = image.Load(coverfile)
         If (tmpimage.w < tmpimage.h) Then
           width = ((tmpimage.w / tmpimage.h) * height)
@@ -979,7 +979,7 @@ Public Sub SetACover(fullpath As String, artist As String, album As String, Opti
         picturebox1.refresh
         'Me.show
         Wait 0.1
-        If ((Not Exist(Coverfile(ArtistText.text, AlbumText.text))) And Not JustFileCover) Or forcesearch Then
+        If ((Not Exist(Coverfile(ArtistText.text, AlbumText.text), True)) And Not JustFileCover) Or forcesearch Then
           Try search() 'start a fetch
         Endif
       Endif
@@ -1039,7 +1039,7 @@ Public Sub CoversLookerTimer_timer()
    Return
      Else 'file not (yet?) marked as not found
    If Not global.IsNetworkURI(fullpath) Then
-     If Not Exist(fullpath) Then
+     If Not Exist(fullpath, True) Then
        global.myDebug("Missing file! " & fullpath)
        FileNotFoundAdd(fullpath)
         'mygrid[row, 0].picture = picture["icon:/" & (rowheight -global.rowpadding) & "/error"]
@@ -1244,7 +1244,7 @@ Public Sub makevideothumb(fullpath As String, coverfilepath As String, mygrid As
     Wait 0.05
   Wend
   If FMain.closing Then Return
-  If Exist(coverfilepath) Then Return
+  If Exist(coverfilepath, True) Then Return
   mplayerthumb = New Mplayerclass As "thumbnailer"
   runningthumblers += 1
   global.myDebug(runningthumblers)

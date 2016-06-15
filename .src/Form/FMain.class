@@ -537,7 +537,7 @@ Public Sub AllInit_Post()
   Endif
 
   If global.arg_file <> "" Then
-    If Exist(global.arg_file) Then fmain.ShowBrowseTabTo(global.arg_file)
+    If Exist(global.arg_file, True) Then fmain.ShowBrowseTabTo(global.arg_file)
   Endif
   If GeneralOptions.ToolTipsCHKDBUS.value Then Try ExportDbusProperties()
   updaterecentfiles()
@@ -1170,7 +1170,7 @@ Public Sub MainInit()
     If (Not global.arg_append) And (global.arg_file <> "") Then 
       Media_Next_path = DConv(global.arg_file)
       PlayFromCommandline = True 
-      If Exist(DConv(global.arg_file)) Then SetActivePlayQueue("browse")
+      If Exist(DConv(global.arg_file), True) Then SetActivePlayQueue("browse")
       If global.IsPlaylist(global.arg_file) Then
         timer_delay_play = New Timer As "timer_delay_play"
         timer_delay_play.delay = 100
@@ -1702,7 +1702,7 @@ Public Sub LoadFormGeometry()
   Dim geometry As String
   Dim rx, ry, rw, rh As Integer
   
-  If Exist(myfilename) Then
+  If Exist(myfilename, True) Then
     myfile = Open myfilename For Read
     Try Line Input #myfile, geometry
     If Not Error Then
@@ -3305,7 +3305,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
     PreviousCoverFile = coverfile
 
     If Not (Exist(coverfile)) Then
-      If Exist(Trim(coverfile)) Then coverfile = Trim(coverfile)
+      If Exist(Trim(coverfile), True) Then coverfile = Trim(coverfile)
     Endif
     
     audioform.coverbox.refresh
@@ -4462,7 +4462,7 @@ Public Sub FsCommandsExec(Fullscreen As Boolean, fps As String)
   my = mouse.screeny
   
   If fullscreen Then
-    If Exist(fscommand) Then 
+    If Exist(fscommand, True) Then 
       global.myDebug("Executing " & fscommand & " " & fps)
       If Not mplayer.Paused() Then 'pause the video before swhitching fullscreen
         mplayer.do_pause()
@@ -4486,7 +4486,7 @@ Public Sub FsCommandsExec(Fullscreen As Boolean, fps As String)
   Endif
   
   'if windowed
-  If Exist(windowcommand) Then
+  If Exist(windowcommand, True) Then
     global.myDebug("Executing " & windowcommand)
     If Not mplayer.Paused() Then 'pause the video before swhitching fullscreen
       mplayer.do_pause()
@@ -7190,7 +7190,7 @@ Public Sub Gridviews_Data(MyGrid As GridView, MyLibrary As Playlistclass, Row As
       '---
       If filefound Or (Lower(fullpath) Like "*dvb*://*") Then
         If GeneralOptions.ShowCoversInListChk.value Then  'the user want covers
-          If Not Exist(covermanager.Coverfile(artist, album, fullpath)) Then 'se il coverfile non esiste
+          If Not Exist(covermanager.Coverfile(artist, album, fullpath), True) Then 'se il coverfile non esiste
             If covermanager.IsUncovered(fullpath) Then '...e non puòessere creato
               MyGrid.Data.Picture = covermanager.coverpicture(covermanager.Coverfile(artist, album, fullpath), fullpath, (rowheight - rowpadding) * bigfactor) 'ritorna la coverdi Default
             Else 'il coverfile non esiste, ma potrebbe essere creato
@@ -7280,7 +7280,7 @@ Public Sub OLD_Gridviews_Data(MyGrid As GridView, MyLibrary As Playlistclass, Ro
       '---
       If filefound Or (Lower(fullpath) Like "*dvb*://*") Then
         If GeneralOptions.ShowCoversInListChk.value Then  'the user want covers
-          If Not Exist(covermanager.Coverfile(artist, album, fullpath)) Then 'se il coverfile non esiste
+          If Not Exist(covermanager.Coverfile(artist, album, fullpath), True) Then 'se il coverfile non esiste
             If covermanager.IsUncovered(fullpath) Then '...e non puòessere creato
               MyGrid.Data.Picture = covermanager.coverpicture(covermanager.Coverfile(artist, album, fullpath), fullpath, (rowheight - rowpadding) * bigfactor) 'ritorna la coverdi Default
             Else 'il coverfile non esiste, ma potrebbe essere creato
@@ -7928,7 +7928,7 @@ Public Sub SetACover(Album As String, Artist As String, filepath As String)
     CoverManager.CachePicture.refresh
     CoverManager.Show()
     Wait 0.1
-    If (Not Exist(CoverManager.Coverfile(CoverManager.ArtistText.text, CoverManager.AlbumText.text))) And Not JustFileCover Then
+    If (Not Exist(CoverManager.Coverfile(CoverManager.ArtistText.text, CoverManager.AlbumText.text), True)) And Not JustFileCover Then
       CoverManager.textbox1_Click() 'start a fetch
     Endif
   Endif
@@ -11008,14 +11008,14 @@ Public Function SavePls() As Boolean
     Message.Error(("Please, first enter a playlist name to save"), "Ok")
     Return False
   Endif
-  If Not Exist(playlistsfullpath) Then
+  If Not Exist(playlistsfullpath, True) Then
     Try Mkdir playlistsfullpath
     If Error Then 
       Message.Error(("Couldn't make the user playlist directory\n") & playlistsfullpath, ("Ok"))
       Return False
     Endif
   Endif
-  If Exist(playlistsfullpath & "/" & PlaylistsCombo.text & ".xpl") Then
+  If Exist(playlistsfullpath & "/" & PlaylistsCombo.text & ".xpl", True) Then
     If MyQuestion.Ask(PlaylistsCombo.text & " " & ("exists."), ("Overwrite"), ("Never mind")) = 2 Then Return False
   Endif
   Try myplaylist.SaveAs(playlistsfullpath & "/" & PlaylistsCombo.text & ".xpl")

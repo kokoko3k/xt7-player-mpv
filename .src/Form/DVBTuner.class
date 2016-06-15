@@ -27,7 +27,7 @@ Public Sub Button1_Click()
   Scanexe = Trim(Scanexe)
   femonexe = Trim(femonexe)
 
-  If Not (Exist(Trim(scanexe)) And Exist(Trim(femonexe))) Then
+  If Not (Exist(Trim(scanexe), True) And Exist(Trim(femonexe), True)) Then
     errmessage = errmessage & "Sorry, cannot find 'scan' and/or 'femon'\n"
     errmessage = errmessage & "\n"
     errmessage = errmessage & "Fill scan and femon executables fields\n"
@@ -409,8 +409,8 @@ Public Sub Button4_Click()
   mplayerchannelsfilebak = mplayerchannelsfile & ".prext7"
   'mplayer doesn't support to specify an alternative channels file, so
   'we backup an existing one and populate it again with our values
-  If (Not Exist(mplayerchannelsfilebak)) Then
-    If Exist(mplayerchannelsfile) Then
+  If (Not Exist(mplayerchannelsfilebak, True)) Then
+    If Exist(mplayerchannelsfile, True) Then
       Try Copy mplayerchannelsfile To mplayerchannelsfilebak
       If Not Error Then
         displayinfo = True
@@ -440,7 +440,7 @@ Public Sub ComboBox1_Click()
 End
 
 Public Sub selecttuning()
-  If Exist("/usr/share/dvb/dvb-t") Then myDialog.Path = "/usr/share/dvb/dvb-t/"
+  If Exist("/usr/share/dvb/dvb-t", True) Then myDialog.Path = "/usr/share/dvb/dvb-t/"
   myDialog.OpenFile()
   ftablefilesource = myDialog.Path
   Me.Caption = "Tuning Data file: " & File.Name(ftablefilesource)

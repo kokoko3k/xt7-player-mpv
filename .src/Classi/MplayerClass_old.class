@@ -568,7 +568,7 @@ Private Sub SetUpInputPipe()
   Random1 = Int(Rnd(0, 65535))
   Try Mkdir global.confpath & "/.InputPipes"
   inputpipe = global.confpath & "/.InputPipes/Xt7Input-" & Random1
-  If Exist(inputpipe) Then Shell "rm '" & inputpipe & "'" Wait
+  If Exist(inputpipe, True) Then Shell "rm '" & inputpipe & "'" Wait
   Shell "mkfifo " & inputpipe Wait
   'SLEEP 1  
 End
@@ -1581,7 +1581,7 @@ Private ShortMovieChecked As Boolean = False
 Public Sub thumbprocess_kill()
   Try Copy outdirpriv & "/" & Dir(outdirpriv, "*")[0] To newfilenamepriv
   Shell "rm -R " & outdirpriv & "&>/dev/null"
-  If Exist(newfilenamepriv) Then
+  If Exist(newfilenamepriv, True) Then
     Raise ThumbAvailableFor(Thumbfullpathpriv, gridpriv, rowpriv, columnpriv)
       Else
     If ShortMovieChecked Then 
@@ -1686,7 +1686,7 @@ Public Sub Analyze(videofile As String)
       
       'wait for pic
       timeout = 100
-      If Not Exist(tmpdir) Then Goto lStart
+      If Not Exist(tmpdir, True) Then Goto lStart
       While Dir(tmpdir, "*.jpg").count = 0 And (timeout > 0) And mpanalyze.state = Process.Running
         Wait 0.01
         timeout -= 1
@@ -1705,7 +1705,7 @@ Public Sub Analyze(videofile As String)
       Try cTimei = Split(cTime, ".")[0]
       Try cTimef = Split(cTime, ".")[1]
       Try t = tmpdir & Dir(tmpdir, "*.jpg")[0]
-      If Exist(t) Then
+      If Exist(t, True) Then
         Try i = i.Load(tmpdir & Dir(tmpdir, "*.jpg")[0])
         'Shell "mv  " & (tmpdir & Dir(tmpdir, "*.jpg")[0]) & " /tmp/tmp/" & ctime & ".jpg" Wait
         If Not Error Then 

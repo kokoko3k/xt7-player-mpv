@@ -249,7 +249,7 @@ Public Sub data(r As Integer, c As Integer)
   'Endif
   coverfile = CoverManager.Coverfile(artist, album, path)
 
-  If Not Exist(coverfile) 'se il coverfile non esiste
+  If Not Exist(coverfile, True) 'se il coverfile non esiste
     If CoverManager.IsUncovered(path) Then '...e non può essesere creato/caricato
       view.Data.Picture = CoverManager.coverpicture(coverfile, path, iconsize) 'ritorna quello di default
         Else

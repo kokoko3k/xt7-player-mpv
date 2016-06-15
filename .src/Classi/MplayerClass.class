@@ -307,7 +307,7 @@ Public Function dvb_channel_to_number(C As String) As Integer
   Dim chans As String[]
   Dim chansfix As New String[]
   Dim chanfile As String = User.home & "/.config/mpv/channels.conf.ter"
-  If Not (Exist(chanfile)) Then Return 0
+  If Not (Exist(chanfile, True)) Then Return 0
   
   chans = Split(file.Load(chanfile), "\n")
   For i = 0 To chans.Max 'we have to discard any non valid channel line, because so does mplayer
@@ -1125,7 +1125,7 @@ Public Function get_screenshot(DeleteFILE As Boolean) As Picture
 
   mpv_command(["no-osd", "screenshot_to_file", picfile, "video"])
 
-  While Not Exist(picfile) 'wait for mplayer answer
+  While Not Exist(picfile, True) 'wait for mplayer answer
     Wait 0.05
     timeout = timeout - 1
   Wend
@@ -1380,7 +1380,7 @@ Private ShortMovieChecked As Boolean = False
 Public Sub thumbprocess_kill()
   Try Copy outdirpriv & "/" & Dir(outdirpriv, "*")[0] To newfilenamepriv
   Shell "rm -R " & outdirpriv & "&>/dev/null"
-  If Exist(newfilenamepriv) Then
+  If Exist(newfilenamepriv, True) Then
     Raise ThumbAvailableFor(Thumbfullpathpriv, gridpriv, rowpriv, columnpriv)
       Else
     If ShortMovieChecked Then 
@@ -1489,7 +1489,7 @@ Public Sub Analyze(videofile As String)
       
       'wait for pic
       timeout = 100
-      If Not Exist(tmpdir) Then Goto lStart
+      If Not Exist(tmpdir, True) Then Goto lStart
       While Dir(tmpdir, "*.png").count = 0 And (timeout > 0) And mpanalyze.state = Process.Running
         Wait 0.01
         timeout -= 1
@@ -1512,7 +1512,7 @@ Public Sub Analyze(videofile As String)
       Try cTimei = Split(cTime, ".")[0]
       Try cTimef = Split(cTime, ".")[1]
       Try t = tmpdir & Dir(tmpdir, "*.png")[0]
-      If Exist(t) Then
+      If Exist(t, True) Then
         Try i = i.Load(tmpdir & Dir(tmpdir, "*.png")[0])
         'Shell "mv  " & (tmpdir & Dir(tmpdir, "*.jpg")[0]) & " /tmp/tmp/" & ctime & ".jpg" Wait
         If Not Error Then 

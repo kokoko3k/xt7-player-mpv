@@ -467,12 +467,12 @@ Public Sub LoadHotKeys(ProfileName As String)
   
   Dim C, R, w1, w2 As Integer
 
-  If Exist(filename_fs) Then
+  If Exist(filename_fs, True) Then
     Try dblclick_fs_checkbox.value = (File.Load(filename_fs) = "TRUE")
       Else
     dblclick_fs_checkbox.value = True 'default value
   Endif
-  If Exist(filename_global_hk) Then
+  If Exist(filename_global_hk, True) Then
     Try checkboxenableglobalhotkeys.value = (File.Load(filename_global_hk) = "TRUE")
       Else
     checkboxenableglobalhotkeys.value = False 'default value
@@ -484,7 +484,7 @@ Public Sub LoadHotKeys(ProfileName As String)
      HotKeysGrid.Columns[c].w = -1
   Next
   'Local Hotkeys
-  If Exist(filename) Then 
+  If Exist(filename, True) Then 
     If Stat(filename, True).size > 0 Then
         HotFile = Open filename For Read
         For c = 0 To HotKeysGrid.Columns.Count - 1
@@ -504,7 +504,7 @@ Public Sub LoadHotKeys(ProfileName As String)
   Endif
   
   'Global Hotkeys grid:
-   If Exist(filename) Then 
+   If Exist(filename, True) Then 
     If Stat(filename, True).size > 0 Then
       GlobalHotFile = Open Globalfilename For Read
       For c = 0 To GlobalHotKeysGrid.Columns.Count - 1

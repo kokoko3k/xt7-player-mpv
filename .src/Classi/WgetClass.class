@@ -27,7 +27,7 @@ Public Function DownloadAsync(URL As String, Optional AsFile As Boolean = False)
       Try out = File.Load(tmpfile)
     Endif
     tries = tries - 1
-    If Exist(tmpfile) Then
+    If Exist(tmpfile, True) Then
       If (Stat(tmpfile).size > 0) Then wgetdone = True
     Endif
   'UNTIL ((tries = 0) OR (Stat(tmpfile).size > 0))
@@ -63,7 +63,7 @@ Public Function ExistsUrl(url As String) As Boolean
     While (ProcessRunningOvr(wgetprocess2))
       Wait 0.05
     Wend
-    If Exist(tmpfile) Then
+    If Exist(tmpfile, True) Then
       If (Stat(tmpfile).size > 0) Then wgetdone = True
     Endif
   Until ((tries = 0) Or wgetdone)

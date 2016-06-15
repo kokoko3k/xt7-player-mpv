@@ -21,7 +21,7 @@ Public Function AnswerTo(question As String) As String
     timeout -= 1
   Wend
   If timeout = 0 Then Return "-1"
-  If Exist(Responsefile) Then
+  If Exist(Responsefile, True) Then
     answer = Trim(File.Load(responsefile))
   Endif
   Return File.Load(Responsefile)

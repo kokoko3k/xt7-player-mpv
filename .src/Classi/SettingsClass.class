@@ -15,7 +15,7 @@ Public ParentContainers As String[] = ["VideoFiltersBox", "AudioFiltersBox", "Vi
 Public ExcludedValues As String[] = ["thumblebox", "NumberBox", "View", "Statusbar1", "SeekBar", "TagPanel", "DriverDescription", "DescriptionArea", "FilterTextBox", "NOPARSETABLIBRARY", "NOPARSETABALBUMS", "NOPARSETABBROWSE", "NOPARSETABPLAYLIST", "NOPARSETABCHAPTERS", "NOPARSETABFLASH", "NOPARSETABSHOUTCAST", "NOPARSETABPODCAST", "NOPARSETABDVB", "NOPARSETABCDDA", "NOPARSETABDVD", "NOPARSETABPROFILES", "NOPARSETABMEDIAINFO", "YOUVIDEOINFO", "SCROLLVIEWYT", "SIDEPANELYOUTUBE", "CACHEBAR", "NOSAVEVBOX2", "NOSAVEVBOX3", "NOSAVEHBOX10", "AUDIOCHAINBOX", "AUDIOFILTERSBOX", "VIDEOCHAINBOX", "VIDEOFILTERSBOX", "PLAYLISTSELINFOBOX", "PLAYLISTSELINFO", "LIBRARYSELINFO", "BUTTON_SHOW_MAN", "HELPBOX", "TEXTAREAHELP", "NOSAVELABEL1", "filter_button_up", "filter_button_down"]
 
 Public Function ReadedConfFile(FileName As String) As String[]
-  If Exist(FileName) Then Return Split(File.Load(filename), "\n", "", True)
+  If Exist(FileName, True) Then Return Split(File.Load(filename), "\n", "", True)
   'else
   Return [""]
 End
@@ -27,7 +27,7 @@ Public Function OLD_ReadedConfFile(FileName As String) As String[]
   Dim FileInMemory As String
   Dim Splitted As New String[]
   
-  If Exist(FileName) Then
+  If Exist(FileName, True) Then
     ConfFile = Open FileName For Read
     Read #ConfFile, FileInMemory, - Stat(FileName).size
     Close #ConfFile
@@ -457,7 +457,7 @@ Public Sub LoadLeftSideTabsVisibility(ProfilePath As String)
   Dim i As Integer
   Dim tmp As String
   
-  If Exist(myfilename) Then
+  If Exist(myfilename, True) Then
     myfile = Open myfilename For Read
     For i = 0 To FMain.LeftSideTabs.count - 1
       Try Line Input #myfile, tmp
@@ -575,7 +575,7 @@ Public Sub Save(TheForm As Object, FileName As String)
   If (Not TheFormIsAlreadyLoaded) Then Goto returnlabel 'why save a form that hasn't been even loaded?
   'FMain.GetOptionsFromGui()
   FileName = Filename & ".profile/" & TheForm.name
-  If Not Exist(file.Dir(filename), True) Then
+  If Not Exist(file.Dir(filename, True), True) Then
     Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(filename)))))
     Try Mkdir File.Dir(File.dir(File.Dir(File.Dir(filename))))
     Try Mkdir File.dir(File.Dir(File.Dir(filename)))

@@ -840,7 +840,7 @@ Public Sub AddDir(LibraryGrid As Gridview, DirToAdd As String, ExcludeList As Li
 
  
  
- If Exist(dirtoadd) And (Not MatchExcluded) Then
+ If Exist(dirtoadd, True) And (Not MatchExcluded) Then
    For Each filename In Dir(DirToAdd).Sort()
     If Right(DirToAdd) <> "/" Then DirToadd = DirToAdd & "/"
     MyExist = True
