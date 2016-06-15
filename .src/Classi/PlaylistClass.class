@@ -407,6 +407,7 @@ Public Sub SaveTable(table As String[], filename As String, mygrid As Gridview)
   Dim i, r As Integer
   Dim layout As String = "Layout"
   Dim MyFile As File
+  Try Copy filename To filename & ".bak"
   Myfile = Open filename For Write Create
   'write table layout
   For i = 0 To mygrid.Columns.Count - 1
@@ -417,6 +418,7 @@ Public Sub SaveTable(table As String[], filename As String, mygrid As Gridview)
     Print #Myfile, Table[r]
   Next 'c
   Close #MyFile
+  
 End
 
 
