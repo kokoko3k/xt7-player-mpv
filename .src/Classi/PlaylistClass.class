@@ -864,7 +864,6 @@ Public Sub AddDir(LibraryGrid As Gridview, DirToAdd As String, ExcludeList As Li
 End
 
 
-
 Public Sub SyncSortedTable()
 'Will fill SortTable with Full paths from ptable
 'and sort it to allow fast searches for duplicates through function IsDupe()
@@ -872,9 +871,7 @@ Public Sub SyncSortedTable()
   'DIM starttime AS Date = Now
   'DIM endtime AS Date
    
-  
   Dim i As Integer
-
 
   Dim Field As String = "Full Path"
   SortTable.clear
@@ -887,14 +884,80 @@ Public Sub SyncSortedTable()
     SortTable.Add(GetValue(Ptable[i], Field))
   Next 'i
   ' [GB2:TEXT] SortTable = SortTable.Sort(gb.text)
-  Stop
-  SortTable = SortTable.Sort(gb.language)
+
+  Try SortTable = SortTable.Sort(gb.language)
+  If Error Then
+    Debug "SortTable.Sort(gb.language) failed."
+    Debug "Some filename is using a wrong charset,"
+    Debug "Failing back to Mergesort with comparison error handling,"
+    Debug "but this may be inaccurate and lead to wrong search results."
+    Debug "You are STRONGLY advised to fix your filenames."
+    sorttable = mergesort(SortTable)
+  Endif
+
   'PRINT "Debug: playlistclass syncsorttable() end at: " & Time
   
   'endtime = Now
   'Global.syncsorttabletime = Global.syncsorttabletime + CFloat(endtime) - CFloat(starttime)
   
 End
+
+
+Private Function MergeSort(aArray As String[]) As String[]
+  'override for builtin gambas sort function with
+  'error check on comparison functions
+  'uses mergesort.
+  
+   Dim aA, aB As String[]
+   Dim iI As Integer = 0, iJ As Integer = 0, iK As Integer = 0
+   Dim iMid As Integer
+
+   ' Trivial case
+   If aArray.Count = 1 Then Return aArray
+   ' Split
+   iMid = aArray.Count / 2
+   aA = MergeSort(aArray.Copy(0, iMid))
+   aB = MergeSort(aArray.Copy(iMid, aArray.Count - iMid))
+   ' Merge. We reuse the space in aArray to save the sorted array
+   While iI < aA.Count And iJ < aB.Count
+      'If aA[iI] <= aB[iJ] Then
+      If FirstIsEqualLess(aA[iI], aB[iJ]) Then
+         aArray[iK] = aA[iI]
+         Inc iI
+      Else
+         aArray[iK] = aB[iJ]
+         Inc iJ
+      Endif
+      Inc iK
+   Wend
+   If iI = aA.Count Then ' Put the non-consumed array into aA
+      aA = aB
+      iI = iJ
+   Endif
+   While iI < aA.Count
+      aArray[iK] = aA[iI]
+      Inc iI
+      Inc iK
+   Wend
+   Return aArray
+End
+  
+Public Sub FirstIsEqualLess(a As String, b As String) As Boolean
+  Dim out As Boolean = True
+  Try out = Comp(a, b, gb.language) <= 0
+  If Error Then
+    Debug "Error while comparing strings, with gb.language", a, b
+    Try out = Comp(a, b, gb.natural) <= 0
+    If Error Then 
+      Debug "Error while comparing strings, with gb.natural", a, b
+      Try out = Comp(a, b, gb.binary) <= 0
+      If Error Then Debug "Error while comparing strings, with gb.binary, giving up.", a, b
+    Endif
+  Endif
+  Return out
+End
+
+
 
 Private Function BinarySearch(item As String) As Integer
   Dim first, Tlast, middle As Integer
