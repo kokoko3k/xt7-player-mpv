@@ -276,7 +276,7 @@ Public Sub Load(TheForm As Object, Filename As String)
   'Filename is the form setting file
   '/home/user/.config/gambas/Xt7-Player/default.profile/FMain
   FileName = Filename & ".profile/" & TheForm.name
-  
+
   theSettings = ReadedConfFile(Filename)
   
   For i = 0 To thesettings.Max

@@ -442,6 +442,7 @@ Public Sub InitEarlyForms()
   global.initearlyformsdone = True
   SubAndOsd.Init()
   GeneralOptions.Init()
+  generaloptions.BackColorChooseBTN2.background = Color.Merge(Color.TextBackground, Color.black, 0.5)
   Try Last.mouse = mouse.default
   fmain.mouse = mouse.default
   global.myDebug("Ends at:" & Time)
@@ -897,7 +898,6 @@ Public Sub SetStyle_early()
   Dim Userfont As Font = GeneralOptions.FontChooseBTN1.font
 
   Dim i As Integer
-
   If GeneralOptions.HideTabTextCHK.value Then
     For i = 0 To Leftsidetabs.Count - 1
       leftsidetabs[i].text = ""
@@ -1118,7 +1118,7 @@ Public Sub MainInit()
   FirstTimeXt7 = Not (Exist(global.ConfPath))
   ShutOff_Click()
   MakeProfilePath()
-  
+
   Try Shell "mkdir -p " & Global.ScreenshotFolder & " >/dev/null 2>&1" Wait
   Try Mkdir User.home & "/.config/mpv/"
   covermanager.MakeCoverDirs()
@@ -1147,6 +1147,7 @@ Public Sub MainInit()
     If global.CurrentProfile = "" Then global.CurrentProfile = "default"
 
     If (Not global.initearlyformsdone) Then InitEarlyForms()
+
     ReallySaveAllSettings(global.currentprofile, False) 'before loading user settings, make a profile with factory values.
     global.myDebug("Made a new profile: '" & global.CurrentProfile & "' as a copy of the factory default one")
 
