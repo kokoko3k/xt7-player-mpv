@@ -885,6 +885,7 @@ Public Sub SyncSortedTable()
     SortTable.Add(GetValue(Ptable[i], Field))
   Next 'i
   ' [GB2:TEXT] SortTable = SortTable.Sort(gb.text)
+  Stop
   SortTable = SortTable.Sort(gb.language)
   'PRINT "Debug: playlistclass syncsorttable() end at: " & Time
   
