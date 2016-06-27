@@ -11,6 +11,11 @@ for a screenshots tour.
 It is written and requires (the latest) Gambas3:
 http://gambas.sourceforge.net/en/main.html
 
+<p align="center">
+ <img src="http://wpage.unina.it/aorefice/sharevari/xt7-player-mpv-github-shots/main.jpg"</img>
+ <img src="http://wpage.unina.it/aorefice/sharevari/xt7-player-mpv-github-shots/music.jpg"</img>
+</p>
+
 
 Mandatory requirements:
 ======
@@ -47,3 +52,5 @@ After you installed gambas 3, just checkout and compile xt7 that way:
 # /path/to/gambas/binaries/gba3
 # ./xt7-player-mpv.gambas
 ```
+
+
