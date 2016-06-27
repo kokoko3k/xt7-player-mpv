@@ -511,7 +511,13 @@ Public Sub AllInit_Post()
   Try HotKeys.LoadHotKeys(global.confpath & "/" & global.CurrentProfile)
   Try UpdateProfilesTabList()
   UpdateMenuTabVisibility()
-  If GeneralOptions.TrayCHK1.value Then Try InitTrayIcon()
+  If (GeneralOptions.TrayCHK1.value) Or global.arg_start_tray Then Try InitTrayIcon()
+  If global.arg_start_tray Then 
+    If desktop.HasSystemTray Then 
+      fmain.Minimized = True
+      fmain.SkipTaskbar = True
+    Endif
+  Endif
    If TabSelectedShoutcast() Then
      ShoutCast_Select()
   Else If TabSelectedLibrary() Then
@@ -1186,7 +1192,7 @@ Public Sub MainInit()
       Else
 
     FMain.LoadFormGeometry()
-    fmain.Show
+    If Not global.arg_start_tray Then fmain.Show
   Endif
   
   DelayTimer.delay = 1000
