@@ -2815,7 +2815,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     Endif
 
     'mplayer.do_Apply(mplayer.mpvoptions, True)
-    
     If zzzfake.YTPanel.Parent = outerbox Then
       If zzzfake.parent <> zzzfake Then zzzfake.YTPanel.Reparent(zzzfake)
       zzzfake.ytpic.Picture = Picture["black.png"]
@@ -2823,7 +2822,10 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
     If Not mplayer.ProcessRunningOvr() Then 
       If mplayer.return_value <> 0 Then 'try to use youtube-dl 
-        If mplayer.get_option("ytdl") = Null Then mplayer.set_option("ytdl", "yes")
+        'If mplayer.get_option("ytdl") = Null Then 
+        If Not user_options(fullpath).Exist("ytdl") Then 
+          mplayer.set_option("ytdl", "yes")
+        Endif
       Endif
       n = n + 1
     Endif
