@@ -430,7 +430,6 @@ Public Sub AllInit_Pre()
   SetCDDATabVisibility(False)
   SetChaptersTabVisibility(False)
   SetStyle_early()
-
 End
 
 Public Sub InitEarlyForms()
@@ -453,6 +452,7 @@ End
 Public Sub AllInit_Post()
   Dim cscreen As Screen  
   Dim savefileview1path As String
+  
   If Not Panel2.visible Then Panel2.visible = True
   If MyLibraryProgressBar.visible Then MyLibraryProgressBar.visible = False
   
@@ -554,7 +554,6 @@ Public Sub AllInit_Post()
   
   timer_runtime_infos = New Timer As "timer_runtime_infos"
   timer_runtime_infos.enabled = False
-
 End
 
 Private Sub MakeProfileMenu()
@@ -1195,6 +1194,8 @@ Public Sub MainInit()
     If Not global.arg_start_tray Then fmain.Show
   Endif
   
+  Hsplit1_MyRefresh()
+
   DelayTimer.delay = 1000
   DelayTimer.Start
   
