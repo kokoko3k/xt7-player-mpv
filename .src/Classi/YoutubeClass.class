@@ -339,126 +339,38 @@ Endif
   Return out
 End
 
-
-
 Public Function realvideourl(sourceurl As String, maxformat As String) As String
 
-  Dim fmtcode As Integer
-  Dim fmt As String
-  Dim i As Integer
-  Dim fSorted As New String[] 'formats sorted by container (mp4,webm,flv) then resolution becausewebm and flv gives more seek troubles
-  Dim useless As String
-  Dim fmtresult As String
-  Dim luckyformat As String
   Dim ytdlprocess As Process
-  Dim ytdloutlines As String[]
-  Dim UrlAndFormats As New Collection
+  Dim Url As String
 
-  If Not YoutubeDlInstalled() Then Return
-
-' If GeneralOptions.Get3dYT.value = True Then
-'   fSorted.Add("720,84,mp4")
-'   fSorted.Add("520,85,mp4")
-'   fSorted.Add("360,82,mp4")
-'   fSorted.Add("240,83,mp4")
-'   fSorted.Add("720,102,webm")
-'   fSorted.Add("360,101,webm")
-'   fSorted.Add("360,100,webm")
-' Endif
-  ' fSorted.Add("1080,37,mp4")
-  ' fSorted.Add("360,18,mp4")
-  ' fSorted.Add("1080,46,webm")
-  ' fSorted.Add("720,45,webm")
-  ' fSorted.Add("480,44,webm")
-  ' fSorted.Add("360,43,webm")
-  ' fSorted.Add("480,35,flv")
-  ' fSorted.Add("360,34,flv")
-  ' fSorted.Add("240,5,flv")
-'http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
-  fSorted.Add("3072,38,mp4")
- ' fSorted.Add("1080,137,mp4")'DASH
-  fSorted.Add("1080,37,mp4")
- ' fSorted.Add("720,136,mp4")'DASH
- 
-  fSorted.Add("720,22,mp4")
-  
- ' fSorted.Add("480,135,mp4")'DASH
- ' fSorted.Add("360,141,mp4")'DASH
- ' fSorted.Add("360,140,mp4")'DASH
- ' fSorted.Add("360,139,mp4")'DASH
- ' fSorted.Add("360,134,mp4")'DASH
-  
-  fSorted.Add("360,18,mp4")
- ' fSorted.Add("240,133,mp4")'DASH
-             '3D
- ' fSorted.Add("144,160,mp4")'DASH
-  fSorted.Add("1080,46,webm")
-
-  fSorted.Add("720,45,webm")
-  fSorted.Add("480,44,webm")
-'  fSorted.Add("360,172,webm")'DASH
- ' fSorted.Add("360,171,webm") 'DASH
-  fSorted.Add("360,43,webm")
-  fSorted.Add("720,120,flv")
-  fSorted.Add("480,35,flv")
-  fSorted.Add("360,34,flv")
-  fSorted.Add("270,6,flv")
-  fSorted.Add("270,13,3gp")
-  fSorted.Add("240,5,flv")
-  fSorted.Add("240,36,3gp")
-  fSorted.Add("144,17,3gp")
-
-
-  'strip out any format higher than maxformat and delete previous temp files
-  For i = fsorted.max DownTo 0 
-    If CInt(Split(fsorted[i], ",")[0]) > CInt(Replace(maxformat, "p", "")) Then 
-      useless = fsorted.Extract(i)[0]
-      global.myDebug("dropping " & useless)
-    Endif
-  Next
+  If Not YoutubeDlInstalled() Then 
+    global.mydebug("Youtube-dl missing!")
+    Return
+  Endif
   
   Cookiesfile = Temp(Rnd(0, 1000) & "ytcookie")
   global.myDebug("cookiesfile: " & cookiesfile)
 
-  'search for the code of the exact resolution in mp4:
-  For Each fmt In fsorted
-    If (fmt Like Replace(maxformat, "p", "") & ",*,mp4") Then 
-      luckyformat = Split(fmt, ",")[1]
-    Endif
-  Next
-  ytdlprocess = Shell "youtube-dl '" & sourceurl & "' --get-format --get-url --all-formats --prefer-insecure  --cookies " & Cookiesfile & " >" & ytdlout
-  global.myDebug("youtube-dl '" & sourceurl & "' --get-format --get-url --all-formats --prefer-insecure --cookies " & Cookiesfile & " >" & ytdlout)
+ Stop
+  global.myDebug("youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & maxformat & "]/best'" & " >" & ytdlout)
+  ytdlprocess = Shell "youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & maxformat & "]/best'" & " >" & ytdlout
   Repeat
     Wait 0.02
   Until ytdlprocess.State <> Process.Running
 
-  Try ytdloutlines = Split(File.Load(ytdlout), "\n", "", True)
+   url = File.Load(ytdlout)
+
   If Not Error Then 
     Try Kill ytdlout
       Else
     Return
   Endif
   
-  If ytdloutlines.count = 0 Then Return
-  For i = 0 To ytdloutlines.max Step 2
-    'Try UrlAndFormats[ytdloutlines[i + 1]] = ytdloutlines[i]
-    Try UrlAndFormats[Split(ytdloutlines[i + 1], " ")[0]] = ytdloutlines[i] 'split(ytdloutlines[i],"")[0]
-  Next
+  Return ytdlout
   
-  'pick up the first (if they exists) mp4 or webm or flv
-  'our array is already sorted that way.
-  For Each fmt In fsorted
-    fmtcode = Split(fmt, ",")[1]
-    Try fmtresult = UrlAndFormats[fmtcode]
-    If Not Error Then
-      If fmtresult Like "*http*" Then
-        global.myDebug(fmtresult)
-        Return Trim(fmtresult)
-      Endif
-    Endif
-  Next
-
 End
+  
 
 Public urlexists As Integer = -1
 
