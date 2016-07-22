@@ -339,7 +339,7 @@ Endif
   Return out
 End
 
-Public Function realvideourl(sourceurl As String, maxformat As String) As String
+Public Function realvideourl(sourceurl As String, max_height As String) As String
 
   Dim ytdlprocess As Process
   Dim Url As String
@@ -353,8 +353,8 @@ Public Function realvideourl(sourceurl As String, maxformat As String) As String
   global.myDebug("cookiesfile: " & cookiesfile)
 
  Stop
-  global.myDebug("youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & maxformat & "]/best'" & " >" & ytdlout)
-  ytdlprocess = Shell "youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & maxformat & "]/best'" & " >" & ytdlout
+  global.myDebug("youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & max_height & "]/best'" & " >" & ytdlout)
+  ytdlprocess = Shell "youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & max_height & "]/best'" & " >" & ytdlout
   Repeat
     Wait 0.02
   Until ytdlprocess.State <> Process.Running

@@ -9977,7 +9977,7 @@ Public Sub youtubetreeDownload_Click()
     Return
   Endif
   CurrentText = Replace(youtubetree.Current.text, "\n", " ")
-   RealYTVideoUrl = Youtube.realvideourl(CurrentUrl, GeneralOptions.Youtubeformat.Text)
+   RealYTVideoUrl = Youtube.realvideourl(CurrentUrl, Left(GeneralOptions.Youtubeformat.Text, -1))
   If Error Then
     Message.error(("Unable to get the real stream url"))
     Return

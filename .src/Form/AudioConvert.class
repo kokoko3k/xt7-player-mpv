@@ -89,7 +89,7 @@ Public Sub ConvertandSaveAudio()
       Try yttitle = Youtube.GetTitle(currentstream)
       TextArea1.text &= ("Title") & ":\n" & yttitle & "\n"
 
-      Try currentstream = Youtube.realvideourl(currentstream, GeneralOptions.Youtubeformat.text)
+      Try currentstream = Youtube.realvideourl(currentstream, Left(GeneralOptions.Youtubeformat.text, -1))
       If Error Then
         Message.error(("Unable to get the real stream url"))
         Goto nextlabel 'skip item
