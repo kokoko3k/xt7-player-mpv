@@ -1176,25 +1176,6 @@
             Alignment = Align.Right
           }
         }
-        { NoParse15 HBox
-          MoveScaled(1,32,50,4)
-          ToolTip = ("When playing youtube videos, \nprefer this format if available.")
-          AutoResize = True
-          Spacing = True
-          { Get3dYT CheckBox
-            MoveScaled(0,-1,34,4)
-            ToolTip = ("If available, 3D videos will be displayed instead of 2D ones.\nDisabling this option will completely discard 3D videos.\n\nNOTES:\n It may be necessary to use the stereo3d video filter\nUsing the stereo3d video disables GPU decoding.")
-            Expand = True
-            Text = ("Prefer 3D videos from Youtube")
-          }
-          { PictureBox2 PictureBox
-            MoveScaled(42,0,5,4)
-            Expand = True
-            Picture = Picture["3dglassess.png"]
-            AutoResize = True
-            Alignment = Align.Right
-          }
-        }
         { NoParse35 HBox
           MoveScaled(2,39,50,4)
           ToolTip = ("Choose how to download network streams\nsuch as youtube video and podcasts.\nkde4 - choose kioclient ; \nkde3 - choose kfmclient ; \nIf you wish to write your own downloader, \nremember that\n%url is the stream to download\n%destdir is the destination directory\n%destfile is the destination file (without the path)\n\nNote then kioclient and kfmclient do not work with youtubeì streams.")

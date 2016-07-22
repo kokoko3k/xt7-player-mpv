@@ -356,15 +356,15 @@ Public Function realvideourl(sourceurl As String, maxformat As String) As String
 
   If Not YoutubeDlInstalled() Then Return
 
-If GeneralOptions.Get3dYT.value = True Then
-  fSorted.Add("720,84,mp4")
-  fSorted.Add("520,85,mp4")
-  fSorted.Add("360,82,mp4")
-  fSorted.Add("240,83,mp4")
-  fSorted.Add("720,102,webm")
-  fSorted.Add("360,101,webm")
-  fSorted.Add("360,100,webm")
-Endif
+' If GeneralOptions.Get3dYT.value = True Then
+'   fSorted.Add("720,84,mp4")
+'   fSorted.Add("520,85,mp4")
+'   fSorted.Add("360,82,mp4")
+'   fSorted.Add("240,83,mp4")
+'   fSorted.Add("720,102,webm")
+'   fSorted.Add("360,101,webm")
+'   fSorted.Add("360,100,webm")
+' Endif
   ' fSorted.Add("1080,37,mp4")
   ' fSorted.Add("360,18,mp4")
   ' fSorted.Add("1080,46,webm")

@@ -2611,12 +2611,10 @@ Public Sub file_options(fullpath As String) As Collection
   Dim opts As New Collection
   Dim opt As Mpvoption
   Dim ytformats As String = ""
-  Dim yt3d As Boolean = False
   ' Dim export_opts As String = "" 'mpv 0.11 removed af_export filter :(
 
   If Youtube.IsYoutubeLink(fullpath) Then
-    yt3d = generaloptions.Get3dYT.Value
-    ytformats = Youtube.get_formats(Left(generaloptions.Youtubeformat.text, -1), generaloptions.Get3dYT.Value)
+    ytformats = Youtube.get_formats(Left(generaloptions.Youtubeformat.text, -1))
     opts["ytdl-format"] = ytformats
     opts["ytdl"] = "yes"
       Else 'not youtube specific link
