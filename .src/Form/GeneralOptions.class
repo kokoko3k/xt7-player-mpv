@@ -105,13 +105,19 @@ Private Sub DrawFiltersGui()
 
   AllParams.Clear
 
+  '-volume-max <100.0-1000.0>
+    AllParams.add(["RANGE", ("Maximum Amplification"), "100", "100", "1000", "volume000max", ("Allows volume over 100%")])
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Set the maximum amplification level (disabling this means 130).\n A value of 130 will allow you to adjust the volume up to a maximum of about double the current level.\n mpv option: -volume-max"))
+    Try Object.SetProperty(Me.Controls["volume000max.CheckBox"], "value", True) 'enabled by default
+    AllParams.Clear
+
     ' AllParams.Add(["CHOOSE", ("Hardware decoding"), "no", "auto", "vdpau", "vaapi", "vaapi-copy", "hwdec", ""])
     ' Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Specify the hardware video decoding API that should be used if possible.\nWhether hardware decoding is actually done depends on the video  codec.\nIf hardware decoding is not possible, mpv will fall back on software decoding.  \n mpv option: hwdec"))
     ' AllParams.Clear
 
   '-ad-lavc-ac3drc=<level>
     AllParams.Add(["ROCHOOSE", ("AC3 dynamic range compression"), "1.0 - full compression", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0.0 - no compression", "ad000lavc000ac3drc", "AC-3 audio streams only: make loud passages more silent and vice versa"])
-    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Select  the  Dynamic  Range Compression level for AC-3 audio streams.\n<level> is a float value ranging from 0 to 1, where 0 means no compression\nand 1 means full compression (make loud passages more silent and vice versa).\nThis option only shows an effect if the AC-3 stream contains\nthe required range compression information.\nmpv option: --ad-lavc-ac3drc=<level>"))
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, (("Select  the  Dynamic  Range Compression level for AC-3 audio streams.\n<level> is a float value ranging from 0 to 1, where 0 means no compression\nand 1 means full compression (make loud passages more silent and vice versa).\nThis option only shows an effect if the AC-3 stream contains\nthe required range compression information.\nmpv option: --ad-lavc-ac3drc=<level>")))
     Try Object.SetProperty(Me["ad000lavc000ac3drc.CheckBox"], "value", True)
     AllParams.Clear
     
@@ -123,12 +129,7 @@ Private Sub DrawFiltersGui()
     Try Object.SetProperty(Me["audio000channels.ComboBox"], "text", "2 - Stereo")
     If Error Then global.myDebug("EE: Cannot set default value audio000channels.Combobox = 2 - Stereo")
     AllParams.Clear
-     
-  '-volume-max <100.0-1000.0>
-    AllParams.add(["RANGE", ("Maximum Amplification"), "100", "100", "1000", "volume000max", "Allows volume over 100%"])
-    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Set the maximum amplification level (disabling this means 130).\n A value of 130 will allow you to adjust the volume up to a maximum of about double the current level.\n mpv option: -volume-max"))
-    Try Object.SetProperty(Me.Controls["volume000max.CheckBox"], "value", True) 'enabled by default
-    AllParams.Clear
+
     
   '-speed <0.01-100>
     AllParams.Add(["CHOOSE", ("Initial speed"), "0.5 #-12", "0.529731547179648 #-11", "0.561231024154687 #-10", "0.594603557501361 #-9", "0.629960524947437 #-8", "0.667419927085017 #-7", "0.707106781186548 #-6", "0.749153538438341 #-5", "0.7937005259841 #-4", "0.840896415253715 #3-", "0.890898718140339 #-2", "0.943874312681693 #-1", "1 #0", "1.05946309435295 #+1", "1.12246204829593 #+2", "1.18920711498136 #+3", "1.2599210498647 #+4", "1.33483985413008 #+5", "1.4142135623223 #+6", "1.4983070768139 #+7", "1.58740105189218 #+8", "1.68179283041682 #+9", "1.78179743617402#+10", "1.88774862523908 #+11", "2 #+12", "speed", ("Set initial playback tempo/pitch")])
@@ -555,6 +556,7 @@ Public Sub LoadDefault()
   MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
   LoadWatchDir(global.confpath & "/" & global.CurrentProfile)
   Try LoadExcludeDir(global.confpath & "/" & global.CurrentProfile)
+  what_is_volume_property()
   Alreadyloaded = True
   TimesLoaded += 1
 End
@@ -1351,5 +1353,17 @@ Public Sub ShowCacheGaugeCHK_Click()
     fmain.SetProgressCache(0)
       Else
    If fmain.mplayer.ProcessRunningOvr() Then fmain.Update_cache_percent(fmain.mplayer.get_property_mpv("cache", True, 1, True))
+  Endif
+End
+
+Public Sub UseMpvInternalMixerCheckBox_Click()
+  what_is_volume_property()
+End
+
+Public Sub what_is_volume_property()
+  If UseMpvInternalMixerCheckBox.value = checkbox.true Then
+    fmain.mplayer.volumeproperty = "volume"
+      Else
+    fmain.mplayer.volumeproperty = "ao-volume"
   Endif
 End

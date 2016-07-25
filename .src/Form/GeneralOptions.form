@@ -187,7 +187,7 @@
       Index = 1
       Text = ("Audio")
       { ScrollView2 ScrollView
-        MoveScaled(4,5,53,44)
+        MoveScaled(4,5,53,50)
         Tag = "audio"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -381,6 +381,17 @@
             MoveScaled(20,0,28,4)
             Expand = True
             Text = ("auto")
+          }
+        }
+        { adevicehbox2 HBox
+          MoveScaled(0,44,50,4)
+          ToolTip = ("Select an audio driver and an audio device at once.\nNote that any audio driver explicitaly selected in the chains window\nwill override this setting.\n\nmpv option: --audio-device")
+          Spacing = True
+          { UseMpvInternalMixerCheckBox CheckBox
+            MoveScaled(1,0,39,4)
+            ToolTip = ("Checked: volume changes will affect the internal mpv volume.\nUnchecked: volume changes will change the system volume:\n(on ALSA this usually changes system-wide audio,\nwhile with PulseAudio, this controls per-application volume.)\n\nHINT: Pulseaudio users may want to UNCHECK this.")
+            AutoResize = True
+            Text = ("Use mpv internal mixer (disables maximum amplification)")
           }
         }
       }
