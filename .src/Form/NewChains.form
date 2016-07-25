@@ -741,6 +741,40 @@
             Text = ("spdif")
           }
         }
+        { AlsaParseMeHbox1 HBox
+          MoveScaled(0,7,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk2 CheckBox
+            MoveScaled(1,1,15,4)
+            #Translate = False
+            Tag = "mixer-name="
+            Text = "mixer-name"
+          }
+          { AlsaDeviceTextBox2 ComboBox
+            MoveScaled(18,1,26,4)
+            #Translate = False
+            Font = Font["Monospace"]
+            Expand = True
+            List = ["Master", "PCM", "Headphone", "Front", "Center", "Surround", "LFE"]
+            Text = "Master"
+          }
+        }
+        { AlsaParseMeHbox2 HBox
+          MoveScaled(0,14,46,6)
+          AutoResize = True
+          Padding = 6
+          { AlsaDeviceChk1 CheckBox
+            MoveScaled(1,1,15,4)
+            #Translate = False
+            Tag = "mixer-index="
+            Text = "mixer-index"
+          }
+          { SpinBox1Alsa SpinBox
+            MoveScaled(34,1,9,4)
+            MaxValue = 10
+          }
+        }
       }
       Index = 1
       Text = ("Jack")
