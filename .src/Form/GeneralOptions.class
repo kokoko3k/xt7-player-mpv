@@ -123,16 +123,11 @@ Private Sub DrawFiltersGui()
     Try Object.SetProperty(Me["audio000channels.ComboBox"], "text", "2 - Stereo")
     If Error Then global.myDebug("EE: Cannot set default value audio000channels.Combobox = 2 - Stereo")
     AllParams.Clear
-    
-  '-softvol
-    AllParams.add(["ROCHOOSE", ("Software Volume control"), "no", "yes", "auto", "softvol", "Uses the software mixer instead of the hardware one."])
-    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Force the use of the software mixer, instead of using the sound card mixer.\n mpv option: softvol"))
-    AllParams.Clear
-      
-  '-softvol-max <10.0-1000.0>
-    AllParams.add(["RANGE", ("Maximum Amplification"), "100", "100", "1000", "softvol000max", "Allows volume over 100%, does not work if softvol is set to 'no'"])
-    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Set the maximum amplification level in percent (default: 110).\n A value of 200 will allow you to adjust the volume up to a maximum of double the current level.\n mpv option: -softvol-max"))
-    Try Object.SetProperty(Me.Controls["softvol000max.CheckBox"], "value", True) 'enabled by default ;)
+     
+  '-volume-max <100.0-1000.0>
+    AllParams.add(["RANGE", ("Maximum Amplification"), "100", "100", "1000", "volume000max", "Allows volume over 100%"])
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Set the maximum amplification level (disabling this means 130).\n A value of 130 will allow you to adjust the volume up to a maximum of about double the current level.\n mpv option: -volume-max"))
+    Try Object.SetProperty(Me.Controls["volume000max.CheckBox"], "value", True) 'enabled by default
     AllParams.Clear
     
   '-speed <0.01-100>

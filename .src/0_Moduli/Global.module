@@ -55,8 +55,6 @@ Public DelayLoadStates As Timer
 Public MaxHistory As Integer 'how many played files to remember
 Public YPCacheFile As String 
 
-Public NOsoftvolmessagefile As String
-
 Public UserPlaylistsDir As String
 
 Public arg_profile As String = "" 'cmdline argument: user wants to start with this profile
@@ -117,7 +115,6 @@ Public Sub init()
   FormX = 0
   FormY = 0
   SettingsFileName = "default"
-  NOsoftvolmessagefile = global.confpath & "/.Nodisplaysoftvolmessage"
   MaxHistory = 15
   DelayLoadStates = New Timer As "DelayLoadStates"
 End
