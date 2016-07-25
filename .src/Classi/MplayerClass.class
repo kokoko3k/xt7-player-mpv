@@ -382,7 +382,6 @@ Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As
           Endif
     Endif
   Next
-  Stop
   If volumeproperty = "ao-volume" Then
     Print "Not using internal mpv audio mixer means disabling maximum amplification,"
     Print "...not going To set initial volume as an option, but use a property instead"

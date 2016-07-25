@@ -2794,7 +2794,12 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     If Not gapless Then
       Try global.Preload_file_bg_stop()
       If Not mplayer.do_play(fullpath) Then Goto returnlabel
+      Wait
+      If mplayer.volumeproperty = "ao-volume" Then
+        mplayer.set_property_mpv("ao-volume", Initialvolume())
+      Endif
     Endif
+
     ButtonPlay.picture = Picture["media-playback-pause.png"]
     CorrectAreaAspect() 'fixmempv: lo chiamo subito dopo il play... e funziona anche senza informazioni di larghezza e altezza con mpv !?
                         '...ho scritto fixmempv perchè lo chiamo poi due volte, anche sotto.
@@ -2829,13 +2834,11 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   'Until (n = 2) Or (mplayer.return_value = 0) Or Youtube.IsYoutubeLink(fullpath) Or Not (global.IsNetworkURI(fullpath))
   Until (n = 2) Or (mplayer.return_value = 0) Or Youtube.is_supported(fullpath) Or Not (global.IsNetworkURI(fullpath))
 
-  'if not forced, see if the current medium were left off and seek to that point
-
   If mplayer.volumeproperty = "ao-volume" Then
     mplayer.set_property_mpv("ao-volume", Initialvolume())
   Endif
-  
-  
+
+  'if not forced, see if the current medium were left off and seek to that point
   If start_time = "0" Then
     If (generaloptions.RememberPlayTimeCHK.value = CheckBox.true) Then
       start_time = get_history_leftoff_time(fullpath)
@@ -2953,6 +2956,10 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   If generaloptions.switchres_compensate_checkbox.value Then
     Try speed_compensate(CFloat(Left(generaloptions.switchres_compensate_combobox.text, -1))) 'will check if mplayer is running and not audioonly too
+  Endif
+
+  If mplayer.volumeproperty = "ao-volume" Then
+    mplayer.set_property_mpv("ao-volume", Initialvolume())
   Endif
 
   ReturnLabel:
