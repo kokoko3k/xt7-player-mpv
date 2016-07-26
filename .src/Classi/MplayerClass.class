@@ -385,8 +385,8 @@ Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As
   If volumeproperty = "ao-volume" Then
     Print "Not using internal mpv audio mixer means disabling maximum amplification,"
     Print "...not going To set initial volume as an option, but use a property instead"
-    unset_option("volume-max")
-    unset_option("volume")
+    unset_option("volume-max", return_opts)
+    unset_option("volume", return_opts)
   Endif
   Return return_opts
 End
@@ -602,7 +602,8 @@ Public Function do_play(filename As String, Optional string_options As String = 
   If global.IsImgFile(filename) Then
     mpvOptions["fps"] = "0.1"
   Endif
-  fix_options()
+  Stop
+  mpvoptions = fix_options(mpvoptions)
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)
   global.myDebug(commandline, commandline)
@@ -2102,6 +2103,7 @@ Public Sub do_apply(new_opts As Collection) ', Optional only_check_vdpaurb As Bo
     global.myDebug("changed/added/removed option:", name, data)
     If realtime_opts.Find(name) = -1 Then
       If ignore_opts.find(name) = -1 Then
+        Stop
         global.myDebug("option changed/removed/added: " & name, "requires restart")
         do_apply_restart(new_opts)
         Return
