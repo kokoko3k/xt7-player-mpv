@@ -36,7 +36,7 @@ Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
   filters_audio_list = ["equalizer", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
-  filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc"])
+  filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
       draw_list_item(filters_audio_container, filter, True)
@@ -325,13 +325,12 @@ Private Sub draw_filters_audio_cfg()
 
 
 
-
-
   'lavcac3enc
   AllParams.Add(["TITLE", "- Encode audio to AC-3 at runtime -", "lavcac3enc0", ""])
   AllParams.add(["ROCHOOSE", "tospdif=", "yes", "no", "lavcac3enc1", ("Output raw AC-3 stream if no, output to S/PDIF for pass-through if yes (default).")])
   AllParams.add(["ROCHOOSE", "bitrate=", "auto", "96", "128", "192", "224", "320", "448", "512", "640", "lavcac3enc2", ("The bitrate use for the AC-3 stream.")])
   AllParams.add(["ROCHOOSE", "minch=", "3", "2", "3", "4", "5", "6", "lavcac3enc3", ("If the input channel number is less than <minchn>, the filter will detach itself (default: 3).")])
+  AllParams.Add(["TIP", ("This filter must be the last in the chain"), "lavcac3enc4", ""])
   Global.DrawGui(AllParams, "lavcac3enc", aTabstrip, switchable)
   AllParams.Clear
   
@@ -387,10 +386,18 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["RANGE", "attack", "1", "5", "80", "alimiter4", ""]) 
   AllParams.add(["RANGE", "release", "1", "2000", "8000", "alimiter5", ""]) 
   AllParams.Add(["TIP", ("This filter is a good volume normalizer"), "alimiter6", ""])
+  AllParams.Add(["TIP", ("It is best to place the volume filter after alimiter"), "alimiter7", ""])
   Global.DrawGui(AllParams, "alimiter", aTabstrip, False,,, "lavfi")
   AllParams.Clear
 
-
+  ' lavrresample
+  AllParams.Add(["TITLE", "Audio resampler: set the default audio resampler quality", "lavrresample0", ""])
+  AllParams.add(["RANGE", "phase-shift=", "4", "10", "20", "lavrresample1", "Higher=slower and better quality"]) 
+  AllParams.add(["ROCHOOSE", "linear=", "yes", "no", "lavrresample2", "filter linear interpolation"])
+  AllParams.Add(["TIP", ("Put this filter at the end of the chain, but before lavcac3enc"), "lavrresample3", ""])
+  Global.DrawGui(AllParams, "lavrresample", aTabstrip, switchable,,, "")
+  
+  AllParams.Clear
 
 
   'Dynaudnorm lavfi
