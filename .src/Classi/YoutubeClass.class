@@ -315,7 +315,7 @@ Public Function realvideourl(sourceurl As String, max_height As String) As Strin
     Return
   Endif
   
-  Return url
+  Return Replace(url, "\n", "")
   
 End
   
