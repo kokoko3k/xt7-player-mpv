@@ -264,7 +264,9 @@ Public Function GetTitle(sourceurl As String) As String
     Dim outfile As String = Temp()
     Dim t0 As Float = Timer()
     Dim timeout As Integer = 5
+
     videoid = getvideoid(sourceurl) 
+    videoid = sourceurl
     cmd = "youtube-dl '" & videoid & "' -e &>" & outfile
     global.myDebug(cmd)
     'Shell cmd

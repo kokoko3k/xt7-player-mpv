@@ -9995,7 +9995,7 @@ Public Sub StreamDownload(url As String, Optional suggestname As String = "")
     If commandline Like "*wget *" Then commandline = commandline & " --load-cookies " & Youtube.Cookiesfile
     If commandline Like "*aria2c *" Then commandline = commandline & " --load-cookies=" & Youtube.Cookiesfile
   Endif
-  Stop
+
   global.myDebug(commandline)
   Shell commandline
   
@@ -10004,7 +10004,7 @@ End
 Public Sub buttondetail_Click()
   Dim t As Integer
   Dim numlines As Integer = 10 'how many lines to show in yt panel?
-  Stop
+
   If scrollviewyt.visible Then 
     scrollviewyt.visible = False
     Return
