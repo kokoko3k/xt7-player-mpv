@@ -602,7 +602,7 @@ Public Function do_play(filename As String, Optional string_options As String = 
   If global.IsImgFile(filename) Then
     mpvOptions["fps"] = "0.1"
   Endif
-  Stop
+  
   mpvoptions = fix_options(mpvoptions)
   commandline = executable() & set_options() & string_options
   commandline &= Shell(filename)

@@ -277,7 +277,7 @@ Public Function realvideourl(sourceurl As String, max_height As String) As Strin
   Cookiesfile = Temp(Rnd(0, 1000) & "ytcookie")
   global.myDebug("cookiesfile: " & cookiesfile)
 
- Stop
+
   global.myDebug("youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & max_height & "]/best'" & " >" & ytdlout)
   ytdlprocess = Shell "youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & max_height & "]/best'" & " >" & ytdlout
   Repeat
@@ -292,7 +292,7 @@ Public Function realvideourl(sourceurl As String, max_height As String) As Strin
     Return
   Endif
   
-  Return ytdlout
+  Return url
   
 End
   

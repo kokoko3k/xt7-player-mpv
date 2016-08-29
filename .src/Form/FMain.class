@@ -9952,8 +9952,10 @@ Public Sub youtubetreeDownload_Click()
     Message.Error(("Error: Cannot get current item"))
     Return
   Endif
+
   CurrentText = Replace(youtubetree.Current.text, "\n", " ")
    RealYTVideoUrl = Youtube.realvideourl(CurrentUrl, Left(GeneralOptions.Youtubeformat.Text, -1))
+   RealYTVideoUrl = Replace(RealYTVideoUrl, "\n", "")
   If Error Then
     Message.error(("Unable to get the real stream url"))
     Return
@@ -9994,7 +9996,7 @@ Public Sub StreamDownload(url As String, Optional suggestname As String = "")
     If commandline Like "*wget *" Then commandline = commandline & " --load-cookies " & Youtube.Cookiesfile
     If commandline Like "*aria2c *" Then commandline = commandline & " --load-cookies=" & Youtube.Cookiesfile
   Endif
-  
+  Stop
   global.myDebug(commandline)
   Shell commandline
   

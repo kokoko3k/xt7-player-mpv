@@ -6,7 +6,8 @@ GeneralOptions=[1251]
 Count=0
 
 [DebugWindow]
-Count=0
+Count=1
+DebugWindow[1]="mpvOptions"
 
 [DebugWindow/(Dir(Directory, "*.BMP"))]
 Geometry=[45,0,224,280]
@@ -1270,6 +1271,9 @@ Geometry=[1280,0,467,521]
 [DebugWindow/bpoints]
 Geometry=[47,0,210,210]
 
+[DebugWindow/broken_opts]
+Geometry=[47,0,224,280]
+
 [DebugWindow/brother]
 Geometry=[769,213,382,665]
 
@@ -1777,7 +1781,7 @@ Geometry=[45,-3,224,280]
 Geometry=[44,-3,734,731]
 
 [DebugWindow/mpvOptions]
-Geometry=[0,0,224,280]
+Geometry=[1348,93,339,861]
 
 [DebugWindow/mpvanswers]
 Geometry=[44,-3,908,472]
@@ -1908,7 +1912,7 @@ Geometry=[47,0,224,280]
 Geometry=[44,0,210,210]
 
 [DebugWindow/new_opts]
-Geometry=[319,53,618,344]
+Geometry=[47,531,618,344]
 
 [DebugWindow/newc]
 Geometry=[920,184,403,602]
@@ -2159,6 +2163,9 @@ Geometry=[1280,-3,1280,976]
 
 [DebugWindow/results]
 Geometry=[47,0,210,210]
+
+[DebugWindow/return_opts]
+Geometry=[47,0,302,838]
 
 [DebugWindow/returnvalue]
 Geometry=[0,41,344,344]
@@ -2448,14 +2455,14 @@ SearchString=True
 
 [OpenFile]
 File[1]=".src/Form/FMain.form"
-File[2]=".src/Form/FMain.class:20.2988"
-Active=7
+File[2]=".src/Form/FMain.class:48.2988"
+Active=31
 Count=67
 File[3]=".src/Form/HotKeys.form"
 File[4]=".src/Form/HotKeys.class:11.486"
 File[5]=".src/Form/GeneralOptions.form"
-File[6]=".src/Form/GeneralOptions.class:3.551"
-File[7]=".src/0_Moduli/Global.module:34.125"
+File[6]=".src/Form/GeneralOptions.class:56.347"
+File[7]=".src/0_Moduli/Global.module:19.458"
 File[8]=".src/Form/AddUriForm.form"
 File[9]=".src/Form/AddUriForm.class:2.58"
 File[10]=".src/Form/RealtimeForm.form"
@@ -2464,8 +2471,8 @@ File[12]=".src/Form/DVBTuner.class:11.442"
 File[13]=".src/Form/EpgForm.form"
 File[14]=".src/Form/CoverManager.class:29.1246"
 File[15]=".src/Form/NewChains.form"
-File[16]=".src/Form/NewChains.class:110.37"
-File[17]=".src/Classi/MplayerClass.class:23.581"
+File[16]=".src/Form/NewChains.class:37.395"
+File[17]=".src/Classi/MplayerClass.class:23.609"
 File[18]=".src/Classi/MplayerClass_old.class:22.1707"
 File[19]=".src/Form/OpenSubtitesForm.class:55.19"
 File[20]=".src/Form/OpenSubtitesForm.form"
@@ -2479,7 +2486,7 @@ File[27]=".src/0_Moduli/HotKeysHelper.module:19.185"
 File[28]=".src/Form/ladspahelper.form"
 File[29]=".src/Form/FormLyrics.class:26.213"
 File[30]=".src/Classi/TagLib.class:0.88"
-File[31]=".src/Classi/PlaylistClass.class:22.847"
+File[31]=".src/Classi/PlaylistClass.class:22.113"
 File[32]=".src/Form/FormLyrics.form"
 File[33]=".src/Form/FsForm.form"
 File[34]=".src/Form/FsForm.class:0.18"

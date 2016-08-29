@@ -4,7 +4,7 @@ Public timeouts As String = " --connect-timeout=5 --dns-timeout=5 --read-timeout
 
 Public Function DownloadAsync(URL As String, Optional AsFile As Boolean = False) As String
   'Download files without blocking the ui
-  'if AsFile is true, then the output value is the name of the file containing the data,
+  'if AsFile is true, then the return value is the name of the file containing the data,
   'else the output value is the data itself
   Dim wgetprocess1 As Process
   Dim tmpfile, commandline As String
