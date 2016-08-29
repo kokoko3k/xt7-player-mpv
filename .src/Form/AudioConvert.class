@@ -81,6 +81,7 @@ Public Sub ConvertandSaveAudio()
   'For i = 0 To items.max
   i = 0
   While i <= items.max
+    
     Me.text = fcaption & " - " & CStr(i + 1) & "/" & CStr(items.max + 1)
     currentstream = items[i]
     yttitle = ""

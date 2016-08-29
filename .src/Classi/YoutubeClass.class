@@ -259,7 +259,30 @@ Private ytdlout As String = Temp(Rnd(0, 1000) & "youtubedl-out")
 
 Public Function GetTitle(sourceurl As String) As String
     Dim title As String
-    Shell "youtube-dl '" & sourceurl & "' -e" To title
+    Dim videoid As String
+    Dim cmd As String
+    Dim outfile As String = Temp()
+    Dim t0 As Float = Timer()
+    Dim timeout As Integer = 5
+    videoid = getvideoid(sourceurl) 
+    cmd = "youtube-dl '" & videoid & "' -e &>" & outfile
+    global.myDebug(cmd)
+    'Shell cmd
+    Exec ["sh", "-c", cmd]
+    
+    While Not Exist(outfile)
+      Wait 0.1
+      If Timer() - t0 > timeout Then 
+        Return "NoTitle_" & Rnd(0, 100)
+      Endif
+    Wend
+    While Stat(outfile, True).Size = 0
+      Wait 0.1
+      If Timer() - t0 > timeout Then 
+        Return "NoTitle_" & Rnd(0, 100)
+      Endif
+    Wend
+    title = Replace(File.Load(outfile), "\n", "")
     Return Trim(title)
 End
 
