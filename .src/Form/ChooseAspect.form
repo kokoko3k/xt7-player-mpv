@@ -7,42 +7,42 @@
   Resizable = False
   Stacking = Window.Above
   { OkBtn Button
-    MoveScaled(31,7,13,4)
+    MoveScaled(31,7,13,4.5714)
     Text = ("Ok")
     Picture = Picture["icon:/16/ok"]
   }
   { CancelBtn Button
-    MoveScaled(1,7,13,4)
+    MoveScaled(1,7,13,4.5714)
     Text = ("Cancel")
     Picture = Picture["icon:/16/cancel"]
   }
   { SpinW SpinBox
-    MoveScaled(8,2,8,4)
+    MoveScaled(8,2,8,4.5714)
     MinValue = 1
     MaxValue = 1000
     Value = 16
   }
   { Label1 Label
-    MoveScaled(17,2,3,4)
+    MoveScaled(17,2,3,4.5714)
     Text = (":")
   }
   { SpinH SpinBox
-    MoveScaled(19,2,8,4)
+    MoveScaled(19,2,8,4.5714)
     MinValue = 1
     MaxValue = 1000
     Value = 9
   }
   { Label2 Label
-    MoveScaled(28,2,3,4)
+    MoveScaled(28,2,3,4.5714)
     Text = ("=")
   }
   { RatioBox TextBox
-    MoveScaled(31,2,8,4)
+    MoveScaled(31,2,8,4.5714)
     Text = ("1.7778")
     ReadOnly = True
   }
   { TestBtn Button
-    MoveScaled(16,7,13,4)
+    MoveScaled(16,7,13,4.5714)
     Text = ("Test")
     Picture = Picture["icon:/16/apply"]
   }

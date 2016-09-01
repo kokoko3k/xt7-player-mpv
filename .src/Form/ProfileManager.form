@@ -20,7 +20,7 @@
         Expand = True
       }
       { NewBtn Button
-        MoveScaled(3,2,16,4)
+        MoveScaled(3,2,16,4.5714)
         Text = ("Make new") & "..."
       }
       { VBox5 VBox
@@ -28,7 +28,7 @@
         Expand = True
       }
       { DeleteBtn Button
-        MoveScaled(3,8,16,4)
+        MoveScaled(3,8,16,4.5714)
         Text = ("Delete:")
       }
       { VBox6 VBox
@@ -36,7 +36,7 @@
         Expand = True
       }
       { SwitchBtn Button
-        MoveScaled(3,14,16,4)
+        MoveScaled(3,14,16,4.5714)
         Text = ("Switch to:")
       }
       { VBox4 VBox
@@ -44,7 +44,7 @@
         Expand = True
       }
       { CopyBtn Button
-        MoveScaled(3,20,16,4)
+        MoveScaled(3,20,16,4.5714)
         Visible = False
         Text = ("Make a copy")
       }
@@ -65,12 +65,12 @@
     }
   }
   { Panel1 Panel
-    MoveScaled(1,30,46,4)
+    MoveScaled(1,30,46,4.5714)
     Arrangement = Arrange.Horizontal
     Spacing = True
     Padding = 4
     { CurrentProfileLabel Label
-      MoveScaled(1,0,22,4)
+      MoveScaled(1,0,22,4.5714)
       Expand = True
       Text = ("Current Profile: ")
       Alignment = Align.Left

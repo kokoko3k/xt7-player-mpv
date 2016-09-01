@@ -7,35 +7,35 @@
   Spacing = True
   Margin = True
   { Panel2 Panel
-    MoveScaled(0,0,89,4)
+    MoveScaled(0,0,89,4.5714)
     Arrangement = Arrange.Horizontal
     { Label1 Label
-      MoveScaled(0,0,22,4)
+      MoveScaled(0,0,22,4.5714)
       Text = ("Ladspa file")
       Alignment = Align.Left
     }
     { ButtonBox1 ButtonBox
-      MoveScaled(27,0,61,4)
+      MoveScaled(27,0,61,4.5714)
       Expand = True
       Text = ("Ladspa plugin file name")
     }
   }
   { Panel3 Panel
-    MoveScaled(0,5,89,4)
+    MoveScaled(0,5,89,4.5714)
     Arrangement = Arrange.Horizontal
     { Label2 Label
-      MoveScaled(0,0,22,4)
+      MoveScaled(0,0,22,4.5714)
       Text = ("Ladspa plugin label")
       Alignment = Align.Left
     }
     { ComboLabel ComboBox
-      MoveScaled(27,0,61,4)
+      MoveScaled(27,0,61,4.5714)
       Expand = True
       Text = ("Ladspa plugin label")
     }
   }
   { Label3 Label
-    MoveScaled(0,11,47,4)
+    MoveScaled(0,11,47,4.5714)
     Font = Font["Bold"]
     Text = ("Plugin controls:")
     Alignment = Align.Bottom
@@ -52,16 +52,16 @@
     }
   }
   { Panel5 Panel
-    MoveScaled(0,59,89,4)
+    MoveScaled(0,59,89,4.5714)
     Arrangement = Arrange.Horizontal
     Spacing = True
     { Label4 Label
-      MoveScaled(1,0,22,4)
+      MoveScaled(1,0,22,4.5714)
       AutoResize = True
       Text = ("Number of output channels:")
     }
     { combooutputchannels ComboBox
-      MoveScaled(26,0,24,4)
+      MoveScaled(26,0,24,4.5714)
       #Translate = False
       Expand = True
       ReadOnly = True
@@ -69,7 +69,7 @@
       Text = "8c"
     }
     { Label5 Label
-      MoveScaled(47,0,41,4)
+      MoveScaled(47,0,41,4.5714)
       Font = Font["Italic"]
       AutoResize = True
       Text = ("ffmpeg > 2.8 will not need this.")
@@ -77,50 +77,50 @@
     }
   }
   { Panel4 Panel
-    MoveScaled(0,64,89,4)
+    MoveScaled(0,64,89,4.5714)
     Arrangement = Arrange.Horizontal
     { Button1 Button
-      MoveScaled(0,0,16,4)
+      MoveScaled(0,0,16,4.5714)
       ToolTip = ("Show the ladspa commandline for mpv \nfrom the selected plugin")
       Text = ("Generate")
     }
     { TextBox1 TextBox
-      MoveScaled(17,0,54,4)
+      MoveScaled(17,0,54,4.5714)
       #Translate = False
       Expand = True
       ReadOnly = True
     }
     { Button2 Button
-      MoveScaled(72,0,16,4)
+      MoveScaled(72,0,16,4.5714)
       Visible = False
       ToolTip = ("Display the plugin controls and values from a valid \nmpv lavfi ladspa command line, eg:\naf lavfi=\"[ladspa=file=/usr/lib/ladspa/fast_lookahead_limiter_1913.so:p=fastLookaheadLimiter:c='c0=20|c1=-10|c2=2']")
       Text = ("Reverse")
     }
   }
   { HBox2 HBox
-    MoveScaled(1,69,88,5)
+    MoveScaled(1,69,88,6)
     Spacing = True
     Margin = True
     Padding = 3
     { HBox3 HBox
-      MoveScaled(6,0,5,4)
+      MoveScaled(6,0,5,4.5714)
       Expand = True
     }
     { CopyBTN Button
-      MoveScaled(43,0,14,4)
+      MoveScaled(43,0,14,4.5714)
       ToolTip = ("Generate the parameters,\nCopy the string into the previous custom audio filter field,\ncloses the window.")
       AutoResize = True
       Text = ("Accept")
       Picture = Picture["icon:/16/apply"]
     }
     { TestBTN Button
-      MoveScaled(58,0,14,4)
+      MoveScaled(58,0,14,4.5714)
       AutoResize = True
       Text = Shortcut(("Use"), "U")
       Picture = Picture["icon:/16/redo"]
     }
     { CloseBTN Button
-      MoveScaled(73,0,14,4)
+      MoveScaled(73,0,14,4.5714)
       ToolTip = ("Close the window and discard any change")
       AutoResize = True
       Text = ("Close")

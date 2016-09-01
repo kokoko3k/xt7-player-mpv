@@ -15,7 +15,7 @@
     Text = ("* Some subtitle controls only work when ass subtitles are disabled")
   }
   { HBox5 HBox
-    MoveScaled(1,3,60,4)
+    MoveScaled(1,3,60,5)
     Spacing = True
     Margin = True
     Padding = 2
@@ -35,7 +35,7 @@
     }
     { ClearZoomButton ToolButton clears
       Name = "ClearZoomButton"
-      MoveScaled(18,0,4,4)
+      MoveScaled(18,0,4,4.5714)
       Tag = "1000"
       Picture = Picture["icon:/16/clear"]
     }
@@ -46,14 +46,14 @@
       MaxValue = 30000
     }
     { PanscanSpinBox SpinBox
-      MoveScaled(48,0,10,4)
+      MoveScaled(48,0,10,4.5714)
       MinValue = 1000
       MaxValue = 30000
       Step = 20
     }
   }
   { HBox2 HBox
-    MoveScaled(1,8,60,4)
+    MoveScaled(1,8,60,5)
     Spacing = True
     Margin = True
     Padding = 2
@@ -73,7 +73,7 @@
     }
     { ToolButton1 ToolButton Clears
       Name = "ToolButton1"
-      MoveScaled(18,0,4,4)
+      MoveScaled(18,0,4,4.5714)
       Tag = "0"
       Picture = Picture["icon:/16/clear"]
     }
@@ -84,7 +84,7 @@
       MaxValue = 10000
     }
     { AudioDelaySpinBox SpinBox
-      MoveScaled(48,0,10,4)
+      MoveScaled(48,0,10,4.5714)
       MinValue = -10000
       MaxValue = 10000
       Step = 20
@@ -94,7 +94,7 @@
     MoveScaled(9,12,46,2)
   }
   { HBox1 HBox
-    MoveScaled(1,14,60,4)
+    MoveScaled(1,14,60,5)
     Spacing = True
     Margin = True
     Padding = 2
@@ -109,12 +109,12 @@
       Text = ("Subtitle delay")
     }
     { VBox3 VBox
-      MoveScaled(18,0,2,4)
+      MoveScaled(18,0,2,4.5714)
       Expand = True
     }
     { ToolButton2 ToolButton Clears
       Name = "ToolButton2"
-      MoveScaled(18,0,4,4)
+      MoveScaled(18,0,4,4.5714)
       Tag = "0"
       Picture = Picture["icon:/16/clear"]
     }
@@ -125,14 +125,14 @@
       MaxValue = 10000
     }
     { SubDelaySpinBox SpinBox
-      MoveScaled(48,0,10,4)
+      MoveScaled(48,0,10,4.5714)
       MinValue = -10000
       MaxValue = 10000
       Step = 20
     }
   }
   { HBox4 HBox
-    MoveScaled(1,19,60,4)
+    MoveScaled(1,19,60,5)
     Spacing = True
     Margin = True
     Padding = 2
@@ -147,12 +147,12 @@
       Text = ("Subtitle scale")
     }
     { VBox4 VBox
-      MoveScaled(17,0,3,4)
+      MoveScaled(17,0,3,4.5714)
       Expand = True
     }
     { ToolButton4 ToolButton clears
       Name = "ToolButton4"
-      MoveScaled(19,0,4,4)
+      MoveScaled(19,0,4,4.5714)
       Tag = "10"
       Picture = Picture["icon:/16/clear"]
     }
@@ -162,12 +162,12 @@
       Value = 10
     }
     { SubScaleSpinBox SpinBox
-      MoveScaled(48,0,10,4)
+      MoveScaled(48,0,10,4.5714)
       Value = 10
     }
   }
   { HBox3 HBox
-    MoveScaled(1,24,60,4)
+    MoveScaled(1,24,60,5)
     Spacing = True
     Margin = True
     Padding = 2
@@ -182,12 +182,12 @@
       Text = ("* Subtitle position")
     }
     { VBox5 VBox
-      MoveScaled(17,0,3,4)
+      MoveScaled(17,0,3,4.5714)
       Expand = True
     }
     { ToolButton3 ToolButton Clears
       Name = "ToolButton3"
-      MoveScaled(19,-1,4,4)
+      MoveScaled(19,-1,4,4.5714)
       Tag = "100"
       Picture = Picture["icon:/16/clear"]
     }
@@ -197,7 +197,7 @@
       Value = 100
     }
     { SubPositionSpinBox SpinBox
-      MoveScaled(48,0,10,4)
+      MoveScaled(48,0,10,4.5714)
       MinValue = -100
       Value = 100
     }
@@ -209,7 +209,7 @@
     Margin = True
     Padding = 2
     { DeinterlaceChk CheckBox
-      MoveScaled(1,0,29,4)
+      MoveScaled(1,0,29,4.5714)
       AutoResize = True
       Text = ("Deinterlace")
     }
@@ -221,19 +221,16 @@
     Margin = True
     Padding = 2
     { FrameDropCHK CheckBox
-      MoveScaled(1,0,17,4)
+      MoveScaled(1,0,17,4.5714)
       AutoResize = True
       Text = ("FrameDrop")
     }
     { FrameDropCombobox ComboBox
-      MoveScaled(24,0,35,4)
+      MoveScaled(24,0,35,4.5714)
       Expand = True
       ReadOnly = True
       List = [("no - disable framedropping"), ("vo - Drop  late  frames  on  video  output (default)"), ("decoder - Old, decoder-based framedrop mode"), ("decoder+vo - Enable both modes. Not recommended.")]
       Text = ("1 - Soft Framedropping")
     }
-  }
-  { Separator1 Separator
-    MoveScaled(11,43,40,2)
   }
 }

@@ -24,7 +24,7 @@
     }
   }
   { filters_audio_order TextBox
-    MoveScaled(21,0,18,4)
+    MoveScaled(21,0,18,4.5714)
     Visible = False
   }
   { TabStrip1 TabStrip
@@ -54,7 +54,7 @@
         Tag = "0"
         Arrangement = Arrange.Vertical
         { Button_show_man ToggleButton
-          MoveScaled(1,2,51,4)
+          MoveScaled(1,2,51,4.5714)
           Text = ("Show man page")
           Picture = Picture["icon:/16/help"]
         }
@@ -110,43 +110,43 @@
           { HBox4 HBox
             MoveScaled(2,2,50,3)
             { Label2 Label
-              MoveScaled(0,0,4,4)
+              MoveScaled(0,0,4,4.5714)
               Text = ("31")
             }
             { Label3 Label
-              MoveScaled(4,0,4,4)
+              MoveScaled(4,0,4,4.5714)
               Text = ("62")
             }
             { Label4 Label
-              MoveScaled(8,0,4,4)
+              MoveScaled(8,0,4,4.5714)
               Text = ("125")
             }
             { Label5 Label
-              MoveScaled(12,0,4,4)
+              MoveScaled(12,0,4,4.5714)
               Text = ("250")
             }
             { Label6 Label
-              MoveScaled(16,0,4,4)
+              MoveScaled(16,0,4,4.5714)
               Text = ("500")
             }
             { Label7 Label
-              MoveScaled(20,0,4,4)
+              MoveScaled(20,0,4,4.5714)
               Text = ("1K")
             }
             { Label8 Label
-              MoveScaled(24,0,4,4)
+              MoveScaled(24,0,4,4.5714)
               Text = ("2K")
             }
             { Label9 Label
-              MoveScaled(28,0,4,4)
+              MoveScaled(28,0,4,4.5714)
               Text = ("4K")
             }
             { Label10 Label
-              MoveScaled(32,0,4,4)
+              MoveScaled(32,0,4,4.5714)
               Text = ("8K")
             }
             { Label11 Label
-              MoveScaled(36,0,4,4)
+              MoveScaled(36,0,4,4.5714)
               Text = ("16K")
             }
           }
@@ -235,72 +235,72 @@
             }
           }
           { ValuesContainer HBox
-            MoveScaled(1,29,50,4)
+            MoveScaled(1,29,50,4.5714)
             { tfreq1 TextBox
-              MoveScaled(0,0,4,4)
+              MoveScaled(0,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
             { tfreq2 TextBox
-              MoveScaled(4,0,4,4)
+              MoveScaled(4,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
             { tfreq3 TextBox
-              MoveScaled(8,0,4,4)
+              MoveScaled(8,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
             { tfreq4 TextBox
-              MoveScaled(12,0,4,4)
+              MoveScaled(12,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
             { tfreq5 TextBox
-              MoveScaled(16,0,4,4)
+              MoveScaled(16,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
             { tfreq6 TextBox
-              MoveScaled(20,0,4,4)
+              MoveScaled(20,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
             { tfreq7 TextBox
-              MoveScaled(24,0,4,4)
+              MoveScaled(24,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
             { tfreq8 TextBox
-              MoveScaled(28,0,4,4)
+              MoveScaled(28,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
             { tfreq9 TextBox
-              MoveScaled(32,0,4,4)
+              MoveScaled(32,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
             { tfreq10 TextBox
-              MoveScaled(36,0,4,4)
+              MoveScaled(36,0,4,4.5714)
               #Translate = False
               Text = "0"
               ReadOnly = True
             }
           }
           { HBox3 HBox
-            MoveScaled(1,33,50,4)
+            MoveScaled(1,33,50,4.5714)
             { PresetsCombobox ComboBox
-              MoveScaled(0,0,40,4)
+              MoveScaled(0,0,40,4.5714)
               ReadOnly = True
               List = [("Custom"), ("Flat"), ("1965"), ("Air"), ("Brittle"), ("Car Stereo"), ("Classic V"), ("Clear "), ("Death"), ("Dark"), ("Drums"), ("Home Theater"), ("Loudness"), ("Metal"), ("Pop"), ("Premaster"), ("Presence"), ("Punch & Sparkle"), ("Shimmer"), ("Soft Bass"), ("Strings")]
               Text = ("Presets")
@@ -315,7 +315,7 @@
       Index = 0
     }
     { ButtonLadspaHelper Button
-      MoveScaled(34,49,14,4)
+      MoveScaled(34,49,14,4.5714)
       Visible = False
       ToolTip = ("Show a tool that helps you to compile ladspa filter parameters.\nIf you don't use ladspa, just don't push it.")
       Text = ("Ladspa")
@@ -366,14 +366,14 @@
           AutoResize = True
           Padding = 6
           { PortChk2XV CheckBox
-            MoveScaled(1,1,15,4)
+            MoveScaled(1,1,15,4.5714)
             #Translate = False
             Tag = "adaptor="
             Text = "Adaptor"
           }
           { SpinBox10Xv SpinBox notifyobj
             Name = "SpinBox10Xv"
-            MoveScaled(33,1,9,4)
+            MoveScaled(33,1,9,4.5714)
             MaxValue = 999
           }
         }
@@ -397,14 +397,14 @@
           AutoResize = True
           Padding = 8
           { CheckBox3gl2 CheckBox
-            MoveScaled(1,1,17,4)
+            MoveScaled(1,1,17,4.5714)
             #Translate = False
             Tag = "backend="
             Text = "backend"
             Value = CheckBox.True
           }
           { ComboBox1gl2 ComboBox
-            MoveScaled(19,1,24,4)
+            MoveScaled(19,1,24,4.5714)
             #Translate = False
             Expand = True
             ReadOnly = True
@@ -417,13 +417,13 @@
           AutoResize = True
           Padding = 8
           { CheckBox3gl CheckBox
-            MoveScaled(1,1,17,4)
+            MoveScaled(1,1,17,4.5714)
             #Translate = False
             Tag = "scale="
             Text = "scale"
           }
           { ComboBox1gl ComboBox
-            MoveScaled(19,1,24,4)
+            MoveScaled(19,1,24,4.5714)
             #Translate = False
             Expand = True
             ReadOnly = True
@@ -436,7 +436,7 @@
           AutoResize = True
           Padding = 8
           { CheckBox2gl CheckBox
-            MoveScaled(1,1,20,4)
+            MoveScaled(1,1,20,4.5714)
             #Translate = False
             Tag = "scale=spline36:cscale=spline36:dscale=mitchell:dither-depth=auto:correct-downscaling:sigmoid-upscaling:pbo"
             Text = "HQ preset"
@@ -447,7 +447,7 @@
           AutoResize = True
           Padding = 8
           { CheckBox6gl CheckBox
-            MoveScaled(1,1,17,4)
+            MoveScaled(1,1,17,4.5714)
             #Translate = False
             Tag = "glfinish"
             Text = "glfinish"
@@ -458,7 +458,7 @@
           AutoResize = True
           Padding = 8
           { CheckBox4gl CheckBox
-            MoveScaled(1,1,39,4)
+            MoveScaled(1,1,39,4.5714)
             #Translate = False
             Tag = "interpolation"
             ToolTip = "Reduce stuttering caused by mismatches in the video fps and display refresh rate (also known as judder).\n\nActivating this, will silently set: --video-sync=display-vdrop"
@@ -471,22 +471,22 @@
           AutoResize = True
           Padding = 8
           { CheckBox3gl3 CheckBox
-            MoveScaled(1,1,19,4)
+            MoveScaled(1,1,19,4.5714)
             #Translate = False
             AutoResize = True
             Text = "Additional options:"
           }
           { OglAddOptsTextbox TextBox
-            MoveScaled(20,1,11,4)
+            MoveScaled(20,1,11,4.5714)
             Expand = True
           }
           { Button1 Button
-            MoveScaled(31,1,9,4)
+            MoveScaled(31,1,9,4.5714)
             AutoResize = True
             Picture = Picture["icon:/16/add"]
           }
           { ComboOglOpts ComboBox
-            MoveScaled(41,1,13,4)
+            MoveScaled(41,1,13,4.5714)
             Visible = False
             Font = Font["Monospace"]
             ReadOnly = True
@@ -513,12 +513,12 @@
           AutoResize = True
           Padding = 8
           { CheckBox32vaapi2 CheckBox
-            MoveScaled(1,1,26,4)
+            MoveScaled(1,1,26,4.5714)
             Tag = "fps="
             Text = ("Display refresh rate")
           }
           { SpinBox1 SpinBox
-            MoveScaled(31,1,9,4)
+            MoveScaled(31,1,9,4.5714)
             #Translate = False
             MinValue = -1
             MaxValue = 1000
@@ -537,12 +537,12 @@
           AutoResize = True
           Padding = 8
           { CheckBox32vaapi3 CheckBox
-            MoveScaled(1,1,26,4)
+            MoveScaled(1,1,26,4.5714)
             Tag = "composite-detect="
             Text = ("detect composite")
           }
           { ComboBox1 ComboBox
-            MoveScaled(19,1,24,4)
+            MoveScaled(19,1,24,4.5714)
             #Translate = False
             ReadOnly = True
             List = ["yes", "no"]
@@ -562,12 +562,12 @@
           AutoResize = True
           Padding = 8
           { CheckBox32vaapi4 CheckBox
-            MoveScaled(1,1,26,4)
+            MoveScaled(1,1,26,4.5714)
             Tag = "queuetime_windowed="
             Text = ("queue video frames (ms) windowed")
           }
           { SpinBox2 SpinBox
-            MoveScaled(31,1,9,4)
+            MoveScaled(31,1,9,4.5714)
             #Translate = False
             MaxValue = 1000
             Value = 50
@@ -578,12 +578,12 @@
           AutoResize = True
           Padding = 8
           { CheckBox32vaapi5 CheckBox
-            MoveScaled(1,1,26,4)
+            MoveScaled(1,1,26,4.5714)
             Tag = "queuetime_fs="
             Text = ("queue video frames (ms) fullscreen")
           }
           { SpinBox3 SpinBox
-            MoveScaled(31,1,9,4)
+            MoveScaled(31,1,9,4.5714)
             #Translate = False
             MaxValue = 1000
             Value = 50
@@ -602,12 +602,12 @@
           AutoResize = True
           Padding = 8
           { CheckBox32vaapi6 CheckBox
-            MoveScaled(1,1,26,4)
+            MoveScaled(1,1,26,4.5714)
             Tag = "output_surfaces="
             Text = ("surfaces number")
           }
           { SpinBox4 SpinBox
-            MoveScaled(31,1,9,4)
+            MoveScaled(31,1,9,4.5714)
             #Translate = False
             MinValue = 2
             MaxValue = 15
@@ -627,12 +627,12 @@
           AutoResize = True
           Padding = 8
           { CheckBox32vaapi7 CheckBox
-            MoveScaled(1,1,26,4)
+            MoveScaled(1,1,26,4.5714)
             Tag = "force-yuv="
             Text = ("Force YUV")
           }
           { ComboBox2 ComboBox
-            MoveScaled(19,1,24,4)
+            MoveScaled(19,1,24,4.5714)
             #Translate = False
             ReadOnly = True
             List = ["yes", "no"]
@@ -652,13 +652,13 @@
           AutoResize = True
           Padding = 8
           { CheckBox36vaapi CheckBox
-            MoveScaled(1,1,17,4)
+            MoveScaled(1,1,17,4.5714)
             #Translate = False
             Tag = "scaling="
             Text = "scaling"
           }
           { ComboBox15vaapi ComboBox
-            MoveScaled(19,1,24,4)
+            MoveScaled(19,1,24,4.5714)
             Expand = True
             ReadOnly = True
             List = [("default - use implementation default (default)"), ("fast - use fast scaling, but possibly with less quality"), ("hq - use high-quality scaling, but possibly slower"), ("nla - use non-linear anamorphic scaling")]
@@ -670,7 +670,7 @@
           AutoResize = True
           Padding = 8
           { CheckBox1vaapi CheckBox
-            MoveScaled(1,1,17,4)
+            MoveScaled(1,1,17,4.5714)
             #Translate = False
             Tag = "scaled-osd"
             Text = "scaled-osd"
@@ -686,7 +686,7 @@
         Expand = True
         Border = False
         { Label12 Label
-          MoveScaled(1,0,36,4)
+          MoveScaled(1,0,36,4.5714)
           Text = (" Custom Driver(s) options, \"-vo \" is implicit.")
         }
         { HBox2 HBox
@@ -694,7 +694,7 @@
           AutoResize = True
           Padding = 6
           { TextBox5cv TextBox
-            MoveScaled(1,1,48,4)
+            MoveScaled(1,1,48,4.5714)
             Expand = True
           }
         }
@@ -730,12 +730,12 @@
           AutoResize = True
           Padding = 6
           { AlsaDeviceChk CheckBox
-            MoveScaled(1,1,15,4)
+            MoveScaled(1,1,15,4.5714)
             Tag = "device="
             Text = ("Device")
           }
           { AlsaDeviceTextBox ComboBox
-            MoveScaled(18,1,26,4)
+            MoveScaled(18,1,26,4.5714)
             Font = Font["Monospace"]
             Expand = True
             Text = ("spdif")
@@ -746,13 +746,13 @@
           AutoResize = True
           Padding = 6
           { AlsaDeviceChk2 CheckBox
-            MoveScaled(1,1,15,4)
+            MoveScaled(1,1,15,4.5714)
             #Translate = False
             Tag = "mixer-name="
             Text = "mixer-name"
           }
           { AlsaDeviceTextBox2 ComboBox
-            MoveScaled(18,1,26,4)
+            MoveScaled(18,1,26,4.5714)
             #Translate = False
             Font = Font["Monospace"]
             Expand = True
@@ -765,13 +765,13 @@
           AutoResize = True
           Padding = 6
           { AlsaDeviceChk1 CheckBox
-            MoveScaled(1,1,15,4)
+            MoveScaled(1,1,15,4.5714)
             #Translate = False
             Tag = "mixer-index="
             Text = "mixer-index"
           }
           { SpinBox1Alsa SpinBox
-            MoveScaled(34,1,9,4)
+            MoveScaled(34,1,9,4.5714)
             MaxValue = 10
           }
         }
@@ -788,13 +788,13 @@
           AutoResize = True
           Padding = 8
           { CheckBox18jack CheckBox
-            MoveScaled(1,2,17,4)
+            MoveScaled(1,2,17,4.5714)
             #Translate = False
             Tag = "port="
             Text = "Port"
           }
           { TextBox3jack TextBox
-            MoveScaled(19,1,22,4)
+            MoveScaled(19,1,22,4.5714)
             #Translate = False
             Expand = True
           }
@@ -804,13 +804,13 @@
           AutoResize = True
           Padding = 8
           { CheckBox1jack CheckBox
-            MoveScaled(1,2,17,4)
+            MoveScaled(1,2,17,4.5714)
             #Translate = False
             Tag = "name="
             Text = "Name"
           }
           { TextBox4jack TextBox
-            MoveScaled(19,1,22,4)
+            MoveScaled(19,1,22,4.5714)
             #Translate = False
             Expand = True
             Text = "mpv"
@@ -828,12 +828,12 @@
           MoveScaled(1,0,45,13)
           Padding = 6
           { PulseDriverChk2pulse CheckBox
-            MoveScaled(1,1,29,4)
+            MoveScaled(1,1,29,4.5714)
             #Translate = False
             Text = "host:output sink"
           }
           { TextBox6Alsapulse TextBox
-            MoveScaled(1,6,41,4)
+            MoveScaled(1,6,41,4.5714)
           }
         }
         { PulseParseMeHbox3 HBox
@@ -841,13 +841,13 @@
           AutoResize = True
           Padding = 6
           { AlsaDeviceChk3pulse CheckBox
-            MoveScaled(1,1,18,4)
+            MoveScaled(1,1,18,4.5714)
             #Translate = False
             Tag = "buffer="
             Text = "buffer"
           }
           { ComboBox1pulse ComboBox
-            MoveScaled(21,1,24,4)
+            MoveScaled(21,1,24,4.5714)
             #Translate = False
             List = ["native", "100", "250", "500", "750", "1000", "1250", "1500", "1750", "2000"]
             Text = "250"
@@ -858,13 +858,13 @@
           AutoResize = True
           Padding = 6
           { AlsaDeviceChk4pulse CheckBox
-            MoveScaled(1,1,18,4)
+            MoveScaled(1,1,18,4.5714)
             #Translate = False
             Tag = "latency-hacks="
             Text = "latency-hacks"
           }
           { ComboBox2pulse ComboBox
-            MoveScaled(21,1,24,4)
+            MoveScaled(21,1,24,4.5714)
             #Translate = False
             ReadOnly = True
             List = ["yes", "no"]
@@ -885,7 +885,7 @@
           AutoResize = True
           Padding = 8
           { CheckBox3pcm CheckBox
-            MoveScaled(1,1,18,4)
+            MoveScaled(1,1,18,4.5714)
             Tag = "nowaveheader"
             Text = ("NoWaveHeader")
           }
@@ -896,7 +896,7 @@
           AutoResize = True
           Padding = 8
           { CheckBox4pcm CheckBox
-            MoveScaled(1,1,18,4)
+            MoveScaled(1,1,18,4.5714)
             Tag = "append"
             Text = ("append")
           }
@@ -906,12 +906,12 @@
           AutoResize = True
           Padding = 8
           { CheckBox2pcm CheckBox
-            MoveScaled(1,0,17,4)
+            MoveScaled(1,0,17,4.5714)
             Tag = "file="
             Text = ("File")
           }
           { TextBox8pcm TextBox
-            MoveScaled(20,0,19,4)
+            MoveScaled(20,0,19,4.5714)
             Expand = True
           }
           { PcmFileOpen ToolButton
@@ -923,7 +923,7 @@
       Index = 4
       Text = ("Custom audio")
       { Label13 Label
-        MoveScaled(2,1,36,4)
+        MoveScaled(2,1,36,4.5714)
         Text = (" Custom Driver(s) options, \"-ao \" is implicit.")
       }
       { HBox5 HBox
@@ -932,7 +932,7 @@
         Margin = True
         Padding = 6
         { TextBox5customaudio TextBox
-          MoveScaled(1,1,48,4)
+          MoveScaled(1,1,48,4.5714)
           Expand = True
         }
       }
@@ -943,7 +943,7 @@
     Index = 0
   }
   { HBox1 HBox
-    MoveScaled(9,69,76,4)
+    MoveScaled(9,69,76,4.5714)
     Spacing = True
     Padding = 8
     { VBox1 VBox
@@ -958,14 +958,14 @@
       Picture = Picture["icon:/16/save"]
     }
     { ApplyBTN Button
-      MoveScaled(44,0,14,4)
+      MoveScaled(44,0,14,4.5714)
       ToolTip = ("Use new settings without save")
       AutoResize = True
       Text = Shortcut(("Use"), "U")
       Picture = Picture["icon:/16/redo"]
     }
     { OkBTN Button
-      MoveScaled(60,0,14,4)
+      MoveScaled(60,0,14,4.5714)
       ToolTip = ("Close the window")
       AutoResize = True
       Text = ("Close")
@@ -973,15 +973,15 @@
     }
   }
   { filters_video_order TextBox
-    MoveScaled(1,0,18,4)
+    MoveScaled(1,0,18,4.5714)
     Visible = False
   }
   { drivers_video_order TextBox
-    MoveScaled(40,0,18,4)
+    MoveScaled(40,0,18,4.5714)
     Visible = False
   }
   { drivers_audio_order TextBox
-    MoveScaled(60,0,19,4)
+    MoveScaled(60,0,19,4.5714)
     Visible = False
   }
 }

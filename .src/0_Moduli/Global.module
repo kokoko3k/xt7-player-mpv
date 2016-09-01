@@ -88,6 +88,7 @@ Public Sub init()
   LSyncing = False 'is true when library is syncing.
   LSyncingMessage = ("Syncing Library, please wait...")
   AppName = "xt7-Player-mpv"
+  
   ConfPath = Settings.DefaultDir & "/" & Appname
   CustomBindKeys = "Xt7BindKeys"
   XbindkeysBIN = global.confpath & "/" & CustomBindKeys

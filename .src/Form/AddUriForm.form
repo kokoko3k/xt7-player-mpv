@@ -12,7 +12,7 @@
   Margin = True
   Padding = 8
   { HBox3 HBox
-    MoveScaled(1,1,62,4)
+    MoveScaled(1,1,62,4.5714)
     Spacing = True
     Padding = 2
     { Label1 Label
@@ -20,7 +20,7 @@
       Text = ("[Optional] Browse for protocols:")
     }
     { UriSelComboBox ComboBox
-      MoveScaled(37,1,23,4)
+      MoveScaled(37,1,23,4.5714)
       ToolTip = ("Click for a list of URI prefixes")
       Expand = True
       ReadOnly = True
@@ -30,7 +30,7 @@
     }
   }
   { HBox2 HBox
-    MoveScaled(1,6,63,4)
+    MoveScaled(1,6,63,4.5714)
     Spacing = True
     Padding = 2
     { Label2 Label
@@ -38,18 +38,18 @@
       Text = ("Enter a valid URI:")
     }
     { UriInsComboBox ComboBox
-      MoveScaled(33,1,27,4)
+      MoveScaled(33,1,27,4.5714)
       Expand = True
     }
     { SelectFile ToolButton
-      MoveScaled(58,0,4,4)
+      MoveScaled(58,0,4,4.5714)
       Background = Color.Background
       ToolTip = ("Open a file")
       Picture = Picture["icon:/medium/open"]
     }
   }
   { HBox4 HBox
-    MoveScaled(1,11,62,4)
+    MoveScaled(1,11,62,4.5714)
     ToolTip = ("Enter a name for the new playlist/library item, or leave blank for default.")
     Spacing = True
     Padding = 2
@@ -58,7 +58,7 @@
       Text = ("[Optional] Give item a name:")
     }
     { TextBox1 TextBox
-      MoveScaled(33,0,29,4)
+      MoveScaled(33,0,29,4.5714)
       Expand = True
     }
   }
@@ -70,32 +70,32 @@
     Padding = 4
     Border = Border.Sunken
     { QuickCheckBox CheckBox
-      MoveScaled(2,1.4286,21,4)
+      MoveScaled(2,1.4286,21,4.5714)
       ToolTip = ("Don't get informations (like ID3 tags) when adding it to your Collection/Playlist.\nYou may prefer this method on slow media such as network streams.\n")
       Expand = True
       Text = ("Quick add mode")
       Value = CheckBox.True
     }
     { CollectionCheckbox CheckBox
-      MoveScaled(23,1,23,4)
+      MoveScaled(23,1,23,4.5714)
       Expand = True
       Text = ("Add to collection")
       Value = CheckBox.True
     }
     { PlaylistCheckbox CheckBox
-      MoveScaled(46,1,29,4)
+      MoveScaled(46,1,29,4.5714)
       Expand = True
       Text = ("Add to playlist")
       Value = CheckBox.True
     }
   }
   { HBox1 HBox
-    MoveScaled(1,26,62,5)
+    MoveScaled(1,25,62,6)
     Spacing = True
     Margin = True
     Padding = 3
     { btnPlay Button
-      MoveScaled(2,1,14,4)
+      MoveScaled(2,1,14,4.5714)
       ToolTip = ("Play the selected URI")
       AutoResize = True
       Text = ("Play")
@@ -103,18 +103,18 @@
       Default = True
     }
     { Panel1 Panel
-      MoveScaled(19,1,4,4)
+      MoveScaled(19,1,4,4.5714)
       Expand = True
     }
     { btnOK Button
-      MoveScaled(30,1,14,4)
+      MoveScaled(30,0,14,4.5714)
       ToolTip = ("Add the selected URI to Collection and/or Playlist")
       AutoResize = True
       Text = ("Add")
       Picture = Picture["icon:/16/add"]
     }
     { btnCancel Button
-      MoveScaled(46,1,14,4)
+      MoveScaled(46,1,14,4.5714)
       AutoResize = True
       Text = ("Close")
       Picture = Picture["icon:/16/cancel"]

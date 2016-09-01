@@ -5,6 +5,7 @@
   Text = ("Search Opensubtitles.org")
   Icon = Picture["opensubtitles.png"]
   Arrangement = Arrange.Vertical
+  Margin = True
   { MenuFile Menu
     Text = ("File")
     Visible = False
@@ -24,19 +25,19 @@
     Header = GridView.Horizontal
   }
   { HBox1 HBox
-    MoveScaled(2,38,85,4)
+    MoveScaled(2,38,85,4.5714)
     { TextBox1 TextBox
-      MoveScaled(0,0,56,4)
+      MoveScaled(0,0,56,4.5714)
       Expand = True
       Text = ("donnie darko")
     }
     { ComboBox1 ComboBox
-      MoveScaled(57,0,21,4)
+      MoveScaled(57,0,21,4.5714)
       List = [("alb,sq,(Albanian)"), ("ara,ar,(Arabic)"), ("arm,hy,(Armenian)"), ("baq,eu,(Basque)"), ("ben,bn,(Bengali)"), ("bos,bs,(Bosnian)"), ("bre,br,(Breton)"), ("bul,bg,(Bulgarian)"), ("cat,ca,(Catalan)"), ("cze,cs,(Czech)"), ("dan,da,(Danish)"), ("ger,deu,de (german)"), ("ell,el,(Greek)"), ("eng,en (english)"), ("epo,eo,(Esperanto)"), ("spa,esp (spanish)"), ("est,et,(Estonian)"), ("fin,fi (finnish)"), ("fre,fr (french)"), ("geo,ka,(Georgian)"), ("glg,gl,(Galician)"), ("heb,he,(Hebrew)"), ("hin,hi,(Hindi)"), ("hrv,hr,(Croatian)"), ("hun,hu,(Hungarian)"), ("ice,is,(Icelandic)"), ("ind,id,(Indonesian)"), ("ita,it (italian)"), ("jpn,ja (japanese)"), ("kaz,kk,(Kazakh)"), ("kor,ko,(Korean)"), ("lav,lv,(Latvian)")].Insert([("lit,lt,(Lithuanian)"), ("ltz,lb,(Luxembourgish)"), ("mac,mk,(Macedonian)"), ("may,ms,(Malay)"), ("dut,nld,nl (dutch,flemish)"), ("nor,no (norwegian)"), ("oci,oc,(Occitan)"), ("per,fa,(Farsi)"), ("pob,pb,(Portuguese-BR)"), ("pol,pl,(Polish)"), ("por,pt (portuguese)"), ("rus,ru (russian)"), ("rum,ro,(Romanian)"), ("scc,sr,(Serbian)"), ("sin,si,(Sinhalese)"), ("slo,sk,(Slovak)"), ("slv,sl,(Slovenian)"), ("swe,sv (swedish)"), ("syr,sy,(Syriac)"), ("tgl,tl,(Tagalog)"), ("tha,th,(Thai)"), ("tur,tr,(Turkish)"), ("ukr,uk,(Ukrainian)"), ("urd,ur,(Urdu)"), ("vie,vi,(Vietnamese)"), ("chi,zh,zho (chinese)")])
       Text = ("eng")
     }
     { ButtonSearch Button
-      MoveScaled(79,0,5,4)
+      MoveScaled(79,0,5,4.5714)
       AutoResize = True
       Picture = Picture["icon:/small/find"]
     }

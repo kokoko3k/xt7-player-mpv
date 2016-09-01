@@ -29,7 +29,7 @@
     Padding = 2
     { HBox1 Panel LabelPanel
       Name = "HBox1"
-      MoveScaled(1,0,104,4)
+      MoveScaled(1,0,104,4.5714)
       Background = &H21175C&
       Foreground = &HFFFFFF&
       Arrangement = Arrange.Horizontal
@@ -66,7 +66,7 @@
     }
     { HBox2 Panel NowPanel
       Name = "HBox2"
-      MoveScaled(0,4,104,4)
+      MoveScaled(0,4,104,4.5714)
       Background = &H000670&
       Foreground = &HFFFFFF&
       Arrangement = Arrange.Horizontal
@@ -105,7 +105,7 @@
       }
       { PictureBox1 PictureBox buttonepg
         Name = "PictureBox1"
-        MoveScaled(89,0,4,4)
+        MoveScaled(89,0,4,4.5714)
         Mouse = Mouse.Pointing
         Picture = Picture["icon:/22/calendar"]
       }
@@ -120,7 +120,7 @@
       }
     }
     { LabelNowInfo TextLabel
-      MoveScaled(2,8,93,4)
+      MoveScaled(2,8,93,4.5714)
       Visible = False
       Font = Font["Bold"]
       Background = &H000446&
@@ -180,7 +180,7 @@
       }
     }
     { LabelNextInfo TextLabel
-      MoveScaled(1,21,96,4)
+      MoveScaled(1,21,96,4.5714)
       Visible = False
       Font = Font["Bold,Italic"]
       Background = &H000446&

@@ -687,7 +687,7 @@
     MoveScaled(0,-1,95,5)
     Arrangement = Arrange.Horizontal
     { ButtonmenuNEWBTN MenuButton
-      MoveScaled(0,1,8,4)
+      MoveScaled(0,1,8,4.5714)
       Font = Font["1"]
       ToolTip = ("Menu")
       AutoResize = True
@@ -696,7 +696,7 @@
       Menu = "TopMenu"
     }
     { Separator6 Separator
-      MoveScaled(10,0,2,4)
+      MoveScaled(10,0,2,4.5714)
       Visible = False
       Font = Font["1"]
     }
@@ -719,7 +719,7 @@
     }
     { TagEditorBtn ToolButton DynaGuiToolbar
       Name = "TagEditorBtn"
-      MoveScaled(40,0,4.5714,4.5714)
+      MoveScaled(31,0,4.5714,4.5714)
       Enabled = False
       Font = Font["1"]
       ToolTip = ("Show/Hide AudioTag editor")
@@ -727,7 +727,7 @@
       Picture = Picture["icon:/22/edit"]
     }
     { FlexSpace PictureBox
-      MoveScaled(45,0,7,4)
+      MoveScaled(43,0,7,4.5714)
       Font = Font["1"]
       Expand = True
     }
@@ -774,7 +774,7 @@
       Border = False
     }
     { Separator2 Separator
-      MoveScaled(77,0,2,4)
+      MoveScaled(77,0,2,4.5714)
       Font = Font["1"]
     }
     { SwitchSidePanelBTN ToolButton DynaGuiToolbar
@@ -818,7 +818,7 @@
       Margin = True
       Padding = 4
       { Leftsidetabs TabStrip
-        MoveScaled(-1,-2,39,59)
+        MoveScaled(-1,-2,42,59)
         Tag = "1"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -838,7 +838,7 @@
           Text = ("Label3")
         }
         { WaitPanel TextLabel
-          MoveScaled(10,1,37,4)
+          MoveScaled(10,1,37,4.5714)
           Visible = False
           Background = Color.TextBackground
           Expand = True
@@ -867,7 +867,7 @@
           }
         }
         { LibrarySelInfo Label
-          MoveScaled(1,47,36,4)
+          MoveScaled(1,47,36,4.5714)
           Visible = False
           Background = &HFFFF9B&
           Alignment = Align.Center
@@ -911,7 +911,7 @@
           Text = ("Label3")
         }
         { HBox10 HBox
-          MoveScaled(2,4,33,4)
+          MoveScaled(2,4,33,4.5714)
           AutoResize = True
           Spacing = True
           Margin = True
@@ -922,25 +922,25 @@
             Text = ("Playlists")
           }
           { PlaylistsCombo ComboBox
-            MoveScaled(7,0,11,4)
+            MoveScaled(7,0,11,4.5714)
             ToolTip = ("Choose a Playlist")
             Expand = True
           }
           { Separator3 Separator
-            MoveScaled(18,0,2,4)
+            MoveScaled(18,0,2,4.5714)
           }
           { ButtonSavePls Button
-            MoveScaled(20,0,4,4)
+            MoveScaled(20,0,4,4.5714)
             ToolTip = ("Save the playlist")
             Picture = Picture["icon:/16/save"]
           }
           { ButtonDeletePls Button
-            MoveScaled(24,0,4,4)
+            MoveScaled(24,0,4,4.5714)
             ToolTip = ("Delete the playlist")
             Picture = Picture["icon:/16/delete"]
           }
           { ButtonDeletePls2 Button
-            MoveScaled(28,0,4,4)
+            MoveScaled(28,0,4,4.5714)
             ToolTip = ("Open the playlist folder")
             Picture = Picture["icon:/16/directory"]
           }
@@ -972,20 +972,20 @@
           Border = Border.Raised
         }
         { PlayListSelInfoBox HBox
-          MoveScaled(0,54,37,4)
+          MoveScaled(0,54,37,4.5714)
           Visible = False
           { MoveUpPlsBTN Button
-            MoveScaled(0,0,4,4)
+            MoveScaled(0,0,4,4.5714)
             ToolTip = ("Move selected items up in the list.\nYou can use the mouse wheel too.")
             Picture = Picture["icon:/16/up"]
           }
           { MoveDownPlsBTN Button
-            MoveScaled(4,0,4,4)
+            MoveScaled(4,0,4,4.5714)
             ToolTip = ("Move selected playlist items down.\nYou can use the mouse wheel too.")
             Picture = Picture["icon:/16/down"]
           }
           { PlayListSelInfo Label
-            MoveScaled(10,0,19,4)
+            MoveScaled(10,0,19,4.5714)
             Background = &HFFFF9B&
             ToolTip = ("Selection play time")
             Expand = True
@@ -1005,37 +1005,37 @@
           Text = ("Label3")
         }
         { HBox14 HBox
-          MoveScaled(1,5,33,4)
+          MoveScaled(1,5,33,4.5714)
           AutoResize = True
           Spacing = True
           Margin = True
           Padding = 1
           { Button_mounts Button
-            MoveScaled(1,0,4,4)
+            MoveScaled(1,0,4,4.5714)
             ToolTip = ("Mounted devices")
             Picture = Picture["icon:/16/computer"]
           }
           { ButtonUp Button
-            MoveScaled(10,0,4,4)
+            MoveScaled(10,0,4,4.5714)
             ToolTip = ("Parent")
             Picture = Picture["icon:/16/up"]
           }
           { UrlBox ComboBox
-            MoveScaled(15,0,7,4)
+            MoveScaled(15,0,7,4.5714)
             ToolTip = ("Enter a path to browse it")
             Expand = True
             Text = ("/")
           }
           { Separator1 Separator
-            MoveScaled(23,0,2,4)
+            MoveScaled(23,0,2,4.5714)
           }
           { ButtonRefresh Button
-            MoveScaled(24,0,4,4)
+            MoveScaled(24,0,4,4.5714)
             ToolTip = ("Refresh")
             Picture = Picture["icon:/16/refresh"]
           }
           { ButtonHidden Button
-            MoveScaled(29,0,4,4)
+            MoveScaled(29,0,4,4.5714)
             ToolTip = ("Show/Hide hidden files")
             Picture = Picture["icon:/16/watch"]
           }
@@ -1098,7 +1098,7 @@
           Text = ("Label3")
         }
         { WaitPanel3 TextLabel
-          MoveScaled(0,5,37,4)
+          MoveScaled(0,5,37,4.5714)
           Visible = False
           Background = Color.TextBackground
           Expand = True
@@ -1106,7 +1106,7 @@
           Border = Border.Raised
         }
         { HBox19 HBox
-          MoveScaled(1,10,35,4)
+          MoveScaled(1,10,35,4.5714)
           Spacing = True
           { DvbFilter Label
             MoveScaled(0,0,7,3)
@@ -1115,7 +1115,7 @@
             Text = ("Filter")
           }
           { SearchFieldDVB ComboBox
-            MoveScaled(4,0,14,3)
+            MoveScaled(4,0,14,4.5714)
             ToolTip = ("Enter some search terms.\nSpecial character \"|\" means \"OR\",\nso you can type: Bach|Mozart ")
             Expand = True
           }
@@ -1123,14 +1123,14 @@
             MoveScaled(19,0,1,3)
           }
           { ButtonEPG Button
-            MoveScaled(20,0,9,4)
+            MoveScaled(20,0,9,4.5714)
             ToolTip = ("Open the Electronic Program Guide window")
             AutoResize = True
             Text = ("EPG")
             Picture = Picture["icon:/16/calendar"]
           }
           { ButtonSavePls2 Button
-            MoveScaled(30,0,4,4)
+            MoveScaled(30,0,4,4.5714)
             ToolTip = ("Show options for DVBT")
             Picture = Picture["icon:/16/options"]
           }
@@ -1154,7 +1154,7 @@
           }
         }
         { ScanBtn Button
-          MoveScaled(1,53,35,4)
+          MoveScaled(1,53,35,4.5714)
           ToolTip = ("Start simple dvb tuner")
           Text = ("Scan for channels")
           Picture = Picture["icon:/16/find"]
@@ -1193,7 +1193,7 @@
           Text = ("Label3")
         }
         { Button3 Button
-          MoveScaled(-1,2,35,4)
+          MoveScaled(-1,2,35,4.5714)
           Visible = False
           Enabled = False
           ToolTip = ("Switch to navigation mode.")
@@ -1302,13 +1302,13 @@
           }
         }
         { FlashCHK CheckBox
-          MoveScaled(0,26,37,4)
+          MoveScaled(0,26,37,4.5714)
           ToolTip = ("Show flash videos in /tmp folder in the upper list, allowing you to play them.")
           AutoResize = True
           Text = ("Catch Flash videos in /tmp folder")
         }
         { FlashCHK2 CheckBox
-          MoveScaled(0,29,37,4)
+          MoveScaled(0,29,37,4.5714)
           ToolTip = ("When a new flash video is detected, shows a PopUp window.\nIt may be necessary to disable focus stealing prevention in your window manager.")
           AutoResize = True
           Text = ("PopUp window to play new catched videos")
@@ -1353,25 +1353,25 @@
           }
         }
         { HBox13 HBox
-          MoveScaled(2,28,32,4)
+          MoveScaled(2,28,32,4.5714)
           ToolTip = (" ")
           { buttondetail Button
-            MoveScaled(0,0,4,4)
+            MoveScaled(0,0,4,4.5714)
             ToolTip = ("Show youtube video information")
             Picture = Picture["icon:/16/info"]
           }
           { YouSearchfield ComboBox
-            MoveScaled(5,0,13,3)
+            MoveScaled(5,0,13,4.5714)
             ToolTip = ("Enter some search terms.\nSpecial character \"|\" means \"OR\",\nso you can type: Bach|Mozart ")
             Expand = True
           }
           { buttonstartytsearch Button
-            MoveScaled(19,0,4,4)
+            MoveScaled(19,0,4,4.5714)
             ToolTip = ("Search now")
             Picture = Picture["icon:/small/find"]
           }
           { YT_search_opts ToggleButton
-            MoveScaled(24,0,4,4)
+            MoveScaled(24,0,4,4.5714)
             ToolTip = ("Show/Hide search options panel")
             Picture = Picture["icon:/small/tools"]
           }
@@ -1389,14 +1389,14 @@
           Padding = 2
           Border = Border.Raised
           { HBox22 HBox
-            MoveScaled(0,3,33,4)
+            MoveScaled(0,3,33,4.5714)
             ToolTip = ("only valid for searches")
             { MaxLabel Label
-              MoveScaled(1,0,11,4)
+              MoveScaled(1,0,11,4.5714)
               Text = ("Results")
             }
             { SpinBoxmaxresults SpinBox
-              MoveScaled(23,0,7,4)
+              MoveScaled(23,0,7,4.5714)
               ToolTip = ("How many results to get.")
               Expand = True
               MinValue = 1
@@ -1405,7 +1405,7 @@
             }
           }
           { HBox15 HBox
-            MoveScaled(0.1429,7.1429,33,4)
+            MoveScaled(0.1429,7.1429,33,4.5714)
             ToolTip = ("only valid for searches")
             { Label3 Label
               MoveScaled(0,1,11,3)
@@ -1413,7 +1413,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-34.2857,18,4)
+              MoveScaled(9.4286,-36.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1422,7 +1422,7 @@
             }
           }
           { HBox16 HBox
-            MoveScaled(1,11,30,4)
+            MoveScaled(1,11,30,4.5714)
             ToolTip = ("Only valid for standard feeds")
             { Label4 Label
               MoveScaled(2,0,11,3)
@@ -1430,7 +1430,7 @@
               Text = ("Region")
             }
             { ComboBoxRegion ComboBox
-              MoveScaled(10,0,18,4)
+              MoveScaled(10,0,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1439,7 +1439,7 @@
             }
           }
           { HBox17 HBox
-            MoveScaled(1.1429,16.1429,33,4)
+            MoveScaled(1.1429,16.1429,33,4.5714)
             Enabled = False
             ToolTip = ("only valid for searches")
             { Label5 Label
@@ -1448,7 +1448,7 @@
               Text = ("Time")
             }
             { ComboBoxtime ComboBox
-              MoveScaled(8,0,18,4)
+              MoveScaled(8,0,18,4.5714)
               #Translate = False
               Tag = "time"
               Expand = True
@@ -1458,7 +1458,7 @@
             }
           }
           { HBox18 HBox
-            MoveScaled(1.1429,20.1429,30,4)
+            MoveScaled(1.1429,20.1429,30,4.5714)
             ToolTip = ("only valid for searches")
             { Label6 Label
               MoveScaled(0,1,11,3)
@@ -1466,7 +1466,7 @@
               Text = ("Author")
             }
             { TextBoxUploader TextBox
-              MoveScaled(8,0,18,4)
+              MoveScaled(8,0,18,4.5714)
               #Translate = False
               Expand = True
             }
@@ -1482,10 +1482,10 @@
           Text = ("Label3")
         }
         { HBox21 HBox
-          MoveScaled(1,4,33,4)
+          MoveScaled(1,4,33,4.5714)
           { ButtonIcecast ToggleButton ButtonRadios
             Name = "ButtonIcecast"
-            MoveScaled(0,0,14,4)
+            MoveScaled(0,0,14,4.5714)
             Expand = True
             Text = ("Icecast")
             Picture = Picture["icecast.png"]
@@ -1493,7 +1493,7 @@
           }
           { ButtonShoutcast ToggleButton ButtonRadios
             Name = "ButtonShoutcast"
-            MoveScaled(17,0,14,4)
+            MoveScaled(17,0,14,4.5714)
             Expand = True
             Text = ("ShoutCast")
             Picture = Picture["shoutcast16.png"]
@@ -1509,7 +1509,7 @@
             Expand = True
           }
           { ButtonGetGenres Button
-            MoveScaled(0,9,36,4)
+            MoveScaled(0,9,36,4.5714)
             ToolTip = ("Get an updated genres list from shoutcast server")
             Text = ("Refresh Genres list")
             Picture = Picture["icon:/16/refresh"]
@@ -1522,7 +1522,7 @@
           Expand = True
           Spacing = True
           { HBox12 Panel
-            MoveScaled(1,0,33,4)
+            MoveScaled(1,0,33,4.5714)
             Arrangement = Arrange.Horizontal
             Padding = 4
             Border = Border.Etched
@@ -1543,7 +1543,7 @@
             }
           }
           { HBox11 HBox
-            MoveScaled(1,6,36,4)
+            MoveScaled(1,6,36,4.5714)
             Spacing = True
             { ShoutSearchLabel2 Label
               MoveScaled(1,1,9,3)
@@ -1551,7 +1551,7 @@
               Text = ("HighLight")
             }
             { FilterTextBox TextBox
-              MoveScaled(12,0,23,4)
+              MoveScaled(12,0,23,4.5714)
               ToolTip = ("Highlight the results")
               Expand = True
             }
@@ -1572,10 +1572,10 @@
           }
         }
         { NOSAVEHBox10 HBox
-          MoveScaled(1,53,32,4)
+          MoveScaled(1,53,32,4.5714)
           Spacing = True
           { TextBox1 ButtonBox
-            MoveScaled(7,0,19,4)
+            MoveScaled(7,0,19,4.5714)
             ToolTip = ("Free serch by content")
             Expand = True
             Picture = Picture["icon:/16/find"]
@@ -1597,13 +1597,13 @@
           Mode = Select.Multiple
         }
         { Button4 Button
-          MoveScaled(1,20,36,4)
+          MoveScaled(1,20,36,4.5714)
           ToolTip = ("Refresh podcasts info")
           Text = ("Refresh All")
           Picture = Picture["icon:/16/refresh"]
         }
         { Button1 Button
-          MoveScaled(1,25,36,4)
+          MoveScaled(1,25,36,4.5714)
           ToolTip = ("Manually enter a new podcast URL")
           Text = ("New feed")
           Picture = Picture["icon:/16/new"]
@@ -1645,7 +1645,7 @@
           Text = ("Label3")
         }
         { CurrentProfileLabel Label
-          MoveScaled(1,9,35,4)
+          MoveScaled(1,9,35,4.5714)
           Font = Font["Bold"]
           Text = ("Current profile: ")
         }
@@ -1656,17 +1656,17 @@
           Sorted = True
         }
         { HBox7 HBox
-          MoveScaled(2,23,34,4)
+          MoveScaled(2,23,34,4.5714)
           Spacing = True
           { ProfileLoadBTN Button
-            MoveScaled(4,0,13,4)
+            MoveScaled(4,0,13,4.5714)
             ToolTip = ("Load the selected profile")
             Expand = True
             Text = ("Load")
             Picture = Picture["icon:/16/open"]
           }
           { ProfileSaveBTN2 Button
-            MoveScaled(18,0,13,4)
+            MoveScaled(18,0,13,4.5714)
             ToolTip = ("Save the settings to the selected profile")
             Expand = True
             Text = ("Save")
@@ -1674,17 +1674,17 @@
           }
         }
         { HBox8 HBox
-          MoveScaled(2,27,34,4)
+          MoveScaled(2,27,34,4.5714)
           Spacing = True
           { ProfileRenameBTN Button
-            MoveScaled(4,0,13,4)
+            MoveScaled(4,0,13,4.5714)
             ToolTip = ("Rename the selected profile")
             Expand = True
             Text = ("Rename")
             Picture = Picture["icon:/16/edit"]
           }
           { ProfileSaveBTN Button
-            MoveScaled(18,0,13,4)
+            MoveScaled(18,0,13,4.5714)
             ToolTip = ("Save the current settings to a new profile")
             Expand = True
             Text = ("Save As")
@@ -1692,17 +1692,17 @@
           }
         }
         { HBox9 HBox
-          MoveScaled(2,31,34,4)
+          MoveScaled(2,31,34,4.5714)
           Spacing = True
           { ProfileDeleteBTN Button
-            MoveScaled(4,0,13,4)
+            MoveScaled(4,0,13,4.5714)
             ToolTip = ("Delete the selected profile")
             Expand = True
             Text = ("Delete")
             Picture = Picture["icon:/16/remove"]
           }
           { ProfileMakeNewBTN Button
-            MoveScaled(18,0,13,4)
+            MoveScaled(18,0,13,4.5714)
             ToolTip = ("Make a new blank profile")
             Expand = True
             Text = ("Make new")
@@ -1712,40 +1712,40 @@
         Index = 0
       }
       { HBox2 HBox
-        MoveScaled(0,59,38,4)
+        MoveScaled(1,59,38,4.5714)
         { HBox20 HBox
-          MoveScaled(1,0,29,4)
+          MoveScaled(1,0,29,4.5714)
           Expand = True
           AutoResize = True
           { SearchLabel Button
-            MoveScaled(0,0,4,4)
+            MoveScaled(0,0,4,4.5714)
             ToolTip = ("Show and select the possible search fields")
             AutoResize = True
             Picture = Picture["icon:/16/find"]
           }
           { SearchField ComboBox
-            MoveScaled(5,0,5,3)
+            MoveScaled(5,0,5,4.5714)
             ToolTip = ("Enter some search terms.\nSpecial character \"|\" means \"OR\",\nso you can type: Bach|Mozart ")
             Expand = True
           }
           { SearchFieldPLS ComboBox
-            MoveScaled(10,0,4,3)
+            MoveScaled(10,0,4,4.5714)
             ToolTip = ("Enter some search terms.\nSpecial character \"|\" means \"OR\",\nso you can type: Bach|Mozart ")
             Expand = True
           }
           { SearchFieldAlbums ComboBox
-            MoveScaled(15,0,4,3)
+            MoveScaled(15,0,4,4.5714)
             ToolTip = ("Enter some search terms.\nSpecial character \"|\" means \"OR\",\nso you can type: Bach|Mozart ")
             Expand = True
           }
           { ShufflePls ToggleButton
-            MoveScaled(19,0,5,4)
+            MoveScaled(19,0,5,4.5714)
             Background = Color.Background
             ToolTip = ("Play random media when the previous reaches the end.")
             Picture = Picture["shuffle.png"]
           }
           { buttonshowtooltips ToggleButton
-            MoveScaled(24,0,5,4)
+            MoveScaled(24,0,5,4.5714)
             Background = Color.Background
             ToolTip = ("Show media info when hovering a list item.")
             Picture = Picture["icon:/16/info"]
@@ -1753,7 +1753,7 @@
           }
         }
         { TogglePls ToggleButton
-          MoveScaled(31,0,5,4)
+          MoveScaled(31,0,5,4.5714)
           Background = Color.Background
           ToolTip = ("Play next media as the previous reaches the end.")
           Picture = Picture["icon:/16/end"]
@@ -1787,7 +1787,7 @@
           MoveScaled(3,1,24,1)
         }
         { HBox4 HBox
-          MoveScaled(1,2,28,4)
+          MoveScaled(1,2,28,4.5714)
           Background = Color.TextBackground
           Padding = 4
           { Label1 Label
@@ -1807,7 +1807,7 @@
           }
         }
         { HTagBox1 HBox
-          MoveScaled(0,5,25,4)
+          MoveScaled(0,5,25,4.5714)
           { AlbumCHK CheckBox TagsCHK
             Name = "AlbumCHK"
             MoveScaled(1,0,13,3)
@@ -1816,7 +1816,7 @@
           }
           { ToolButton1 ToolButton Clearer
             Name = "ToolButton1"
-            MoveScaled(14,0,4,4)
+            MoveScaled(14,0,4,4.5714)
             Picture = Picture["icon:/16/clear"]
           }
           { TagBox1 TextBox TagsBox
@@ -1826,7 +1826,7 @@
           }
         }
         { HTagBox2 HBox
-          MoveScaled(0,9,25,4)
+          MoveScaled(0,9,25,4.5714)
           { ArtistCHK CheckBox TagsCHK
             Name = "ArtistCHK"
             MoveScaled(1,0,13,3)
@@ -1835,7 +1835,7 @@
           }
           { ToolButton2 ToolButton Clearer
             Name = "ToolButton2"
-            MoveScaled(14,0,4,4)
+            MoveScaled(14,0,4,4.5714)
             Picture = Picture["icon:/16/clear"]
           }
           { TagBox2 TextBox TagsBox
@@ -1845,7 +1845,7 @@
           }
         }
         { HTagBox3 HBox
-          MoveScaled(0,13,25,4)
+          MoveScaled(0,13,25,4.5714)
           { TitleCHK CheckBox TagsCHK
             Name = "TitleCHK"
             MoveScaled(1,0,13,3)
@@ -1853,7 +1853,7 @@
           }
           { ToolButton3 ToolButton Clearer
             Name = "ToolButton3"
-            MoveScaled(14,0,4,4)
+            MoveScaled(14,0,4,4.5714)
             Picture = Picture["icon:/16/clear"]
           }
           { TagBox3 TextBox TagsBox
@@ -1864,7 +1864,7 @@
           }
         }
         { HTagBox4 HBox
-          MoveScaled(0,17,25,4)
+          MoveScaled(0,17,25,4.5714)
           { YearCHK CheckBox TagsCHK
             Name = "YearCHK"
             MoveScaled(1,0,13,3)
@@ -1873,7 +1873,7 @@
           }
           { ToolButton4 ToolButton Clearer
             Name = "ToolButton4"
-            MoveScaled(14,0,4,4)
+            MoveScaled(14,0,4,4.5714)
             Picture = Picture["icon:/16/clear"]
           }
           { TagBox4 TextBox TagsBox
@@ -1883,7 +1883,7 @@
           }
         }
         { HTagBox5 HBox
-          MoveScaled(0,21,25,4)
+          MoveScaled(0,21,25,4.5714)
           { GenreCHK CheckBox TagsCHK
             Name = "GenreCHK"
             MoveScaled(1,0,13,3)
@@ -1892,7 +1892,7 @@
           }
           { ToolButton5 ToolButton Clearer
             Name = "ToolButton5"
-            MoveScaled(14,0,4,4)
+            MoveScaled(14,0,4,4.5714)
             Picture = Picture["icon:/16/clear"]
           }
           { TagBox5 ComboBox
@@ -1901,7 +1901,7 @@
           }
         }
         { HTagBox6 HBox
-          MoveScaled(0,25,25,4)
+          MoveScaled(0,25,25,4.5714)
           { TrackCHK CheckBox TagsCHK
             Name = "TrackCHK"
             MoveScaled(1,0,13,3)
@@ -1909,7 +1909,7 @@
           }
           { ToolButton6 ToolButton Clearer
             Name = "ToolButton6"
-            MoveScaled(14,0,4,4)
+            MoveScaled(14,0,4,4.5714)
             Picture = Picture["icon:/16/clear"]
           }
           { TagBox6 TextBox TagsBox
@@ -1920,7 +1920,7 @@
           }
         }
         { HTagBox7 HBox
-          MoveScaled(0,29,25,4)
+          MoveScaled(0,29,25,4.5714)
           { CommentCHK CheckBox TagsCHK
             Name = "CommentCHK"
             MoveScaled(1,0,13,3)
@@ -1929,7 +1929,7 @@
           }
           { ToolButton7 ToolButton Clearer
             Name = "ToolButton7"
-            MoveScaled(14,0,4,4)
+            MoveScaled(14,0,4,4.5714)
             Picture = Picture["icon:/16/clear"]
           }
           { TagBox7 TextBox TagsBox
@@ -1947,7 +1947,7 @@
           ScrollBar = Scroll.Vertical
         }
         { HBox1 HBox
-          MoveScaled(1,35,26,4)
+          MoveScaled(1,35,26,4.5714)
           Spacing = True
           { AdvanceCHK CheckBox
             MoveScaled(1,1,12,3)
@@ -1955,7 +1955,7 @@
             Text = ("Select next")
           }
           { Button2 Button
-            MoveScaled(12,0,12,4)
+            MoveScaled(12,0,12,4.5714)
             Text = ("Refresh")
             Picture = Picture["icon:/16/refresh"]
           }
@@ -1964,7 +1964,7 @@
             Expand = True
           }
           { ButtonTag Button
-            MoveScaled(21,0,12,4)
+            MoveScaled(21,0,12,4.5714)
             Text = ("Commit")
             Picture = Picture["icon:/16/ok"]
           }
@@ -2035,19 +2035,19 @@
             Arrangement = Arrange.Horizontal
             AutoResize = True
             { ButtonPrev ToolButton
-              MoveScaled(0,0,4.4286,4)
+              MoveScaled(0,0,4.4286,4.5714)
               Font = Font["6"]
               ToolTip = ("Previous media")
               Picture = Picture["media-skip-backward.png"]
             }
             { ButtonNext ToolButton
-              MoveScaled(3,0,4,4)
+              MoveScaled(3,0,4,4.5714)
               Font = Font["6"]
               ToolTip = ("Next media")
               Picture = Picture["media-skip-forward.png"]
             }
             { ButtonCapture ToggleButton
-              MoveScaled(5,0,5,4)
+              MoveScaled(5,0,5,4.5714)
               Visible = False
               Enabled = False
               Font = Font["6"]
@@ -2056,20 +2056,20 @@
               Border = False
             }
             { ButtonPlay ToolButton
-              MoveScaled(8,0,5,4)
+              MoveScaled(8,0,5,4.5714)
               Font = Font["6"]
               ToolTip = ("Play/pause")
               Action = "play"
               Picture = Picture["media-playback-start.png"]
             }
             { ButtonStop ToolButton
-              MoveScaled(11,0,4.4286,4)
+              MoveScaled(11,0,4.4286,4.5714)
               Font = Font["6"]
               ToolTip = ("Stop")
               Picture = Picture["media-playback-stop.png"]
             }
             { ChaptersBtn Button
-              MoveScaled(15,0,4,4)
+              MoveScaled(15,0,4,4.5714)
               Visible = False
               Font = Font["1"]
               ToolTip = ("Chapters available")
@@ -2086,7 +2086,7 @@
                 Expand = True
                 Border = Border.Plain
                 { Progress PictureBox
-                  MoveScaled(5,1,6,4)
+                  MoveScaled(5,1,6,4.5714)
                   Picture = Picture["barglow.png"]
                   Stretch = True
                 }
@@ -2106,31 +2106,31 @@
               }
             }
             { ABLoopButton ToolButton
-              MoveScaled(24,0,5,4)
+              MoveScaled(24,0,5,4.5714)
               Font = Font["Bold,-1"]
               Picture = Picture["media-loop-off.png"]
             }
             { ButtonRew ToolButton
-              MoveScaled(27,0,4.4286,4)
+              MoveScaled(27,0,4.4286,4.5714)
               Font = Font["6"]
               ToolTip = ("Slowdown")
               Picture = Picture["media-seek-backward.png"]
             }
             { Buttonfwd ToolButton
-              MoveScaled(30,0,4.4286,4)
+              MoveScaled(30,0,4.4286,4.5714)
               Font = Font["6"]
               ToolTip = ("Speedup")
               Picture = Picture["media-seek-forward.png"]
             }
             { ButtonNowNext ToolButton
-              MoveScaled(34,0,4,4)
+              MoveScaled(34,0,4,4.5714)
               Visible = False
               Font = Font["6"]
               ToolTip = ("Show/Hide current and next TV program.")
               Picture = Picture["media-info.png"]
             }
             { PanScan ToolButton
-              MoveScaled(41,0,5,4)
+              MoveScaled(41,0,5,4.5714)
               Font = Font["6"]
               ToolTip = ("Hover the mouse over this button then\n* Zoom the video with mouse wheel.\n* Cycle through zoom with right mouse button.")
               Picture = Picture["zoom-in.png"]
@@ -2142,7 +2142,7 @@
             Arrangement = Arrange.Horizontal
             AutoResize = True
             { ShowVolBtn ToolButton
-              MoveScaled(1,0,4,4)
+              MoveScaled(1,0,4,4.5714)
               Font = Font["6"]
               AutoResize = True
               Picture = Picture["volume-faenza.png"]
@@ -2152,7 +2152,7 @@
               Visible = False
               Expand = True
               { SaveVolumeSlider Slider
-                MoveScaled(0,0,7,4)
+                MoveScaled(0,0,7,4.5714)
                 Font = Font["6"]
                 Tag = "user"
                 Expand = True
