@@ -2641,6 +2641,12 @@ Public Sub file_options(fullpath As String) As Collection
       'maybe a bug somewhere in mpv, but without this, cache seek wont work for dvb.
       If Lower(fullpath) Like "dvb://*" Then opts["hr-seek"] = "yes" 
 
+      If global.IsImgFile(fullpath) Then
+        If Not (fullpath Like "*SubBackImage*.bmp*") Then 'do not apply to subtitles window
+          opts["image-display-duration"] = "inf"
+        Endif
+      Endif
+
   End Select
 
   generaloptions.FirstLoadIfNeeded()
@@ -2875,10 +2881,10 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Endif
 
   If Not gapless Then
-    Fill_Playlist_from_mpv()
+    If Not global.IsImgFile(fullpath) Then Fill_Playlist_from_mpv()
   Endif
-  FillStreamsMenu()
-  FillChaptersMenu()
+  If Not global.IsImgFile(fullpath) Then FillStreamsMenu()
+  If Not global.IsImgFile(fullpath) Then FillChaptersMenu()
   current_queue = GetActivePlayQueue()
   If current_queue = "playlistgrid" Or current_queue = "librarygrid" Or current_queue = "browse" Then
     InitTimerQueue()

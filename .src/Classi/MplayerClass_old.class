@@ -682,9 +682,9 @@ Public Function do_play(filename As String, options As String, Optional restart 
       
       ClearMediaProperties()
 
-    If global.IsImgFile(filename) And Not (filename Like "mf://*") Then
-      filename = "mf://" & filename & "," & filename
-    Endif
+    ' If global.IsImgFile(filename) And Not (filename Like "mf://*") Then
+    '   filename = "mf://" & filename & "," & filename
+    ' Endif
       Media_FullPath = filename
       
   
@@ -767,9 +767,9 @@ Public Function do_play(filename As String, options As String, Optional restart 
         MaxHeaders = MaxHeadersFile
       Endif
       
-      If Not (filename Like "*SubBackImage*.bmp*") Then 'do not apply limit to subtitles window!
-        If global.IsImgFile(filename) Then commandline &= " -fps 0.1 -nocache"
-      Endif
+      ' If Not (filename Like "*SubBackImage*.bmp*") Then 'do not apply limit to subtitles window!
+      '   If global.IsImgFile(filename) Then commandline &= " -fps 0.1 -nocache"
+      ' Endif
    
       global.myDebug("Starting mpv now:")
       global.myDebug("commandline=" & commandline)
