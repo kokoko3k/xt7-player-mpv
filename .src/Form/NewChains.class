@@ -945,6 +945,7 @@ Public Function parse_drivers(audio As Boolean) As String
   
   If Not audio Then 'search for any override in generaloptions (like hwdec macro)
     Try video_driver_overridden = GeneralOptions.video_driver_overridden() 
+    Stop
     If video_driver_overridden <> "" Then
         drivers &= parse_video_driver(video_driver_overridden, item_container.tag) & ","
         Goto returnlabel
