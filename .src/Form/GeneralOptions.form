@@ -105,12 +105,11 @@
           }
           { NOPARSE_HwdecCombobox ComboBox
             MoveScaled(20,0,27,4.5714)
-            #Translate = False
-            ToolTip = "Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anithing but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding"
+            ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
             Expand = True
             ReadOnly = True
-            List = ["no (allows all video filters and drivers)", "auto + opengl (may allows only gamma adjustments)", "auto + vdpau (allows equalization, but gamma)", "auto + vaapi (allows equalization, but gamma)", "vdpau + vdpau (allows equalization, but gamma)", "vdpau + opengl (may allows only gamma adjustments)", "vaapi + vaapi (allows equalization, but gamma)", "vaapi + opengl (allows only gamma adjustments)", "vaapi-copy (allows all video filters and drivers - Intel only)"]
-            Text = "0 - disabled (allow all video processing filters)"
+            List = [("no (allows all video filters and drivers)"), ("auto + opengl (may allows only gamma adjustments)"), ("auto + vdpau (allows equalization, but gamma)"), ("auto + vaapi (allows equalization, but gamma)"), ("vdpau + vdpau (allows equalization, but gamma)"), ("vdpau + opengl (may allows only gamma adjustments)"), ("vaapi + vaapi (allows equalization, but gamma)"), ("vaapi + opengl (allows only gamma adjustments)"), ("vaapi-copy (allows all video filters and drivers - Intel only)")]
+            Text = ("0 - disabled (allow all video processing filters)")
           }
         }
         { Panel3 HBox
