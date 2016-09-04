@@ -1517,15 +1517,17 @@ Public Sub Form_Close()
   Try HotKeys.xbindkeys.kill
   Print "xbindkeys killed"
 
-  If GeneralOptions.SaveOnExitCHK.value = True Then
-    Try Global.SaveAllSettings(global.CurrentProfile)
-    If Error Then 
-      global.myDebug("couldn't save all settings at exit as requested...")
+  If fmain.fullyloaded Then
+    If GeneralOptions.SaveOnExitCHK.value = True Then
+      Try Global.SaveAllSettings(global.CurrentProfile)
+      If Error Then 
+        global.myDebug("couldn't save all settings at exit as requested...")
+      Else
+        global.myDebug("All settings saved")
+      Endif
     Else
-      global.myDebug("All settings saved")
+      global.SaveMandatorySettings(global.CurrentProfile)
     Endif
-  Else
-    global.SaveMandatorySettings(global.CurrentProfile)
   Endif
 
 

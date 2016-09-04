@@ -123,6 +123,7 @@ Public Sub Load(mygrid As Gridview, ConfDir As String)
   Endif
 End
 
+
 Public Sub LoadTable(ByRef table As String[], filename As String, mygrid As Gridview)
   Dim i As Integer
   Dim Layout As String[]
@@ -407,7 +408,22 @@ Public Sub SaveTable(table As String[], filename As String, mygrid As Gridview)
   Dim i, r As Integer
   Dim layout As String = "Layout"
   Dim MyFile As File
-  Try Copy filename To filename & ".bak"
+
+  'backup grid
+  If Not Exist(filename & ".bak", True) Then 
+    Try Copy filename To filename & ".bak"
+  Endif
+  
+  If Exist(filename & ".bak", True) Then
+    If Exist(filename, True) Then
+      If Stat(filename).size > Stat(filename & ".bak").size Then
+        Try Kill filename & ".bak"
+        Try Copy filename To filename & ".bak"
+      Endif
+    Endif
+  Endif
+  
+  
   Myfile = Open filename For Write Create
   'write table layout
   For i = 0 To mygrid.Columns.Count - 1
@@ -418,6 +434,8 @@ Public Sub SaveTable(table As String[], filename As String, mygrid As Gridview)
     Print #Myfile, Table[r]
   Next 'c
   Close #MyFile
+  
+  
   
 End
 
