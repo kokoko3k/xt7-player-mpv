@@ -330,7 +330,7 @@ Public Function IsYoutubeLink(url As String) As Boolean
   Dim needsdecoding As Boolean = True
  ' global.myDebug(url)
   url = Lower(url)
-  needsdecoding = needsdecoding And ((url Like "http://*.youtube.*/*") Or (url Like "https://*.youtube.*/*") Or (url Like "http://*.googlevideo.*/*") Or (url Like "https://*.googlevideo.*/*"))
+  needsdecoding = needsdecoding And ((url Like "http://*.youtube.*/*") Or (url Like "ytdl://*") Or (url Like "https://*.youtube.*/*") Or (url Like "http://*.googlevideo.*/*") Or (url Like "https://*.googlevideo.*/*"))
   needsdecoding = needsdecoding And (Not (url Like "*t=*"))
   needsdecoding = needsdecoding And (Not (url Like "*ip=*"))
   needsdecoding = needsdecoding And (Not (url Like "*fexp=*"))
