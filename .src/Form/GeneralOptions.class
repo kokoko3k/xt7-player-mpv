@@ -319,7 +319,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Tabstrip1.index = PrevIndex
   'hardware decoding macro
   Try hwdec_choice = Split(NOPARSE_HwdecCombobox.text, " ")[0]
-  Stop
+  
   If Not Error Then
     myopts.Add(newopt("hwdec", Split(NOPARSE_HwdecCombobox.text, " ", "", True)[0]))
   Endif

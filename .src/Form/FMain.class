@@ -5227,9 +5227,8 @@ Public Sub timer_runtime_infos_timer()
   prop["dropped frames by vo"] = "vo-drop-frame-count"
   prop["----"] = " "
   
-  prop["Hardware decoding requested"] = "hwdec"
-  prop["Hardware decoding detected"] = "hwdec-detected"
-  prop["Hardware decoding active"] = "hwdec-active"
+  prop["Hardware decoding: requested"] = "hwdec"
+  prop["Hardware decoding: Active"] = "hwdec-current"
   
   prop["-----"] = " "
   

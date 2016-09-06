@@ -2204,7 +2204,7 @@ Public Function want_vdpau() As Boolean
   ' hwdec_active = get_property_mpv("hwdec-active") 
   ' If hwdec_active = "yes" Then Return 'return if we're already hwdecoding
 
-  hwdec_detected = get_property_mpv("hwdec-detected")
+  hwdec_detected = get_property_mpv("hwdec-current")
   If hwdec_detected <> "vdpau" Then Return 'continue only if we're using vdpau
 
   ' vf = Trim(get_property_mpv("vf"))
