@@ -1,12 +1,12 @@
 # Gambas Project File 3.0
-# Compiled with Gambas 3.8.4
+# Compiled with Gambas 3.9.0
 Title=xt7-player
 Startup=StartClass
 Icon=xt7-player-mpv.png
 Version=0.20.384
 Component=gb.args
 Component=gb.image
-Component=gb.qt4
+Component=gb.qt5
 Component=gb.form
 Component=gb.compress
 Component=gb.dbus
@@ -19,12 +19,13 @@ Component=gb.gui.trayicon
 Component=gb.libxml
 Component=gb.net
 Component=gb.net.curl
-Component=gb.qt4.ext
+Component=gb.qt5.ext
 Component=gb.signal
 Component=gb.web
 Description="Xt7-Player, an (almost) complete mpv gui"
 Authors="Antonio Orefice <xt7player@gmail.com>"
-Arguments="-v\n"
+Arguments=[["-v"]]
+CurrentArgument=0
 TabSize=2
 Translate=1
 Language=en

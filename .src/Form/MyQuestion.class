@@ -60,6 +60,7 @@ Public Function Ask(TheQuestionString As String, TheButton1String As String, The
     Endif
     Wait
     Me.Show()
+    Wait
     Me.Refresh()
     Wait
     global.myDebug(vbox1.w)

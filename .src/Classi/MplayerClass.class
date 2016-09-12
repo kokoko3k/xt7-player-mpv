@@ -264,6 +264,7 @@ Public Function SupportsLadspa() As Boolean
   Dim out As String
   Exec ["sh", "-c", "ffmpeg -filters | grep ladspa"] To out
   Return Trim(out) <> ""
+  
 End
 
 
