@@ -7457,16 +7457,15 @@ Public Sub MenuPlaylistZapSelected_Click()
 End
 
 Public Sub MenuLibraryZapSelected_Click()
-
   librarygrid.enabled = False
   If (LibraryGrid.row >= 0) Then
     If (MyQuestion.Ask(("Are you sure you want to delete selected item(s) from disk?"), ("Don't Delete"), ("Yes, Delete")) = 2) Then
+
       MyLibrary.EraseSelected(Librarygrid)
       MyLibrary.DeleteSelected(Librarygrid, True)
       Try LibraryGrid.Current.EnsureVisible()
     Endif
   Endif
-  librarygrid.enabled = True
 
 End
 

@@ -802,9 +802,6 @@
       Picture = Picture["icon:/22/quit"]
     }
   }
-  { TimerUpdateNowNext #Timer
-    #MoveScaled(44,5)
-  }
   { HSplit1 HSplit
     MoveScaled(0,5,103,68)
     Tracking = True
@@ -1280,10 +1277,6 @@
           Tag = "flash"
           Text = ("Label3")
         }
-        { TimerFlash #Timer
-          #MoveScaled(9,2)
-          Delay = 2000
-        }
         { Panel5 Panel GridPanels
           Name = "Panel5"
           MoveScaled(2,10,30,15)
@@ -1313,6 +1306,10 @@
           AutoResize = True
           Text = ("PopUp window to play new catched videos")
         }
+        { TimerFlash #Timer
+          #MoveScaled(9,2)
+          Delay = 2000
+        }
         Index = 9
         Text = ("YouTube")
         Picture = Picture["youtubeicon.png"]
@@ -1330,10 +1327,6 @@
             MoveScaled(0,0,35,10)
             Expand = True
           }
-          { TimerTreeDelayExpand #Timer
-            #MoveScaled(24,2)
-            Delay = 50
-          }
           { scrollviewyt ScrollView
             MoveScaled(0,10,35,13)
             Visible = False
@@ -1350,6 +1343,10 @@
               Expand = True
               AutoResize = True
             }
+          }
+          { TimerTreeDelayExpand #Timer
+            #MoveScaled(24,2)
+            Delay = 50
           }
         }
         { HBox13 HBox
@@ -1375,10 +1372,6 @@
             ToolTip = ("Show/Hide search options panel")
             Picture = Picture["icon:/small/tools"]
           }
-        }
-        { blinktimer #Timer
-          #MoveScaled(30,31)
-          Delay = 100
         }
         { sidepanelYTSearchoptions Panel
           MoveScaled(2,36,32,25)
@@ -1413,7 +1406,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-36.2857,18,4.5714)
+              MoveScaled(9.4286,-38.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1471,6 +1464,10 @@
               Expand = True
             }
           }
+        }
+        { blinktimer #Timer
+          #MoveScaled(30,31)
+          Delay = 100
         }
         Index = 10
         Text = ("Radio")
@@ -1954,14 +1951,14 @@
             Expand = True
             Text = ("Select next")
           }
+          { HBox3 HBox
+            MoveScaled(14,1,5,3)
+            Expand = True
+          }
           { Button2 Button
             MoveScaled(12,0,12,4.5714)
             Text = ("Refresh")
             Picture = Picture["icon:/16/refresh"]
-          }
-          { HBox3 HBox
-            MoveScaled(14,1,5,3)
-            Expand = True
           }
           { ButtonTag Button
             MoveScaled(21,0,12,4.5714)
@@ -1976,10 +1973,6 @@
           MoveScaled(6,41,17,3)
           Expand = True
         }
-      }
-      { ABLoopTimer #Timer
-        #MoveScaled(1,6)
-        Delay = 75
       }
       { OuterBox Panel VideoAreaGroup
         Name = "OuterBox"
@@ -2077,16 +2070,16 @@
               Border = False
             }
             { Panel9 Panel
-              MoveScaled(19,1,54,17)
+              MoveScaled(19,2,14.2857,17)
               Expand = True
               Arrangement = Arrange.Fill
               Padding = 8
               { ProgressFrame DrawingArea
-                MoveScaled(0,0,53,16)
+                MoveScaled(3,0,53,16)
                 Expand = True
                 Border = Border.Plain
                 { Progress PictureBox
-                  MoveScaled(5,1,6,4.5714)
+                  MoveScaled(6,1,6,4.5714)
                   Picture = Picture["barglow.png"]
                   Stretch = True
                 }
@@ -2130,7 +2123,7 @@
               Picture = Picture["media-info.png"]
             }
             { PanScan ToolButton
-              MoveScaled(41,0,5,4.5714)
+              MoveScaled(40,0,5,4.5714)
               Font = Font["6"]
               ToolTip = ("Hover the mouse over this button then\n* Zoom the video with mouse wheel.\n* Cycle through zoom with right mouse button.")
               Picture = Picture["zoom-in.png"]
@@ -2188,10 +2181,6 @@
           }
         }
       }
-      { TimerSeekThumble #Timer
-        #MoveScaled(8,6)
-        Delay = 100
-      }
       { cachebar PictureBox
         MoveScaled(1,49,58,1)
         Visible = False
@@ -2199,6 +2188,14 @@
         Ignore = True
         Picture = Picture["cachebar.png"]
         Stretch = True
+      }
+      { ABLoopTimer #Timer
+        #MoveScaled(1,6)
+        Delay = 75
+      }
+      { TimerSeekThumble #Timer
+        #MoveScaled(8,6)
+        Delay = 100
       }
       { TimerQueue #Timer
         #MoveScaled(18,6)
@@ -2228,6 +2225,9 @@
       #MoveScaled(93,0)
       Port = 4856
     }
+  }
+  { TimerUpdateNowNext #Timer
+    #MoveScaled(44,5)
   }
 }
 
