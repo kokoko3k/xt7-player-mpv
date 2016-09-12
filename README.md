@@ -20,7 +20,7 @@ http://gambas.sourceforge.net/en/main.html
 Mandatory requirements:
 ======
   * Gambas 3 (usually the very latest version)
-  * Qt4
+  * Qt5 (it is still possible to use Qt4 with little effort)
   * mpv
 
 
