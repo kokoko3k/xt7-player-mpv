@@ -1407,7 +1407,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-39.2857,18,4.5714)
+              MoveScaled(9.4286,-40.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -2011,11 +2011,11 @@
       { BottomVbox VBox
         MoveScaled(0,48,71,14)
         Background = Color.Background
-        { ControlFrame Frame
-          MoveScaled(1,3,70,10)
+        { ControlFrame Panel
+          MoveScaled(-13,1,72,10)
           Font = Font["6"]
           { PictureBox1 PictureBox
-            MoveScaled(1,1,60,7)
+            MoveScaled(2,0,60,7)
             Tracking = True
             Drop = True
             Expand = True
@@ -2070,8 +2070,13 @@
               Picture = Picture["icon:/22/view-detail"]
               Border = False
             }
+            { ABLoopButton ToolButton
+              MoveScaled(24,0,5,4.5714)
+              Font = Font["Bold,-1"]
+              Picture = Picture["media-loop-off.png"]
+            }
             { Panel9 Panel
-              MoveScaled(19,2,14.2857,17)
+              MoveScaled(21,3,14.2857,17)
               Expand = True
               Arrangement = Arrange.Fill
               Padding = 8
@@ -2098,11 +2103,6 @@
                   Stretch = True
                 }
               }
-            }
-            { ABLoopButton ToolButton
-              MoveScaled(24,0,5,4.5714)
-              Font = Font["Bold,-1"]
-              Picture = Picture["media-loop-off.png"]
             }
             { ButtonRew ToolButton
               MoveScaled(27,0,4.4286,4.5714)
@@ -2131,7 +2131,7 @@
             }
           }
           { ControlPanelRight Panel
-            MoveScaled(47,1,17.1429,6)
+            MoveScaled(45,1,17.1429,6)
             Drop = True
             Arrangement = Arrange.Horizontal
             AutoResize = True
@@ -2142,14 +2142,14 @@
               Picture = Picture["volume-faenza.png"]
             }
             { volumecontainer Panel
-              MoveScaled(7,0,8,6)
+              MoveScaled(8,0,9,6)
               Visible = False
+              Background = Color.Blue
               Expand = True
               { SaveVolumeSlider Slider
-                MoveScaled(0,0,7,4.5714)
+                MoveScaled(0,0,6,5)
                 Font = Font["6"]
                 Tag = "user"
-                Expand = True
                 PageStep = 5
                 Value = 12
               }
@@ -2158,7 +2158,7 @@
         }
         { Statusbar1 Panel statusbar
           Name = "Statusbar1"
-          MoveScaled(1,12,56,2)
+          MoveScaled(1,10,56,2)
           Background = &H000000&
           Arrangement = Arrange.Horizontal
           { StatusLabelLeft Label statusbar

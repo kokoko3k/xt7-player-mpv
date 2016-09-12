@@ -6369,6 +6369,7 @@ End
 Public Sub LibraryGrid_Menu()
   Dim onlyoneselected As Boolean = False
   Dim selectedalbum As String = ""
+
   MenuLibraryZapSelected.Enabled = (LibraryGrid.row >= 0) 'popup removefromdisc menu item only of something is selected
   MenuOpenContainingFolderPopUp.visible = True
   MenuSortLibraryPopup.enabled = True
@@ -11215,8 +11216,16 @@ Public Sub UrlBox_Change()
 End
 
 Public Sub volumecontainer_Arrange()
-  SaveVolumeSlider.w = Last.w
-End
+  Dim stylename As String = Style.name
+  SaveVolumeSlider.w = volumecontainer.w
+
+  If (Stylename = "Oxygen") Or (Style.name = "Breeze") Then 
+    volumecontainer.Arrangement = Arrange.none
+      Else
+    volumecontainer.Arrangement = Arrange.fill
+  Endif
+
+  End
 
 Public Sub textlabel1_MouseWheel()
 
