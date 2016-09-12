@@ -98,8 +98,8 @@ Dim t As Integer
     filter_button_up = New Button(filter_box) As "filter_button_up"
       filter_button_up.border = False
       filter_button_up.text = ""
-      filter_button_up.w = 16
-      filter_button_up.h = 16
+      filter_button_up.w = 20
+      filter_button_up.h = 20
       filter_button_up.picture = stock["16/up"]
     
     'a button to move the item in the list
@@ -107,8 +107,8 @@ Dim t As Integer
       filter_button_down.border = False
       filter_button_down.picture = stock["16/down"]
       filter_button_down.text = ""
-      filter_button_down.w = 16
-      filter_button_down.h = 16
+      filter_button_down.w = 20
+      filter_button_down.h = 20
 
     'a checkbox to enable/disable the item
     filter_checkbox = New CheckBox(filter_box) As "filter_checkbox"
