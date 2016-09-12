@@ -9,8 +9,9 @@
   Arrangement = Arrange.Vertical
   Margin = True
   { Panel2 HBox
-    MoveScaled(0,5,86,3)
+    MoveScaled(0,5,86,4.5714)
     AutoResize = True
+    Margin = True
     { NextBTN Button
       MoveScaled(0,0,9,4.5714)
       AutoResize = True
@@ -22,7 +23,7 @@
       MoveScaled(11,0,2,4.5714)
     }
     { ComboUrls ComboBox
-      MoveScaled(13,0,57,4.5714)
+      MoveScaled(13,0,57,3.1429)
       Expand = True
     }
     { ButtonZoomOut Button
@@ -43,7 +44,7 @@
     { TextLabel1 TextLabel
       MoveScaled(4,2,45,48)
       Expand = True
-      Text = ("Please wait...")
+      Text = ("Please wait") & "..."
     }
   }
   { TextArea1 TextArea
@@ -53,40 +54,43 @@
     Text = ("TextArea1")
   }
   { Panel3 HBox
-    MoveScaled(1,77,86,3)
+    MoveScaled(1,77,86,4)
     AutoResize = True
+    Spacing = True
+    Margin = True
     { Label1 Label
-      MoveScaled(0,0,5,4.5714)
+      MoveScaled(0,0,5,4)
       AutoResize = True
       Text = ("Artist")
     }
     { textartist TextArea
-      MoveScaled(15,0,17,4.5714)
+      MoveScaled(15,0,17,4)
       Expand = True
+      Alignment = Align.Center
       ScrollBar = Scroll.None
     }
     { Separator1 Separator
-      MoveScaled(34,0,2,4.5714)
+      MoveScaled(34,0,2,4)
     }
     { Label2 Label
-      MoveScaled(38,0,4,4.5714)
+      MoveScaled(38,0,4,4)
       AutoResize = True
       Text = ("Title")
     }
     { textsong TextArea
-      MoveScaled(43,0,25,4.5714)
+      MoveScaled(43,0,25,4)
       Expand = True
+      Alignment = Align.Center
       ScrollBar = Scroll.None
     }
     { Separator2 Separator
-      MoveScaled(70,-1,1,4.5714)
+      MoveScaled(70,-1,1,4)
     }
     { ButtonNewSearch Button
-      MoveScaled(73,0,14,4.5714)
+      MoveScaled(73,0,14,4)
       AutoResize = True
       Text = ("New search")
       Picture = Picture["icon:/22/find"]
-      Border = False
     }
   }
 }
