@@ -240,7 +240,7 @@ End
 
 Private Sub select_item(item As Object)
   Dim bro As Object
-  If item.parent.parent.enabled Then
+  'If item.parent.parent.enabled Then
     For Each bro In item.parent.parent.Children
       If bro Is HBox Then
         bro.background = Color.TextBackground
@@ -249,7 +249,7 @@ Private Sub select_item(item As Object)
     Next
     item.parent.background = Color.SelectedBackground
     item.parent.foreground = Color.SelectedForeground
-  Endif
+  'Endif
   Select_tabstrip_item(item.parent.name, item.parent.parent.tag)
 
   If textareahelp.visible Then
