@@ -14,12 +14,13 @@ Public Sub DoSortTable(Field As String)
   Dim i As Integer
   Dim Startpos, MidPos, EndPos As Integer
   Dim MyValue As String
+
   For i = 0 To localtable.count - 1
     StartPos = InStr(localtable[i], ts & Field)
     MidPos = InStr(localtable[i], ts, StartPos + 1)
     EndPos = InStr(localtable[i], ts, Midpos + 1)
     MyValue = Mid(localtable[i], Startpos, Endpos - startpos)
-    Replace(localtable[i], MyValue, "")
+    localtable[i] = Replace(localtable[i], MyValue, "")
     localtable[i] = MyValue & localtable[i]
   Next 'i
 
@@ -85,6 +86,7 @@ Public Function Init(playlist As Playlistclass, theview As Gridview, Optional fi
 
   'remove duplicates album
   DoSortTable("Album")
+  
   i = localtable.count - 1
   If localtable.count > 1 Then
     Repeat 'remove duplicate albums

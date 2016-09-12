@@ -1028,6 +1028,7 @@ Public Sub CoversLookerTimer_timer()
        global.myDebug("Missing file! " & fullpath)
        FileNotFoundAdd(fullpath)
         'mygrid[row, 0].picture = picture["icon:/" & (rowheight -global.rowpadding) & "/error"]
+        'make try
         mygrid[row, column].text = ""
         mygrid[row, column].clear
        Return
