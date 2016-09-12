@@ -3322,7 +3322,6 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
         Try tl.tlfree
       Endif
     Endif
-Stop
     CoverManager.MediaFileFullPath = mplayer.getP("fullpath")
     coverfile = CoverManager.Coverfile(mplayer.getP("artist"), mplayer.getP("album"), mplayer.getP("fullpath"))
     samecover = (coverfile = PreviousCoverFile)
