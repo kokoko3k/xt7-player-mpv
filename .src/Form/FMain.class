@@ -10942,7 +10942,7 @@ Public Sub LibraryGrid_MouseDown()
     Endif
     librarygrid.Rows[mouserow].selected = True
     librarygrid.row = mouserow
-    LibraryGrid_Menu()
+    'LibraryGrid_Menu()
   Endif
 End
 
@@ -11218,12 +11218,14 @@ End
 Public Sub volumecontainer_Arrange()
   Dim stylename As String = Style.name
   SaveVolumeSlider.w = volumecontainer.w
+  
 
   If (Stylename = "Oxygen") Or (Style.name = "Breeze") Then 
     volumecontainer.Arrangement = Arrange.none
       Else
     volumecontainer.Arrangement = Arrange.fill
   Endif
+
 
   End
 
