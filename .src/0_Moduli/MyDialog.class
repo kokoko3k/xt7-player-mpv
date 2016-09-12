@@ -59,6 +59,9 @@ End
 
 Private Sub should_use_kdialog() As Boolean
   Dim kdialog As String
+  
+  Return False
+  
   If Application.Env["XDG_CURRENT_DESKTOP"] = "KDE" Or Lower(Application.Env["DESKTOP_SESSION"]) = "KDE" Then
     If Application.Env["KDE_SESSION_VERSION"] = "4" And Application.Env["KDE_FULL_SESSION"] = "true" Then
       Shell "which kdialog" To kdialog

@@ -358,22 +358,7 @@ Dim defaultcover As Boolean = False
 Dim width As Integer
 Dim neww As Integer
 
-  
-' zzzfake.Arrangement = Arrange.Fill
-' Try CoverCacheList.expand = True
-' Try zzzfake.Stacking = Window.above
-' Try zzzfake.mask = False
-' Try zzzfake.opacity = 100
-' Try zzzfake.Move(0, 0)
-' Try zzzfake.show
-
-'Wait '0.0001
-
-  'neww = generaloptions.IconWidthCombobox.text + shadowoffsetpaint 
   neww = height + (height Div 8)
-  'Return cornice(imgandshadow, neww, neww).Picture
-
-'ResizeShadowTemplate(neww * 2)
 
 'gestisce le thumbnails su disco e la loro cache in memoria
 'non crea di per sè alcuna immagine, al più restituisce delle immagini di default
