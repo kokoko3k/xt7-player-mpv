@@ -21,13 +21,13 @@
       Text = ("Video Filters")
       Picture = Picture["icon:/medium/video"]
     }
-    { VideoDriversMenuPopup Menu
-      Text = ("Video Drivers")
-      Picture = Picture["icon:/medium/video"]
-    }
     { AudioFiltersMenuPopup Menu
       Text = ("Audio Filters")
       Picture = Picture["icon:/medium/audio"]
+    }
+    { VideoDriversMenuPopup Menu
+      Text = ("Video Drivers")
+      Picture = Picture["icon:/medium/video"]
     }
     { AudioDriversMenuPopup Menu
       Text = ("Audio Drivers")
@@ -1407,7 +1407,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-38.2857,18,4.5714)
+              MoveScaled(9.4286,-39.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True

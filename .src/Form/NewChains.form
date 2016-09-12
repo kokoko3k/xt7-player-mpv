@@ -27,6 +27,18 @@
     MoveScaled(21,0,18,4.5714)
     Visible = False
   }
+  { filters_video_order TextBox
+    MoveScaled(1,0,18,4.5714)
+    Visible = False
+  }
+  { drivers_video_order TextBox
+    MoveScaled(40,0,18,4.5714)
+    Visible = False
+  }
+  { drivers_audio_order TextBox
+    MoveScaled(60,0,19,4.5714)
+    Visible = False
+  }
   { TabStrip1 TabStrip
     MoveScaled(3,7,95,60)
     Expand = True
@@ -76,252 +88,6 @@
       Index = 0
     }
     Index = 1
-    Text = ("Audio Filters")
-    Picture = Picture["icon:/small/audio"]
-    { filters_audio_container ScrollView
-      MoveScaled(1,1,30,50)
-      Background = Color.TextBackground
-      Arrangement = Arrange.Vertical
-    }
-    { TabStrip_filters_audio TabStrip
-      MoveScaled(33,2,56,47)
-      #Translate = False
-      Expand = True
-      Arrangement = Arrange.Fill
-      Margin = True
-      TextFont = Font["-1"]
-      Index = 0
-      Text = "equalizer"
-      { ScrollView1xx Panel
-        MoveScaled(0,1,64,39)
-        Expand = True
-        Arrangement = Arrange.Horizontal
-        Spacing = True
-        Margin = True
-        Padding = 4
-        Border = Border.Etched
-        { VBox3xx VBox
-          MoveScaled(1,16,2,6)
-          Expand = True
-        }
-        { VBox2xx VBox
-          MoveScaled(3,1,51,38)
-          AutoResize = True
-          { HBox4 HBox
-            MoveScaled(2,2,50,3)
-            { Label2 Label
-              MoveScaled(0,0,4,4.5714)
-              Text = ("31")
-            }
-            { Label3 Label
-              MoveScaled(4,0,4,4.5714)
-              Text = ("62")
-            }
-            { Label4 Label
-              MoveScaled(8,0,4,4.5714)
-              Text = ("125")
-            }
-            { Label5 Label
-              MoveScaled(12,0,4,4.5714)
-              Text = ("250")
-            }
-            { Label6 Label
-              MoveScaled(16,0,4,4.5714)
-              Text = ("500")
-            }
-            { Label7 Label
-              MoveScaled(20,0,4,4.5714)
-              Text = ("1K")
-            }
-            { Label8 Label
-              MoveScaled(24,0,4,4.5714)
-              Text = ("2K")
-            }
-            { Label9 Label
-              MoveScaled(28,0,4,4.5714)
-              Text = ("4K")
-            }
-            { Label10 Label
-              MoveScaled(32,0,4,4.5714)
-              Text = ("8K")
-            }
-            { Label11 Label
-              MoveScaled(36,0,4,4.5714)
-              Text = ("16K")
-            }
-          }
-          { SlidersContainer HBox
-            MoveScaled(-2,5,50,24)
-            Expand = True
-            { Freq0 Slider SlidersFreq
-              Name = "Freq0"
-              MoveScaled(0,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-            { Freq1 Slider SlidersFreq
-              Name = "Freq1"
-              MoveScaled(5,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-            { Freq2 Slider SlidersFreq
-              Name = "Freq2"
-              MoveScaled(10,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-            { Freq3 Slider SlidersFreq
-              Name = "Freq3"
-              MoveScaled(15,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-            { Freq4 Slider SlidersFreq
-              Name = "Freq4"
-              MoveScaled(20,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-            { Freq5 Slider SlidersFreq
-              Name = "Freq5"
-              MoveScaled(25,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-            { Freq6 Slider SlidersFreq
-              Name = "Freq6"
-              MoveScaled(30,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-            { Freq7 Slider SlidersFreq
-              Name = "Freq7"
-              MoveScaled(35,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-            { Freq8 Slider SlidersFreq
-              Name = "Freq8"
-              MoveScaled(40,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-            { Freq9 Slider SlidersFreq
-              Name = "Freq9"
-              MoveScaled(45,0,4,20.7143)
-              MinValue = -12
-              MaxValue = 12
-              PageStep = 1
-              Mark = True
-            }
-          }
-          { ValuesContainer HBox
-            MoveScaled(1,29,50,4.5714)
-            { tfreq1 TextBox
-              MoveScaled(0,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-            { tfreq2 TextBox
-              MoveScaled(4,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-            { tfreq3 TextBox
-              MoveScaled(8,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-            { tfreq4 TextBox
-              MoveScaled(12,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-            { tfreq5 TextBox
-              MoveScaled(16,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-            { tfreq6 TextBox
-              MoveScaled(20,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-            { tfreq7 TextBox
-              MoveScaled(24,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-            { tfreq8 TextBox
-              MoveScaled(28,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-            { tfreq9 TextBox
-              MoveScaled(32,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-            { tfreq10 TextBox
-              MoveScaled(36,0,4,4.5714)
-              #Translate = False
-              Text = "0"
-              ReadOnly = True
-            }
-          }
-          { HBox3 HBox
-            MoveScaled(1,33,50,4.5714)
-            { PresetsCombobox ComboBox
-              MoveScaled(0,0,40,4.5714)
-              ReadOnly = True
-              List = [("Custom"), ("Flat"), ("1965"), ("Air"), ("Brittle"), ("Car Stereo"), ("Classic V"), ("Clear "), ("Death"), ("Dark"), ("Drums"), ("Home Theater"), ("Loudness"), ("Metal"), ("Pop"), ("Premaster"), ("Presence"), ("Punch & Sparkle"), ("Shimmer"), ("Soft Bass"), ("Strings")]
-              Text = ("Presets")
-            }
-          }
-        }
-        { VBox4xx VBox
-          MoveScaled(56,17,5,6)
-          Expand = True
-        }
-      }
-      Index = 0
-    }
-    { ButtonLadspaHelper Button
-      MoveScaled(34,49,14,4.5714)
-      Visible = False
-      ToolTip = ("Show a tool that helps you to compile ladspa filter parameters.\nIf you don't use ladspa, just don't push it.")
-      Text = ("Ladspa")
-      Picture = Picture["icon:/16/tools"]
-    }
-    Index = 2
     Text = ("Video Drivers")
     Picture = Picture["icon:/small/video"]
     { Panel1 Panel
@@ -703,6 +469,252 @@
       Text = ("null")
       Index = 0
     }
+    Index = 2
+    Text = ("Audio Filters")
+    Picture = Picture["icon:/small/audio"]
+    { filters_audio_container ScrollView
+      MoveScaled(1,1,30,50)
+      Background = Color.TextBackground
+      Arrangement = Arrange.Vertical
+    }
+    { ButtonLadspaHelper Button
+      MoveScaled(34,49,14,4.5714)
+      Visible = False
+      ToolTip = ("Show a tool that helps you to compile ladspa filter parameters.\nIf you don't use ladspa, just don't push it.")
+      Text = ("Ladspa")
+      Picture = Picture["icon:/16/tools"]
+    }
+    { TabStrip_filters_audio TabStrip
+      MoveScaled(33,2,56,47)
+      #Translate = False
+      Expand = True
+      Arrangement = Arrange.Fill
+      Margin = True
+      TextFont = Font["-1"]
+      Index = 0
+      Text = "equalizer"
+      { ScrollView1xx Panel
+        MoveScaled(0,1,64,39)
+        Expand = True
+        Arrangement = Arrange.Horizontal
+        Spacing = True
+        Margin = True
+        Padding = 4
+        Border = Border.Etched
+        { VBox3xx VBox
+          MoveScaled(1,16,2,6)
+          Expand = True
+        }
+        { VBox2xx VBox
+          MoveScaled(3,1,51,38)
+          AutoResize = True
+          { HBox4 HBox
+            MoveScaled(2,2,50,3)
+            { Label2 Label
+              MoveScaled(0,0,4,4.5714)
+              Text = ("31")
+            }
+            { Label3 Label
+              MoveScaled(4,0,4,4.5714)
+              Text = ("62")
+            }
+            { Label4 Label
+              MoveScaled(8,0,4,4.5714)
+              Text = ("125")
+            }
+            { Label5 Label
+              MoveScaled(12,0,4,4.5714)
+              Text = ("250")
+            }
+            { Label6 Label
+              MoveScaled(16,0,4,4.5714)
+              Text = ("500")
+            }
+            { Label7 Label
+              MoveScaled(20,0,4,4.5714)
+              Text = ("1K")
+            }
+            { Label8 Label
+              MoveScaled(24,0,4,4.5714)
+              Text = ("2K")
+            }
+            { Label9 Label
+              MoveScaled(28,0,4,4.5714)
+              Text = ("4K")
+            }
+            { Label10 Label
+              MoveScaled(32,0,4,4.5714)
+              Text = ("8K")
+            }
+            { Label11 Label
+              MoveScaled(36,0,4,4.5714)
+              Text = ("16K")
+            }
+          }
+          { SlidersContainer HBox
+            MoveScaled(-2,5,50,24)
+            Expand = True
+            { Freq0 Slider SlidersFreq
+              Name = "Freq0"
+              MoveScaled(0,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+            { Freq1 Slider SlidersFreq
+              Name = "Freq1"
+              MoveScaled(5,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+            { Freq2 Slider SlidersFreq
+              Name = "Freq2"
+              MoveScaled(10,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+            { Freq3 Slider SlidersFreq
+              Name = "Freq3"
+              MoveScaled(15,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+            { Freq4 Slider SlidersFreq
+              Name = "Freq4"
+              MoveScaled(20,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+            { Freq5 Slider SlidersFreq
+              Name = "Freq5"
+              MoveScaled(25,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+            { Freq6 Slider SlidersFreq
+              Name = "Freq6"
+              MoveScaled(30,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+            { Freq7 Slider SlidersFreq
+              Name = "Freq7"
+              MoveScaled(35,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+            { Freq8 Slider SlidersFreq
+              Name = "Freq8"
+              MoveScaled(40,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+            { Freq9 Slider SlidersFreq
+              Name = "Freq9"
+              MoveScaled(45,0,4,20.7143)
+              MinValue = -12
+              MaxValue = 12
+              PageStep = 1
+              Mark = True
+            }
+          }
+          { ValuesContainer HBox
+            MoveScaled(1,29,50,4.5714)
+            { tfreq1 TextBox
+              MoveScaled(0,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+            { tfreq2 TextBox
+              MoveScaled(4,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+            { tfreq3 TextBox
+              MoveScaled(8,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+            { tfreq4 TextBox
+              MoveScaled(12,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+            { tfreq5 TextBox
+              MoveScaled(16,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+            { tfreq6 TextBox
+              MoveScaled(20,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+            { tfreq7 TextBox
+              MoveScaled(24,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+            { tfreq8 TextBox
+              MoveScaled(28,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+            { tfreq9 TextBox
+              MoveScaled(32,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+            { tfreq10 TextBox
+              MoveScaled(36,0,4,4.5714)
+              #Translate = False
+              Text = "0"
+              ReadOnly = True
+            }
+          }
+          { HBox3 HBox
+            MoveScaled(1,33,50,4.5714)
+            { PresetsCombobox ComboBox
+              MoveScaled(0,0,40,4.5714)
+              ReadOnly = True
+              List = [("Custom"), ("Flat"), ("1965"), ("Air"), ("Brittle"), ("Car Stereo"), ("Classic V"), ("Clear "), ("Death"), ("Dark"), ("Drums"), ("Home Theater"), ("Loudness"), ("Metal"), ("Pop"), ("Premaster"), ("Presence"), ("Punch & Sparkle"), ("Shimmer"), ("Soft Bass"), ("Strings")]
+              Text = ("Presets")
+            }
+          }
+        }
+        { VBox4xx VBox
+          MoveScaled(56,17,5,6)
+          Expand = True
+        }
+      }
+      Index = 0
+    }
     Index = 3
     Text = ("Audio Drivers")
     Picture = Picture["icon:/small/audio"]
@@ -971,17 +983,5 @@
       Text = ("Close")
       Picture = Picture["icon:/16/cancel"]
     }
-  }
-  { filters_video_order TextBox
-    MoveScaled(1,0,18,4.5714)
-    Visible = False
-  }
-  { drivers_video_order TextBox
-    MoveScaled(40,0,18,4.5714)
-    Visible = False
-  }
-  { drivers_audio_order TextBox
-    MoveScaled(60,0,19,4.5714)
-    Visible = False
   }
 }
