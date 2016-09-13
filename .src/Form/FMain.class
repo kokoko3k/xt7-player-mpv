@@ -430,6 +430,9 @@ Public Sub AllInit_Pre()
   SetCDDATabVisibility(False)
   SetChaptersTabVisibility(False)
   SetStyle_early()
+  If GeneralOptions.ToolTipsCHKDBUS.value Then 
+    Try ExportDbusProperties()
+  Endif
 End
 
 Public Sub InitEarlyForms()
@@ -545,7 +548,7 @@ Public Sub AllInit_Post()
   If global.arg_file <> "" Then
     If Exist(global.arg_file, True) Then fmain.ShowBrowseTabTo(global.arg_file)
   Endif
-  If GeneralOptions.ToolTipsCHKDBUS.value Then Try ExportDbusProperties()
+
   updaterecentfiles()
 
   Try MakeProfileMenu()
@@ -1172,6 +1175,7 @@ Public Sub MainInit()
     FMain.LoadFormGeometry()
     fmain.Show
     Wait 
+
     If (Not global.arg_append) And (global.arg_file <> "") Then 
       Media_Next_path = DConv(global.arg_file)
       PlayFromCommandline = True 
@@ -2456,7 +2460,6 @@ End
 Private DbusAlreadyRegistered As Boolean = False
 
 Public Sub ExportDbusProperties()
-
   If Not DbusAlreadyRegistered Then
     Try DBus.Name = "org.mpris.MediaPlayer2.xt7"
     If Error Then 
