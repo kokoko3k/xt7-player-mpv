@@ -347,6 +347,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   If Right(pt) = "," Then pt = Left(pt, -1)
   'If pt <> "" Then myopts.Add(newopt("ad", pt))
   If pt <> "" Then myopts.Add(newopt("audio-spdif", pt))
+
   Return myopts.Insert(parse_custom_options())
 
 End
@@ -1095,11 +1096,13 @@ Public Function parse_custom_options() As MpvOption[]
     If MyHbox Is Hbox Then
       If MyHbox.children[0] Is Checkbox Then
         MyCheckbox = MyHbox.children[0]
-        If MyCheckbox.value Then 
-          opt = New MpvOption
-          opt.name = MyCheckbox.next.text
-          opt.data = MyCheckbox.next.next.next.text
-          opts.add(opt)
+        If MyCheckbox.value Then
+          If Trim(MyCheckbox.next.text) <> "" Then  
+            opt = New MpvOption
+            opt.name = MyCheckbox.next.text
+            opt.data = MyCheckbox.next.next.next.text
+            opts.add(opt)
+          Endif
         Endif
       Endif
     Endif
