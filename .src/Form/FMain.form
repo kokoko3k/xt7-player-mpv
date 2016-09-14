@@ -1407,7 +1407,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-40.2857,18,4.5714)
+              MoveScaled(9.4286,-41.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -2063,17 +2063,12 @@
               Picture = Picture["media-playback-stop.png"]
             }
             { ChaptersBtn Button
-              MoveScaled(15,0,4,4.5714)
+              MoveScaled(16,-1,4,4.5714)
               Visible = False
               Font = Font["1"]
               ToolTip = ("Chapters available")
               Picture = Picture["icon:/22/view-detail"]
               Border = False
-            }
-            { ABLoopButton ToolButton
-              MoveScaled(24,0,5,4.5714)
-              Font = Font["Bold,-1"]
-              Picture = Picture["media-loop-off.png"]
             }
             { Panel9 Panel
               MoveScaled(21,3,14.2857,17)
@@ -2104,20 +2099,25 @@
                 }
               }
             }
+            { ABLoopButton ToolButton
+              MoveScaled(30,0,5,4.5714)
+              Font = Font["Bold,-1"]
+              Picture = Picture["media-loop-off.png"]
+            }
             { ButtonRew ToolButton
-              MoveScaled(27,0,4.4286,4.5714)
+              MoveScaled(33,0,4.4286,4.5714)
               Font = Font["6"]
               ToolTip = ("Slowdown")
               Picture = Picture["media-seek-backward.png"]
             }
             { Buttonfwd ToolButton
-              MoveScaled(30,0,4.4286,4.5714)
+              MoveScaled(36,0,4.4286,4.5714)
               Font = Font["6"]
               ToolTip = ("Speedup")
               Picture = Picture["media-seek-forward.png"]
             }
             { ButtonNowNext ToolButton
-              MoveScaled(34,0,4,4.5714)
+              MoveScaled(38,0,4,4.5714)
               Visible = False
               Font = Font["6"]
               ToolTip = ("Show/Hide current and next TV program.")
