@@ -1195,10 +1195,9 @@ Public Sub MainInit()
       Else
 
     FMain.LoadFormGeometry()
+
     If Not global.arg_start_tray Then fmain.Show
   Endif
-  
-  Hsplit1_MyRefresh()
 
   DelayTimer.delay = 1000
   DelayTimer.Start
@@ -11207,6 +11206,7 @@ End
 
 
 Public Sub Form_Show()
+  Hsplit1_MyRefresh()
   HSplit1_Resize()
 End
 
