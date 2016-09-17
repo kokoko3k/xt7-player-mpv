@@ -53,7 +53,7 @@ Just open .project file and change the following lines:
 to:
 ```
  Component=gb.qt4
- Component=gb.qt4.ex
+ Component=gb.qt4.ext
 ```
  
 Then build as follows:
