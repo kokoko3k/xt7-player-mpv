@@ -385,6 +385,11 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["RANGEFLOAT", "limit", "0.1", "1", "1", "alimiter3", ""]) 
   AllParams.add(["RANGE", "attack", "1", "5", "80", "alimiter4", ""]) 
   AllParams.add(["RANGE", "release", "1", "2000", "8000", "alimiter5", ""]) 
+  
+  
+  AllParams.add(["RANGE", "asc", "0", "1", "1", "alimiter6", ("Keep asc =1 active to avoid distortions on systems with more than 2 speakers")]) 
+  AllParams.add(["RANGEFLOAT", "asc_level", "0", "1", "1", "alimiter7", ""]) 
+  
   AllParams.Add(["TIP", ("This filter is a good volume normalizer"), "alimiter6", ""])
   AllParams.Add(["TIP", ("It is best to place the volume filter after alimiter"), "alimiter7", ""])
   Global.DrawGui(AllParams, "alimiter", aTabstrip, False,,, "lavfi")

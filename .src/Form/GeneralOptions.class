@@ -385,8 +385,6 @@ End
 
 Public Sub ApplyBTN_Click()
 
-Debug NoParse55ab.visible
-
   FMain.Apply
   Wait 0.1
   'IF ((NOT FMain.mplayer.ProcessRunningOvr()) OR (Fmain.mplayer.paused)) OR (GeneralOptions.Tabstrip1.caption = ("Style")) THEN 'apply style changes only if mplayer is not running.
