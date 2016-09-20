@@ -13,7 +13,6 @@
   Padding = 8
   { HBox1 Panel
     MoveScaled(1,3,31,5)
-    Background = Color.Blue
     Arrangement = Arrange.Horizontal
     AutoResize = True
     Spacing = True
@@ -25,7 +24,6 @@
     }
     { QuestionLabel Label
       MoveScaled(9,1,6,6)
-      Background = Color.Cyan
       AutoResize = True
       Text = ("Label1")
       Alignment = Align.Left
@@ -36,17 +34,20 @@
     Visible = False
     Text = ("CheckBox1")
   }
-  { ButtonContainer HBox
+  { ButtonContainer Panel
     MoveScaled(0,16,33,6)
+    Arrangement = Arrange.Horizontal
     AutoResize = True
     Spacing = True
     { Button1 Button
       MoveScaled(2,1,13,4.5714)
+      Expand = True
       AutoResize = True
       Text = ("Button1")
     }
     { Button2 Button
       MoveScaled(16,1,14,4.5714)
+      Expand = True
       AutoResize = True
       Text = ("Button2")
     }

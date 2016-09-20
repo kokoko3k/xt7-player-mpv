@@ -1811,25 +1811,6 @@ End
 
 Public Sub ButtonStop_Click()
 
-
-  Dim msg As String
-  Dim i, j As Integer
- Repeat
-   msg = ""
-   For i = 0 To CInt(Rnd(0, 10))
-     For j = 0 To CInt(Rnd(0, 10))
-       msg &= " _ "
-     Next
-     msg &= "\n"
-   Next
-   
-   MyQuestion.Ask(msg, "1", "2")
-  
-  Until 1 = 2
-  ' Return
-  ' Dim a As Integer = 1 / 0
-    'Stop
-  'stop timers as soon as possible
   Try mousehider.stop
   Try TimerFullScreen.Stop
   Try mplayer.event_loop.stop
