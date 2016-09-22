@@ -71,4 +71,5 @@ After you installed gambas 3, just checkout and compile xt7 that way:
 # ./xt7-player-mpv.gambas
 ```
 
+Dedicated IRC channel #xt7-player-mpv 
 
