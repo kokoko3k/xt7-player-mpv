@@ -580,7 +580,7 @@ Public Function killer_script_filename() As String
   
   Dim tempdir As String = File.Dir(Temp())
   Dim file_name, txt_data As String
-  
+  'uses a lua script to link mpv to the gui so that when the gui dies, mpv will quit
   txt_data = File.Load("_lua_killer.lua")
   txt_data = Replace(txt_data, "###", CStr(Application.id))
   file_name = tempdir & "/killer.lua"
@@ -593,7 +593,7 @@ End
 
 
 Public Function do_play(filename As String, Optional string_options As String = "", Optional restart As Boolean = False, Optional bugid1870 As Boolean = False, Optional cookieopts As String = "", Optional dumpfile As String = "/tmp/stream.dump.xt7.mpeg", Optional doanalyze As Boolean = False) As Boolean
-  Dim killer_script As String = Temp()
+  'Dim killer_script As String = Temp()
   Dim data As String
   Dim internal_opts As New Collection
   return_value = 0
@@ -632,11 +632,11 @@ Public Function do_play(filename As String, Optional string_options As String = 
   playerprocess = Shell commandline For Read Write As "playerprocess"
 
   'The following will be a script that will kill mpv if xt7 crashes:
-    Copy "killer.sh" To killer_script
-    Chmod killer_script To "rwxr-xr-x"
+   'Copy "killer.sh" To killer_script
+   ' Chmod killer_script To "rwxr-xr-x"
 
    ' Shell killer_script & " " & Application.id & " " & playerprocess.id
-    global.myDebug(killer_script & " " & Application.id & " " & playerprocess.id)
+    'global.myDebug(killer_script & " " & Application.id & " " & playerprocess.id)
 
 
   event_loop = New Timer As "event_loop"
