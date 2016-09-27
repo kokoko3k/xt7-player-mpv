@@ -3311,6 +3311,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
   Dim samecover As Boolean
   Dim i, forbackground As Image
   Dim glass As Image 
+
   If mplayer.ProcessRunningOvr() And mplayer.getP("audioonly") Then
     'coverfile = global.confpath& "/covers/" & global.fixfilename(Upper(Trim(mplayer.Media_Artist))) & "^^^" & global.fixfilename(Upper(Trim(mplayer.Media_Album))) & ".jpg"
     If Upper(mplayer.getP("fullpath")) Like "*.FLAC" Then
@@ -10324,9 +10325,7 @@ Public Sub PanScan_MouseWheel()
 End
 
 Public Sub LibraryGrid_Click()
-
   EnableDisableTagBtn()
-
 End
 
 Public Sub PlaylistGrid_Click()
@@ -11429,8 +11428,9 @@ Public Sub FileView1_KeyPress()
   If Key.text = "" Then Return
   If Not SelectFileviewFromKey(key.text) Then
     fileview1.UnselectAll()
-    SelectFileviewFromKey(key.text) 
+    SelectFileviewFromKey(key.text)
   Endif
+  Stop
 End
 
 

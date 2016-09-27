@@ -1120,60 +1120,56 @@ Public Sub FolderPictureToCoverCache(Directory As String, coverfilename As Strin
   Endif
 End
 
+
+Private folderpictures As New Collection
+
 Public Function FolderPicture(Directory As String) As String  
   Dim Files As New String[]
+  Dim Matches As New String[] 
+  Dim sMatch As String
+  Dim sfile As String
   Dim afile As String
-  
-  Files = (Dir(Directory, "*ront*.jpg"))
-  If Files.count > 0 Then Goto FILEFOUND  
 
-  Files = (Dir(Directory, "*FRONT*.jpg")) 
-  If Files.count > 0 Then Goto FILEFOUND  
-
-  Files = (Dir(Directory, "*FRONT*.JPG"))
-  If Files.count > 0 Then Goto FILEFOUND  
-
-  Files.Insert(Dir(Directory, "ront*.JPEG"))
-  If Files.count > 0 Then Goto FILEFOUND
-  
-  Files.Insert(Dir(Directory, "*ront*.PNG"))
-  If Files.count > 0 Then Goto FILEFOUND
-  
-  Files.Insert(Dir(Directory, "*ront*.BMP"))
-  If Files.count > 0 Then Goto FILEFOUND
-  
-  Files.Insert(Dir(Directory, "*.jpg"))
-  If Files.count > 0 Then Goto FILEFOUND
-  
-  Files.Insert(Dir(Directory, "*.JPG"))
-  If Files.count > 0 Then Goto FILEFOUND
-
-  Files.Insert(Dir(Directory, "*.jpeg"))
-  If Files.count > 0 Then Goto FILEFOUND
-  
-  Files.Insert(Dir(Directory, "*.JPEG"))
-  If Files.count > 0 Then Goto FILEFOUND
-
-  Files.Insert(Dir(Directory, "*.png"))
-  If Files.count > 0 Then Goto FILEFOUND
-  
-  Files.Insert(Dir(Directory, "*.PNG"))
-  If Files.count > 0 Then Goto FILEFOUND
-
-  Files.Insert(Dir(Directory, "*.bmp"))
-  If Files.count > 0 Then Goto FILEFOUND
-  
-  Files.Insert(Dir(Directory, "*.BMP"))
-
-  FILEFOUND:
-  If Files.count > 0 Then
-    For Each afile In files
-      If Not (afile Like ".*") Then Return afile
-    Next
-    Return Files[0]
-      Else
-    Return ""
+  If folderpictures.Exist(directory) Then 
+    Return folderpictures[directory]
   Endif
+
+  Matches.Add("*ront*.jpg")
+  Matches.Add("*FRONT*.jpg") 
+  Matches.Add("*FRONT*.JPG")
+  Matches.Add("ront*.JPEG")
+  Matches.Add("*ront*.PNG")
+  Matches.Add("*ront*.BMP")
+
+  Matches.Add("*folder*.jpg")
+  Matches.Add("*FOLDER*.jpg") 
+  Matches.Add("*FOLDER*.JPG")
+  Matches.Add("folder*.JPEG")
+  Matches.Add("*older*.PNG")
+  Matches.Add("*older*.BMP")
+
+
+  Matches.Add("*.jpg")
+  Matches.Add("*.JPG")
+  Matches.Add("*.jpeg")
+  Matches.Add("*.JPEG")
+  Matches.Add("*.png")
+  Matches.Add("*.PNG")
+  Matches.Add("*.bmp")
+  Matches.Add("*.BMP")
+
+
+  For Each sFile In (Dir(Directory, "*"))
+    For Each sMatch In Matches
+      If sFile Like sMatch Then 
+        folderpictures.Add(sFile, directory)
+        Return sFile
+      Endif
+    Next
+  Next
+
+  folderpictures.Add("", directory)
+  Return ""
 End
 
 

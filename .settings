@@ -123,6 +123,12 @@ Geometry=[604,227,564,770]
 ShowHidden=True
 Geometry=[596,244,481,686]
 
+[DebugWindow/ColumnView(fileview1.children[1]).Children]
+Geometry=[103,326,370,590]
+
+[DebugWindow/ColumnView(fileview1.children[1]).Children[0]]
+Geometry=[117,340,370,590]
+
 [DebugWindow/Columnindex]
 Geometry=[325,-20,210,210]
 
@@ -380,6 +386,12 @@ Geometry=[0,0,683,353]
 
 [DebugWindow/IconView(FileView1.Children[0]).Proxy]
 Geometry=[752,321,564,770]
+
+[DebugWindow/IconView(fileview1.children[0]).Children]
+Geometry=[80,28,415,790]
+
+[DebugWindow/IconView(fileview1.children[0]).Children[0]]
+Geometry=[94,42,415,790]
 
 [DebugWindow/Image]
 Geometry=[51,0,210,210]
@@ -710,6 +722,9 @@ Geometry=[660,246,224,280]
 
 [DebugWindow/Screenshot]
 Geometry=[44,0,344,344]
+
+[DebugWindow/ScrollArea(IconView(fileview1.children[0]).Children[0]).Children]
+Geometry=[108,56,415,790]
 
 [DebugWindow/ScrollArea(librarygrid.Children[0]).Children]
 Geometry=[1756,321,614,580]
@@ -1480,6 +1495,15 @@ Geometry=[2005,179,481,686]
 
 [DebugWindow/fileview1.Selection]
 Geometry=[1294,14,486,587]
+
+[DebugWindow/fileview1.children]
+Geometry=[52,0,224,280]
+
+[DebugWindow/fileview1.children[0]]
+Geometry=[66,14,415,790]
+
+[DebugWindow/fileview1.children[1]]
+Geometry=[89,312,370,590]
 
 [DebugWindow/fileview1.selection]
 Geometry=[267,583,210,210]
@@ -2468,10 +2492,10 @@ SearchComment=True
 SearchString=True
 
 [OpenFile]
-Count=41
+Count=43
 File[1]=".src/Form/FMain.form"
 File[2]=".src/0_Moduli/Global.module:3.249"
-Active=1
+Active=23
 File[3]=".src/Form/AddUriForm.form"
 File[4]=".src/Form/GeneralOptions.form"
 File[5]=".src/Form/HotKeys.form"
@@ -2492,8 +2516,8 @@ File[19]=".src/Form/TextDialog.form"
 File[20]=".src/Form/TranslationNeeded.form"
 File[21]=".src/Form/VideoEqualizer.form"
 File[22]=".src/Form/VideoEqualizer.class:2.69"
-File[23]=".src/Form/FMain.class:0.1812"
-File[24]=".src/Classi/MplayerClass.class:27.2087"
+File[23]=".src/Form/FMain.class:7.11430"
+File[24]=".src/Classi/MplayerClass.class:14.634"
 File[25]=".src/Classi/MplayerClass_old.class:0.769"
 File[26]=".src/Classi/YoutubeClass.class:12.125"
 File[27]="xt7-player-mpv.appdata.xml:0.75"
@@ -2511,6 +2535,8 @@ File[38]=".src/Classi/PlaylistClass.class:34.915"
 File[39]=".src/Form/zzzFake.class:0.19"
 File[40]=".src/Classi/StartClass.class:0.40"
 File[41]=".src/Form/DVBTuner.form"
+File[42]="_lua_killer.lua:4.9"
+File[43]="killer.sh:0.22"
 
 [Watches]
 Count=6
