@@ -1223,3 +1223,62 @@ Public Function Preload_file_bg_stop()
   If Error Then global.myDebug("Error while doing pTask.Stop()")
 End
 
+Public Function Dedupe(sDir As String) As Boolean
+  Dim f, fullpath1, fullpath2, sFiles As String
+  Dim files As New String[]
+  Dim i, j As Integer
+  Dim equal As String
+  
+  'find files that are not links and sort them by size.
+  Shell "find " & sDir & " -type f -print0 | xargs -0 du -b | sort -rn|cut -d '/' -f 2-|awk '{print \"/\" $0}'" To sFiles
+  files = Split(sFiles, "\n", "", True)
+  i = 0
+  j = 0
+  While i < files.max
+    Repeat
+      Inc j
+      If j > files.max Then Return
+      equal = EqualFiles(files[i], files[j])
+      If equal = "True" Then
+        Kill files[j]
+        Link files[i] To files[j]
+      Endif
+    Until equal = "DIFSIZE"
+    i = j
+  Wend
+  
+End
+
+Public Function EqualFiles(snew As String, sold As String) As String
+  Dim file1, file2 As Stream
+  Dim s1, s2 As String  
+  Dim res As String = "True"
+  Dim blocksize As Integer = 2048
+  Dim size1, size2 As Integer
+  
+  size1 = Stat(snew).size 
+  size2 = Stat(sold).Size
+  
+  If size1 <> size2 Then Return "DIFSIZE"
+ 
+  If size1 < blocksize Then blocksize = size1
+  
+  If res = "True" Then    
+    file1 = Open snew For Read
+    file2 = Open sold For Read
+    Do
+      Read #file1, s1, - blocksize
+      Read #file2, s2, - blocksize
+      If s1 <> s2 Then
+        res = "False"
+        Break
+      Endif
+      If Len(s1) <> 2048 Then Break 
+    Loop
+      
+    Close #file1
+    Close #file2
+  Endif
+     
+  Return res
+End

@@ -1604,7 +1604,10 @@ Public Sub Form_Close()
   Try FormLyrics.close
   Try AudioConvert.close 
   
- global.myDebug("time to close = " & CStr(Timer() - t0))
+  'Deduplicate covers every now ant then...
+  If (Rnd(0, 10) > 9) Then Try global.Dedupe(global.confpath & "/covers/")
+  
+  global.myDebug("time to close = " & CStr(Timer() - t0))
   Print "Bye"
   Wait 0.5
   Quit
