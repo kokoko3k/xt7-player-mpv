@@ -328,7 +328,7 @@ Public CoverCacheList As New ListView(zzzfake)
 Public Sub RemoveCoverCache(coverfile As String, Optional RemoveSourceToo As Boolean)
   Dim cachefile As String = coverfile & "_thumbcache" 'ricava il nome dei file cache
 
-  Shell "rm '" & cachefile & "'" & "*.*" 'rimuovilo dal disco
+  Shell "rm '" & cachefile & "'" & "*.*" & " &>/dev/null" 'rimuovilo dal disco
   'cercalo in memoria e rimuovilo:
   If CoverCacheList.Count > 0 Then 
     CoverCacheList.Movefirst

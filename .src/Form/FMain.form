@@ -221,8 +221,8 @@
         Text = ("Set a cover")
         Picture = Picture["icon:/16/color"]
       }
-      { MenuEmbeddedCoversLibrary Menu
-        Text = ("Search for embedded covers")
+      { MenuUpdateCover Menu
+        Text = ("Update Cover")
         Picture = Picture["icon:/16/attach"]
       }
       { Separator43057 Menu
@@ -1408,7 +1408,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-43.2857,18,4.5714)
+              MoveScaled(9.4286,-44.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True

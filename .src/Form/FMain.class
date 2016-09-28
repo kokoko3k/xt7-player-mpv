@@ -9282,16 +9282,14 @@ Public Sub MenuLibrarySetCover_click()
 
 End
 
-Public Sub MenuEmbeddedCoversLibrary_click()
+Public Sub MenuUpdateCover_click()
 
-  UpdateEmbeddedFromSelected(librarygrid)
+  UpdateCoverFromSelected(librarygrid, mylibrary)
 
 End
 
 Public Sub MenuEmbeddedCoversPls_click()
-
-  UpdateEmbeddedFromSelected(Playlistgrid)
-
+  UpdateCoverFromSelected(playlistgrid, playlistclass)
 End
 
 Public Sub MenuPlsSetCover_click()
@@ -9306,21 +9304,27 @@ Public Sub MenuPlsSetCover_click()
 
 End
 
-Public Sub UpdateEmbeddedFromSelected(mygrid As Gridview)
-
+Public Sub UpdateCoverFromSelected(mygrid As Gridview, mylibrary As Playlistclass)
   Dim r As Integer
   Dim coverfilename As String
-  Dim fullpath As String
+  Dim fullpath, album, artist As String
   
-  If MyQuestion.Ask(("xt7 will try to find and update embedded covers,\nBeware that covers explicitely set without album/artist information will be lost."), "Ok", "Cancel") = 2 Then Return
+  If MyQuestion.Ask(("xt7 will try to find and update the cover,\nBeware that covers set by you will be lost."), "Ok", "Cancel") = 2 Then Return
   mygrid.mouse = mouse.wait
   mygrid.enabled = False
   For r = 0 To mygrid.rows.count - 1
     If mygrid.Rows[r].Selected Then
-      fullpath = mygrid[r, myplaylist.Columnindex["Full Path"]].text
+       fullpath = mygrid[r, myplaylist.Columnindex["Full Path"]].text
       coverfilename = covermanager.Coverfile("", "", fullpath) 'generate a coverfilename using just filename (not album/artist)
       Try covermanager.RemoveCoverCache(coverfilename, True)
+      
+      artist = mylibrary.CellValue(mygrid, r, mylibrary.ColumnIndex["Artist"])
+      album = mylibrary.CellValue(mygrid, r, mylibrary.ColumnIndex["Album"])  
+      coverfilename = covermanager.Coverfile(artist, album, fullpath) 'generate a coverfilename using album/artist
+      Try covermanager.RemoveCoverCache(coverfilename, True)
+    
       covermanager.UnMarkUncovered(fullpath) 'unvalidate uncovered state
+      
       mygrid[r, 0].text = ""
       mygrid[r, 0].Clear
     Endif
