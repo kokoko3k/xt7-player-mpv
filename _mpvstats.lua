@@ -362,6 +362,7 @@ local function add_file(s)
                         {prefix="", suffix="", nl="", indent=o.prefix_sep,
                          prefix_sep="", no_prefix_markup=true})
     end
+    append_property(s, "speed", {prefix="Playback speed:"})
 end
 
 
