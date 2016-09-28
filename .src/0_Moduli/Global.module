@@ -25,6 +25,7 @@ Public LSyncing As Boolean
 Public LSyncingMessage As String 
 Public AppName As String 
 Public ConfPath As String 
+Public TmpDir As String
 Public CustomBindKeys As String 
 Public XbindkeysBIN As String 
 Public SocketFile As String 
@@ -65,6 +66,8 @@ Public arg_debug As Boolean = False
 Public arg_new_instance As Boolean = False 
 Public arg_start_tray As Boolean = False
 
+
+
 Public Sub init()
   'FixFormNames() 'needed with gambas 3.4.1; form names arent set by default!
   UncommonVideoFilters = "Flash*;*.ts;*.m2v;*.m4v;*.mpeg;*.flv;*.gvi;*.iso;*.fli;*.flv;*.mpg;*.mpv;*.vob;*.viv;*.swf;*.rm;*.rmvb;*.dv;*.3gp;*.qt;*.divx;*.asx;*.ogm;*.ogv;*.oga;*.m4v;*.speex;*.spx;*.wavpack;*.wv;*.trueaudio;*.tta"
@@ -83,7 +86,8 @@ Public Sub init()
   'Please terminate ALLFILTERS with ";"!
   'ALLFilters  '= Videofilter & ";" & AudioFilter & ";" & UncommonVideoFilters & ";" & UncommonAudiofilters
   quotes = "\""       'double quotes in strings
-  aboutmessage = "\n" & "xt7-Player-mpv" & " " & Application.version & (" by Antonio Orefice.\nxt7player@gmail.com\n\nThanks to Benoît Minisini for Gambas.") & "\n\n" & "I92guboj - Spanish translation \n" & "Wackenroader - Brazilian Portuguese translation \n" & "Shimingzhou - simplified Chinese translation\n" & "Jacky Bamière - French translation\n" & "VictorR2007 - Russian Translation\n" & "SymbianFlo - Testing and 'spiritual' support\n" & "NickiNicki - Bug reports\n" & "Eloaders and all the contributors\nat https://launchpad.net/xt7-player \n" 
+  aboutmessage = "\n" & "xt7-Player-mpv" & " " & Application.version & (" by Antonio Orefice.\nxt7player@gmail.com\n\nThanks to Benoît Minisini for Gambas.") & "\n\n" & "I92guboj - Spanish translation \n" & "Wackenroader - Brazilian Portuguese translation \n" & "Shimingzhou - simplified Chinese translation\n" & "Jacky Bamière - French translation\n" & "VictorR2007 - Russian Translation\n" & "SymbianFlo - Testing and 'spiritual' support\n" & "NickiNicki - Bug reports\n" 
+  aboutmessage &= "'Argon-' for the nice lua stats script\n " 
   Alternatecolor = &EEEEFF&
   LSyncing = False 'is true when library is syncing.
   LSyncingMessage = ("Syncing Library, please wait...")
@@ -118,6 +122,7 @@ Public Sub init()
   SettingsFileName = "default"
   MaxHistory = 15
   DelayLoadStates = New Timer As "DelayLoadStates"
+  TmpDir = File.Dir(Temp())
 End
 
 

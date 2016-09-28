@@ -19,23 +19,27 @@ Private RenicerProcess As Process
 
 Private Const play_initialized_str As String = "MPV_PLAY_IS_FULLY_INITIALIZED"
 
-
 Private stopping As Boolean = False
-
 Public pausing As Boolean = False
 Public return_value As Integer = 0 'playerprocess return value
 
 ' Private Takingscreenshot As Boolean = False
 'Private lastscreenshot As String = ""
 Public last_media As String = ""
-
 Public commandline As String = ""
-
 Private InputPipe As String = ""
-
 Public user_stopped As Boolean = False
-
 Public volumeproperty As String = "volume"
+Public Precommand As String = ""
+Public Postcommand As String = ""
+Public CurrentOptions As String = ""
+Public AVcodecs As String = ""
+Public AudioLanguages As String = "\"\""
+Public SubLanguages As String = "\"\""
+Public Subfile As String = ""
+Public Quick As Boolean = False                         'Skip mediainfo code
+Public osdlevel As String = ""
+Public lua_scripts As New String[]
 
 Public Function executable(Optional timeout As Integer = -1) As String
   Dim out As String
@@ -58,18 +62,6 @@ Public Function executable(Optional timeout As Integer = -1) As String
   Return out
 End
 
-Public Precommand As String = ""
-Public Postcommand As String = ""
-
-Public CurrentOptions As String = ""
-
-Public AVcodecs As String = ""
-
-Public AudioLanguages As String = "\"\""
-Public SubLanguages As String = "\"\""
-Public Subfile As String = ""
-Public Quick As Boolean = False                         'Skip mediainfo code
-
 
 
 Private Sub ClearMediaProperties()
@@ -91,13 +83,6 @@ Private Sub ClearMediaProperties()
   prop["subtitletracks"] = New String[] 
   prop["cddbtracks"] = New String[] 
 End
-
-
-'Realtime Media variables
-
-
-Public osdlevel As String = ""
-
 
 
 Public Function FillMultitracks(Optional force_audio_only As Boolean = False)
@@ -552,6 +537,16 @@ Event property_change(name As String, data_old As String, data_new As String)
 
 Event seeking()
 
+Private Function lua_list() As String
+  Dim lua_script As String
+  Dim out_list As String
+  For Each lua_script In lua_scripts
+    out_list &= lua_script & ","
+  Next
+  out_list &= killer_script_filename()
+  Return out_list
+End
+
 
 Private Function internal_options() As Collection
   Dim out As New Collection
@@ -565,7 +560,8 @@ Private Function internal_options() As Collection
   out["input-default-bindings"] = "no"
   out["term-status-msg"] = play_initialized_str
   out["force-seekable"] = "yes" 'this will allow seeks within the cache
-  out["script"] = killer_script_filename()
+  'out["script"] = killer_script_filename()
+  out["script"] = lua_list() 'killer_script_filename()
 
   'this array will be needed by do_apply().
   'because it decides if a restart is needed by comparing the changed user options
@@ -578,7 +574,7 @@ End
 
 Public Function killer_script_filename() As String
   
-  Dim tempdir As String = File.Dir(Temp())
+  Dim tempdir As String = global.tmpdir
   Dim file_name, txt_data As String
   'uses a lua script to link mpv to the gui so that when the gui dies, mpv will quit
   txt_data = File.Load("_lua_killer.lua")
@@ -638,7 +634,9 @@ Public Function do_play(filename As String, Optional string_options As String = 
    ' Shell killer_script & " " & Application.id & " " & playerprocess.id
     'global.myDebug(killer_script & " " & Application.id & " " & playerprocess.id)
 
-
+  'we NEED to empty the script array here and not in the stop function:
+  lua_scripts.clear 
+  
   event_loop = New Timer As "event_loop"
   event_loop.delay = 500
   event_loop.start

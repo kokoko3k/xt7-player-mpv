@@ -2,7 +2,7 @@
 
 'Copyright (C) 2007, 2008 Antonio Orefice
 
-Private timer_runtime_infos As Timer
+'Private timer_runtime_infos As Timer
 
 Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
 'Private exportfilespath As String 'mpv 0.11 removed af_export filter :(
@@ -396,7 +396,6 @@ End
 
 
 Public Sub AllInit_Pre()
-
  youtube = New YoutubeClass(youtubetree)
   shadeup.visible = False
   VersionCheck()
@@ -434,6 +433,15 @@ Public Sub AllInit_Pre()
   If GeneralOptions.ToolTipsCHKDBUS.value Then 
     Try ExportDbusProperties()
   Endif
+  
+  'Copy stats lua script to temporary dir
+  Try File.Save(global.TmpDir & "/_mpvstats.lua", File.Load("_mpvstats.lua"))
+  If Error Then 
+    global.mydebug("Cannot copy _mpvstats.lua to " & global.tmpdir)
+    Stop
+    Return
+  Endif
+
 End
 
 Public Sub InitEarlyForms()
@@ -556,8 +564,8 @@ Public Sub AllInit_Post()
   Try GetLastVersion()
   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
   
-  timer_runtime_infos = New Timer As "timer_runtime_infos"
-  timer_runtime_infos.enabled = False
+  ' timer_runtime_infos = New Timer As "timer_runtime_infos"
+  ' timer_runtime_infos.enabled = False
 End
 
 Private Sub MakeProfileMenu()
@@ -1817,7 +1825,7 @@ Public Sub ButtonStop_Click()
   Try DelayTimer.stop
 
   Try global.Preload_file_bg_stop()
-  Try timer_runtime_infos.stop()
+  'Try timer_runtime_infos.stop()
   Try timerqueue.stop()
   switchresBTN.enabled = True
   global.mouse_wait(fmain, False)
@@ -2545,6 +2553,7 @@ Public Sub static_options() As Collection
   opts["cursor-autohide-fs-only"] = "no"
   opts["audio-pitch-correction"] = "no"
   opts["audio-display"] = "no"
+ 
   Return opts
 End
 
@@ -2781,6 +2790,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
       Next        
     Endif
   Endif
+
+  mplayer.lua_scripts.Add(global.tmpdir & "/_mpvstats.lua")
 
   'set initial volume only if we are using the internal mpv volume mixer
   If mplayer.volumeproperty = "volume" Then
@@ -5203,102 +5214,116 @@ Public Sub HotkeysMenu_Click()
   
 End
 
-Public Sub timer_runtime_infos_timer()
-  Dim prop As New Collection
-  Dim msg As String
-  Dim name, data As String
-  Dim screen_h As Integer
-  Dim max_screen_lines As Integer
-  Dim osd_font_size As Float
-  Dim scale_new As String
-  Dim scale_old As String = "1"
-  Dim msg_time As Integer = 2000
+' Public Sub timer_runtime_infos_timer()
+'   Dim prop As New Collection
+'   Dim msg As String
+'   Dim name, data As String
+'   Dim screen_h As Integer
+'   Dim max_screen_lines As Integer
+'   Dim osd_font_size As Float
+'   Dim scale_new As String
+'   Dim scale_old As String = "1"
+'   Dim msg_time As Integer = 2000
+' 
+' 
+' 
+'   prop["Filepath"] = "path"
+'   prop["---"] = " "
+'   
+'   prop["cache size (KB)"] = "cache-size"
+'   prop["cache fill state (%)"] = "cache"
+'   prop["UnSeekable"] = "partially-seekable"
+'   prop["dropped frames"] = "drop-frame-count"
+'   prop["dropped frames by vo"] = "vo-drop-frame-count"
+'   prop["----"] = " "
+'   
+'   prop["Hardware decoding: requested"] = "hwdec"
+'   prop["Hardware decoding: Active"] = "hwdec-current"
+'   
+'   prop["-----"] = " "
+'   
+'   prop["video driver"] = "current-vo"
+'   prop["Video filters"] = "vf"
+'   prop["------"] = " "
+'   
+'   prop["video codec"] = "video-codec"
+'   'prop["video bitrate (packet)"] = "packet-video-bitrate" '<- deprecated
+'   prop["video bitrate (actual)"] = "video-bitrate"
+'   prop["Video width"] = "width"
+'   prop["Video height"] = "height"
+'   prop["Video fps"] = "estimated-vf-fps"
+'   prop["-------"] = " "
+' 
+'   prop["audio driver"] = "current-ao"
+'   prop["audio filters"] = "af"  
+'   'prop["Audio device in use"] = "audio-out-detected-device"
+'   prop["--------"] = " "
+'   
+'   prop["audio codec"] = "audio-codec"
+'   'prop["audio bitrate (packet)"] = "packet-audio-bitrate"  '<-deprecated
+'   prop["audio bitrate (actual)"] = "audio-bitrate"  '<-deprecated
+'   prop["audio-params/channels"] = "audio-params/channels"
+'   prop["---------"] = " "
+' 
+'   
+'   For Each prop
+'     name = prop.Key
+'     data = prop[name]
+'     
+'     If name Like "*---*" Then
+'       msg &= "\\n"
+'         Else
+'       msg &= name & "=" & "${" & data & "}"
+'       msg &= "\\n"
+'     Endif
+'   Next
+' 
+' 
+'   'optionally set osd scale so that all of the properties fits into the screen
+'   screen_h = Screenbypos(videobox.x + 10, videobox.y - 10).H
+'   Try osd_font_size = CFloat(mplayer.get_property_mpv("options/osd-font-size"))
+'   If Not Error Then
+'     max_screen_lines = CInt((screen_h / osd_font_size)) 
+'     max_screen_lines = CInt((screen_h / (osd_font_size * (screen_h / 720)))) 
+'     If max_screen_lines < prop.count Then
+'       scale_new = CStr(max_screen_lines / (prop.count + 10)) 
+'       mplayer.set_property_mpv("osd-scale", scale_new)
+'     Endif
+'   Endif
+'   
+'   mplayer.ShowText(msg, 5000)
+'   
+'   'Wait 0.5
+' 
+'   'mplayer.set_property_mpv("osd-scale", scale_old)
+' End
 
-
-
-  prop["Filepath"] = "path"
-  prop["---"] = " "
-  
-  prop["cache size (KB)"] = "cache-size"
-  prop["cache fill state (%)"] = "cache"
-  prop["UnSeekable"] = "partially-seekable"
-  prop["dropped frames"] = "drop-frame-count"
-  prop["dropped frames by vo"] = "vo-drop-frame-count"
-  prop["----"] = " "
-  
-  prop["Hardware decoding: requested"] = "hwdec"
-  prop["Hardware decoding: Active"] = "hwdec-current"
-  
-  prop["-----"] = " "
-  
-  prop["video driver"] = "current-vo"
-  prop["Video filters"] = "vf"
-  prop["------"] = " "
-  
-  prop["video codec"] = "video-codec"
-  'prop["video bitrate (packet)"] = "packet-video-bitrate" '<- deprecated
-  prop["video bitrate (actual)"] = "video-bitrate"
-  prop["Video width"] = "width"
-  prop["Video height"] = "height"
-  prop["Video fps"] = "estimated-vf-fps"
-  prop["-------"] = " "
-
-  prop["audio driver"] = "current-ao"
-  prop["audio filters"] = "af"  
-  'prop["Audio device in use"] = "audio-out-detected-device"
-  prop["--------"] = " "
-  
-  prop["audio codec"] = "audio-codec"
-  'prop["audio bitrate (packet)"] = "packet-audio-bitrate"  '<-deprecated
-  prop["audio bitrate (actual)"] = "audio-bitrate"  '<-deprecated
-  prop["audio-params/channels"] = "audio-params/channels"
-  prop["---------"] = " "
-
-  
-  For Each prop
-    name = prop.Key
-    data = prop[name]
-    
-    If name Like "*---*" Then
-      msg &= "\\n"
-        Else
-      msg &= name & "=" & "${" & data & "}"
-      msg &= "\\n"
-    Endif
-  Next
-
-
-  'optionally set osd scale so that all of the properties fits into the screen
-  screen_h = Screenbypos(videobox.x + 10, videobox.y - 10).H
-  Try osd_font_size = CFloat(mplayer.get_property_mpv("options/osd-font-size"))
-  If Not Error Then
-    max_screen_lines = CInt((screen_h / osd_font_size)) 
-    max_screen_lines = CInt((screen_h / (osd_font_size * (screen_h / 720)))) 
-    If max_screen_lines < prop.count Then
-      scale_new = CStr(max_screen_lines / (prop.count + 10)) 
-      mplayer.set_property_mpv("osd-scale", scale_new)
-    Endif
-  Endif
-  
-  mplayer.ShowText(msg, 5000)
-  
-  'Wait 0.5
-
-  'mplayer.set_property_mpv("osd-scale", scale_old)
-End
-
-Private OSD_SCALE_BEFORE_RUNTIME_INFOS As String
+' Private OSD_SCALE_BEFORE_RUNTIME_INFOS As String
 Public Sub Show_runtime_infos()
-  If timer_runtime_infos.enabled Then 
-    timer_runtime_infos.stop
-    mplayer.ShowText("", 1)
-    mplayer.set_property_mpv("osd-scale", OSD_SCALE_BEFORE_RUNTIME_INFOS)
-      Else
-    OSD_SCALE_BEFORE_RUNTIME_INFOS = mplayer.get_property_mpv("osd-scale", True, 1000)
-    timer_runtime_infos.trigger
-    timer_runtime_infos.delay = 1000
-    timer_runtime_infos.start
-  Endif
+  
+  mplayer.mpv_command(["script-binding", "_mpvstats/display_stats_toggle"])
+
+  
+  
+  
+  
+  
+  
+  
+  
+  'init
+  
+
+  ' If timer_runtime_infos.enabled Then 
+  '   timer_runtime_infos.stop
+  '   mplayer.ShowText("", 1)
+  '   mplayer.set_property_mpv("osd-scale", OSD_SCALE_BEFORE_RUNTIME_INFOS)
+  '     Else
+  '   OSD_SCALE_BEFORE_RUNTIME_INFOS = mplayer.get_property_mpv("osd-scale", True, 1000)
+  '   timer_runtime_infos.trigger
+  '   timer_runtime_infos.delay = 1000
+  '   timer_runtime_infos.start
+  ' Endif
 End
 
 Public Sub volume_add(percent As String)
