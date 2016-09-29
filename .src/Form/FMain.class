@@ -9339,7 +9339,7 @@ Public Sub UpdateCoverFromSelected(mygrid As Gridview, mylibrary As Playlistclas
   Dim coverfilename As String
   Dim fullpath, album, artist As String
   
-  If MyQuestion.Ask(("xt7 will try to find and update the cover,\nBeware that covers set by you will be lost."), "Ok", "Cancel") = 2 Then Return
+  If MyQuestion.Ask(("xt7 will try to update the cover,\nBeware that covers set by you will be lost."), "Ok", "Cancel") = 2 Then Return
   mygrid.mouse = mouse.wait
   mygrid.enabled = False
   For r = 0 To mygrid.rows.count - 1
