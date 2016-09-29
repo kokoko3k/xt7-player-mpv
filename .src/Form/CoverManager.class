@@ -365,7 +365,7 @@ Public Sub RemoveCoverCache(coverfile As String, Optional RemoveSourceToo As Boo
     Endif
   Endif
 
-  Try Kill coverfile
+  If RemoveSourceToo Then Try Kill coverfile
 
   'clear file thumbcaches
   Shell "rm '" & cachefile & "'" & "*.*" & " &>/dev/null" 'rimuovilo dal disco
@@ -853,12 +853,14 @@ Public Sub PictureBox1_DblClick()
   Dim newfilename As String
   Dim currentfilename As String
   Dim ScaleTo As Integer
+  Stop
   CoverManager.close
   'stop any previous search
   HitCancel = True
   'set new cover
   newfilename = Coverfile(ArtistText.text, AlbumText.text)
   
+  Try RemoveCoverCache(newfilename, False)
   Try currentfilename = Coverlist.Current.key
   If Not Error Then
     Try Kill newfilename
@@ -869,17 +871,19 @@ Public Sub PictureBox1_DblClick()
       SaveScaled(currentfilename, newfilename, ScaleTo)
     Endif
   Endif
-  Try RemoveCoverCache(newfilename, False)
   FMain.CoverRefresh()
 
+
+  Try RemoveCoverCache(newfilename, False)
   Wait 0.05
   Try currentfilename = Coverlist.Current.key
   If Not Error Then
     Try Kill newfilename
     Try Copy currentfilename To ((newfilename))
   Endif
-  Try RemoveCoverCache(newfilename, False)
   FMain.CoverRefresh(True)
+  
+
 End
 
 
@@ -953,8 +957,11 @@ Public Sub ButtonLoad_Click()
     Message.Error(("Error while loading the picture"), "Ok")
   Endif
   Picturebox1.refresh
-  FMain.CoverRefresh()
   Try RemoveCoverCache(newfilename, False)
+  Stop
+  FMain.CoverRefresh()
+
+
 End
 
 Public Sub Form_KeyPress()
