@@ -342,32 +342,30 @@ Public Sub RemoveCoverCache(coverfile As String, Optional RemoveSourceToo As Boo
     Until CoverCacheList.MoveBelow()
   Endif
 
-  If RemoveSourceToo Then 
-    'since we use soft links to save disk space, we need to be careful
-    'on deleting files that may be linked from other items.
-    'so, if what we're removing is not a link, make sure they don't loose the picture too.
-    If Exist(coverfile, False) Then
-      If Stat(coverfile, False).type = gb.Link Then
-        Try Kill coverfile
-          Else 'not a link
-        For Each linked In Dir(global.confpath & "/covers/", "*.*", gb.link)
-          linked = global.confpath & "/covers/" & linked
-          Try pointed = Stat(linked).link
-          If Error Then Continue
-          If pointed = coverfile Then
-            'replace all linked files that points to the coverfile with the real coverfile
-            Try unlink_by_copy(linked, coverfile)
-              Else If pointed Like "*" & cachefile & "*" Then
-              'replace all linked thumbcaches files that points to the thumbcache coverfile
-              Try unlink_by_copy(linked, pointed)
-          Endif
-        Next
-      Endif
+
+  'since we use soft links to save disk space, we need to be careful
+  'on deleting files that may be linked from other items.
+  'so, if what we're removing is not a link, make sure they don't loose the picture too.
+  If Exist(coverfile, False) Then
+    If Stat(coverfile, False).type = gb.Link Then
+      Try Kill coverfile
+        Else 'not a link
+      For Each linked In Dir(global.confpath & "/covers/", "*.*", gb.link)
+        linked = global.confpath & "/covers/" & linked
+        Try pointed = Stat(linked).link
+        If Error Then Continue
+        If (pointed = coverfile) And RemoveSourceToo Then
+          'replace all linked files that points to the coverfile with the real coverfile
+          Try unlink_by_copy(linked, coverfile)
+            Else If pointed Like "*" & cachefile & "*" Then
+            'replace all linked thumbcaches files that points to the thumbcache coverfile
+            Try unlink_by_copy(linked, pointed)
+        Endif
+      Next
     Endif
-
-    Try Kill coverfile
-
   Endif
+
+  Try Kill coverfile
 
   'clear file thumbcaches
   Shell "rm '" & cachefile & "'" & "*.*" & " &>/dev/null" 'rimuovilo dal disco
