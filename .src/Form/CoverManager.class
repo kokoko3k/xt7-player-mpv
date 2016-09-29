@@ -327,8 +327,7 @@ Public CoverCacheList As New ListView(zzzfake)
 
 Public Sub RemoveCoverCache(coverfile As String, Optional RemoveSourceToo As Boolean)
   Dim cachefile As String = coverfile & "_thumbcache" 'ricava il nome dei file cache
-
-  Shell "rm '" & cachefile & "'" & "*.*" & " &>/dev/null" 'rimuovilo dal disco
+  Dim linked, toremove, pointed As String
   'cercalo in memoria e rimuovilo:
   If CoverCacheList.Count > 0 Then 
     CoverCacheList.Movefirst
@@ -342,11 +341,54 @@ Public Sub RemoveCoverCache(coverfile As String, Optional RemoveSourceToo As Boo
       Endif
     Until CoverCacheList.MoveBelow()
   Endif
-  If RemoveSourceToo Then Try Kill coverfile
+
+  If RemoveSourceToo Then 
+    'since we use soft links to save disk space, we need to be careful
+    'on deleting files that may be linked from other items.
+    'so, if what we're removing is not a link, make sure they don't loose the picture too.
+    If Exist(coverfile, False) Then
+      If Stat(coverfile, False).type = gb.Link Then
+        Try Kill coverfile
+          Else 'not a link
+        For Each linked In Dir(global.confpath & "/covers/", "*.*", gb.link)
+          linked = global.confpath & "/covers/" & linked
+          Try pointed = Stat(linked).link
+          If Error Then Continue
+          If pointed = coverfile Then
+            'replace all linked files that points to the coverfile with the real coverfile
+            Try unlink_by_copy(linked, coverfile)
+              Else If pointed Like "*" & cachefile & "*" Then
+              'replace all linked thumbcaches files that points to the thumbcache coverfile
+              Try unlink_by_copy(linked, pointed)
+          Endif
+        Next
+      Endif
+    Endif
+
+    Try Kill coverfile
+
+  Endif
+
+  'clear file thumbcaches
+  Shell "rm '" & cachefile & "'" & "*.*" & " &>/dev/null" 'rimuovilo dal disco
+
   FMain.RefreshVisibleCovers(FMain.librarygrid)
   FMain.RefreshVisibleCovers(FMain.playlistgrid)
 End
 
+Public Sub unlink_by_copy(linked_file As String, Optional real_file As String = "")
+  If real_file = "" Then
+    Try real_file = Stat(linked_file).Link
+    If Not Exist(real_file) Then
+      global.myDebug("Unable to unlink by copy" & linked_file, "pointed file does not exist!")
+    Endif
+  Endif
+  Try Kill linked_file
+  If Not Error Then
+    Try Copy real_file To linked_file
+    If Error Then global.myDebug("Unable to unlink " & linked_file, "error while copying")
+  Endif
+End
 
 
 
@@ -393,7 +435,6 @@ If Exist(coverfile, True) Then
     Endif
   Endif
      Else ' IF NOT Exist(coverfile) THEN 'se la cover non esiste, ricava un nuovo coverfile:
-
   If global.isytdl(uripath) Then
     coverfile = "ytdl.png"
     defaultcover = True

@@ -1605,7 +1605,9 @@ Public Sub Form_Close()
   Try AudioConvert.close 
   
   'Deduplicate covers every now ant then...
-  If (Rnd(0, 10) > 9) Then Try global.Dedupe(global.confpath & "/covers/")
+  If (Rnd(0, 10) > 9) Then 
+    Try global.Dedupe(global.confpath & "/covers/")
+  Endif
   
   global.myDebug("time to close = " & CStr(Timer() - t0))
   Print "Bye"
@@ -9344,7 +9346,7 @@ Public Sub UpdateCoverFromSelected(mygrid As Gridview, mylibrary As Playlistclas
     If mygrid.Rows[r].Selected Then
        fullpath = mygrid[r, myplaylist.Columnindex["Full Path"]].text
       coverfilename = covermanager.Coverfile("", "", fullpath) 'generate a coverfilename using just filename (not album/artist)
-      Try covermanager.RemoveCoverCache(coverfilename, True)
+       covermanager.RemoveCoverCache(coverfilename, True)
       
       artist = mylibrary.CellValue(mygrid, r, mylibrary.ColumnIndex["Artist"])
       album = mylibrary.CellValue(mygrid, r, mylibrary.ColumnIndex["Album"])  
