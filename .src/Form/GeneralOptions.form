@@ -387,10 +387,10 @@
           ToolTip = ("Select an audio driver and an audio device at once.\nNote that any audio driver explicitaly selected in the chains window\nwill override this setting.\n\nmpv option: --audio-device")
           Spacing = True
           { UseMpvInternalMixerCheckBox CheckBox
-            MoveScaled(1,0,43,4.5714)
+            MoveScaled(1,0,47,5)
             ToolTip = ("Checked: volume changes will affect the internal mpv volume.\nUnchecked: volume changes will change the system volume:\n(on ALSA this usually changes system-wide audio,\nwhile with PulseAudio, this controls per-application volume.)\n\nHINT: Pulseaudio users may want to UNCHECK this.")
             AutoResize = True
-            Text = ("Use mpv internal mixer (disables maximum amplification)")
+            Text = ("Use mpv internal mixer (enables maximum amplification)")
           }
         }
       }
@@ -1627,6 +1627,9 @@
             Value = CheckBox.True
           }
         }
+        { NOPARSESEP1 Separator
+          MoveScaled(4,48,45,1)
+        }
         { NoParse20 HBox
           MoveScaled(1,47,50,4.5714)
           ToolTip = ("Enable/Disbale the tray icon")
@@ -1637,9 +1640,6 @@
             Expand = True
             Text = ("Use Tray icon (xt7-player restart needed)")
           }
-        }
-        { NOPARSESEP1 Separator
-          MoveScaled(4,48,45,1)
         }
         { NoParse12 HBox
           MoveScaled(1,51,50,4.5714)

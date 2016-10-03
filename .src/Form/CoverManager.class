@@ -958,9 +958,8 @@ Public Sub ButtonLoad_Click()
   Endif
   Picturebox1.refresh
   Try RemoveCoverCache(newfilename, False)
-  Stop
-  FMain.CoverRefresh()
 
+  FMain.CoverRefresh()
 
 End
 
