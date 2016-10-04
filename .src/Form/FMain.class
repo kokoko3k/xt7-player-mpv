@@ -3762,7 +3762,7 @@ Public Function GetCacheDuration_secs(cache_percent As String) As Integer
     If Error Then Return
   Endif
 
-  cache_duration = CInt(cache_size_KB / TotalKBPS)
+  Try cache_duration = CInt(cache_size_KB / TotalKBPS)
   If Error Then Return
 
   'global.myDebug("Cache duration left: " & cache_duration & " seconds.")
