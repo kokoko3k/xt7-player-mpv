@@ -380,6 +380,7 @@ Public Function Visualization_opts() As MpvOption[]
   If visstring <> "" Then
     myopts.Add(newopt("keepaspect", "no"))
     myopts.Add(newopt("lavfi-complex", visstring))
+    myopts.Add(newopt("osd-level", "0"))
   Endif
   Return myopts
 End
