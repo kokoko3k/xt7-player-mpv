@@ -7,7 +7,7 @@
   Arrangement = Arrange.Fill
   { AudioPanel VBox audioareagroup
     Name = "AudioPanel"
-    Move(7,28,672,420)
+    Move(7,28,672,469)
     Background = &H000000&
     Tracking = True
     Expand = True
@@ -48,10 +48,6 @@
           Alignment = Align.Center
         }
       }
-      { TimerZoomOut #Timer
-        #Move(140,63)
-        Delay = 30
-      }
       { GridUp GridView audioareagroup
         Name = "GridUp"
         Move(189,14,364,133)
@@ -69,39 +65,51 @@
         ScrollBar = Scroll.None
         AutoResize = False
       }
+      { TimerZoomOut #Timer
+        #Move(140,63)
+        Delay = 30
+      }
     }
-    { Panel1 Panel audioareagroup
-      Name = "Panel1"
-      Move(28,196,588,150)
-      Arrangement = Arrange.Horizontal
+    { Panel2 Panel
+      Move(70,196,469,182)
+      Arrangement = Arrange.Vertical
       AutoResize = True
-      Spacing = True
-      { LeftAlignDown VBox audioareagroup
-        Name = "LeftAlignDown"
-        Move(0,0,14,77)
-        Tracking = True
+      { Panel1 Panel audioareagroup
+        Name = "Panel1"
+        Move(0,0,301,105)
+        Arrangement = Arrange.Horizontal
+        AutoResize = True
+        Spacing = True
+        { LeftAlignDown VBox audioareagroup
+          Name = "LeftAlignDown"
+          Move(49,0,14,77)
+          Tracking = True
+        }
+        { GridDownShadow GridView
+          Move(0,-7,504,56)
+          Background = &HFF000000&
+          Border = False
+          Grid = False
+          ScrollBar = Scroll.None
+          AutoResize = False
+        }
+        { GridDown GridView audioareagroup
+          Name = "GridDown"
+          Move(77,0,420,49)
+          Background = &HFF000000&
+          Border = False
+          Grid = False
+          ScrollBar = Scroll.None
+          AutoResize = False
+        }
       }
-      { GridDownShadow GridView
-        Move(42,-7,504,56)
-        Background = &HFF000000&
-        Border = False
-        Grid = False
-        ScrollBar = Scroll.None
-        AutoResize = False
-      }
-      { GridDown GridView audioareagroup
-        Name = "GridDown"
-        Move(133,14,504,50)
-        Background = &HFF000000&
-        Border = False
-        Grid = False
-        ScrollBar = Scroll.None
-        AutoResize = False
+      { PanelVisSpacer Panel
+        Move(98,119,217,42)
       }
     }
     { PictureBox1 Panel audioareagroup
       Name = "PictureBox1"
-      Move(133,357,420,63)
+      Move(119,406,420,35)
       Background = Color.Black
       Tracking = True
       Expand = True

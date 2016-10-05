@@ -3402,6 +3402,7 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
   If show Then
     Timer_mediainfo.start
     audioform.tag = "visible" 
+    audioform.panelvisspacer.Visible = (Left(generaloptions.NoParseVisType2.text) <> "0")
       Else
     Timer_mediainfo.stop
     audioform.tag = "invisible"
@@ -5159,6 +5160,7 @@ Public Sub Apply(Optional force_restart As Boolean = False)
     mplayer.do_Apply(get_apply_opts())
   Endif
    global.ResetApplyBtnColor()
+   audioform.panelvisspacer.Visible = (Left(generaloptions.NoParseVisType2.text) <> "0")
 End
 
 
