@@ -2116,7 +2116,6 @@ Public Sub do_apply(new_opts As Collection) ', Optional only_check_vdpaurb As Bo
     global.myDebug("changed/added/removed option:", name, data)
     If realtime_opts.Find(name) = -1 Then
       If ignore_opts.find(name) = -1 Then
-        Stop
         global.myDebug("option changed/removed/added: " & name, "requires restart")
         do_apply_restart(new_opts)
         Return

@@ -275,6 +275,8 @@ Public Sub ShowBackground(Optional i As Image = Null)
   
   'compose the alpha mask gradient over the blurred image  
    blurred.PaintImage(gradient, 0, 0)
+   'blurred.PaintImage(gradient, 0, 0)
+
 
   antiglitch(Color.SetAlpha(blurred.Stretch(1, 3)[0, 1], 0)) 'will be used to draw the background so that glitches will be less visible.
 
