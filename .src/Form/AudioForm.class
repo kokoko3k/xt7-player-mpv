@@ -20,7 +20,7 @@ Public Sub init()
   micimg = Image.Load("audio-input-microphone.png")
   micimg = micimg.Stretch((gridup.Rows.h * 0.7) / (micimg.h / micimg.w), (GridUp.Rows.H * 0.7))
   GridUp[5, 1].picture = micimg.picture
-  gridup[5, 1].Alignment = Align.right
+
   GridUp.Columns[0].w = -1
   GridUp.Columns[1].w = -1
   

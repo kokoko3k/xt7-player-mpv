@@ -41,6 +41,16 @@ Public Quick As Boolean = False                         'Skip mediainfo code
 Public osdlevel As String = ""
 Public lua_scripts As New String[]
 
+Public Function version(Optional full_line As Boolean = False) As String
+  Dim out As String
+  Shell executable() & " --version" To out
+  If full_line Then Return out
+  out = Split(out, " ", "", True)[1]
+  Return out
+End
+
+
+
 Public Function executable(Optional timeout As Integer = -1) As String
   Dim out As String
   Dim proxy As String
