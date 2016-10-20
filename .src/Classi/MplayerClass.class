@@ -642,8 +642,54 @@ Public Function do_play(filename As String, Optional string_options As String = 
   event_loop.start
   setP("fullpath", filename)
 
+  'start_recover()
+
   Return True
 End
+
+
+' Public recoverytimer As Timer
+' Private recovery_array As Integer[]
+' 
+' Public Sub start_recover()
+'   recovery_array = New Integer[]
+'   recoverytimer = New Timer As "recoverytimer"
+'   recoverytimer.delay = 1000
+'   recoverytimer.start
+' End
+' 
+' Public Sub recoverytimer_Timer()
+'   Dim drop_count, i As Integer 
+' 
+'   Try drop_count = CInt(get_property_mpv("vo-drop-frame-count", True, 1, False))
+'   If Error Then
+'     recovery_array.Resize(0)
+'     Debug "error"
+'     Return
+'   Endif
+' 
+'   recovery_array.Add(drop_count)
+'   Debug drop_count
+'   If recovery_array.count = 5 Then
+'     'check if recovery is necessary
+'     drop_count = 0 
+'     For i = 1 To recovery_array.Max
+'       If recovery_array[i] - recovery_array[i - 1] = 0 Then Break
+'     Next
+'     If i >= 5 Then
+'       Debug "RECOVERY"
+'       Stop
+'       do_seek_by("-10")
+'       do_seek_by("+10")
+'       Wait
+'       do_revert_seek()
+'     Endif
+'     recovery_array.Extract(0)
+'   Endif
+'   
+' End
+
+
 
 Public Struct chapter
   title As String
