@@ -380,7 +380,7 @@
           { PortChk2XV CheckBox
             MoveScaled(1,1,15,4.5714)
             #Translate = False
-            Tag = "adaptor="
+            Tag = "xv-adaptor"
             Text = "Adaptor"
           }
           { SpinBox10Xv SpinBox notifyobj
@@ -390,7 +390,7 @@
           }
         }
         { TextBoxAdaptorsxv TextArea
-          MoveScaled(8,10,44,15)
+          MoveScaled(0,8,44,15)
           Text = ("TextBox8")
           ReadOnly = True
         }
@@ -411,7 +411,7 @@
           { CheckBox3gl2 CheckBox
             MoveScaled(1,1,17,4.5714)
             #Translate = False
-            Tag = "backend="
+            Tag = "opengl-backend"
             Text = "backend"
             Value = CheckBox.True
           }
@@ -431,8 +431,8 @@
           { CheckBox3gl CheckBox
             MoveScaled(1,1,17,4.5714)
             #Translate = False
-            Tag = "scale="
-            Text = "scale"
+            Tag = "scale"
+            Text = "Scale"
           }
           { ComboBox1gl ComboBox
             MoveScaled(19,1,24,4.5714)
@@ -461,8 +461,8 @@
           { CheckBox6gl CheckBox
             MoveScaled(1,1,17,4.5714)
             #Translate = False
-            Tag = "glfinish"
-            Text = "glfinish"
+            Tag = "opengl-glfinish"
+            Text = "Glfinish"
           }
         }
         { openglParseMeHBox11 HBox
@@ -526,7 +526,7 @@
           Padding = 8
           { CheckBox32vaapi2 CheckBox
             MoveScaled(1,1,26,4.5714)
-            Tag = "fps="
+            Tag = "vo-vdpau-fps"
             Text = ("Display refresh rate")
           }
           { SpinBox1 SpinBox
@@ -550,7 +550,7 @@
           Padding = 8
           { CheckBox32vaapi3 CheckBox
             MoveScaled(1,1,26,4.5714)
-            Tag = "composite-detect="
+            Tag = "vo-vdpau-composite-detect"
             Text = ("detect composite")
           }
           { ComboBox1 ComboBox
@@ -575,7 +575,7 @@
           Padding = 8
           { CheckBox32vaapi4 CheckBox
             MoveScaled(1,1,26,4.5714)
-            Tag = "queuetime_windowed="
+            Tag = "vo-vdpau-queuetime_windowed"
             Text = ("queue video frames (ms) windowed")
           }
           { SpinBox2 SpinBox
@@ -591,7 +591,7 @@
           Padding = 8
           { CheckBox32vaapi5 CheckBox
             MoveScaled(1,1,26,4.5714)
-            Tag = "queuetime_fs="
+            Tag = "vo-vdpau-queuetime-fs"
             Text = ("queue video frames (ms) fullscreen")
           }
           { SpinBox3 SpinBox
@@ -615,7 +615,7 @@
           Padding = 8
           { CheckBox32vaapi6 CheckBox
             MoveScaled(1,1,26,4.5714)
-            Tag = "output_surfaces="
+            Tag = "vo-vdpau-output-surfaces"
             Text = ("surfaces number")
           }
           { SpinBox4 SpinBox
@@ -640,7 +640,7 @@
           Padding = 8
           { CheckBox32vaapi7 CheckBox
             MoveScaled(1,1,26,4.5714)
-            Tag = "force-yuv="
+            Tag = "vo-vdpau-force-yuv"
             Text = ("Force YUV")
           }
           { ComboBox2 ComboBox
@@ -666,7 +666,7 @@
           { CheckBox36vaapi CheckBox
             MoveScaled(1,1,17,4.5714)
             #Translate = False
-            Tag = "scaling="
+            Tag = "vo-vaapi-scaling"
             Text = "scaling"
           }
           { ComboBox15vaapi ComboBox
@@ -684,8 +684,15 @@
           { CheckBox1vaapi CheckBox
             MoveScaled(1,1,17,4.5714)
             #Translate = False
-            Tag = "scaled-osd"
+            Tag = "vo-vaapi-scaled-osd"
             Text = "scaled-osd"
+          }
+          { ComboBox3 ComboBox
+            MoveScaled(19,0,24,4.5714)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "yes"
           }
         }
       }
@@ -743,8 +750,8 @@
           Padding = 6
           { AlsaDeviceChk CheckBox
             MoveScaled(1,1,15,4.5714)
-            Tag = "device="
-            Text = ("Device")
+            Tag = "alsa-mixer-device"
+            Text = ("Mixer Device")
           }
           { AlsaDeviceTextBox ComboBox
             MoveScaled(18,1,26,4.5714)
@@ -760,8 +767,8 @@
           { AlsaDeviceChk2 CheckBox
             MoveScaled(1,1,15,4.5714)
             #Translate = False
-            Tag = "mixer-name="
-            Text = "mixer-name"
+            Tag = "alsa-mixer-name"
+            Text = "Mixer Name"
           }
           { AlsaDeviceTextBox2 ComboBox
             MoveScaled(18,1,26,4.5714)
@@ -779,8 +786,8 @@
           { AlsaDeviceChk1 CheckBox
             MoveScaled(1,1,15,4.5714)
             #Translate = False
-            Tag = "mixer-index="
-            Text = "mixer-index"
+            Tag = "alsa-mixer-index"
+            Text = "Mixer Index"
           }
           { SpinBox1Alsa SpinBox
             MoveScaled(34,1,9,4.5714)
@@ -802,7 +809,7 @@
           { CheckBox18jack CheckBox
             MoveScaled(1,2,17,4.5714)
             #Translate = False
-            Tag = "port="
+            Tag = "jack-port"
             Text = "Port"
           }
           { TextBox3jack TextBox
@@ -818,7 +825,7 @@
           { CheckBox1jack CheckBox
             MoveScaled(1,2,17,4.5714)
             #Translate = False
-            Tag = "name="
+            Tag = "jack-name"
             Text = "Name"
           }
           { TextBox4jack TextBox
@@ -836,16 +843,36 @@
         Expand = True
         Arrangement = Arrange.Vertical
         Border = False
-        { PulseParseMeHbox1 VBox
-          MoveScaled(1,0,45,13)
-          Padding = 6
-          { PulseDriverChk2pulse CheckBox
-            MoveScaled(1,1,29,4.5714)
+        { JackParseMeHBox2 HBox
+          MoveScaled(0,0,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox18jack2 CheckBox
+            MoveScaled(1,2,17,4.5714)
             #Translate = False
-            Text = "host:output sink"
+            Tag = "pulse-host"
+            Text = "Host"
           }
-          { TextBox6Alsapulse TextBox
-            MoveScaled(1,6,41,4.5714)
+          { TextBox3jack2 TextBox
+            MoveScaled(19,1,22,4.5714)
+            #Translate = False
+            Expand = True
+          }
+        }
+        { JackParseMeHBox3 HBox
+          MoveScaled(0,7,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox18jack3 CheckBox
+            MoveScaled(1,2,17,4.5714)
+            #Translate = False
+            Tag = "pulse-sink"
+            Text = "Sink"
+          }
+          { TextBox3jack3 TextBox
+            MoveScaled(19,1,22,4.5714)
+            #Translate = False
+            Expand = True
           }
         }
         { PulseParseMeHbox3 HBox
@@ -855,7 +882,7 @@
           { AlsaDeviceChk3pulse CheckBox
             MoveScaled(1,1,18,4.5714)
             #Translate = False
-            Tag = "buffer="
+            Tag = "pulse-buffer"
             Text = "buffer"
           }
           { ComboBox1pulse ComboBox
@@ -872,7 +899,7 @@
           { AlsaDeviceChk4pulse CheckBox
             MoveScaled(1,1,18,4.5714)
             #Translate = False
-            Tag = "latency-hacks="
+            Tag = "pulse-latency-hacks"
             Text = "latency-hacks"
           }
           { ComboBox2pulse ComboBox
@@ -891,26 +918,40 @@
         Expand = True
         Arrangement = Arrange.Vertical
         Border = False
-        { PcmParseMeHBox3 HBox
-          MoveScaled(0,0,45,6)
-          Tag = "noestimate"
+        { PulseParseMeHbox1 HBox
+          MoveScaled(0,0,46,6)
           AutoResize = True
-          Padding = 8
-          { CheckBox3pcm CheckBox
+          Padding = 6
+          { AlsaDeviceChk4pulse2 CheckBox
             MoveScaled(1,1,18,4.5714)
-            Tag = "nowaveheader"
-            Text = ("NoWaveHeader")
+            #Translate = False
+            Tag = "ao-pcm-nowaveheader"
+            Text = "Wave Header"
+          }
+          { ComboBox2pulse2 ComboBox
+            MoveScaled(21,1,24,4.5714)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "no"
           }
         }
-        { PcmParseMeHBox4 HBox
-          MoveScaled(0,6,45,6)
-          Tag = "noestimate"
+        { PulseParseMeHbox4 HBox
+          MoveScaled(0,6,46,6)
           AutoResize = True
-          Padding = 8
-          { CheckBox4pcm CheckBox
+          Padding = 6
+          { AlsaDeviceChk4pulse3 CheckBox
             MoveScaled(1,1,18,4.5714)
-            Tag = "append"
-            Text = ("append")
+            #Translate = False
+            Tag = "ao-pcm-append"
+            Text = "Append"
+          }
+          { ComboBox2pulse3 ComboBox
+            MoveScaled(21,1,24,4.5714)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "no"
           }
         }
         { PcmParseMeHBox2 HBox
@@ -919,7 +960,7 @@
           Padding = 8
           { CheckBox2pcm CheckBox
             MoveScaled(1,0,17,4.5714)
-            Tag = "file="
+            Tag = "ao-pcm-file"
             Text = ("File")
           }
           { TextBox8pcm TextBox

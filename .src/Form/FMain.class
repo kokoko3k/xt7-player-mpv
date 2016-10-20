@@ -2580,8 +2580,26 @@ Public Sub user_options(fullpath As String) As Collection
       Else
     'parse the chain if we have not a cache
     NewChains.FirstLoadIfNeeded()
-    opts["vo"] = NewChains.parse_drivers(False) 'XConfigureVideoDriver.ParsedVideoDriver()
-    opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
+    
+  For Each opt In newchains.parse_drivers(False)
+    If opt.data = "" Then opt.data = Chr(8)
+    While opts.Exist(opt.name)
+      opt.name = " " & opt.name 'to have multiple options with the same name
+    Wend
+    opts[opt.name] = opt.data
+  Next
+    
+  For Each opt In newchains.parse_drivers(True)
+    If opt.data = "" Then opt.data = Chr(8)
+    While opts.Exist(opt.name)
+      opt.name = " " & opt.name 'to have multiple options with the same name
+    Wend
+    opts[opt.name] = opt.data
+  Next
+  
+  
+    
+    'opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
 
     opts["vf-add"] = NewChains.parse_filters(False)
     opts["af-add"] = NewChains.parse_filters(True)

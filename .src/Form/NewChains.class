@@ -3,6 +3,20 @@
 Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
 Public InitDone As Boolean = False
 
+Public Struct mpvOption
+  name As String
+  data As String
+End Struct
+
+Private Function newopt(name As String, data As String) As MpvOption
+  Dim myopt As New MpvOption
+  myopt.name = name
+  myopt.data = data
+  Return myopt
+End
+
+
+
 Private Sub fill_tabstrip(aTabstrip As Tabstrip, aScrollview As Scrollview)
   Dim i As Integer
   Dim tabScrollview As ScrollView
@@ -932,9 +946,66 @@ Public Sub ApplyBTN_Click()
   OkToChangeToCustom = True
 End
 
+Public Function parse_drivers(audio As Boolean) As MpvOption[]
+  Dim item_box As Hbox
+  Dim cBox As Checkbox 
+  Dim item_name As String
+  Dim drivers, drivers_list As String
+  Dim driver_opts As New MpvOption[]
+  Dim item_container As Object
+  Dim video_driver_overridden As String = ""
+  Dim return_opts As New MpvOption[]
+
+  If audio Then 
+    item_container = drivers_audio_container
+      Else
+    item_container = drivers_video_container
+  Endif
+  
+  If Not audio Then 'search for any override in generaloptions (like hwdec macro)
+    Try video_driver_overridden = GeneralOptions.video_driver_overridden() 
+    If video_driver_overridden <> "" Then
+        drivers &= parse_video_driver(video_driver_overridden, item_container.tag) & ","
+        Goto returnlabel
+    Endif
+  Endif
+  
+  For Each item_box In item_container.children
+    item_name = item_box.name
+    cBox = Me.Controls[item_name & "_checkbox_" & item_container.name]  
+    If cBox.value = CheckBox.True Then
+      drivers_list &= "," & item_name
+      If audio Then 
+        driver_opts.Insert(parse_audio_driver(item_name, item_container.tag))
+          Else
+        driver_opts.Insert(parse_video_Driver(item_name, item_container.tag))
+      Endif
+    Endif
+  Next
+  
+  ReturnLabel:
+  
+  return_opts.Insert(driver_opts)
+  'remove the leading ","
+  drivers_list = Right(drivers_list, "-1")
+  
+  If audio Then
+    return_opts.Add(newopt("ao", drivers_list))
+      Else
+    return_opts.Add(newopt("vo", drivers_list))
+  Endif
+  
+  
+  
+  
+  'If Right(drivers) = "," Then drivers = Left(drivers, "-1")
+  'Return drivers
+  Return return_opts
+  
+End
 
 
-Public Function parse_drivers(audio As Boolean) As String
+Public Function old_parse_drivers(audio As Boolean) As String
   Dim item_box As Hbox
   Dim cBox As Checkbox 
   Dim item_name As String
@@ -1434,11 +1505,14 @@ End
 'from the old xvonfigure*driver
 
 
-Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip) As String
+Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip) As MpvOption[]
   Dim obj, child, container_obj As Object
   Dim tab_index_old As Integer = aTabstrip.index
-  Dim outline As String
   Dim sep As String = Chr(126)
+  Dim outline As String
+  Dim ao_option_name As String
+  Dim ao_option_value As String
+  Dim return_opts As New MpvOption[]
   If Lower(driver_name) Like "custom*" Then
     Return TextBox5customaudio.text
   Endif
@@ -1461,38 +1535,33 @@ Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip)
       Else
     container_obj = aTabstrip
   Endif
-  
+
   For Each obj In container_obj.Children
     If Upper(obj.name) Like Upper(driver_name) & "*" Then
       For Each child In obj.Children
-        'IF child.name LIKE "*Chk" THEN 
         If object.type(child) = "CheckBox" Then
           If child.value Then
-              outline = outline & child.tag
+              ao_option_name = child.tag
                 If (child.next <> Null) Then
                   If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
                     If child.NEXT.text Like "*" & sep & "*" Then
-                      outline = outline & Split(child.NEXT.text, sep)[0]
+                      ao_option_value = Split(child.NEXT.text, sep)[0]
                         Else
-                      outline = outline & child.NEXT.text
+                      ao_option_value = child.NEXT.text
                     Endif
                   Endif
                 Endif
-                outline = outline & ":"
+                return_opts.Add(newopt(ao_option_name, ao_option_value))
+                ao_option_value = ""
+                ao_option_name = ""
+                
           Endif
         Endif
       Next
     Endif
   Next
-
   aTabstrip.index = tab_index_old
-  If Right(outline) = ":" Then outline = Left(outline, -1)
-  If Right(outline) = "" Then 
-    Return driver_name
-      Else
-    Return driver_name & ":" & outline 
-  Endif
-
+  Return return_opts    
 End
 
 
@@ -1545,10 +1614,13 @@ End
 
 
 
-Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip) As String
+Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip) As MpvOption[]
   Dim obj, child, container_obj As Object
   Dim tab_index_old As Integer = aTabstrip.index
   Dim outline As String
+  Dim return_opts As New MpvOption[]
+  Dim vo_option_name As String
+  Dim vo_option_value As String
   
   If Lower(driver_name) Like "custom*" Then
     Return TextBox5cv.text
@@ -1575,19 +1647,21 @@ Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip)
         For Each child In obj.Children
           'IF child.name LIKE "*Chk" THEN 
           If object.type(child) = "CheckBox" Then
-            If child.value Then
-                outline = outline & child.tag
+            If child.value = CheckBox.true Then
+                vo_option_name = child.tag
                   If (child.next <> Null) Then
                     If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
                       If (object.type(child.next) = "ComboBox") Then
-                        Try outline = outline & Split(child.NEXT.text, " ")[0]
+                        vo_option_value = Split(child.NEXT.text, " ")[0]
                           Else
-                        Try outline = outline & child.NEXT.text
+                        vo_option_value = child.NEXT.text
                         If Error Then global.myDebug("an error occurred, please report this message and what you're doing")
                       Endif
                     Endif
                   Endif
-                  outline = outline & ":"
+                  return_opts.Add(newopt(vo_option_name, vo_option_value))
+                  vo_option_value = ""
+                  vo_option_name = ""
             Endif
           Endif
         Next
@@ -1596,13 +1670,7 @@ Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip)
   Endif
   
   aTabstrip.index = tab_index_old
-  If Right(outline) = ":" Then outline = Left(outline, -1)
-  If Right(outline) = "" Then 
-    Return driver_name 
-      Else
-    Return driver_name & ":" & outline
-  Endif
-
+  Return return_opts    
 End
 
 

@@ -468,40 +468,50 @@ Public Function get_cached_options(profilename As String) As Collection
   Return out
 End
 
+
+Public Struct MpvOption
+  name As String
+  data As String
+End Struct
+
 Public Sub save_cached_options(ProfileName As String)
   'save mpv options in a profile format compatible with mpv
   Dim cached_file_name As String = global.confpath & "/" & Profilename & ".cached"
   Dim cached_data, data As String
+  Dim driver_opts As MpvOption[]
+  Dim opt As MpvOption
 
   If Not Exist(global.confpath, True) Then 
     global.myDebug("Configuration directory not found; something is going VERY wrong.")
     Return
   Endif
 
-    ' opts = fmain.user_options()
-    ' For Each data In opts
-    '   If data <> Chr(8) Then
-    '     cached_data &= opts.key & "=" & data & "\n"
-    '       Else
-    '     cached_data &= opts.key & "\n"
-    '   Endif
-    ' Next
-    ' cached_data &= "volume=" & fmain.Initialvolume() & "\n"
 
     NewChains.FirstLoadIfNeeded()
+    Stop
+    driver_opts = NewChains.parse_drivers(False)
+    Stop
+    If driver_opts <> Null Then
+      For Each opt In driver_opts
+        cached_data &= opt.name & "=" & opt.data & "\n"
+      Next
+      driver_opts.Clear
+    Endif
 
-    data = NewChains.parse_drivers(False)
-    If data <> "" Then cached_data &= "vo=" & data & "\n"
-    
-    data = NewChains.parse_drivers(True)
-    If data <> "" Then cached_data &= "ao=" & data & "\n"
+
+    driver_opts = NewChains.parse_drivers(True)
+    If driver_opts <> Null Then
+      For Each opt In driver_opts
+        cached_data &= opt.name & "=" & opt.data & "\n"
+      Next
+    Endif
 
     data = NewChains.parse_filters(False)
     If data <> "" Then cached_data &= "vf-add=" & data & "\n"
-
+Stop
     data = NewChains.parse_filters(True)
     If data <> "" Then cached_data &= "af-add=" & data & "\n"
-
+Stop
     File.Save(cached_file_name, cached_data)
 End
 
