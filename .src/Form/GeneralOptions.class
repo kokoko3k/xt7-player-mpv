@@ -385,7 +385,7 @@ Public Function Visualization_opts() As MpvOption[]
     myopts.Add(newopt("osd-scale", "0.01"))
 
     If global.mpv_version = "" Then global.mpv_version = fmain.mplayer.version()
-    If global.mpv_version = "0.20.0" Then
+    If global.mpv_version = "0.21.0" Then
       myopts.Add(newopt("hr-seek", "yes"))
     Endif
     
