@@ -56,13 +56,13 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
       AssForceStyle = AssForceStyle & FontName
       AssForceStyle = AssForceStyle & ",FontSize=" & CStr(FontString.Font.Size)
       'If FontString.Font.Bold Then AssForceStyle = AssForceStyle & ",Bold=1"
-      If FontString.Font.Bold Then opts.push(o("sub-text-bold", "yes"))
+      If FontString.Font.Bold Then opts.push(o("sub-bold", "yes"))
       If FontString.Font.Italic Then AssForceStyle = AssForceStyle & ",Italic=1" 
 
       SubFontName = FontString.Font.name
       'If FontString.Font.Bold Then SubFontName &= ":style=bold" 'fixmempv: how to do italic and strikeout?
-      opts.Push(o("sub-text-font", "\"" & SubFontName & "\""))
-      opts.Push(o("sub-text-font-size", CStr(FontString.Font.size)))
+      opts.Push(o("sub-font", "\"" & SubFontName & "\""))
+      opts.Push(o("sub-font-size", CStr(FontString.Font.size)))
 
     Endif
 
@@ -70,22 +70,22 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
       AssForceStyle = AssForceStyle & Outline
       AssForceStyle = AssForceStyle & ",OutlineColour=" & rgba2Habgr(Hex(BorderColorBox.value, 6) & Hex(BorderColorSpinBox.value, 2))
 
-      opts.Add(o("sub-text-border-size", OutLineSpinBox.value))
-      opts.Add(o("sub-text-border-color", "#" & Hex(255 - BorderColorSpinBox.value, 2) & Hex(bordercolorBox.value, 6)))
+      opts.Add(o("sub-border-size", OutLineSpinBox.value))
+      opts.Add(o("sub-border-color", "#" & Hex(255 - BorderColorSpinBox.value, 2) & Hex(bordercolorBox.value, 6)))
     Endif
 
     'maybe redoundant with -ass-color and -ass-border-color, but do it anyway:
     If FontColorCHK.value Then 
       AssForceStyle = AssForceStyle & ",PrimaryColour=" & rgba2Habgr(Hex(FontColorBox.value, 6) & Hex(FontColorSpinBox.value, 2))
-      opts.Add(o("sub-text-color", "#" & Hex(255 - FontColorSpinBox.value, 2) & Hex(FontColorBox.value, 6)))
+      opts.Add(o("sub-color", "#" & Hex(255 - FontColorSpinBox.value, 2) & Hex(FontColorBox.value, 6)))
     Endif
     
     If SHADOWCHK.value Then
       AssForceStyle = AssForceStyle & Shadow
       Assforcestyle = AssForceStyle & ",BackColour=" & rgba2Habgr(Hex(ShadowColorBTN.value, 6) & Hex(ShadowColorSpinBox.value, 2))
       
-      opts.Add(o("sub-text-shadow-offset", ShadowSpinBox.value))
-      opts.Add(o("sub-text-shadow-color", "#" & Hex(255 - ShadowColorSpinBox.value, 2) & Hex(ShadowColorBTN.value, 6)))
+      opts.Add(o("sub-shadow-offset", ShadowSpinBox.value))
+      opts.Add(o("sub-shadow-color", "#" & Hex(255 - ShadowColorSpinBox.value, 2) & Hex(ShadowColorBTN.value, 6)))
     Endif
 
     If MarginVCHK.value Then 
@@ -122,7 +122,7 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
  'push SSA options
   If Not ASSDisableCHK.value = True Then 'if the user has not disabled ass rendering,
     If assoverridechk.value = True Then 'if the user choose to override ass styles,
-      opts.Add(o("ass-force-style", AssForceStyle))
+      opts.Add(o("sub-ass-force-style", AssForceStyle))
     Endif
   Endif
   
@@ -143,7 +143,7 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
       If (Lower(file.Ext((fullpath))) = "mkv") Then
         opts.Add(o("sub-file", "'" & SConv(fullpath) & "'"))
         'opts.Add(o("sub-ass", "no")) 'deprecated, use the following instead:
-              opts.Add(o("ass-style-override", "strip"))
+              opts.Add(o("sub-ass-style-override", "strip"))
               opts.Add(o("embeddedfonts", "no"))
       Endif
     Endif
