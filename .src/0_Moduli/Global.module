@@ -486,9 +486,8 @@ Public Sub save_cached_options(ProfileName As String)
     Return
   Endif
 
-
     NewChains.FirstLoadIfNeeded()
-    Stop
+
     driver_opts = NewChains.parse_drivers(False)
     Stop
     If driver_opts <> Null Then
@@ -497,7 +496,6 @@ Public Sub save_cached_options(ProfileName As String)
       Next
       driver_opts.Clear
     Endif
-
 
     driver_opts = NewChains.parse_drivers(True)
     If driver_opts <> Null Then
@@ -508,10 +506,8 @@ Public Sub save_cached_options(ProfileName As String)
 
     data = NewChains.parse_filters(False)
     If data <> "" Then cached_data &= "vf-add=" & data & "\n"
-Stop
     data = NewChains.parse_filters(True)
     If data <> "" Then cached_data &= "af-add=" & data & "\n"
-Stop
     File.Save(cached_file_name, cached_data)
 End
 

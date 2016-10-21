@@ -359,7 +359,7 @@
       }
     }
     { ConfigureTabs_video TabStrip
-      MoveScaled(30,4,62,47)
+      MoveScaled(30,7,62,47)
       Expand = True
       Arrangement = Arrange.Vertical
       Margin = True
@@ -404,82 +404,211 @@
         Spacing = True
         Padding = 4
         Border = False
-        { openglParseMeHBox1 HBox
-          MoveScaled(0,2,45,6)
+        { openglParseMeHBox6 HBox
+          MoveScaled(-9,-2,45,6)
           AutoResize = True
           Padding = 8
-          { CheckBox3gl2 CheckBox
+          { CheckBox3gl5 CheckBox
             MoveScaled(1,1,17,4.5714)
             #Translate = False
             Tag = "opengl-backend"
             Text = "backend"
             Value = CheckBox.True
           }
-          { ComboBox1gl2 ComboBox
+          { ComboBox1gl4 ComboBox
             MoveScaled(19,1,24,4.5714)
             #Translate = False
             Expand = True
-            ReadOnly = True
             List = ["auto", "x11", "x11egl"]
             Text = "x11"
           }
         }
+        { Separator2 Separator
+          MoveScaled(0,6,51,1)
+        }
+        { openglParseMeHBox2 HBox
+          MoveScaled(0,8,45,6)
+          AutoResize = True
+          Padding = 8
+          { Button2 Button
+            MoveScaled(1,1,20,4)
+            Text = ("Apply HQ profile")
+          }
+        }
         { openglParseMeHBox10 HBox
-          MoveScaled(0,9,45,6)
+          MoveScaled(0,14,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox3gl CheckBox
             MoveScaled(1,1,17,4.5714)
             #Translate = False
             Tag = "scale"
-            Text = "Scale"
+            Text = "scale"
           }
           { ComboBox1gl ComboBox
             MoveScaled(19,1,24,4.5714)
             #Translate = False
             Expand = True
-            ReadOnly = True
-            List = ["bilinear", "spline36", "lanczos", "ewa_lanczos", "mitchell"]
+            List = ["bilinear", "bicubic_fast", "oversample", "spline16", "spline36", "spline64", "sinc", "lanczos", "ginseng", "jinc", "ewa_lanczos", "ewa_hanning", "ewa_ginseng", "ewa_lanczossharp", "ewa_lanczossoft", "haasnsoft", "bicubic", "bcspline", "catmull_rom", "mitchell", "robidoux", "robidouxsharp", "ewa_robidoux", "ewa_robidouxsharp", "box", "nearest", "triangle", "gaussian"]
             Text = "bilinear"
           }
         }
-        { openglParseMeHBox2 HBox
-          MoveScaled(0,15,45,6)
+        { openglParseMeHBox5 HBox
+          MoveScaled(0,20,45,6)
           AutoResize = True
           Padding = 8
-          { CheckBox2gl CheckBox
-            MoveScaled(1,1,20,4.5714)
+          { CheckBox3gl4 CheckBox
+            MoveScaled(1,1,17,4.5714)
             #Translate = False
-            Tag = "scale=spline36:cscale=spline36:dscale=mitchell:dither-depth=auto:correct-downscaling:sigmoid-upscaling:pbo"
-            Text = "HQ preset"
+            Tag = "cscale"
+            Text = "cscale"
+          }
+          { ComboBox1gl3 ComboBox
+            MoveScaled(19,1,24,4.5714)
+            #Translate = False
+            Expand = True
+            List = ["bilinear", "bicubic_fast", "oversample", "spline16", "spline36", "spline64", "sinc", "lanczos", "ginseng", "jinc", "ewa_lanczos", "ewa_hanning", "ewa_ginseng", "ewa_lanczossharp", "ewa_lanczossoft", "haasnsoft", "bicubic", "bcspline", "catmull_rom", "mitchell", "robidoux", "robidouxsharp", "ewa_robidoux", "ewa_robidouxsharp", "box", "nearest", "triangle", "gaussian"]
+            Text = "bilinear"
           }
         }
+        { openglParseMeHBox9 HBox
+          MoveScaled(0,26,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox3gl6 CheckBox
+            MoveScaled(1,1,17,4.5714)
+            #Translate = False
+            Tag = "dscale"
+            Text = "dscale"
+          }
+          { ComboBox1gl5 ComboBox
+            MoveScaled(19,1,24,4.5714)
+            #Translate = False
+            Expand = True
+            List = ["bilinear", "bicubic_fast", "oversample", "spline16", "spline36", "spline64", "sinc", "lanczos", "ginseng", "jinc", "ewa_lanczos", "ewa_hanning", "ewa_ginseng", "ewa_lanczossharp", "ewa_lanczossoft", "haasnsoft", "bicubic", "bcspline", "catmull_rom", "mitchell", "robidoux", "robidouxsharp", "ewa_robidoux", "ewa_robidouxsharp", "box", "nearest", "triangle", "gaussian"]
+            Text = "bilinear"
+          }
+        }
+        { openglParseMeHBox1 HBox
+          MoveScaled(0,32,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox3gl2 CheckBox
+            MoveScaled(1,1,17,4.5714)
+            #Translate = False
+            Tag = "dither-depth"
+            Text = "dither depth"
+          }
+          { ComboBox1gl2 ComboBox
+            MoveScaled(19,1,24,4.5714)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["auto", "no", "-16", "-15", "-14", "-13", "-12", "-11", "-10", "Item 10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"].Insert(["13", "14", "15", "16"])
+            Text = "auto"
+          }
+        }
+        { openglParseMeHBox7 HBox
+          MoveScaled(0,38,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox4gl2 CheckBox
+            MoveScaled(1,0,24,5)
+            #Translate = False
+            Tag = "correct-downscaling"
+            AutoResize = True
+            Text = "correct downscaling"
+          }
+          { ComboBox5 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "yes"
+          }
+        }
+        { openglParseMeHBox8 HBox
+          MoveScaled(0,43,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox4gl3 CheckBox
+            MoveScaled(1,0,24,5)
+            #Translate = False
+            Tag = "sigmoid-upscaling"
+            AutoResize = True
+            Text = "sigmoid upscaling"
+          }
+          { ComboBox6 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "yes"
+          }
+        }
+        { openglParseMeHBox12 HBox
+          MoveScaled(0,48,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox6gl2 CheckBox
+            MoveScaled(1,0,17,4.5714)
+            #Translate = False
+            Tag = "deband"
+            Text = "deband"
+          }
+          { ComboBox8 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "yes"
+          }
+        }
+        { Separator1 Separator
+          MoveScaled(1,55,54,1)
+        }
         { openglParseMeHBox3 HBox
-          MoveScaled(0,21,45,6)
+          MoveScaled(0,57,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox6gl CheckBox
-            MoveScaled(1,1,17,4.5714)
+            MoveScaled(1,0,17,4.5714)
             #Translate = False
             Tag = "opengl-glfinish"
-            Text = "Glfinish"
+            Text = "glfinish"
+          }
+          { ComboBox7 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "yes"
           }
         }
         { openglParseMeHBox11 HBox
-          MoveScaled(0,27,45,6)
+          MoveScaled(0,63,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox4gl CheckBox
-            MoveScaled(1,1,39,4.5714)
+            MoveScaled(1,0,24,5)
             #Translate = False
             Tag = "interpolation"
             ToolTip = "Reduce stuttering caused by mismatches in the video fps and display refresh rate (also known as judder).\n\nActivating this, will silently set: --video-sync=display-vdrop"
             AutoResize = True
             Text = "temporal interpolation"
           }
+          { ComboBox4 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "yes"
+          }
         }
         { openglParseMeHBox4 HBox
-          MoveScaled(0,37,57,6)
+          MoveScaled(-2,70,57,6)
+          Visible = False
+          Enabled = False
           AutoResize = True
           Padding = 8
           { CheckBox3gl3 CheckBox

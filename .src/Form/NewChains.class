@@ -965,7 +965,9 @@ Public Function parse_drivers(audio As Boolean) As MpvOption[]
   If Not audio Then 'search for any override in generaloptions (like hwdec macro)
     Try video_driver_overridden = GeneralOptions.video_driver_overridden() 
     If video_driver_overridden <> "" Then
-        drivers &= parse_video_driver(video_driver_overridden, item_container.tag) & ","
+        drivers_list = video_driver_overridden
+        'drivers &= parse_video_driver(video_driver_overridden, item_container.tag) & ","
+        driver_opts.Insert(parse_audio_driver(video_driver_overridden, item_container.tag))
         Goto returnlabel
     Endif
   Endif
@@ -987,7 +989,7 @@ Public Function parse_drivers(audio As Boolean) As MpvOption[]
   
   return_opts.Insert(driver_opts)
   'remove the leading ","
-  drivers_list = Right(drivers_list, "-1")
+  If Left(drivers_list) = "," Then drivers_list = Right(drivers_list, "-1")
   
   If audio Then
     return_opts.Add(newopt("ao", drivers_list))
@@ -1679,13 +1681,6 @@ Public Sub xvScrollview_Arrange()
   TextBoxAdaptorsxv.text = ("Adaptors list:\n---------------------------------\n") & TextBoxAdaptorsxv.text
 End
 
-Public Sub CheckBox2gl_Click()
-  If Last.value Then CheckBox3gl.value = False
-End
-
-Public Sub CheckBox3gl_Click()
-  If Last.value Then CheckBox2gl.value = False
-End
 
 
 Private GotAlsaDevices As Boolean = False
@@ -1702,27 +1697,64 @@ Public Sub AlsaDeviceTextBox_Enter()
 End
 
 
-Public Sub Button1_Click()
-  Dim oglopts, oglopt As String
-  If combooglopts.count = 0 Then
-    Shell FMain.mplayer.executable() & " -vo opengl:help" To oglopts
-    If Trim(oglopts) = "" Then Return
-    If Error Then Return
-    For Each oglopt In Split(oglopts, "\n", "", True)
-      combooglopts.add(oglopt)
-    Next
-  Endif
-  combooglopts.x = OglAddOptsTextbox.x
-  combooglopts.w = OglAddOptsTextbox.w
-  combooglopts.y = OglAddOptsTextbox.y
-  Wait
-  combooglopts.Popup
-End
+' Public Sub Button1_Click()
+'   Dim oglopts, oglopt As String
+'   If combooglopts.count = 0 Then
+'     Shell FMain.mplayer.executable() & " -vo opengl:help" To oglopts
+'     If Trim(oglopts) = "" Then Return
+'     If Error Then Return
+'     For Each oglopt In Split(oglopts, "\n", "", True)
+'       combooglopts.add(oglopt)
+'     Next
+'   Endif
+'   combooglopts.x = OglAddOptsTextbox.x
+'   combooglopts.w = OglAddOptsTextbox.w
+'   combooglopts.y = OglAddOptsTextbox.y
+'   Wait
+'   combooglopts.Popup
+' End
 
-Public Sub ComboOglOpts_Click()
-  Dim opt As String = Split(combooglopts.Current.Text, " ", "", True)[0] & "="
-  If Trim(OglAddOptsTextbox.text) <> "" Then 
-    If Right(OglAddOptsTextbox.text) <> ":" Then opt = ":" & opt
-  Endif
-  OglAddOptsTextbox.text &= opt
+' Public Sub ComboOglOpts_Click()
+'   Dim opt As String = Split(combooglopts.Current.Text, " ", "", True)[0] & "="
+'   If Trim(OglAddOptsTextbox.text) <> "" Then 
+'     If Right(OglAddOptsTextbox.text) <> ":" Then opt = ":" & opt
+'   Endif
+'   OglAddOptsTextbox.text &= opt
+' End
+
+Public Sub Button2_Click()
+  Dim hqvalue As New Collection
+  Dim opt, value As String
+  Dim obj As Object
+
+  Application.busy = 1
+  hqvalue["scale"] = "spline36"
+  hqvalue["cscale"] = "spline36"
+  hqvalue["dscale"] = "mitchell"
+  hqvalue["dither-depth"] = "auto"
+  hqvalue["correct-downscaling"] = "yes"
+  hqvalue["sigmoid-upscaling"] = "yes"
+  hqvalue["deband"] = "yes"
+  For Each value In hqvalue
+    opt = hqvalue.key
+    'find the relevant widget and set it
+    For Each obj In Me.Controls
+      If TypeOf(obj.tag) = gb.String Then
+        If obj.tag = opt Then
+          If obj Is CheckBox Then
+            If obj.next <> Null Then
+              obj.value = CheckBox.True
+              Try obj.next.text = value
+              If Error Then Try obj.next.value = value
+              If Error Then 
+                obj.value = CheckBox.false
+                global.myDebug("could not set object because object.next is not settable")
+              Endif
+            Endif
+          Endif
+        Endif
+      Endif
+    Next
+  Next
+  Application.busy = 0
 End
