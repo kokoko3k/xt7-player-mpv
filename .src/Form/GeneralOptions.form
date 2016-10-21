@@ -40,7 +40,7 @@
       }
     }
     { Tabstrip1 TabStrip
-      MoveScaled(27,0,62,67)
+      MoveScaled(25,0,64,67)
       Tag = "User options"
       Expand = True
       Arrangement = Arrange.Vertical
@@ -1673,7 +1673,7 @@
       Index = 11
       Text = ("User Options")
       { ScrollViewUserOptions ScrollView
-        MoveScaled(1,0,60,62)
+        MoveScaled(-1,0,60,62)
         Tag = "Audio CD"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -1709,7 +1709,7 @@
           }
         }
         { NoParseUserOption2 HBox
-          MoveScaled(-1,9,57,4.5714)
+          MoveScaled(1,9,57,4.5714)
           ToolTip = ("mpv options in the format \"name = value\"")
           AutoResize = True
           Spacing = True
@@ -1733,7 +1733,7 @@
           }
         }
         { NoParseUserOption3 HBox
-          MoveScaled(-1,13,57,4.5714)
+          MoveScaled(1,13,57,4.5714)
           ToolTip = ("mpv options in the format \"name = value\"")
           AutoResize = True
           Spacing = True
@@ -1757,7 +1757,7 @@
           }
         }
         { NoParseUserOption4 HBox
-          MoveScaled(-2,19,57,4.5714)
+          MoveScaled(1,18,57,4.5714)
           ToolTip = ("mpv options in the format \"name = value\"")
           AutoResize = True
           Spacing = True
@@ -1781,7 +1781,7 @@
           }
         }
         { NoParseUserOption5 HBox
-          MoveScaled(-2,23,57,4.5714)
+          MoveScaled(1,23,57,4.5714)
           ToolTip = ("mpv options in the format \"name = value\"")
           AutoResize = True
           Spacing = True
@@ -1805,7 +1805,7 @@
           }
         }
         { NoParseUserOption6 HBox
-          MoveScaled(-1,29,57,4.5714)
+          MoveScaled(1,29,57,4.5714)
           ToolTip = ("mpv options in the format \"name = value\"")
           AutoResize = True
           Spacing = True
@@ -1829,7 +1829,7 @@
           }
         }
         { NoParseUserOption7 HBox
-          MoveScaled(-2,34,57,4.5714)
+          MoveScaled(1,34,57,4.5714)
           ToolTip = ("mpv options in the format \"name = value\"")
           AutoResize = True
           Spacing = True
@@ -1853,7 +1853,7 @@
           }
         }
         { NoParseUserOption8 HBox
-          MoveScaled(-1,39,57,4.5714)
+          MoveScaled(1,39,57,4.5714)
           ToolTip = ("mpv options in the format \"name = value\"")
           AutoResize = True
           Spacing = True
@@ -1877,7 +1877,7 @@
           }
         }
         { NoParseUserOption9 HBox
-          MoveScaled(-1,44,57,4.5714)
+          MoveScaled(1,44,57,4.5714)
           ToolTip = ("mpv options in the format \"name = value\"")
           AutoResize = True
           Spacing = True
@@ -1924,10 +1924,250 @@
             Expand = True
           }
         }
+        { NoParseUserOption11 HBox
+          MoveScaled(1,55,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox11 CheckBox notifyobj
+            Name = "UserOptionChackbox11"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox11 ComboBox
+            MoveScaled(7,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel11 TextLabel
+            MoveScaled(30,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata11 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
+        { NoParseUserOption12 HBox
+          MoveScaled(1,59,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox12 CheckBox notifyobj
+            Name = "UserOptionChackbox12"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox12 ComboBox
+            MoveScaled(9,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel12 TextLabel
+            MoveScaled(30,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata12 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
+        { NoParseUserOption13 HBox
+          MoveScaled(1,64,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox13 CheckBox notifyobj
+            Name = "UserOptionChackbox13"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox13 ComboBox
+            MoveScaled(9,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel13 TextLabel
+            MoveScaled(31,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata13 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
+        { NoParseUserOption14 HBox
+          MoveScaled(1,69,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox14 CheckBox notifyobj
+            Name = "UserOptionChackbox14"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox14 ComboBox
+            MoveScaled(9,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel14 TextLabel
+            MoveScaled(31,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata14 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
+        { NoParseUserOption15 HBox
+          MoveScaled(1,73,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox15 CheckBox notifyobj
+            Name = "UserOptionChackbox15"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox15 ComboBox
+            MoveScaled(10,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel15 TextLabel
+            MoveScaled(31,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata15 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
+        { NoParseUserOption16 HBox
+          MoveScaled(1,79,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox16 CheckBox notifyobj
+            Name = "UserOptionChackbox16"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox16 ComboBox
+            MoveScaled(8,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel16 TextLabel
+            MoveScaled(30,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata16 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
+        { NoParseUserOption17 HBox
+          MoveScaled(1,84,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox17 CheckBox notifyobj
+            Name = "UserOptionChackbox17"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox17 ComboBox
+            MoveScaled(8,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel17 TextLabel
+            MoveScaled(30,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata17 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
+        { NoParseUserOption18 HBox
+          MoveScaled(1,89,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox18 CheckBox notifyobj
+            Name = "UserOptionChackbox18"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox18 ComboBox
+            MoveScaled(10,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel18 TextLabel
+            MoveScaled(31,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata18 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
+        { NoParseUserOption19 HBox
+          MoveScaled(1,94,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox19 CheckBox notifyobj
+            Name = "UserOptionChackbox19"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox19 ComboBox
+            MoveScaled(8,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel19 TextLabel
+            MoveScaled(31,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata19 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
+        { NoParseUserOption20 HBox
+          MoveScaled(1,99,57,4.5714)
+          ToolTip = ("mpv options in the format \"name = value\"")
+          AutoResize = True
+          Spacing = True
+          { UserOptionChackbox20 CheckBox notifyobj
+            Name = "UserOptionChackbox20"
+            MoveScaled(1,0,5,4.5714)
+          }
+          { ComboBox20 ComboBox
+            MoveScaled(9,0,22,4.5714)
+            Expand = True
+          }
+          { TextLabel20 TextLabel
+            MoveScaled(31,0,4,4.5714)
+            AutoResize = True
+            Text = ("=")
+            Alignment = Align.Center
+          }
+          { NOPARSEAdditionaldata20 TextBox
+            MoveScaled(34,0,22,4.5714)
+            Expand = True
+          }
+        }
         { Panel4 Panel
-          MoveScaled(3,54,51,7)
+          MoveScaled(0,105,51,7)
           { Label25 Label
-            MoveScaled(0,0,50,6)
+            MoveScaled(-1,1,50,6)
             AutoResize = True
             Text = ("TODO: Every option set here must override.")
           }

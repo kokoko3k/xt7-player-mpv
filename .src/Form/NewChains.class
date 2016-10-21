@@ -785,7 +785,6 @@ Private Function Parse_video_filter(Filtername As String) As String
                 Endif
                   Else
                 If parse Then
-                  Print subobject.name
                   TmpString = global.RemoveShortcut(TmpString & ":")
                 Endif
               Endif
