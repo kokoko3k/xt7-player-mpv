@@ -489,7 +489,7 @@ Public Sub save_cached_options(ProfileName As String)
     NewChains.FirstLoadIfNeeded()
 
     driver_opts = NewChains.parse_drivers(False)
-    Stop
+
     If driver_opts <> Null Then
       For Each opt In driver_opts
         cached_data &= opt.name & "=" & opt.data & "\n"

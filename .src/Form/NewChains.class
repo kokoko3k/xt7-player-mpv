@@ -81,7 +81,7 @@ End
 Private Sub Init_drivers_audio()
   Dim drivers_audio_list As New String[]
   Dim driver As String
-  drivers_audio_list = ["alsa", "pulse", "jack", "pcm", "custom audio", "null"]
+  drivers_audio_list = ["alsa", "pulse", "jack", "pcm", "null"]
   For Each driver In drivers_audio_list
     draw_list_item(drivers_audio_container, driver)
   Next
@@ -92,7 +92,7 @@ End
 Private Sub Init_drivers_video()
   Dim drivers_video_list As New String[]
   Dim driver As String
-  drivers_video_list = ["opengl", "xv", "vdpau", "vaapi", "x11", "custom video", "null"]
+  drivers_video_list = ["opengl", "xv", "vdpau", "vaapi", "x11", "null"]
   For Each driver In drivers_video_list
     draw_list_item(drivers_video_container, driver)
   Next
@@ -809,63 +809,63 @@ End
 
 
 
-Private Function OLD_Parse_video_filter(Filtername As String) As String
-  'will parse the tabstrip at filtername index and output
-  'a commandline to add a filter in mplayer
-  Dim ParsedFilter As String = Lower(FilterName)
-  Dim TmpString As String = ""
-  Dim MyScrollView As Object   'the scrollview present in every tab, parent of all the controls in the tab
-  Dim PanelObject As Object 'the Hbox which contains a single parameter it Is Created by DrawFiltersGui
-  Dim SubObject As Object
-  Dim aTabstrip As Tabstrip = TabStrip_filters_video
-  Dim i As Integer
-  Dim parse As Boolean = True
-  Dim out As String
-  Dim is_lavfi As Boolean = False
-  i = aTabstrip.index
-  'Find the ParsedFilter Tab and activate it:
-  aTabstrip.index = Global.TabIndexByName(ParsedFilter, aTabstrip)
-  If Parsedfilter Like "customvideo*" Then
-    out = Parse_video_filter_Custom()
-    aTabstrip.index = i
-    Return out
-      Else
-    'Discend the Tab objects,parse them and build the commandline
-    'hierarchy is:
-    'Tabstrip -> scrollviews -> Panels -> ParameterObjects
-    For Each MyScrollview In aTabstrip.Children
-      If MyScrollView.tag = "lavfi" Then is_lavfi = True
-      For Each PanelObject In MyScrollView.Children
-        If PanelObject.name Like "*HBox" Then
-          For Each SubObject In PanelObject.Children
-            If Not (SubObject Is Label) Then
-              If Not ((SubObject Is Checkbox) Or (subobject.name Like "NOPARSE*")) Then
-                parse = True
-                ' Stop
-                ' If PanelObject.tag = "lavfi" Then
-                '   Break
-                ' Endif
-                  Else
-                parse = SubObject.value '(is a checkbox,parse only if it is checked)
-              Endif
-              If SubObject.text <> "" Then
-                If parse Then TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0] & ":")
-                  Else
-                If parse Then TmpString = global.RemoveShortcut(TmpString & ":")
-              Endif
-            Endif
-          Next
-        Endif
-      Next
-    Next
-    TmpString = Left(Tmpstring, Len(TmpString) - 1)
-    aTabstrip.index = i
-    If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
-    If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
-    Return ParsedFilter
-
-  Endif
-End
+' Private Function OLD_Parse_video_filter(Filtername As String) As String
+'   'will parse the tabstrip at filtername index and output
+'   'a commandline to add a filter in mplayer
+'   Dim ParsedFilter As String = Lower(FilterName)
+'   Dim TmpString As String = ""
+'   Dim MyScrollView As Object   'the scrollview present in every tab, parent of all the controls in the tab
+'   Dim PanelObject As Object 'the Hbox which contains a single parameter it Is Created by DrawFiltersGui
+'   Dim SubObject As Object
+'   Dim aTabstrip As Tabstrip = TabStrip_filters_video
+'   Dim i As Integer
+'   Dim parse As Boolean = True
+'   Dim out As String
+'   Dim is_lavfi As Boolean = False
+'   i = aTabstrip.index
+'   'Find the ParsedFilter Tab and activate it:
+'   aTabstrip.index = Global.TabIndexByName(ParsedFilter, aTabstrip)
+'   If Parsedfilter Like "customvideo*" Then
+'     out = Parse_video_filter_Custom()
+'     aTabstrip.index = i
+'     Return out
+'       Else
+'     'Discend the Tab objects,parse them and build the commandline
+'     'hierarchy is:
+'     'Tabstrip -> scrollviews -> Panels -> ParameterObjects
+'     For Each MyScrollview In aTabstrip.Children
+'       If MyScrollView.tag = "lavfi" Then is_lavfi = True
+'       For Each PanelObject In MyScrollView.Children
+'         If PanelObject.name Like "*HBox" Then
+'           For Each SubObject In PanelObject.Children
+'             If Not (SubObject Is Label) Then
+'               If Not ((SubObject Is Checkbox) Or (subobject.name Like "NOPARSE*")) Then
+'                 parse = True
+'                 ' Stop
+'                 ' If PanelObject.tag = "lavfi" Then
+'                 '   Break
+'                 ' Endif
+'                   Else
+'                 parse = SubObject.value '(is a checkbox,parse only if it is checked)
+'               Endif
+'               If SubObject.text <> "" Then
+'                 If parse Then TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0] & ":")
+'                   Else
+'                 If parse Then TmpString = global.RemoveShortcut(TmpString & ":")
+'               Endif
+'             Endif
+'           Next
+'         Endif
+'       Next
+'     Next
+'     TmpString = Left(Tmpstring, Len(TmpString) - 1)
+'     aTabstrip.index = i
+'     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
+'     If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
+'     Return ParsedFilter
+' 
+'   Endif
+' End
 
 
 Private Function Parse_audio_filter(Filtername As String) As String
@@ -1448,7 +1448,7 @@ Private Sub AlignObjects()
   containers.Add(GLScrollView)
   containers.Add(VdPauScrollView)
   containers.Add(VaapiScrollview)
-  containers.Add(CustomVideoScrollview)
+  
 
   containers.Add(AlsaScrollview)
   containers.Add(jackScrollview)
@@ -1515,9 +1515,7 @@ Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip)
   Dim ao_option_name As String
   Dim ao_option_value As String
   Dim return_opts As New MpvOption[]
-  If Lower(driver_name) Like "custom*" Then
-    Return TextBox5customaudio.text
-  Endif
+
 
   aTabstrip.index = 0
   While Lower(aTabstrip.Caption) <> driver_name
@@ -1624,9 +1622,6 @@ Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip)
   Dim vo_option_name As String
   Dim vo_option_value As String
   
-  If Lower(driver_name) Like "custom*" Then
-    Return TextBox5cv.text
-  Endif
 
   aTabstrip.index = 0
   While Lower(aTabstrip.Caption) <> driver_name
@@ -1757,4 +1752,10 @@ Public Sub Button2_Click()
     Next
   Next
   Application.busy = 0
+End
+
+Public Sub ConfigureTabs_video_Click()
+
+  
+
 End
