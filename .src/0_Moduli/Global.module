@@ -1230,7 +1230,7 @@ Public Function Preload_file_bg_stop()
 End
 
 Public Function Dedupe(sDir As String) As Boolean
-  Dim f, fullpath1, fullpath2, sFiles As String
+  Dim sFiles As String
   Dim files As New String[]
   Dim i, j As Integer
   Dim equal As String

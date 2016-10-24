@@ -33,9 +33,6 @@ Private hobs As Observer
 
 
 Public Sub _NEW()
-  Dim hpic_up As Picture
-  Dim coordinate As Integer[]
-
 
   Super.Border = Border.None
   MyValueBox = New ValueBox(Me) As "MyValueBox"

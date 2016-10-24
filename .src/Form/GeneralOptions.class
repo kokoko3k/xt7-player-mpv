@@ -9,6 +9,14 @@ Public TimesLoaded As Integer = 0 'Count how many times the form has been loaded
 
 Private LastDirectory As String = ""
 
+Public Struct MpvOptionInfo 
+  name As String
+  type As String
+  default_value As Variant
+  min As Variant
+  max As Variant
+  choices As String[]
+End Struct
 
 Public Sub FirstLoadIfNeeded()
   If Not initdone Then Init()
@@ -1177,6 +1185,7 @@ Public Sub ScrollViewUserOptions_Arrange()
     If o Is Hbox Then
       If o.Children[0] Is CheckBox Then
         c = o.Children[1]
+        Object.Lock(c)
         c.enabled = o.Children[0].value
         c.Next.next.enabled = c.enabled
         If c.List.count < 2 Then 
@@ -1186,6 +1195,7 @@ Public Sub ScrollViewUserOptions_Arrange()
           Next
           c.text = t
         Endif
+        Object.unLock(c)
       Endif
     Endif
   Next
@@ -1380,4 +1390,89 @@ Public Sub what_is_volume_property()
       Else
     fmain.mplayer.volumeproperty = "ao-volume"
   Endif
+End
+
+Public Sub ComboOption_Click()
+  Dim values As New String[]
+  Dim value, prev_value As String
+  Dim combonext As Combobox
+  Dim option_infos As Collection
+  Dim option_info As MpvOptionInfo
+  Dim i, imin, imax, istep As Integer
+  Dim choice As String
+  If Not alreadyloaded Then Return
+  If Not fmain.fullyloaded Then Return
+  
+  If Not (Last.next.next Is Combobox) Then Return
+  combonext = Last.next.next
+
+
+  option_infos = fmain.mplayer.options_info()
+  If Not option_infos.Exist(Last.text) Then Return
+
+'  A questo punto, hai tutto, devi solo immaginare come parsare i valori e inserirli nella combobox
+  
+'  combonext.text = prev_value 
+  option_info = option_infos[Last.text]
+  
+  prev_value = combonext.text
+  combonext.Clear
+
+
+  If (Lower(option_info.type) = "integer") Or Lower(option_info.type) = "float" Then
+    If option_info.min <> "" Then
+      If option_info.max <> "" Then
+        imin = CInt(CFloat(option_info.min)) 
+        imax = CInt(CFloat(option_info.max)) 
+        istep = (imax - imin) Div 10
+        If istep < 1 Then istep = 1
+        'fill min to max values, max 10 values
+        For i = imin To imax Step istep
+          If (Lower(option_info.type) = "integer") Then 
+            combonext.Add(i)
+              Else
+            combonext.Add(i & ".000")
+          Endif
+        Next 'i
+        'make sure last value is the max
+        If (Lower(option_info.type) = "float") Then 
+          If combonext[combonext.count - 1].text <> imax & ".000" Then
+            Stop
+            combonext.Add(imax & ".000")
+          Endif
+            Else
+          If combonext[combonext.count - 1].text <> imax Then
+            Stop
+            combonext.Add(imax)
+          Endif
+        Endif
+      Endif
+    Endif
+  Endif
+
+  
+  
+  If (Lower(option_info.type) = "flag") Then
+    combonext.Add("yes")
+    combonext.Add("no")
+  Endif
+
+  If Not (option_info.choices = Null) Then
+    If (option_info.min = "") And (option_info.max = "")
+      For Each choice In option_info.choices
+        combonext.Add(choice)
+      Next
+    Endif
+  Endif
+
+  'If Trim(prev_value) = "" Then 
+    If option_info.default_value <> "" Then combonext.text = option_info.default_value
+  '    Else
+  '  combonext.text = prev_value
+  'Endif
+
+  ReturnLabel:
+  'strip trailing "*" used by mpv to list some options
+  If Right(Last.text) = "*" Then Last.text = Left(Last.text, -1)
+
 End

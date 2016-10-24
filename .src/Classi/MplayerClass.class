@@ -94,6 +94,17 @@ Private Sub ClearMediaProperties()
   prop["cddbtracks"] = New String[] 
 End
 
+Public Struct MpvOptionInfo 
+  name As String
+  type As String
+  default_value As Variant
+  min As Variant
+  max As Variant
+  choices As String[]
+End Struct
+
+Public MpvOptionsInfo As New Collection[]
+
 
 Public Function FillMultitracks(Optional force_audio_only As Boolean = False)
   Dim T, Tcount As Integer
@@ -321,8 +332,10 @@ Public Function dvb_channel_to_number(C As String) As Integer
   Return 0
 End
 
-
 Public mpvoptions As New Collection
+
+
+
 
 Public Sub set_option(name As String, data As String, Optional allow_dupes As Boolean = True)
  'chr(8) is used instead of null because the collection doesn't keep null values
@@ -977,6 +990,7 @@ Public idleplaying As Boolean = False
 Public Function do_IdlePlay(filename As String) As Boolean
   'warning: call this function is mutually exclusive to calling do_play()
   'eg: if you started mpv with do_play(), you need another instance Of this class.
+  
   'check if the process is alive || start it
   ClearMediaProperties()
   If Not ProcessRunningOvr() Then
@@ -1736,9 +1750,72 @@ Public Sub list_options() As String[]
   If available_options.count > 0 Then Return available_options
   Shell executable() & " --list-options|grep '\\-\\-'|cut -d '-' -f 3-|cut -d ' ' -f 1" To opts
   For Each o In Split(opts, "\n", "", True)
-    available_options.Add(o)
+    If Len(o) > 1 Then available_options.Add(o)
   Next
   Return available_options
+End
+
+Private options_infos As New Collection
+
+Public Function options_info() As Collection
+  Dim opt As String
+  Dim commands As String
+  Dim t As String = Temp()
+  Dim out, sLine, choice As String
+  Dim jdec, data As Variant
+  Dim option_info As MpvOptionInfo
+
+  
+  If options_infos.count > 0 Then Return options_infos
+  
+  For Each opt In list_options()
+    commands &= ("print-text ${option-info/" & opt & "}") & "\n"
+  Next
+  commands &= "quit" & "\n"
+  File.Save(t, commands)
+  Shell executable() & " --idle --input-file=" & t To out
+  
+
+  For Each sLine In Split(out, "\n", "", True)
+    If sLine Begins "name=" Then
+
+      Try options_infos[option_info.name] = option_info
+      option_info = New MpvOptionInfo
+      option_info.name = Right(sLine, - InStr(sLine, "="))
+      Continue
+    Endif
+    If sLine Begins "type=" Then
+      option_info.type = Right(sLine, - InStr(sLine, "="))
+      Continue
+    Endif    
+
+    If sLine Begins "default-value=" Then
+      option_info.default_value = Right(sLine, - InStr(sLine, "="))
+      Continue
+    Endif        
+    
+    If sLine Begins "min=" Then
+      option_info.min = Right(sLine, - InStr(sLine, "="))
+      Continue
+    Endif    
+    
+    If sLine Begins "max=" Then
+      option_info.max = Right(sLine, - InStr(sLine, "="))
+      Continue
+    Endif    
+    
+    If sLine Begins "choices=" Then
+      option_info.choices = New String[]
+      option_info.choices = Split(Right(sLine, - InStr(sLine, "=")), ",", "", True)
+      Continue
+    Endif    
+
+  Next
+
+  Try options_infos[option_info.name] = option_info
+  
+  Return options_infos
+  
 End
 
 
