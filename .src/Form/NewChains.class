@@ -254,7 +254,9 @@ End
 
 Private Sub select_item(item As Object)
   Dim bro As Object
-  'If item.parent.parent.enabled Then
+  Dim ovr As String
+    
+  If item.parent.parent.enabled Then
     For Each bro In item.parent.parent.Children
       If bro Is HBox Then
         bro.background = Color.TextBackground
@@ -263,9 +265,13 @@ Private Sub select_item(item As Object)
     Next
     item.parent.background = Color.SelectedBackground
     item.parent.foreground = Color.SelectedForeground
-  'Endif
-  Select_tabstrip_item(item.parent.name, item.parent.parent.tag)
-
+    
+    Select_tabstrip_item(item.parent.name, item.parent.parent.tag)  
+  Endif
+    
+  
+  
+    
   If textareahelp.visible Then
     timerDelayShowHelp.start
   Endif
@@ -1318,11 +1324,14 @@ End
 
 Public Sub override_video_driver(vo As String)
   If vo = "" Then 
+    ConfigureTabs_video.tag = vo
     NewChains.drivers_video_container.enabled = True
     nosavelabel1.text = ""
     nosavelabel1.Visible = False
     Return
       Else
+    ConfigureTabs_video.tag = vo
+    Select_tabstrip_item(vo, ConfigureTabs_video)
     NewChains.drivers_video_container.enabled = False
     nosavelabel1.text = vo & " " & ("is overridden")
     nosavelabel1.Visible = True
@@ -1754,7 +1763,21 @@ Public Sub Button2_Click()
 End
 
 Public Sub ConfigureTabs_video_Click()
-
+  Dim ovr As String = ""
+  Dim i As Integer 
+  Try ovr = GeneralOptions.video_driver_overridden()
+  If ovr <> "" Then
+    Object.Lock(Last)
+    For i = 0 To Last.count - 1
+      Last.index = i
+      If Lower(Last.caption) = ovr Then 
+        Last.index = i
+        Goto returnlabel
+      Endif
+    Next
+  Endif
+  ReturnLabel:
+  Object.unLock(Last)
+  Return
   
-
 End

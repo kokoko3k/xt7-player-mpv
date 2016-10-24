@@ -94,7 +94,7 @@
         }
         { NoParseBox123 Panel
           MoveScaled(2,16,47,4.5714)
-          ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
+          ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"*-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
           Arrangement = Arrange.Horizontal
           Spacing = True
           Indent = True
@@ -108,7 +108,7 @@
             ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
             Expand = True
             ReadOnly = True
-            List = [("no (allows all video filters and drivers)"), ("auto + opengl (may allows only gamma adjustments)"), ("auto + vdpau (allows equalization, but gamma)"), ("auto + vaapi (allows equalization, but gamma)"), ("vdpau + vdpau (allows equalization, but gamma)"), ("vdpau + opengl (may allows only gamma adjustments)"), ("vaapi + vaapi (allows equalization, but gamma)"), ("vaapi + opengl (allows only gamma adjustments)"), ("vaapi-copy (allows all video filters and drivers - Intel only)"), ("cuda (check if your ffmpeg and mpv supports it)"), ("cuda-copy (see previous)")]
+            List = [("no (allows all video filters and drivers)"), ("auto + opengl (may allows only gamma adjustments)"), ("auto + vdpau (allows equalization, but gamma)"), ("auto + vaapi (allows equalization, but gamma)"), ("vdpau + vdpau (allows equalization, but gamma)"), ("vdpau + opengl (may allows only gamma adjustments)"), ("vaapi + vaapi (allows equalization, but gamma)"), ("vaapi + opengl (allows only gamma adjustments)"), ("vaapi-copy (allows all video filters and drivers - Intel only)"), ("cuda + opengl (check if your ffmpeg and mpv supports it)"), ("cuda-copy (see previous)")]
             Text = ("no (allows all video filters and drivers)")
           }
         }
