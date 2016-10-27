@@ -2782,7 +2782,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   mplayer.watched_properties_old_data.Add("", "duration")
   mplayer.watched_properties_old_data.Add("", "=duration")
   mplayer.watched_properties_old_data.Add("", "percent-pos")
-  mplayer.watched_properties_old_data.Add("", "cache")
+  mplayer.watched_properties_old_data.Add("", "cache-percent")
   mplayer.watched_properties_old_data.Add("", "media-title")
   mplayer.watched_properties_old_data.Add("", "=aid")
   ' mplayer.watched_properties_old_data.Add("", "=vid")
@@ -6378,7 +6378,7 @@ Public Sub Hsplit1_MyRefresh()
     If (Not mplayer.getP("audioonly")) Then CorrectAreaAspect()  
     UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
     UpdateSeekSlider()
-    Update_cache_percent(mplayer.get_property_mpv("cache", True, 1, True))
+    Update_cache_percent(mplayer.get_property_mpv("cache-percent", True, 1, True))
   Endif
 
   Try RightPanel = HSplit1.layout[1]
