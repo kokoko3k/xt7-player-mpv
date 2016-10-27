@@ -384,8 +384,8 @@ Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As
         Print
         unset_option("audio-channels", return_opts)
       Endif
-        Else If return_opts.Key = "vo" Then
-          If data Like "*opengl:*interpolation*" Then
+        Else If return_opts.Key = "interpolation" Then
+          If data = "yes" Then
             Print "It seems that user requested opengl temporal interpolation; setting --video-sync=display-vdrop" 
             set_option("video-sync", "display-vdrop")
           Endif
