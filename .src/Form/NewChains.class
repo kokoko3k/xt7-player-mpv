@@ -1552,20 +1552,20 @@ Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip)
       For Each child In obj.Children
         If object.type(child) = "CheckBox" Then
           If child.value Then
-              ao_option_name = child.tag
-                If (child.next <> Null) Then
-                  If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
-                    If child.NEXT.text Like "*" & sep & "*" Then
-                      ao_option_value = Split(child.NEXT.text, sep)[0]
-                        Else
-                      ao_option_value = child.NEXT.text
-                    Endif
-                  Endif
+            ao_option_name = child.tag
+            Try Object.IsValid(child.next)
+            If Not Error Then
+              If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
+                If child.NEXT.text Like "*" & sep & "*" Then
+                  ao_option_value = Split(child.NEXT.text, sep)[0]
+                    Else
+                  ao_option_value = child.NEXT.text
                 Endif
-                return_opts.Add(newopt(ao_option_name, ao_option_value))
-                ao_option_value = ""
-                ao_option_name = ""
-                
+              Endif
+            Endif
+            return_opts.Add(newopt(ao_option_name, ao_option_value))
+            ao_option_value = ""
+            ao_option_name = ""   
           Endif
         Endif
       Next
@@ -1632,7 +1632,6 @@ Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip)
   Dim return_opts As New MpvOption[]
   Dim vo_option_name As String
   Dim vo_option_value As String
-  
 
   aTabstrip.index = 0
   While Lower(aTabstrip.Caption) <> driver_name
@@ -1657,7 +1656,8 @@ Public Function parse_video_driver(driver_name As String, aTabstrip As Tabstrip)
           If object.type(child) = "CheckBox" Then
             If child.value = CheckBox.true Then
                 vo_option_name = child.tag
-                  If (child.next <> Null) Then
+                Try Object.IsValid(child.next)
+                  If Not Error Then
                     If (object.type(child.next) = "ComboBox") Or (object.type(child.next) = "SpinBox") Or (object.type(child.next) = "TextBox") Then
                       If (object.type(child.next) = "ComboBox") Then
                         vo_option_value = Split(child.NEXT.text, " ")[0]
