@@ -996,10 +996,13 @@ Public Function parse_drivers(audio As Boolean) As MpvOption[]
   'remove the leading ","
   If Left(drivers_list) = "," Then drivers_list = Right(drivers_list, "-1")
   
-  If audio Then
-    return_opts.Add(newopt("ao", drivers_list))
-      Else
-    return_opts.Add(newopt("vo", drivers_list))
+  
+  If Trim(drivers_list) <> "" Then
+    If audio Then
+      return_opts.Add(newopt("ao", drivers_list))
+        Else
+      return_opts.Add(newopt("vo", drivers_list))
+    Endif
   Endif
   
   
