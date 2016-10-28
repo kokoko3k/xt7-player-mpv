@@ -17,14 +17,6 @@
       Tracking = True
       Expand = True
     }
-    { Label1 Label VideoAreaGroup
-      Name = "Label1"
-      Move(28,28,161,28)
-      Visible = False
-      Font = Font["Bold,Italic,17"]
-      Foreground = &HFFFF00&
-      Text = ("Media Info ")
-    }
     { GridUpBox HBox audioareagroup
       Name = "GridUpBox"
       Move(21,63,651,119)
@@ -70,13 +62,14 @@
         Delay = 30
       }
     }
-    { Panel2 Panel
-      Move(70,196,469,182)
+    { Panel2 Panel audioareagroup
+      Name = "Panel2"
+      Move(42,203,469,182)
       Arrangement = Arrange.Vertical
       AutoResize = True
       { Panel1 Panel audioareagroup
         Name = "Panel1"
-        Move(0,0,301,91)
+        Move(49,28,301,91)
         Arrangement = Arrange.Horizontal
         AutoResize = True
         Spacing = True
@@ -95,7 +88,7 @@
         }
         { GridDown GridView audioareagroup
           Name = "GridDown"
-          Move(77,0,420,49)
+          Move(70,0,420,49)
           Background = &HFF000000&
           Border = False
           Grid = False
@@ -103,16 +96,16 @@
           AutoResize = False
         }
       }
-      { PanelVisSpacer Panel
-        Move(98,98,217,77)
+      { panelvisspacer Panel audioareagroup
+        Name = "panelvisspacer"
+        Move(98,133,252,35)
       }
     }
     { PictureBox1 Panel audioareagroup
       Name = "PictureBox1"
-      Move(119,406,420,35)
+      Move(119,434,420,35)
       Background = Color.Black
       Tracking = True
-      Expand = True
     }
     { PictureBack PictureBox AudioAreaGroup
       Name = "PictureBack"
