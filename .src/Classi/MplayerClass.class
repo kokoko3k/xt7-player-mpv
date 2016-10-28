@@ -560,22 +560,21 @@ Event property_change(name As String, data_old As String, data_new As String)
 
 Event seeking()
 
-Private Function lua_list() As String
-  Dim lua_script As String
-  Dim out_list As String
-  For Each lua_script In lua_scripts
-    out_list &= lua_script & ","
-  Next
-  out_list &= killer_script_filename()
-  Return out_list
-End
+' Private Function lua_list() As String
+'   Dim lua_script As String
+'   Dim out_list As String
+'   For Each lua_script In lua_scripts
+'     out_list &= lua_script & ","
+'   Next
+'   out_list &= killer_script_filename()
+'   Return out_list
+' End
 
 
 Private Function internal_options() As Collection
   Dim out As New Collection
 
-  'Returns a collection Of options that will be set every Time, depsite any configuration option
-
+  'Returstop
   'out["quiet"] = "yes"
   out["input-file"] = SetUpInputPipe()
   out["msg-color"] = "no"
@@ -583,15 +582,15 @@ Private Function internal_options() As Collection
   out["input-default-bindings"] = "no"
   out["term-status-msg"] = play_initialized_str
   out["force-seekable"] = "yes" 'this will allow seeks within the cache
-  'out["script"] = killer_script_filename()
-  out["script"] = lua_list() 'killer_script_filename()
+  out["script"] = killer_script_filename()
+  'out["script"] = lua_list() 'killer_script_filename()
 
   'this array will be needed by do_apply().
   'because it decides if a restart is needed by comparing the changed user options
   'with the previous one. But since changed options are set from the outside,
   'which has no clue about those internal_options, we say to do_apply to ignore
   'the following:
-  ignore_opts = ["input-file", "term-status-msg", "msg-color", "msg-level", "input-default-bindings", "start", "force-seekable", volumeproperty]
+  ignore_opts = ["script", "input-file", "term-status-msg", "msg-color", "msg-level", "input-default-bindings", "start", "force-seekable", volumeproperty]
   Return out
 End
 

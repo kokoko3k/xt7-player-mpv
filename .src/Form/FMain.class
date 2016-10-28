@@ -2814,7 +2814,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     Endif
   Endif
 
-  mplayer.lua_scripts.Add(global.tmpdir & "/_mpvstats.lua")
+  'mplayer.lua_scripts.Add(global.tmpdir & "/_mpvstats.lua")
 
   'set initial volume only if we are using the internal mpv volume mixer
   If mplayer.volumeproperty = "volume" Then
@@ -2855,6 +2855,9 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
       mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value, force_audio_only)
       global.myDebug("mplayer.get_mediainfo()", Timer() - timeA)
     Endif
+
+    'load stat lua script
+    mplayer.mpv_command(["load-script", global.tmpdir & "/_mpvstats.lua"])
 
     'mplayer.do_Apply(mplayer.mpvoptions, True)
     If zzzfake.YTPanel.Parent = outerbox Then
@@ -5175,10 +5178,14 @@ Public Sub Apply(Optional force_restart As Boolean = False)
   If force_restart Then
     mplayer.do_apply_restart(get_apply_opts())
       Else
+        
     mplayer.do_Apply(get_apply_opts())
   Endif
    global.ResetApplyBtnColor()
    audioform.panelvisspacer.Visible = (Left(generaloptions.NoParseVisType2.text) <> "0")
+   
+  mplayer.mpv_command(["load-script", global.tmpdir & "/_mpvstats.lua"])
+   
 End
 
 
