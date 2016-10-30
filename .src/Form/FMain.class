@@ -2791,7 +2791,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   For Each data In opts
     mplayer.set_option(opts.key, data)
   Next
-
   opts = file_options(fullpath)
   For Each data In opts
     mplayer.set_option(opts.key, data)
@@ -3422,6 +3421,7 @@ Public Sub ShowAudioPanel(Show As Boolean, Optional samecover As Boolean = False
     Timer_mediainfo.start
     audioform.tag = "visible" 
     audioform.panelvisspacer.Visible = (Left(generaloptions.NoParseVisType2.text) <> "0")
+    audioform.PictureBox1.expand = Not (audioform.panelvisspacer.Visible)
       Else
     Timer_mediainfo.stop
     audioform.tag = "invisible"
@@ -5181,6 +5181,7 @@ Public Sub Apply(Optional force_restart As Boolean = False)
   Endif
    global.ResetApplyBtnColor()
    audioform.panelvisspacer.Visible = (Left(generaloptions.NoParseVisType2.text) <> "0")
+   audioform.PictureBox1.expand = Not (audioform.panelvisspacer.Visible)
    
   mplayer.mpv_command(["load-script", global.tmpdir & "/_mpvstats.lua"])
    
