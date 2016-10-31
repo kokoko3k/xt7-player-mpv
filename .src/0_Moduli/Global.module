@@ -460,6 +460,7 @@ Public Function get_cached_options(profilename As String) As Collection
     If l Like "*=*" Then 
       opt = Left(l, InStr(l, "=") - 1)
       data = Right(l, Len(l) - Len(opt) - 1)
+      If data = "" Then data = Chr(8)
       out[opt] = data
         Else
       out[l] = Chr(8)
