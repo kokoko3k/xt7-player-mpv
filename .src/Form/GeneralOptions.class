@@ -364,8 +364,9 @@ Public Function Visualization_opts() As MpvOption[]
   Dim myopts As New MpvOption[]
   Dim visstring As String
   Dim t1 As String
-
-  t1 = Temp()
+  
+  t1 = global.tmpdir & "/pic.tmp" 
+  Try Kill t1
   Select Case Left(NoParseVisType2.text)
     Case "1"
       Copy "shade_alpha.png" To t1

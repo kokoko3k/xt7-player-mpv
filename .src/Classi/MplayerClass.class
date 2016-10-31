@@ -2192,6 +2192,9 @@ End
 Private Function what_changes(oldc As Collection, newc As Collection) As Collection
   Dim out As New Collection
   Dim data, k As String
+  
+  Dim i As Integer
+  
   'given 2 collections, returns a new collection
   'built from changed key values, removed keys,added keys
   
