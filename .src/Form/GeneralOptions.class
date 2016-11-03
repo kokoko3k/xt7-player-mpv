@@ -1393,7 +1393,7 @@ Public Sub what_is_volume_property()
   Endif
 End
 
-Public Sub ComboOption_Click()
+Public Sub OLD_ComboOption_Click()
   Dim values As New String[]
   Dim value, prev_value As String
   Dim combonext As Combobox
@@ -1476,3 +1476,101 @@ Public Sub ComboOption_Click()
   If Right(Last.text) = "*" Then Last.text = Left(Last.text, -1)
 
 End
+
+Public Sub uservalue_mousedown()
+  SyncUserOptions(Last)
+End
+
+Public Sub ComboOption_Click()
+  Dim OverWrite As Boolean = True
+  If Last.next.next Is Combobox Then
+    SyncUserOptions(Last.next.next, overwrite)
+  Endif
+End
+
+
+Public Sub SyncUserOptions(ValueCombobox As Combobox, Optional overwrite As Boolean = False)
+
+  Dim values As New String[]
+  Dim value, prev_value As String
+  Dim ComboPrev As Combobox
+  Dim option_infos As Collection
+  Dim option_info As MpvOptionInfo
+  Dim i, imin, imax, istep As Long
+  Dim choice As String
+  If Not alreadyloaded Then Return
+  If Not fmain.fullyloaded Then Return
+
+  If Not (ValueCombobox.previous.previous Is Combobox) Then Return
+
+  Comboprev = ValueCombobox.previous.previous
+  
+  option_infos = fmain.mplayer.options_info()
+  
+    If Not option_infos.Exist(Comboprev.text) Then Return
+  
+    option_info = option_infos[comboprev.text]
+    
+    prev_value = ValueCombobox.text
+    
+    ValueCombobox.clear
+    
+ 
+  If (Lower(option_info.type) = "integer") Or Lower(option_info.type) = "float" Then
+    If option_info.min <> "" Then
+      If option_info.max <> "" Then
+        imin = CInt(CFloat(option_info.min)) 
+        imax = CInt(CFloat(option_info.max)) 
+        istep = (imax - imin) Div 10
+        If istep < 1 Then istep = 1
+        'fill min to max values, max 10 values
+        For i = imin To imax Step istep
+          If (Lower(option_info.type) = "integer") Then 
+            ValueCombobox.Add(i)
+              Else
+            ValueCombobox.Add(i & ".000")
+          Endif
+        Next 'i
+        'make sure last value is the max
+        If (Lower(option_info.type) = "float") Then 
+          If ValueCombobox[ValueCombobox.count - 1].text <> imax & ".000" Then
+            Stop
+            ValueCombobox.Add(imax & ".000")
+          Endif
+            Else
+          If ValueCombobox[ValueCombobox.count - 1].text <> imax Then
+            ValueCombobox.Add(imax)
+          Endif
+        Endif
+      Endif
+    Endif
+  Endif
+
+  
+  
+  If (Lower(option_info.type) = "flag") Then
+    ValueCombobox.Add("yes")
+    ValueCombobox.Add("no")
+  Endif
+
+  If Not (option_info.choices = Null) Then
+    If (option_info.min = "") And (option_info.max = "")
+      For Each choice In option_info.choices
+        ValueCombobox.Add(choice)
+      Next
+    Endif
+  Endif
+
+  
+  If (Trim(prev_value) = "") Or overwrite Then 
+    If option_info.default_value <> "" Then ValueCombobox.text = option_info.default_value
+      Else
+    ValueCombobox.text = prev_value
+  Endif
+
+  ReturnLabel:
+  'strip trailing "*" used by mpv to list some options
+  If Right(ValueCombobox.text) = "*" Then ValueCombobox.text = Left(ValueCombobox.text, -1)
+End
+
+
