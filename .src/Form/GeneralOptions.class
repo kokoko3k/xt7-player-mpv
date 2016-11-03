@@ -1399,7 +1399,7 @@ Public Sub ComboOption_Click()
   Dim combonext As Combobox
   Dim option_infos As Collection
   Dim option_info As MpvOptionInfo
-  Dim i, imin, imax, istep As Integer
+  Dim i, imin, imax, istep As Long
   Dim choice As String
   If Not alreadyloaded Then Return
   If Not fmain.fullyloaded Then Return
@@ -1443,7 +1443,6 @@ Public Sub ComboOption_Click()
           Endif
             Else
           If combonext[combonext.count - 1].text <> imax Then
-            Stop
             combonext.Add(imax)
           Endif
         Endif
