@@ -1534,7 +1534,7 @@ Public Sub SyncUserOptions(ValueCombobox As Combobox, Optional overwrite As Bool
         'make sure last value is the max
         If (Lower(option_info.type) = "float") Then 
           If ValueCombobox[ValueCombobox.count - 1].text <> imax & ".000" Then
-            Stop
+
             ValueCombobox.Add(imax & ".000")
           Endif
             Else
