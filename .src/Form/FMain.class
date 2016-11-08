@@ -4665,7 +4665,8 @@ Public Sub SwitchToFS()
 
   FsForm.FullScreen = True
   FsForm.Background = color.Default
-
+ 
+ 
   'execute shell commands
   'If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then FsCommandsExec(True, mplayer.getP("fps"))
 
@@ -4717,12 +4718,14 @@ Public Sub SwitchToFS()
   CostrainFormSizes()
   Maintoolbar.hide
 
+  mousehider.trigger
   videobox.Show
   If Lower(audioform.AudioPanel.parent.name) = Lower(outerbox.name) Then Audioform.AutoresizeAudioForm()
   For i = 1 To 10
     CorrectAreaAspect()
     Wait 0.1
   Next 'i
+
   fsform.picture = Null
 
  If dopauseworkaround Then 
@@ -4847,6 +4850,7 @@ End
 Public mousehider As New Timer As "mousehider"
 
 Private Sub HideMouseDelayed()
+  mousehider.delay = 500
   If Not (mousehider.Enabled) Then mousehider.start
 End
 
