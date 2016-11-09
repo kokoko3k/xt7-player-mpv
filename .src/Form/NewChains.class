@@ -292,10 +292,11 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
   Dim item_tab As Integer = -1
   Dim i As Integer
   Dim islavfi As Boolean = False
-
-  For i = 0 To atabstrip.count - 1
-    atabstrip[i].enabled = False
-  Next
+  Object.Detach(atabstrip) 'we can't use lock because of a gambas bug
+    For i = 0 To atabstrip.count - 1
+      atabstrip[i].enabled = False
+    Next
+  object.Attach(atabstrip, atabstrip.parent, atabstrip.name)
 
   Try item_tab = aTabstrip.Tag.Find(Lower(item_name))
 
@@ -1784,3 +1785,13 @@ Public Sub ConfigureTabs_video_Click()
   Return
   
 End
+
+
+' Public Sub dynaobj_change(obj As Object)
+' 
+'   If FMain.mplayer.ProcessRunningOvr() Then 
+'     FMain.apply
+'   Endif
+'   
+' End
+

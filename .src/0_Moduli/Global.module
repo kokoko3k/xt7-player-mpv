@@ -998,7 +998,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     Else If CurrentParams[0] = "RANGEFLOAT" Then 'Let's Draw a FloatSpinBox
         'Syntax for TheParameters is: ["RANGE", Caption, Min, Default , Max, SpinBoxName,Comment]
 
-        AFloatSpinBox = New FloatSpinBox(AnHBox) As ".AFloatSpinBox"
+        AFloatSpinBox = New FloatSpinBox(AnHBox) As "dynaobj"
         AFloatSpinBox.DecimalSeparator = "."
         AFloatSpinBox.Name = CurrentParams[CurrentParams.Count - 2] & ".FloatSpinBox"
         f = CurrentParams[2]
@@ -1101,9 +1101,10 @@ Public Sub NotifyChanges(obj As Object)
   Dim myform As Object
   myform = Last
   Repeat
-  If Not (myform Is Form) Then Try myform = myform.parent
+    If Not (myform Is Form) Then Try myform = myform.parent
   Until (myform Is Form)
   If fmain.fullyloaded Then
+    Try Object.Call(myform, "dynaobj_change", [obj])
     If myform.visible Then
       RedApplyBtnColor()
     Endif
