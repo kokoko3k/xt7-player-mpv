@@ -1787,11 +1787,11 @@ Public Sub ConfigureTabs_video_Click()
 End
 
 
-' Public Sub dynaobj_change(obj As Object)
-' 
-'   If FMain.mplayer.ProcessRunningOvr() Then 
-'     FMain.apply
-'   Endif
-'   
-' End
+Public Sub dynaobj_change(obj As Object)
+  'there is no need to apply anything if the user did not just changed it
+  If Not Me.visible Then Return
+  If FMain.mplayer.ProcessRunningOvr() Then 
+    FMain.apply
+  Endif
+End
 
