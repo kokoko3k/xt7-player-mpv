@@ -228,13 +228,41 @@ Private filter_text As Textlabel
 
 Public Sub filter_button_up_click()
   Dim up As Boolean = True
+  Dim obj As Object
+  Dim trig As Boolean = False
+  
+  'See if the filter is enabled and trigger a chain change
+  For Each obj In Last.parent.children
+    If obj Is Checkbox Then
+      If obj.value = CheckBox.true Then trig = True
+    Endif
+  Next
+  
+  'move it  
   chain_item_move(Last.parent, up = True)
+  
+  If trig Then dynaobj_change(Last)
+  
 End
 
 
 Public Sub filter_button_down_click()
   Dim up As Boolean = True
+  Dim obj As Object
+  Dim trig As Boolean = False
+  
+  'See if the filter is enabled and trigger a chain change
+  For Each obj In Last.parent.children
+    If obj Is Checkbox Then
+      If obj.value = CheckBox.true Then trig = True
+    Endif
+  Next
+
+  'move it
   chain_item_move(Last.parent, up = False)
+
+  If trig Then dynaobj_change(Last)
+  
 End
 
 
@@ -244,6 +272,7 @@ End
 
 Public Sub filter_checkbox_Click()
     select_item(Last)
+    dynaobj_change(Last)
 End
 
 
