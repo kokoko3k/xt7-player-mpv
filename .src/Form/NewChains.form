@@ -1089,29 +1089,36 @@
     Index = 0
   }
   { HBox1 HBox
-    MoveScaled(9,69,76,4.5714)
+    MoveScaled(2,69,83,5)
     Spacing = True
     Padding = 8
+    Indent = True
+    { RealTimeCHK CheckBox
+      MoveScaled(3,0,26,4)
+      ToolTip = ("Apply changes in real-time (no need to push the \"USE\" button)")
+      AutoResize = True
+      Text = ("Auto-apply filter changes")
+    }
     { VBox1 VBox
-      MoveScaled(3,0,6,3)
+      MoveScaled(33,1,6,3)
       Expand = True
     }
     { SaveBTN Button
-      MoveScaled(29,0,13.4286,3.5714)
+      MoveScaled(41,0,14,4)
       ToolTip = ("Save and use new settings")
       AutoResize = True
       Text = ("Save")
       Picture = Picture["icon:/16/save"]
     }
     { ApplyBTN Button
-      MoveScaled(44,0,14,4.5714)
+      MoveScaled(55,0,14,4.5714)
       ToolTip = ("Use new settings without save")
       AutoResize = True
       Text = Shortcut(("Use"), "U")
       Picture = Picture["icon:/16/redo"]
     }
     { OkBTN Button
-      MoveScaled(60,0,14,4.5714)
+      MoveScaled(69,0,14,4.5714)
       ToolTip = ("Close the window")
       AutoResize = True
       Text = ("Close")

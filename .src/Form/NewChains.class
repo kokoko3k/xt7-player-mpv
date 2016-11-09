@@ -759,6 +759,8 @@ Private Function Parse_video_filter(Filtername As String) As String
   Dim parse As Boolean = True
   Dim out As String
   Dim is_lavfi As Boolean = False
+  Dim subtext As String
+  
   i = aTabstrip.index
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
@@ -785,10 +787,18 @@ Private Function Parse_video_filter(Filtername As String) As String
                   Else If Lower(subobject.name) Like "noparse*" Then
                     parse = False
               Endif
-              If SubObject.text <> "" Then
-                If (parse And Not (subobject Is Checkbox)) Then TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0] & ":")
+              
+              'patch
+              If subobject Is Spinbar Then 
+                subtext = Replace(CString(subobject.value), ",", ".")
+                  Else
+                subtext = subobject.text
+              Endif
+              
+              If Subtext <> "" Then
+                If (parse And Not (subobject Is Checkbox)) Then TmpString = global.RemoveShortcut(TmpString & Split(Subtext, " ")[0] & ":")
                 If (parse And (subobject Is Checkbox)) Then
-                  TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0]) 'fixmempv perchè non mette i due punti alla fine del checkbox?
+                  TmpString = global.RemoveShortcut(TmpString & Split(Subtext, " ")[0]) 'fixmempv perchè non mette i due punti alla fine del checkbox?
                 Endif
                   Else
                 If parse Then
@@ -887,8 +897,9 @@ Private Function Parse_audio_filter(Filtername As String) As String
   Dim parse As Boolean = True
   Dim out As String
   Dim is_lavfi As Boolean = False
+  Dim subtext As String
   i = aTabstrip.index
-  
+
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
   If ParsedFilter = "equalizer" Then
@@ -908,9 +919,6 @@ Private Function Parse_audio_filter(Filtername As String) As String
       For Each PanelObject In MyScrollView.Children
         If PanelObject.name Like "*HBox" Then
           parse = True
-          ' If PanelObject.tag = "lavfi" Then
-          '   Break
-          ' Endif
           For Each SubObject In PanelObject.Children
             If Not (SubObject Is Label) Then
               If (SubObject Is Checkbox) Then
@@ -918,10 +926,18 @@ Private Function Parse_audio_filter(Filtername As String) As String
                   Else If Lower(subobject.name) Like "noparse*" Then
                     parse = False
               Endif
-              If SubObject.text <> "" Then
-                If (parse And Not (subobject Is Checkbox)) Then TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0] & ":")
+              
+              'patch
+              If subobject Is Spinbar Then 
+                subtext = Replace(CString(subobject.value), ",", ".")
+                  Else
+                subtext = subobject.text
+              Endif
+              
+              If subtext <> "" Then
+                If (parse And Not (subobject Is Checkbox)) Then TmpString = global.RemoveShortcut(TmpString & Split(subtext, " ")[0] & ":")
                 If (parse And (subobject Is Checkbox)) Then
-                  TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0]) 'fixmempv perchè non mette i due punti alla fine del checkbox?
+                  TmpString = global.RemoveShortcut(TmpString & Split(Subtext, " ")[0]) 'fixmempv perchè non mette i due punti alla fine del checkbox?
                 Endif
                   Else
                 If parse Then
@@ -1789,7 +1805,9 @@ End
 
 Public Sub dynaobj_change(obj As Object)
   'there is no need to apply anything if the user did not just changed it
-  If Not Me.visible Then Return
+    If Not Me.visible Then Return
+  
+  If RealTimeCHK.value = CheckBox.false Then Return
   If FMain.mplayer.ProcessRunningOvr() Then 
     FMain.apply
   Endif

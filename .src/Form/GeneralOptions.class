@@ -294,6 +294,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Dim AllOptions As String = ""
   Dim hwdec_choice As String
   Dim myopts As New MpvOption[]
+  Dim optnextvalue As String
   Dim pt As String
   Previndex = Tabstrip1.index
   For i = 0 To TabStrip1.count - 1
@@ -312,9 +313,12 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
                     Else If Option.next Is StringFileReqClass Then 'file/dir Name, insert double quotes around
                       myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), "\"" & Option.next.value & "\""))
                       AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & "\"" & Option.next.value & "\""
+                        Else If Option.next Is Spinbar Then 'Convert float to string
+                          Try myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), Replace(CString(option.next.value), ",", ".")))
+                          Try AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & Replace(CString(option.next.value), ",", ".")
                       Else
-                    Try myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), Option.next.value))
-                    Try AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & Option.next.value
+                    Try myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), option.next.value))
+                    Try AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & option.next.value
                   Endif
                 Endif
               Endif
