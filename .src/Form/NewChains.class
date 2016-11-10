@@ -1831,14 +1831,58 @@ Public Sub ConfigureTabs_video_Click()
   
 End
 
+Public timer_dynaobj_delayed_change As Timer
 
 Public Sub dynaobj_change(obj As Object)
+  Dim initial_value, current_value As String
   'there is no need to apply anything if the user did not just changed it
-    If Not Me.visible Then Return
-  
+  If Not Me.visible Then Return
   If RealTimeCHK.value = CheckBox.false Then Return
-  If FMain.mplayer.ProcessRunningOvr() Then 
-    FMain.apply
-  Endif
+  If Not FMain.mplayer.ProcessRunningOvr() Then Return
+  
+  'trigger a new timer to check if the changed value is stable
+  'we use a timer to keep the gui responsive
+  last_dynaobj_changed = obj
+  timer_dynaobj_delayed_change = New Timer As "timer_dynaobj_delayed_change"
+  timer_dynaobj_delayed_change.trigger
+ 
 End
+
+Private unused_str As String = "^.:A.n.Un..Use..dSt...ri.ng:.^"
+Private last_dynaobj_changed As Object
+
+
+Public Sub timer_dynaobj_delayed_change_Timer()
+  Dim initial_value, current_value As String
+  initial_value = value_or_text(last_dynaobj_changed)
+  
+  'Since we don't want to hammer mpv with too many chains reconfigurations
+  'we'll wait a while bedore applying new values to see if the object value has changed
+  'if it changes too fast, we'll apply the modification into a next dynaobj_change() call.
+  
+  '...and of course we cannot do that if we were unable to understand if the changed property is 
+  'text or value:
+  If initial_value = unused_str Then Goto Apply
+  If Rnd(0, 10) > 8 Then Goto Apply 'apply changes from time to time even if they are changing fast
+  
+  Wait 0.05
+  
+  current_value = value_or_text(last_dynaobj_changed)
+  'values are changing fast! check later
+  If current_value <> initial_value Then Return
+
+  'value is stable, apply.
+  Apply:
+    FMain.apply
+    last_dynaobj_changed = Null
+End
+
+
+Public Function value_or_text(obj As Object) As String
+  Try Return obj.value
+  If Error Then Try Return obj.text
+  If Error Then Return unused_str
+End
+
+
 

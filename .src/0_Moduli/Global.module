@@ -1112,6 +1112,10 @@ End
 
 Public Sub NotifyChanges(obj As Object)
   Dim myform As Object
+  Dim newvalue As String
+  Try newvalue = obj.value
+  If Error Then newvalue = obj.text
+  
   myform = Last
   Repeat
     If Not (myform Is Form) Then Try myform = myform.parent
