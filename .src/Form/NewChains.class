@@ -1241,6 +1241,7 @@ Public Sub PresetsCombobox_click()
   End Select
   SlidersFreq_Change()
   presetting = False
+  dynaobj_change(Last)
 End
 
 Private UpdatingGui As Boolean = False
@@ -1855,8 +1856,9 @@ Private last_dynaobj_changed As Object
 
 Public Sub timer_dynaobj_delayed_change_Timer()
   Dim initial_value, current_value As String
+
   initial_value = value_or_text(last_dynaobj_changed)
-  
+
   'Since we don't want to hammer mpv with too many chains reconfigurations
   'we'll wait a while bedore applying new values to see if the object value has changed
   'if it changes too fast, we'll apply the modification into a next dynaobj_change() call.
@@ -1874,7 +1876,7 @@ Public Sub timer_dynaobj_delayed_change_Timer()
 
   'value is stable, apply.
   Apply:
-    FMain.apply
+     ApplyBTN_Click()
     Try last_dynaobj_changed.setfocus
     last_dynaobj_changed = Null
 End
@@ -1887,12 +1889,5 @@ Public Function value_or_text(obj As Object) As String
 End
 
 
-
-
-Public Sub tfreqs_Change()
-
-  dynaobj_change(Last)
-
-End
 
 
