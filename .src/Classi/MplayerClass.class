@@ -2340,7 +2340,23 @@ Next
 
 End
 
-
+' Public Function vdpau_blocked_by_Filters() As Boolean
+'   Dim vfs As String
+'   If ProcessRunningOvr() Then
+'     If Not getP("audioonly") Then
+'       Debug get_property_mpv("hwdec") 
+'       If get_property_mpv("hwdec") Like "*vdpau*" Then
+'         vfs = mpvoptions["vf"] 
+'         If vfs <> "" Then
+'           If Not (vfs Like "*vdpaurb*") Then
+'             Return True
+'           Endif
+'         Endif
+'       Endif
+'     Endif
+'   Endif
+'   Return False
+' End
 
 Public Function want_vdpau() As Boolean
   Dim hwdec, hwdec_active, hwdec_detected, vf As String

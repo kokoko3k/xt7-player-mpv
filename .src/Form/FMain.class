@@ -3003,6 +3003,9 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     mplayer.set_property_mpv("ao-volume", Initialvolume())
   Endif
 
+
+  'If mplayer.vdpau_blocked_by_filters() Then Popup_vdpau()
+
   ReturnLabel:
   firstplay = False
   global.mouse_wait(fmain, False)
@@ -3010,10 +3013,19 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Return True
 End
 
+
+' Private Sub Popup_vdpau()
+'   
+'   
+'   
+' End
+
+
 Private Sub StartOverbrightAnalyze()
   VideoEqualizer.ZeroControls()
   mplayer.StartOverbrightAnalyze()
 End
+
 
 
 Public Sub addhistory(fullpath As String, Optional Savetime As String = "0", Optional leftoff As Boolean = False)
@@ -3937,7 +3949,7 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
       audioform.UpdateCell(audioform.griddown, 1, 1, CUSTOMTITLE_OLD)
   
-    Case "cache"
+    Case "cache-percent"
       If data_new <> mplayer.unavailable_str Then CACHEVALUE_OLD = data_new
       UpdateStatusBar(CUSTOMTITLE_OLD, CTIME_OLD, CACHEVALUE_OLD)
       If generaloptions.ShowCacheGaugeCHK.value Then Update_cache_percent(data_new)
