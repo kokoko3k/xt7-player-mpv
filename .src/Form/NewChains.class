@@ -1149,7 +1149,7 @@ Public NewEq As String
 Private Function ParseEq() As String
 
   'Force an update of neweq
-  SlidersFreq_Change()
+  SlidersFreq_Change(False)
   Return neweq
 End
 
@@ -1160,7 +1160,7 @@ End
 
 Private OkToChangeToCustom As Boolean = True
 
-Public Sub SlidersFreq_Change()
+Public Sub SlidersFreq_Change(Optional realtime As Boolean = True)
   Dim Theslider, TheTextbox As Object
   Dim params As String = ""
   Dim i As Integer = 0
@@ -1186,7 +1186,7 @@ Public Sub SlidersFreq_Change()
   params = Left$(params, Len(params) - 1)
   NewEq = "equalizer=" & params
   If Lower(PresetsCombobox.text) = "custom" Then SaveCustomEqSettings(params)
-  'dynaobj_change(Last)
+  If realtime Then dynaobj_change(Last)
 End
 
 Private presetting As Boolean = False
@@ -1891,7 +1891,7 @@ End
 
 Public Sub tfreqs_Change()
 
-  'dynaobj_change(Last)
+  dynaobj_change(Last)
 
 End
 
