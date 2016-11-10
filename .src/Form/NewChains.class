@@ -711,7 +711,6 @@ Private Function parse_video_filter_custom() As String
                             'it is created by DrawFiltersGui function
   Dim SubObject As Object
   Dim customfilter As String = ""
-
   For Each MyScrollview In TabStrip_filters_video.Children
     For Each PanelObject In MyScrollView.Children
       If PanelObject.name Like "*HBox" Then
@@ -794,7 +793,7 @@ Private Function Parse_video_filter(Filtername As String) As String
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
   If Parsedfilter Like "customvideo*" Then
-    out = parse_audio_filter_custom()
+    out = parse_video_filter_custom()
     aTabstrip.index = i 
     Return out
       Else
@@ -1186,8 +1185,8 @@ Public Sub SlidersFreq_Change()
   Next 'slider
   params = Left$(params, Len(params) - 1)
   NewEq = "equalizer=" & params
-  Try FMain.mplayer.send("pausing_keep af_cmdline equalizer " & params)
   If Lower(PresetsCombobox.text) = "custom" Then SaveCustomEqSettings(params)
+  'dynaobj_change(Last)
 End
 
 Private presetting As Boolean = False
@@ -1835,10 +1834,12 @@ Public timer_dynaobj_delayed_change As Timer
 
 Public Sub dynaobj_change(obj As Object)
   Dim initial_value, current_value As String
+  
   'there is no need to apply anything if the user did not just changed it
   If Not Me.visible Then Return
   If RealTimeCHK.value = CheckBox.false Then Return
   If Not FMain.mplayer.ProcessRunningOvr() Then Return
+  If presetting Then Return 'do not hammer mpv on equalizer changes
   
   'trigger a new timer to check if the changed value is stable
   'we use a timer to keep the gui responsive
@@ -1874,6 +1875,7 @@ Public Sub timer_dynaobj_delayed_change_Timer()
   'value is stable, apply.
   Apply:
     FMain.apply
+    Try last_dynaobj_changed.setfocus
     last_dynaobj_changed = Null
 End
 
@@ -1884,5 +1886,13 @@ Public Function value_or_text(obj As Object) As String
   If Error Then Return unused_str
 End
 
+
+
+
+Public Sub tfreqs_Change()
+
+  'dynaobj_change(Last)
+
+End
 
 
