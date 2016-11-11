@@ -1253,8 +1253,10 @@ Public Function Dedupe(sDir As String) As Boolean
   Dim files As New String[]
   Dim i, j As Integer
   Dim equal As String
-  
+  Dim EmptyDir As Boolean = True
   'find files that are not links and sort them by size.
+  Try EmptyDir = Dir(sDir).count > 1
+  If EmptyDir Then Return
   Shell "find " & sDir & " -type f -print0 | xargs -0 du -b | sort -rn|cut -d '/' -f 2-|awk '{print \"/\" $0}'" To sFiles
   files = Split(sFiles, "\n", "", True)
   i = 0
