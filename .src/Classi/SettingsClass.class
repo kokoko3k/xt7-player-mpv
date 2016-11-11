@@ -77,22 +77,27 @@ End
 Private Sub Reconfigure(theObject As Object, TheSettings As String[], TheForm As Object)
   'Will parse String[] and try to reconfigure the object
   
-  Dim MyProperty, MyValue As String
+  Dim MyProperty As String
+  Dim MyValue As Variant
   Dim Setting As String
   Dim layout As Integer[]
- 
   
   For Each Setting In TheSettings
     Try MyProperty = Split(Setting, "=")[0]
     'TRY MyValue = Split(Setting, "=")[1]
     Try myvalue = Replace(setting, MyProperty & "=", "")
+ 
     If Setting Like ".*" Then
       ' If MyProperty = ".parent.name" Then
       '    If (Upper(TheObject.parent.name) <> Upper(MyProperty)) Then Reparent(TheObject, MyValue, TheForm)
       If MyProperty = ".Value" Then
-        'IF MyValue <> "" THEN TheObject.value = MyValue
-        If (MyValue <> TheObject.value) Then TheObject.value = MyValue
-        'TheObject.value = MyValue
+        ' If theobject Is Spinbar Then
+        '   If theobject.name Like "*extras*" Then Stop
+        ' Endif
+   
+        If MyValue <> TheObject.value
+          Try TheObject.value = MyValue
+        Endif
         
       'Else If ((MyProperty = ".text") And Not ((theobject Is CheckBox) Or (theobject Is Button) Or (theobject Is Textarea) Or (theobject Is Togglebutton))) Then
       Else If (MyProperty = ".text") Then
@@ -604,7 +609,7 @@ Public Sub Save(TheForm As Object, FileName As String)
         Try Print #ConfFile, TheObject.name
 
         If IsSafeToReparent(TheObject) Then Print #ConfFile, ".parent.name=" & TheObject.parent.name
-        If Not ((TheObject Is TabStrip) Or (TheObject Is Label) Or (TheObject Is Button) Or (TheObject Is ToggleButton) Or (TheObject Is Checkbox) Or (TheObject Is SpinBox)) Then
+        If Not ((TheObject Is TabStrip) Or (TheObject Is Label) Or (TheObject Is Button) Or (TheObject Is ToggleButton) Or (TheObject Is Checkbox) Or (TheObject Is SpinBox) Or (theobject Is Spinbar) Or (theobject Is SwitchButton)) Then
           'IF NOT (TheObject IS TabStrip) OR (TheObject IS Label) THEN 
           If Not (TheObject.name Like "*SearchField*") Then
             Try Print #ConfFile, ".text=" & TheObject.text
@@ -659,15 +664,23 @@ Public Sub Save(TheForm As Object, FileName As String)
         If Not (TheObject Is ScrollView) Then Try Print #ConfFile, ".visible=" & TheObject.visible
         
         
-        'IF (NOT Match(TheObject.name, ExcludedValues)) THEN
         'Here we must convert point back in commas, because
         'gambas will autoconvert commas in points in float->string conversions.
         Try MyValue = TheObject.value
+        Try Print #ConfFile, ".Value=" & MyValue
         If Not Error Then
-          MyValue = Replace(MyValue, ".", ",")
-          Try Print #ConfFile, ".Value=" & MyValue
+          If InStr(myvalue, ".") > 0 Then
+            Try Print #ConfFile, ".Value=" & Replace(MyValue, ".", ",")
+              Else If InStr(myvalue, ",") > 0 Then
+                Try Print #ConfFile, ".Value=" & Replace(MyValue, ",", ".")
+          Endif
         Endif
-        'ENDIF
+
+        ' If Not Error Then
+        '   MyValue = Replace(MyValue, ".", ",")
+        '   Try Print #ConfFile, ".Value=" & MyValue
+        ' Endif
+
       Endif
     Endif
   Next
