@@ -343,6 +343,191 @@
       }
       Index = 1
       Text = "anequalizer"
+      { AnEqualizerPanel Panel
+        MoveScaled(1,2,88,38)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        { PictureBox1 PictureBox
+          MoveScaled(1,1,84,11)
+          Background = Color.Black
+          Expand = True
+          Stretch = True
+        }
+        { HBox2 Panel
+          MoveScaled(1,12,86,25)
+          Arrangement = Arrange.Horizontal
+          Spacing = True
+          Margin = True
+          { FrameBand1 Panel
+            MoveScaled(1,0,21,24)
+            Font = Font["-1"]
+            Expand = True
+            Arrangement = Arrange.Vertical
+            Spacing = True
+            Margin = True
+            Border = Border.Etched
+            { SwitchButton2 SwitchButton switchers
+              Name = "SwitchButton2"
+              MoveScaled(2,2,17,4)
+              Expand = True
+              Value = True
+            }
+            { SpinBar4 SpinBar EqControls
+              Name = "SpinBar4"
+              MoveScaled(2,7,17,4)
+              Font = Font["-2"]
+              Expand = True
+              Value = 200
+              MaxValue = 24000
+              Text = ("Freq")
+              Step = 1
+            }
+            { SpinBar5 SpinBar EqControls
+              Name = "SpinBar5"
+              MoveScaled(2,12,17,4)
+              Expand = True
+              MaxValue = 30
+              MinValue = -30
+              Text = ("Gain")
+            }
+            { SpinBar6 SpinBar EqControls
+              Name = "SpinBar6"
+              MoveScaled(2,17,17,4)
+              Expand = True
+              Value = 200
+              MaxValue = 3000
+              Text = ("Width")
+              Step = 1
+            }
+          }
+          { FrameBand2 Panel
+            MoveScaled(22,0,21,24)
+            Font = Font["-1"]
+            Expand = True
+            Arrangement = Arrange.Vertical
+            Spacing = True
+            Margin = True
+            Border = Border.Etched
+            { SwitchButton1 SwitchButton switchers
+              Name = "SwitchButton1"
+              MoveScaled(2,2,17,4)
+              Expand = True
+              Value = True
+            }
+            { SpinBar1 SpinBar EqControls
+              Name = "SpinBar1"
+              MoveScaled(2,7,17,4)
+              Font = Font["-2"]
+              Expand = True
+              Value = 600
+              MaxValue = 24000
+              Text = ("Freq")
+              Step = 1
+            }
+            { SpinBar2 SpinBar EqControls
+              Name = "SpinBar2"
+              MoveScaled(2,12,17,4)
+              Expand = True
+              MaxValue = 30
+              MinValue = -30
+              Text = ("Gain")
+            }
+            { SpinBar3 SpinBar EqControls
+              Name = "SpinBar3"
+              MoveScaled(2,17,17,4)
+              Expand = True
+              Value = 200
+              MaxValue = 3000
+              Text = ("Width")
+              Step = 1
+            }
+          }
+          { FrameBand3 Panel
+            MoveScaled(43,0,21,24)
+            Font = Font["-1"]
+            Expand = True
+            Arrangement = Arrange.Vertical
+            Spacing = True
+            Margin = True
+            Border = Border.Etched
+            { SwitchButton3 SwitchButton switchers
+              Name = "SwitchButton3"
+              MoveScaled(2,2,17,4)
+              Expand = True
+              Value = True
+            }
+            { SpinBar7 SpinBar EqControls
+              Name = "SpinBar7"
+              MoveScaled(2,7,17,4)
+              Font = Font["-2"]
+              Expand = True
+              Value = 1000
+              MaxValue = 24000
+              Text = ("Freq")
+              Step = 1
+            }
+            { SpinBar8 SpinBar EqControls
+              Name = "SpinBar8"
+              MoveScaled(2,12,17,4)
+              Expand = True
+              MaxValue = 30
+              MinValue = -30
+              Text = ("Gain")
+            }
+            { SpinBar9 SpinBar EqControls
+              Name = "SpinBar9"
+              MoveScaled(2,17,17,4)
+              Expand = True
+              Value = 200
+              MaxValue = 3000
+              Text = ("Width")
+              Step = 1
+            }
+          }
+          { FrameBand4 Panel
+            MoveScaled(64,0,21,24)
+            Font = Font["-1"]
+            Expand = True
+            Arrangement = Arrange.Vertical
+            Spacing = True
+            Margin = True
+            Border = Border.Etched
+            { SwitchButton4 SwitchButton switchers
+              Name = "SwitchButton4"
+              MoveScaled(2,2,17,4)
+              Expand = True
+              Value = True
+            }
+            { SpinBar10 SpinBar EqControls
+              Name = "SpinBar10"
+              MoveScaled(2,7,17,4)
+              Font = Font["-2"]
+              Expand = True
+              Value = 6000
+              MaxValue = 24000
+              Text = ("Freq")
+              Step = 1
+            }
+            { SpinBar11 SpinBar EqControls
+              Name = "SpinBar11"
+              MoveScaled(2,12,17,4)
+              Expand = True
+              MaxValue = 30
+              MinValue = -30
+              Text = ("Gain")
+            }
+            { SpinBar12 SpinBar EqControls
+              Name = "SpinBar12"
+              MoveScaled(2,17,17,4)
+              Expand = True
+              Value = 200
+              MaxValue = 3000
+              Text = ("Width")
+              Step = 1
+            }
+          }
+        }
+      }
       Index = 0
     }
     Index = 2
