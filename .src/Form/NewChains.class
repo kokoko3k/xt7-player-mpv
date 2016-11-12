@@ -1894,8 +1894,6 @@ Public Function value_or_text(obj As Object) As String
 End
 
 
-
-
 '------------------------------------------------------------------ MANAGE ANEQUALIZER
 Private tempdir As String
 Public delaytimer As Timer
@@ -1958,7 +1956,6 @@ Public Function eqstring(Optional complex As Boolean = True) As String
 End
 
 Public Sub DrawGraph()
-  Return
   If Not Global.initdone Then Global.init() 
   tempdir = Global.tmpdir & "/anequalizer"
   If Not Exist(tempdir) Then 
@@ -1966,19 +1963,21 @@ Public Sub DrawGraph()
     If Error Then Return
   Endif
   mpveq = New MplayerClass As "mpveq"
-  mpveq.mpvoptions["demuxer"] = "rawaudio"
+  'mpveq.mpvoptions["demuxer"] = "rawaudio"
   mpveq.mpvoptions["lavfi-complex"] = "\"" & eqstring() & "\""
   mpveq.mpvoptions["vo"] = "image"
+  mpveq.mpvoptions["ao"] = "null"
   mpveq.mpvoptions["vo-image-format"] = "jpg"
   mpveq.mpvoptions["vo-image-outdir"] = tempdir
   mpveq.mpvoptions["frames"] = "1"
-  mpveq.do_play("/dev/random")
+  mpveq.do_play("av://lavfi:sine")
 End
 
 Private lastobj As Object
 
 Public Sub delaytimer_Timer()
   Dim lastvalue As String = lastobj.value
+  Stop
   Wait 0.1
   If (lastvalue = lastobj.value) Then DrawGraph()
 End
