@@ -937,7 +937,8 @@ Private Function Parse_audio_filter(Filtername As String) As String
     Return out
   Else If Parsedfilter = "anequalizer" Then
     '--af=lavfi="[anequalizer=c0:f=1000]" 
-    Return "'lavfi=[anequalizer=" & eqstring(False) & "]'"
+    'Return "'lavfi=[anequalizer=" & eqstring(False) & "]'"
+    Return "lavfi=\"anequalizer=" & eqstring(False) & "\""
     
   Else If Parsedfilter Like "customaudio*" Then
     out = parse_audio_filter_custom()
@@ -1993,9 +1994,22 @@ End
 Private lastobj As Object
 
 Public Sub delaytimer_Timer()
-  Dim lastvalue As String = lastobj.value
+  Dim lastvalue As String 
+  Dim curvalue As String
+  If lastobj Is Panel Then 
+    lastvalue = lastobj.w + lastobj.h
+      Else
+    lastvalue = lastobj.value
+  Endif
   Wait 0.1
-  If (lastvalue = lastobj.value) Then DrawGraph()
+  
+  If lastobj Is Panel Then 
+    curvalue = lastobj.w + lastobj.h
+      Else
+    curvalue = lastobj.value
+  Endif
+  
+  If (lastvalue = curvalue) Then DrawGraph()
 End
 
 
@@ -2016,7 +2030,9 @@ Public Sub AnEqualizerPanel_Arrange()
   If Not FMain.FullyLoaded Then Return
   If Not Me.visible Then Return
   If Not TabStrip_filters_audio = "anequalizer" Then Return
-  DrawGraph()
+  lastobj = Last
+  delaytimer = New Timer As "delaytimer"
+  delaytimer.trigger
 End
 
 
