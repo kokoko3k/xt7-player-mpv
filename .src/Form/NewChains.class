@@ -1902,6 +1902,13 @@ Public mpveq_instanced As Boolean = False
 
 Public Sub switchers_Click()
   Dim child As Object
+  Dim band_enabled As Boolean = False
+  'is at least a band enabled?
+  If Not (switchbutton1.Value Or switchbutton2.Value Or switchbutton3.Value Or switchbutton4.Value) Then
+    picturebox1.Picture = Null
+    Return
+  Endif
+  
   For Each child In Last.parent.children
     If child <> Last Then
       child.enabled = Last.value
@@ -1943,7 +1950,7 @@ Public Function eqstring(Optional complex As Boolean = True) As String
       Endif
     Next
   Next
-  
+  If out_bands.Count = 0 Then Return ""
   If complex Then outstring = "[aid1]anequalizer="
   'Pretend we have 10 channels audio (unused channels should be discarded by anequalizer)
   For i = 0 To 9
@@ -1953,11 +1960,11 @@ Public Function eqstring(Optional complex As Boolean = True) As String
   Next 'i
   outstring = Left(outstring, -1)
   If complex Then outstring &= ":\"curves=true:fscale=0:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
-  Stop
   Return outstring
 End
 
 Public Sub DrawGraph()
+  Dim eq_string As String
   If Not Global.initdone Then Global.init() 
   tempdir = Global.tmpdir & "/anequalizer"
   If Not Exist(tempdir) Then 
@@ -1970,14 +1977,18 @@ Public Sub DrawGraph()
     mpveq_instanced = True
   Endif
   'mpveq.mpvoptions["demuxer"] = "rawaudio"
-  mpveq.mpvoptions["lavfi-complex"] = "\"" & eqstring() & "\""
-  mpveq.mpvoptions["vo"] = "image"
-  mpveq.mpvoptions["ao"] = "null"
-  mpveq.mpvoptions["vo-image-format"] = "jpg"
-  mpveq.mpvoptions["vo-image-outdir"] = tempdir
-  mpveq.mpvoptions["frames"] = "1"
-  mpveq.do_play("av://lavfi:sine")
+  eq_string = eqstring()
+  If eq_string <> "" Then
+    mpveq.mpvoptions["lavfi-complex"] = "\"" & eqstring() & "\""
+    mpveq.mpvoptions["vo"] = "image"
+    mpveq.mpvoptions["ao"] = "null"
+    mpveq.mpvoptions["vo-image-format"] = "jpg"
+    mpveq.mpvoptions["vo-image-outdir"] = tempdir
+    mpveq.mpvoptions["frames"] = "1"
+    mpveq.do_play("av://lavfi:sine")
+  Endif
 End
+
 
 Private lastobj As Object
 
