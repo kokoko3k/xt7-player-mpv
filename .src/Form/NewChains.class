@@ -1897,7 +1897,8 @@ End
 '------------------------------------------------------------------ MANAGE ANEQUALIZER
 Private tempdir As String
 Public delaytimer As Timer
-Public mpveq As MplayerClass
+Public mpveq As MplayerClass 
+Public mpveq_instanced As Boolean = False
 
 Public Sub switchers_Click()
   Dim child As Object
@@ -1945,13 +1946,14 @@ Public Function eqstring(Optional complex As Boolean = True) As String
   
   If complex Then outstring = "[aid1]anequalizer="
   'Pretend we have 10 channels audio (unused channels should be discarded by anequalizer)
-  For i = 0 To 2
+  For i = 0 To 9
     For Each out_band In out_bands
       outstring &= "c" & i & " " & out_band & "|"
     Next 'out_band
   Next 'i
   outstring = Left(outstring, -1)
   If complex Then outstring &= ":\"curves=true:fscale=0:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
+  Stop
   Return outstring
 End
 
@@ -1962,7 +1964,11 @@ Public Sub DrawGraph()
     Try Mkdir tempdir
     If Error Then Return
   Endif
-  mpveq = New MplayerClass As "mpveq"
+  
+  If Not mpveq_instanced Then 
+    mpveq = New MplayerClass As "mpveq"
+    mpveq_instanced = True
+  Endif
   'mpveq.mpvoptions["demuxer"] = "rawaudio"
   mpveq.mpvoptions["lavfi-complex"] = "\"" & eqstring() & "\""
   mpveq.mpvoptions["vo"] = "image"
@@ -1977,7 +1983,6 @@ Private lastobj As Object
 
 Public Sub delaytimer_Timer()
   Dim lastvalue As String = lastobj.value
-  Stop
   Wait 0.1
   If (lastvalue = lastobj.value) Then DrawGraph()
 End
@@ -2002,9 +2007,6 @@ Public Sub AnEqualizerPanel_Arrange()
   If Not TabStrip_filters_audio = "anequalizer" Then Return
   DrawGraph()
 End
-
-
-
 
 
 
