@@ -2035,8 +2035,10 @@ Public Sub EqControls_Change()
   If Not Me.visible Then Return
   If Not TabStrip_filters_audio = "anequalizer" Then Return
   dynaobj_change(Last)
-  delaytimer = New Timer As "delaytimer"
-  delaytimer.trigger
+  If Not FMain.mplayer.ProcessRunningOvr() Then 'graph is generated if mpv is running
+    delaytimer = New Timer As "delaytimer"
+    delaytimer.trigger
+  Endif
 End
 
 
