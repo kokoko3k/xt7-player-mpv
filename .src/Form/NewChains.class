@@ -272,8 +272,9 @@ Public Sub filter_label_MouseDown()
 End
 
 Public Sub filter_checkbox_Click()
-    select_item(Last)
-    dynaobj_change(Last)
+  If Not NewChains.visible Then Return
+  select_item(Last)
+  dynaobj_change(Last)
 End
 
 
@@ -1982,7 +1983,6 @@ End
 
 Public Sub DrawGraph()
   Dim eq_string As String
-  If Not Global.initdone Then Global.init() 
   tempdir = Global.tmpdir & "/anequalizer"
   If Not Exist(tempdir) Then 
     Try Mkdir tempdir
