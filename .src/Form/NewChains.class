@@ -1916,11 +1916,11 @@ Public Sub switchers_Click()
     Return
   Endif
   
-  For Each child In Last.parent.children
-    If child <> Last Then
-      child.enabled = Last.value
-    Endif
-  Next
+  ' For Each child In Last.parent.children
+  '   If child <> Last Then
+  '     child.enabled = Last.value
+  '   Endif
+  ' Next
   EqControls_Change()
 End
 
