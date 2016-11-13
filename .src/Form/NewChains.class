@@ -940,9 +940,15 @@ Private Function Parse_audio_filter(Filtername As String, Optional For_realtime 
     '--af=lavfi="[anequalizer=c0:f=1000]" 
   anequalizer_string = eqstring(False)
   If For_realtime Then
-    If anequalizer_string <> "" Then Return "lavfi=[anequalizer=" & eqstring(False) & "]" 'this way it works in realtime only
-      Else
-    If anequalizer_string <> "" Then Return "lavfi='[anequalizer=" & eqstring(False) & "]'" 'this way it works at start time only 
+    If anequalizer_string <> "" Then 
+      aTabstrip.index = i
+      Return "lavfi=[anequalizer=" & eqstring(False) & "]" 'this way it works in realtime only
+    Endif
+        Else
+    If anequalizer_string <> "" Then 
+      aTabstrip.index = i
+      Return "lavfi='[anequalizer=" & eqstring(False) & "]'" 'this way it works at start time only 
+    Endif
   Endif
   Else If Parsedfilter Like "customaudio*" Then
     out = parse_audio_filter_custom()
@@ -1001,10 +1007,10 @@ Private Function Parse_audio_filter(Filtername As String, Optional For_realtime 
 End
 
 Public Sub ApplyBTN_Click()
-  OkToChangeToCustom = False
-  Fmain.apply
-  OkToChangeToCustom = True
-End
+    OkToChangeToCustom = False
+    Fmain.apply
+    OkToChangeToCustom = True
+ End
 
 Public Function parse_drivers(audio As Boolean) As MpvOption[]
   Dim item_box As Hbox
@@ -1120,6 +1126,7 @@ Public Function parse_filters(audio As Boolean, Optional For_realtime As Boolean
   Dim filters As String
   Dim filters_container As Scrollview
   Dim filter As String
+
   If audio Then 
     filters_container = filters_audio_container
       Else
@@ -1133,7 +1140,6 @@ Public Function parse_filters(audio As Boolean, Optional For_realtime As Boolean
     If cBox.value = True Then
       If audio Then 
         filter = Parse_audio_filter(item_name, For_realtime)
-        Debug filter
         If filter <> "" Then filters &= filter & ","  'null custom filters
           Else
         filter = Parse_video_filter(item_name)        'needed to fix
@@ -1876,8 +1882,11 @@ Public Sub timer_dynaobj_delayed_change_Timer()
   
   '...and of course we cannot do that if we were unable to understand if the changed property is 
   'text or value:
-  If initial_value = unused_str Then Goto Apply
-  If Rnd(0, 10) > 8 Then Goto Apply 'apply changes from time to time even if they are changing fast
+  If initial_value = unused_str Then 
+    Debug "applying because initial value is unused_String"
+    Goto Apply
+  Endif
+  'If Rnd(0, 10) > 8 Then Goto Apply 'apply changes from time to time even if they are changing fast
   
   Wait 0.05
   
@@ -1887,7 +1896,8 @@ Public Sub timer_dynaobj_delayed_change_Timer()
 
   'value is stable, apply.
   Apply:
-     ApplyBTN_Click()
+    Debug "applying"    
+    ApplyBTN_Click()
     Try last_dynaobj_changed.setfocus
     last_dynaobj_changed = Null
 End
@@ -1940,7 +1950,7 @@ Public Function eqstring(Optional complex As Boolean = True) As String
   Dim f, g, w, out_band, outstring As String
   Dim out_bands As New String[]
   Dim i As Integer
-   
+
   band_containers.Add(frameband1)
   band_containers.Add(frameband2)
   band_containers.Add(frameband3)
@@ -2025,7 +2035,6 @@ Public Sub EqControls_Change()
   If Not TabStrip_filters_audio = "anequalizer" Then Return
   dynaobj_change(Last)
   delaytimer = New Timer As "delaytimer"
-  lastobj = Last
   delaytimer.trigger
 End
 

@@ -2565,7 +2565,6 @@ Public Sub user_options(fullpath As String, Optional for_realtime As Boolean = F
   Dim opts As New Collection
   Dim opt As Mpvoption
 
-  
   'initialize uninitialized forms and load settings
   generaloptions.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
@@ -5158,6 +5157,7 @@ Private Function get_apply_opts(Optional for_realtime As Boolean = False) As Col
   Dim new_opts As New Collection
   Dim data As String
   Dim fullpath As String = mplayer.getP("fullpath")
+
   'fixmempv: questi due sotto servono ancora?
     VEqHasBeenSet = False
     subnotset = True
@@ -5192,9 +5192,9 @@ Public Sub Apply(Optional force_restart As Boolean = False)
   If force_restart Then
     mplayer.do_apply_restart(get_apply_opts(False))
       Else
-        
     mplayer.do_Apply(get_apply_opts(True))
   Endif
+  
    global.ResetApplyBtnColor()
    audioform.panelvisspacer.Visible = (Left(generaloptions.NoParseVisType2.text) <> "0")
    audioform.PictureBox1.expand = Not (audioform.panelvisspacer.Visible)
