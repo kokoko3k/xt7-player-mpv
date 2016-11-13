@@ -2009,22 +2009,23 @@ End
 
 Private lastobj As Object
 
-Public Sub delaytimer_Timer()
+Public Sub delaytimer_Timer() 
   Dim lastvalue As String 
   Dim curvalue As String
+
   If lastobj Is Panel Then 
-    lastvalue = lastobj.w + lastobj.h
-      Else
-    lastvalue = lastobj.value
-  Endif
-  Wait 0.1
-  
-  If lastobj Is Panel Then 
-    curvalue = lastobj.w + lastobj.h
-      Else
-    curvalue = lastobj.value
-  Endif
-  
+     lastvalue = lastobj.w + lastobj.h
+       Else
+     lastvalue = lastobj.value
+   Endif
+  Wait 0.1 'problema qui, questo timer in qualche modo ftriggera troppi apply!
+  ' ' 
+   If lastobj Is Panel Then 
+     curvalue = lastobj.w + lastobj.h
+       Else
+     curvalue = lastobj.value
+   Endif
+  ' 
   If (lastvalue = curvalue) Then DrawGraph()
 End
 
