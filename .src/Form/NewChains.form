@@ -103,7 +103,7 @@
       Picture = Picture["icon:/16/tools"]
     }
     { TabStrip_filters_audio TabStrip
-      MoveScaled(37,0,56,47)
+      MoveScaled(31,-1,56,47)
       #Translate = False
       Tag = "anequalizer"
       Expand = True
@@ -355,7 +355,7 @@
           Stretch = True
         }
         { HBox2 ScrollView
-          MoveScaled(-44,17,111,25)
+          MoveScaled(-2,15,111,25)
           Arrangement = Arrange.Horizontal
           Spacing = True
           Margin = True
@@ -428,7 +428,7 @@
               Expand = True
               Value = 600
               MaxValue = 2000
-              MinValue = 200
+              MinValue = 1
               Text = ("Freq")
               Step = 1
             }
@@ -498,7 +498,7 @@
             }
           }
           { FrameBand4 Panel
-            MoveScaled(66,-2,21,24)
+            MoveScaled(68,-2,21,24)
             Font = Font["-1"]
             Arrangement = Arrange.Vertical
             AutoResize = True
