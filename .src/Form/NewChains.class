@@ -1436,6 +1436,7 @@ End
 
 Private aligned As Boolean = False
 Public Sub Form_Open()
+
   If Not initdone Then 
     Try GeneralOptions.FirstLoadIfNeeded()
     Init()
@@ -1450,6 +1451,17 @@ Public Sub Form_Open()
     aligned = True
   Endif
   Global.Center(Fmain, Me)
+  
+  
+  '   'removeme
+  ' global.init()
+  ' Me.Maximized = True
+  ' Wait
+  ' tabstrip1.index = 1
+  ' TabStrip_filters_audio.index = 1
+  ' FMain.fullyloaded = True
+  ' '
+  
 End
 
 
@@ -1897,24 +1909,134 @@ Public Sub switchers_Click()
     dynaobj_change(Last)
     Return
   Endif
-  
-  ' For Each child In Last.parent.children
-  '   If child <> Last Then
-  '     child.enabled = Last.value
-  '   Endif
-  ' Next
+
   EqControls_Change()
 End
 
+
+
 Public Sub mpveq_mykill(retcode As Integer)
   Dim picfile As String
-  Dim pic As Image
+  Dim img As Image
+  Dim img_graph As Image
+  Dim text_h, text_w As Integer
+  Dim c As Object = picturebox1
+  Dim colors As New Integer[]
+  Dim steps As New Float[]
+  Dim p As PaintBrush
+  Dim shadowsize As Integer
+  Dim line_color As Integer = Color.RGB(40, 120, 190)
+  'Dim back_color As Integer = Color.RGB(230, 239, 119)
+  Dim back_color As Integer = Color.RGB(0, 12, 25)
+  'Dim line_color As Integer = Color.RGB(65, 65, 0)
+  Dim Light_color As Integer = Color.SetAlpha(Color.white, 190)
+  
+  colors = [Color.SetAlpha(Color.black, 128), Color.Transparent]
+  steps = [0, 1]
   If mpveq.ProcessRunningOvr() Then Return
   Try picfile = tempdir & "/" & Dir(tempdir)[0]
-  If Not Error Then 
-    Try picturebox1.picture = picture.Load(picfile)
+
+  If Not Error Then  
+    img = New Image(picturebox1.w, picturebox1.h, back_color)
+    Paint.Begin(img)
+      'light
+      Paint.brush = Paint.RadialGradient(img.w Div 2, - (img.w Div 2), img.w, img.w Div 2, 0, [Light_color, Color.transparent], [0, 1], 1000)
+      Paint.Rectangle(0, 0, img.w, img.h)
+      Paint.fill
+      shadowsize = Min(img.h, img.w) Div 80
+      'top shade
+      Paint.brush = Paint.LinearGradient(0, 0, 0, shadowsize, colors, steps)
+      Paint.Rectangle(0, 0, img.w, shadowsize)
+      Paint.fill
+      'bottom shade
+      Paint.brush = Paint.LinearGradient(0, img.h - shadowsize, 0, img.h, colors.Reverse(), steps)
+      Paint.Rectangle(0, img.h - shadowsize, img.w, shadowsize)  
+      Paint.fill  
+      'right shade
+      Paint.brush = Paint.LinearGradient(img.w - shadowsize, 0, img.w, 0, colors, steps)
+      Paint.Rectangle(img.w - shadowsize, 0, shadowsize, img.h)
+      Paint.fill
+      'left shade
+      Paint.brush = Paint.LinearGradient(0, 0, shadowsize, 0, colors.reverse(), steps)
+      Paint.Rectangle(0, 0, shadowsize, img.h)
+      Paint.fill      
+    Paint.end
+ 
+    paint_freq_line("20Hz", 11.7, img, line_color)
+    paint_freq_line("100Hz", 20, img, line_color)
+    paint_freq_line("500Hz", 45.1, img, line_color)
+    paint_freq_line("1Khz", 55.2, img, line_color)
+    paint_freq_line("10Khz", 88.5, img, line_color)
+    paint_freq_line("20Khz", 98.6, img, line_color)
+
+    paint_db_line(-24, img, line_color)
+    paint_db_line(-12, img, line_color)
+    paint_db_line(-6, img, line_color)
+    paint_db_line(-0, img, line_color)
+    paint_db_line(6, img, line_color)
+    paint_db_line(12, img, line_color)
+    paint_db_line(24, img, line_color)
+
+    Try img_graph = Image.Load(picfile).Opacity(0.7)
+    Paint.Begin(img_graph)
+      Paint.operator = Paint.OperatorAdd
+      Paint.DrawImage(img, 0, 0)
+    Paint.end
+    
+    picturebox1.picture = img_graph.picture
+    
   Endif
 End
+
+
+Private Sub paint_freq_line(Hz As String, percent As Float, c As Image, col As Integer)
+  Dim x As Integer = p(percent, c.w)
+  Dim th, tw As Integer
+    Paint.Begin(c)
+      Paint.brush = Paint.color(Color.SetAlpha(Col, 210))
+      Paint.LineWidth = 1
+      Paint.antialias = False
+      Paint.MoveTo(x, 0)
+      Paint.LineTo(x, c.h)
+      Paint.stroke
+      'text
+      Paint.Font.Size = Me.Font.size - 2
+      th = Paint.TextSize(Hz).H
+      tw = Paint.TextSize(Hz).w   
+      Paint.brush = Paint.color(Col)
+      Paint.DrawText(Hz, x - tw - p(0.5, c.w), c.h - 5)
+      Paint.stroke
+    Paint.end
+End
+
+Private Sub paint_dB_line(dB As Integer, c As Image, col As Integer)
+  Dim th, tw As Integer
+  Dim maxdB As Integer = 30 '-30...+30
+  '1000/60*(30+-30)
+  Dim y As Integer = (c.h / (MaxdB * 2)) * (maxdB + dB)
+  Paint.Begin(c)
+    Paint.Font.Size = Me.Font.size - 2
+    Paint.brush = Paint.color(Color.SetAlpha(Col, 210))
+    Paint.LineWidth = 1
+    Paint.antialias = False
+    Paint.MoveTo(0, y)
+    Paint.LineTo(c.w, y)
+    Paint.stroke
+    Paint.brush = Paint.color(Col)
+    db = - db
+    th = Paint.TextSize(db & "dB").H
+    tw = Paint.TextSize(db & "dB").w
+    Paint.DrawText(dB & "dB", c.w - tw - 10, y - 5)
+  Paint.stroke
+  Paint.end
+End
+
+
+
+Private Function p(percent As Float, v As Integer) As Integer
+  Return CInt((v * percent) / 100)
+End
+
 
 Public Function eqstring(Optional complex As Boolean = True) As String
   Dim band_containers As New Object[]
@@ -1949,7 +2071,10 @@ Public Function eqstring(Optional complex As Boolean = True) As String
     Next 'out_band
   Next 'i
   outstring = Left(outstring, -1)
-  If complex Then outstring &= ":\"curves=true:fscale=0:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
+  'debug picturebox1.h
+  'If complex Then outstring &= ":\"curves=true:colors='transparent|white':fscale=1:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
+  If complex Then outstring &= ":\"curves=true:fscale=1:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
+  Debug outstring
   Return outstring
 End
 
@@ -1972,7 +2097,7 @@ Public Sub DrawGraph()
     mpveq.mpvoptions["lavfi-complex"] = "\"" & eqstring() & "\""
     mpveq.mpvoptions["vo"] = "image"
     mpveq.mpvoptions["ao"] = "null"
-    mpveq.mpvoptions["vo-image-format"] = "jpg"
+    mpveq.mpvoptions["vo-image-format"] = "png"
     mpveq.mpvoptions["vo-image-outdir"] = tempdir
     mpveq.mpvoptions["frames"] = "1"
     mpveq.do_play("av://lavfi:anullsrc")
