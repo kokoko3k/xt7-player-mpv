@@ -930,16 +930,17 @@ Private Function Parse_audio_filter(Filtername As String, Optional For_realtime 
   Dim subtext As String
   Dim anequalizer_string As String
   i = aTabstrip.index
+  Debug atabstrip.i, atabstrip.caption
 
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
   If ParsedFilter = "equalizer" Then
-    out = ParseEq()
-    aTabstrip.index = i 
+    out = ParseEq() 
+    aTabstrip.index = i
     Return out
   Else If Parsedfilter = "anequalizer" Then
     '--af=lavfi="[anequalizer=c0:f=1000]" 
-  anequalizer_string = eqstring(False)
+    anequalizer_string = eqstring(False)
   If For_realtime Then
     If anequalizer_string <> "" Then 
       aTabstrip.index = i
@@ -1862,58 +1863,28 @@ Public Sub dynaobj_change(obj As Object)
   
   'trigger a new timer to check if the changed value is stable
   'we use a timer to keep the gui responsive
-  last_dynaobj_changed = obj
-  timer_dynaobj_delayed_change = New Timer As "timer_dynaobj_delayed_change"
-  timer_dynaobj_delayed_change.trigger
+  Try timer_dynaobj_delayed_change.delay = 100
+  If Error Then
+    timer_dynaobj_delayed_change = New Timer As "timer_dynaobj_delayed_change" 'initialize timer if needed
+      Else
+    timer_dynaobj_delayed_change.Stop
+    timer_dynaobj_delayed_change.start
+  Endif
  
 End
 
-Private unused_str As String = "^.:A.n.Un..Use..dSt...ri.ng:.^"
-Private last_dynaobj_changed As Object
 
 
 Public Sub timer_dynaobj_delayed_change_Timer()
-  Dim initial_value, current_value As String
-
-  initial_value = value_or_text(last_dynaobj_changed)
-
-  'Since we don't want to hammer mpv with too many chains reconfigurations
-  'we'll wait a while bedore applying new values to see if the object value has changed
-  'if it changes too fast, we'll apply the modification into a next dynaobj_change() call.
-  
-  '...and of course we cannot do that if we were unable to understand if the changed property is 
-  'text or value:
-  If initial_value = unused_str Then 
-    Debug "applying because initial value is unused_String"
-    Goto Apply
-  Endif
-  'If Rnd(0, 10) > 8 Then Goto Apply 'apply changes from time to time even if they are changing fast
-  
-  Wait 0.05
-  
-  current_value = value_or_text(last_dynaobj_changed)
-  'values are changing fast! check later
-  If current_value <> initial_value Then Return
-
-  'value is stable, apply.
-  Apply:
-    Debug "applying"    
-    ApplyBTN_Click()
-    Try last_dynaobj_changed.setfocus
-    last_dynaobj_changed = Null
+  timer_dynaobj_delayed_change.stop
+  ApplyBTN_Click()
 End
 
-
-Public Function value_or_text(obj As Object) As String
-  Try Return obj.value
-  If Error Then Try Return obj.text
-  If Error Then Return unused_str
-End
 
 
 '------------------------------------------------------------------ MANAGE ANEQUALIZER
 Private tempdir As String
-Public delaytimer As Timer
+Public delay_graph_timer As Timer
 Public mpveq As MplayerClass 
 Public mpveq_instanced As Boolean = False
 
@@ -1996,64 +1967,58 @@ Public Sub DrawGraph()
 
   eq_string = eqstring()
   If eq_string <> "" Then
+    Debug
     mpveq.mpvoptions["lavfi-complex"] = "\"" & eqstring() & "\""
     mpveq.mpvoptions["vo"] = "image"
     mpveq.mpvoptions["ao"] = "null"
     mpveq.mpvoptions["vo-image-format"] = "jpg"
     mpveq.mpvoptions["vo-image-outdir"] = tempdir
     mpveq.mpvoptions["frames"] = "1"
-    mpveq.do_play("av://lavfi:sine")
+    mpveq.do_play("av://lavfi:anullsrc")
   Endif
 End
 
 
-Private lastobj As Object
-
-Public Sub delaytimer_Timer() 
-  Dim lastvalue As String 
-  Dim curvalue As String
-
-  If lastobj Is Panel Then 
-     lastvalue = lastobj.w + lastobj.h
-       Else
-     lastvalue = lastobj.value
-   Endif
-  Wait 0.1 'problema qui, questo timer in qualche modo ftriggera troppi apply!
-  ' ' 
-   If lastobj Is Panel Then 
-     curvalue = lastobj.w + lastobj.h
-       Else
-     curvalue = lastobj.value
-   Endif
-  ' 
-  If (lastvalue = curvalue) Then DrawGraph()
+Public Sub delay_graph_timer_timer() 
+  delay_graph_timer.stop
+  DrawGraph()
 End
 
 
 Public Sub EqControls_Change()
   If Not FMain.FullyLoaded Then Return
   If Not Me.visible Then Return
-  If Not TabStrip_filters_audio = "anequalizer" Then Return
+  If Not TabStrip_filters_audio.caption = "anequalizer" Then Return
   dynaobj_change(Last)
   If Not FMain.mplayer.ProcessRunningOvr() Then 'graph is generated if mpv is running
-    delaytimer = New Timer As "delaytimer"
-    delaytimer.trigger
+    start_delay_graph_timer()
   Endif
+End
+
+Private Sub start_delay_graph_timer(Optional force As Boolean = False)
+  If Not force Then 
+    If Not FMain.FullyLoaded Then Return
+    If Not Me.visible Then Return
+    If TabStrip_filters_audio.text <> "anequalizer" Then Return
+  Endif
+
+   Try delay_graph_timer.delay = 100
+    If Error Then
+      delay_graph_timer = New Timer As "delay_graph_timer" 'initialize the timer if needed
+      delay_graph_timer.delay = 100
+        Else
+      delay_graph_timer.stop 'stop the 
+    Endif
+    delay_graph_timer.start
 End
 
 
 
 
 Public Sub AnEqualizerPanel_Arrange()
-  If Not FMain.FullyLoaded Then Return
-  If Not Me.visible Then Return
-  If Not TabStrip_filters_audio = "anequalizer" Then Return
-  lastobj = Last
-  delaytimer = New Timer As "delaytimer"
-  delaytimer.trigger
+  start_delay_graph_timer()
 End
 
 
 
 '-END MANAGE ANEQUALIZER------------------------------------------------------------------------------------------
-
