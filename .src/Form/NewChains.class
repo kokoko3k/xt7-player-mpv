@@ -2074,7 +2074,6 @@ Public Function eqstring(Optional complex As Boolean = True) As String
   'debug picturebox1.h
   'If complex Then outstring &= ":\"curves=true:colors='transparent|white':fscale=1:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
   If complex Then outstring &= ":\"curves=true:fscale=1:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
-  Debug outstring
   Return outstring
 End
 
@@ -2140,22 +2139,25 @@ End
 
 
 
-
-Public Sub AnEqualizerPanel_Arrange()
+Private last_hbox2_w As Integer = -1
+Public Sub AnEqualizerPanel_beforeArrange()
+  Dim firstchild, lastchild As Object
   start_delay_graph_timer()
+
+  'If Last_hbox2_w = HBox2.w Then Return
+  'Last_hbox2_w = HBox2.w
+  If Not FMain.FullyLoaded Then Return
+  If Not Me.visible Then Return
+  If TabStrip_filters_audio.text <> "anequalizer" Then Return
+  
+ 
+  firstchild = HBox2.Children[1]
+  lastchild = HBox2.Children[HBox2.Children.count - 1]
+
+  aneqleftspacer.w = (AnEqualizerPanel.w - (lastchild.x + lastchild.w - firstchild.x)) Div 2
+  'aneqleftspacer.w = (AnEqualizerPanel.w - aneqleftspacer.w - (lastchild.x + lastchild.w)) Div 2
 End
 
 
 
 '-END MANAGE ANEQUALIZER------------------------------------------------------------------------------------------
-Private last_hbox2_w As Integer = -1
-Public Sub HBox2_Arrange()
-  Dim lastchild As Object
-  If Last_hbox2_w = HBox2.w Then Return
-  Last_hbox2_w = HBox2.w
-  If Not FMain.FullyLoaded Then Return
-  If Not Me.visible Then Return
-  If TabStrip_filters_audio.text <> "anequalizer" Then Return
-  lastchild = HBox2.Children[HBox2.Children.count - 1]
-  aneqleftspacer.w = (AnEqualizerPanel.w - aneqleftspacer.w - (lastchild.x + lastchild.w)) Div 2
-End
