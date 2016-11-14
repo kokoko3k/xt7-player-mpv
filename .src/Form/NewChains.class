@@ -1927,6 +1927,7 @@ Public Function eqstring(Optional complex As Boolean = True) As String
   band_containers.Add(frameband2)
   band_containers.Add(frameband3)
   band_containers.Add(frameband4)
+  band_containers.Add(frameband5)
   For Each band_container In band_containers
     For Each subobj In band_container.children
       If subobj Is SwitchButton Then
@@ -2022,3 +2023,12 @@ End
 
 
 '-END MANAGE ANEQUALIZER------------------------------------------------------------------------------------------
+
+Public Sub HBox2_Arrange()
+  Dim lastchild As Object
+  If Not FMain.FullyLoaded Then Return
+  If Not Me.visible Then Return
+  If TabStrip_filters_audio.text <> "anequalizer" Then Return
+  lastchild = HBox2.Children[HBox2.Children.count - 1]
+  aneqleftspacer.w = (AnEqualizerPanel.w - aneqleftspacer.w - (lastchild.x + lastchild.w)) Div 2
+End

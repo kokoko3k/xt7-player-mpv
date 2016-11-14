@@ -345,7 +345,7 @@
       Index = 1
       Text = "anequalizer"
       { AnEqualizerPanel Panel
-        MoveScaled(0,2,88,38)
+        MoveScaled(-22,3,88,38)
         Expand = True
         Arrangement = Arrange.Vertical
         { PictureBox1 PictureBox
@@ -354,16 +354,19 @@
           Expand = True
           Stretch = True
         }
-        { HBox2 Panel
-          MoveScaled(-23,12,86,25)
+        { HBox2 ScrollView
+          MoveScaled(-26,12,111,25)
           Arrangement = Arrange.Horizontal
           Spacing = True
           Margin = True
+          { AneqLeftSpacer VBox
+            MoveScaled(1,1,1,23)
+          }
           { FrameBand1 Panel
-            MoveScaled(1,0,21,24)
+            MoveScaled(3,-2,21,24)
             Font = Font["-1"]
-            Expand = True
             Arrangement = Arrange.Vertical
+            AutoResize = True
             Spacing = True
             Margin = True
             Border = Border.Etched
@@ -404,10 +407,10 @@
             }
           }
           { FrameBand2 Panel
-            MoveScaled(22,0,21,24)
+            MoveScaled(24,-2,21,24)
             Font = Font["-1"]
-            Expand = True
             Arrangement = Arrange.Vertical
+            AutoResize = True
             Spacing = True
             Margin = True
             Border = Border.Etched
@@ -448,10 +451,10 @@
             }
           }
           { FrameBand3 Panel
-            MoveScaled(43,0,21,24)
+            MoveScaled(45,-2,21,24)
             Font = Font["-1"]
-            Expand = True
             Arrangement = Arrange.Vertical
+            AutoResize = True
             Spacing = True
             Margin = True
             Border = Border.Etched
@@ -492,10 +495,10 @@
             }
           }
           { FrameBand4 Panel
-            MoveScaled(64,0,21,24)
+            MoveScaled(66,-2,21,24)
             Font = Font["-1"]
-            Expand = True
             Arrangement = Arrange.Vertical
+            AutoResize = True
             Spacing = True
             Margin = True
             Border = Border.Etched
@@ -525,6 +528,48 @@
             }
             { SpinBar12 SpinBar EqControls
               Name = "SpinBar12"
+              MoveScaled(2,17,17,4)
+              Expand = True
+              Value = 200
+              MaxValue = 3000
+              Text = ("Width")
+              Step = 1
+            }
+          }
+          { FrameBand5 Panel
+            MoveScaled(87,-3,21,24)
+            Font = Font["-1"]
+            Arrangement = Arrange.Vertical
+            AutoResize = True
+            Spacing = True
+            Margin = True
+            Border = Border.Etched
+            { SwitchButton5 SwitchButton switchers
+              Name = "SwitchButton5"
+              MoveScaled(2,2,17,4)
+              Expand = True
+              Value = True
+            }
+            { SpinBar13 SpinBar EqControls
+              Name = "SpinBar13"
+              MoveScaled(2,7,17,4)
+              Font = Font["-2"]
+              Expand = True
+              Value = 6000
+              MaxValue = 24000
+              Text = ("Freq")
+              Step = 1
+            }
+            { SpinBar14 SpinBar EqControls
+              Name = "SpinBar14"
+              MoveScaled(2,12,17,4)
+              Expand = True
+              MaxValue = 30
+              MinValue = -30
+              Text = ("Gain")
+            }
+            { SpinBar15 SpinBar EqControls
+              Name = "SpinBar15"
               MoveScaled(2,17,17,4)
               Expand = True
               Value = 200
