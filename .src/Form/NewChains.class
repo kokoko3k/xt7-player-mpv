@@ -362,6 +362,24 @@ Public Sub Init()
   Init_filters_audio()
   Init_filters_video()
   tabstrip1.index = 0
+  
+  
+  f1.value = 50
+  g1.value = 0
+  w1.value = 100
+  f2.value = 250
+  g2.value = 0
+  w2.value = 500
+  f3.value = 1000
+  g3.value = 0
+  w3.value = 1000
+  f4.value = 2500
+  g4.value = 0
+  w4.value = 1000
+  f5.value = 4000
+  g5.value = 0
+  w5.value = 1000
+  
   initdone = True
 End
 
@@ -1904,7 +1922,7 @@ Public Sub switchers_Click()
   Dim child As Object
   Dim band_enabled As Boolean = False
   'is at least a band enabled?
-  If Not (switchbutton1.Value Or switchbutton2.Value Or switchbutton3.Value Or switchbutton4.Value) Then
+  If Not (switchbutton1.Value Or switchbutton2.Value Or switchbutton3.Value Or switchbutton4.Value Or switchbutton5.Value) Then
     picturebox1.Picture = Null
     dynaobj_change(Last)
     Return

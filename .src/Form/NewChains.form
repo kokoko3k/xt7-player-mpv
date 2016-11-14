@@ -103,7 +103,7 @@
       Picture = Picture["icon:/16/tools"]
     }
     { TabStrip_filters_audio TabStrip
-      MoveScaled(33,2,56,47)
+      MoveScaled(37,0,56,47)
       #Translate = False
       Tag = "anequalizer"
       Expand = True
@@ -355,7 +355,7 @@
           Stretch = True
         }
         { HBox2 ScrollView
-          MoveScaled(24,11,111,25)
+          MoveScaled(-44,17,111,25)
           Arrangement = Arrange.Horizontal
           Spacing = True
           Margin = True
@@ -363,7 +363,7 @@
             MoveScaled(1,1,1,23)
           }
           { FrameBand1 Panel
-            MoveScaled(3,-2,21,24)
+            MoveScaled(3,1,21,24)
             Font = Font["-1"]
             Arrangement = Arrange.Vertical
             AutoResize = True
@@ -376,18 +376,19 @@
               Expand = True
               Value = True
             }
-            { SpinBar4 SpinBar EqControls
-              Name = "SpinBar4"
+            { f1 SpinBar EqControls
+              Name = "f1"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
               Value = 200
-              MaxValue = 24000
+              MaxValue = 500
+              MinValue = 1
               Text = ("Freq")
               Step = 1
             }
-            { SpinBar5 SpinBar EqControls
-              Name = "SpinBar5"
+            { g1 SpinBar EqControls
+              Name = "g1"
               MoveScaled(2,12,17,4)
               Font = Font["-2"]
               Expand = True
@@ -395,13 +396,13 @@
               MinValue = -30
               Text = ("Gain")
             }
-            { SpinBar6 SpinBar EqControls
-              Name = "SpinBar6"
+            { w1 SpinBar EqControls
+              Name = "w1"
               MoveScaled(2,17,17,4)
               Font = Font["-2"]
               Expand = True
               Value = 200
-              MaxValue = 3000
+              MaxValue = 1000
               Text = ("Width")
               Step = 1
             }
@@ -420,18 +421,19 @@
               Expand = True
               Value = True
             }
-            { SpinBar1 SpinBar EqControls
-              Name = "SpinBar1"
+            { f2 SpinBar EqControls
+              Name = "f2"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
               Value = 600
-              MaxValue = 24000
+              MaxValue = 2000
+              MinValue = 200
               Text = ("Freq")
               Step = 1
             }
-            { SpinBar2 SpinBar EqControls
-              Name = "SpinBar2"
+            { g2 SpinBar EqControls
+              Name = "g2"
               MoveScaled(2,12,17,4)
               Font = Font["-2"]
               Expand = True
@@ -439,19 +441,19 @@
               MinValue = -30
               Text = ("Gain")
             }
-            { SpinBar3 SpinBar EqControls
-              Name = "SpinBar3"
+            { w2 SpinBar EqControls
+              Name = "w2"
               MoveScaled(2,17,17,4)
               Font = Font["-2"]
               Expand = True
               Value = 200
-              MaxValue = 3000
+              MaxValue = 2000
               Text = ("Width")
               Step = 1
             }
           }
           { FrameBand3 Panel
-            MoveScaled(45,-2,21,24)
+            MoveScaled(46,-2,21,24)
             Font = Font["-1"]
             Arrangement = Arrange.Vertical
             AutoResize = True
@@ -464,18 +466,19 @@
               Expand = True
               Value = True
             }
-            { SpinBar7 SpinBar EqControls
-              Name = "SpinBar7"
+            { f3 SpinBar EqControls
+              Name = "f3"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
               Value = 1000
-              MaxValue = 24000
+              MaxValue = 4000
+              MinValue = 600
               Text = ("Freq")
               Step = 1
             }
-            { SpinBar8 SpinBar EqControls
-              Name = "SpinBar8"
+            { g3 SpinBar EqControls
+              Name = "g3"
               MoveScaled(2,12,17,4)
               Font = Font["-2"]
               Expand = True
@@ -483,8 +486,8 @@
               MinValue = -30
               Text = ("Gain")
             }
-            { SpinBar9 SpinBar EqControls
-              Name = "SpinBar9"
+            { w3 SpinBar EqControls
+              Name = "w3"
               MoveScaled(2,17,17,4)
               Font = Font["-2"]
               Expand = True
@@ -508,26 +511,27 @@
               Expand = True
               Value = True
             }
-            { SpinBar10 SpinBar EqControls
-              Name = "SpinBar10"
+            { f4 SpinBar EqControls
+              Name = "f4"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
               Value = 6000
               MaxValue = 24000
+              MinValue = 2000
               Text = ("Freq")
               Step = 1
             }
-            { SpinBar11 SpinBar EqControls
-              Name = "SpinBar11"
+            { g4 SpinBar EqControls
+              Name = "g4"
               MoveScaled(2,12,17,4)
               Expand = True
               MaxValue = 30
               MinValue = -30
               Text = ("Gain")
             }
-            { SpinBar12 SpinBar EqControls
-              Name = "SpinBar12"
+            { w4 SpinBar EqControls
+              Name = "w4"
               MoveScaled(2,17,17,4)
               Expand = True
               Value = 200
@@ -550,26 +554,27 @@
               Expand = True
               Value = True
             }
-            { SpinBar13 SpinBar EqControls
-              Name = "SpinBar13"
+            { f5 SpinBar EqControls
+              Name = "f5"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
               Value = 6000
               MaxValue = 24000
+              MinValue = 2000
               Text = ("Freq")
               Step = 1
             }
-            { SpinBar14 SpinBar EqControls
-              Name = "SpinBar14"
+            { g5 SpinBar EqControls
+              Name = "g5"
               MoveScaled(2,12,17,4)
               Expand = True
               MaxValue = 30
               MinValue = -30
               Text = ("Gain")
             }
-            { SpinBar15 SpinBar EqControls
-              Name = "SpinBar15"
+            { w5 SpinBar EqControls
+              Name = "w5"
               MoveScaled(2,17,17,4)
               Expand = True
               Value = 200
