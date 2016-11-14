@@ -2148,9 +2148,11 @@ End
 
 
 '-END MANAGE ANEQUALIZER------------------------------------------------------------------------------------------
-
+Private last_hbox2_w As Integer = -1
 Public Sub HBox2_Arrange()
   Dim lastchild As Object
+  If Last_hbox2_w = HBox2.w Then Return
+  Last_hbox2_w = HBox2.w
   If Not FMain.FullyLoaded Then Return
   If Not Me.visible Then Return
   If TabStrip_filters_audio.text <> "anequalizer" Then Return
