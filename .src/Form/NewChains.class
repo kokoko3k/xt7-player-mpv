@@ -1925,6 +1925,7 @@ Public Sub switchers_Click()
   If Not (switchbutton1.Value Or switchbutton2.Value Or switchbutton3.Value Or switchbutton4.Value Or switchbutton5.Value) Then
     picturebox1.Picture = Null
     dynaobj_change(Last)
+    DrawGraph_part2(False)
     Return
   Endif
 
@@ -1934,7 +1935,11 @@ End
 
 
 Public Sub mpveq_mykill(retcode As Integer)
-  Dim picfile As String
+ DrawGraph_part2()
+End
+
+Public Sub DrawGraph_part2(Optional graph_response As Boolean = True)
+ Dim picfile As String
   Dim img As Image
   Dim img_graph As Image
   Dim text_h, text_w As Integer
@@ -1995,14 +2000,16 @@ Public Sub mpveq_mykill(retcode As Integer)
     paint_db_line(12, img, line_color)
     paint_db_line(24, img, line_color)
 
-    Try img_graph = Image.Load(picfile).Opacity(0.7)
-    Paint.Begin(img_graph)
-      Paint.operator = Paint.OperatorAdd
-      Paint.DrawImage(img, 0, 0)
-    Paint.end
-    
-    picturebox1.picture = img_graph.picture
-    
+    If graph_response Then Try img_graph = Image.Load(picfile).Opacity(0.7)
+    If img_graph <> Null Then
+      Paint.Begin(img_graph)
+        Paint.operator = Paint.OperatorAdd
+        Paint.DrawImage(img, 0, 0)
+      Paint.end
+      picturebox1.picture = img_graph.picture
+        Else
+      picturebox1.picture = img.picture
+    Endif
   Endif
 End
 
@@ -2110,7 +2117,6 @@ Public Sub DrawGraph()
 
   eq_string = eqstring()
   If eq_string <> "" Then
-    Debug
     mpveq.mpvoptions["lavfi-complex"] = "\"" & eqstring() & "\""
     mpveq.mpvoptions["vo"] = "image"
     mpveq.mpvoptions["ao"] = "null"
