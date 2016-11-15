@@ -1101,6 +1101,7 @@ Public Function do_stop() As Boolean
   If Not restarting Then 
     If ProcessRunningOvr() Then 
       user_stopped = True
+      Try event_loop.stop
       Raise user_stopping(getP("fullpath"), get_property_mpv("=time_pos", True, 1, True))
     Endif
     ClearMediaProperties()
@@ -1454,6 +1455,7 @@ Public Sub playerprocess_kill()
     ClearMediaProperties()
     af_current = "."
     vf_current = "."
+    Try event_loop.stop
     Raise mykill(return_value)
 
     'post cmd is supposed to be filled in the mykill() event handler.
@@ -2336,13 +2338,11 @@ Next
     get_properties_mpv(["vf", "af"], True, False, 1)
     
     If vf_current <> vf_new Then 
-      Debug vf_current, vf_new
       set_property_mpv("vf", vf_new, True)
       vf_current = vf_new
     Endif
     
     If af_current <> af_new Then 
-      Debug af_current, af_new
       set_property_mpv("af", af_new, True)
       af_current = af_new
     Endif
