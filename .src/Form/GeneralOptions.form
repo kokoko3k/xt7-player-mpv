@@ -911,27 +911,6 @@
         Spacing = True
         Margin = True
         Padding = 6
-        { NoParse2 HBox
-          MoveScaled(1,0,51,4.5714)
-          ToolTip = ("Player nice level.\nThe lower the value, the higher the priority\nthe player will get against other processes.")
-          Spacing = True
-          { NoParseLabel1 Label
-            MoveScaled(1,1,14,3)
-            AutoResize = True
-            Text = ("Xt7 Player nice level")
-          }
-          { NiceLevelSpinBox SpinBox notifyobj
-            Name = "NiceLevelSpinBox"
-            MoveScaled(15,1,11,4.5714)
-            MinValue = -19
-            MaxValue = 19
-          }
-          { NoParseLabel4 Label
-            MoveScaled(28,1,15,3)
-            AutoResize = True
-            Text = ("(The lower, the 'faster')")
-          }
-        }
         { NoParse56 HBox
           MoveScaled(1,15,50,4.5714)
           ToolTip = ("When using autoadvancing feature, this may help\nto have smoother transitions (gapless playback)\non slow media like mounted network shares or slow usb sticks.\nWorks only for files, not uries.\n\nNB: it uses the VFS Linux cache, so it could be completely useless\nor even bad for filesystems that do not make use of it.\nPlease, refer to the filesystem implementation.\n\nExamples of popular fuse filesystems:\n* sshfs uses vfs cache by default\n* curlftpfs does not.")

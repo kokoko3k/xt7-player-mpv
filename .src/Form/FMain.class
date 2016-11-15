@@ -4302,7 +4302,6 @@ Public Sub SeekRestart(newpos As Integer)
     audioform.BarBox.visible = False  'mpv 0.11 removed af_export filter :(
     mplayer.do_restart(mplayer.getP("fullpath"), GetOptionsFromGui() & SetRightCache() & " " & cookieopts, False, False, newpos)
     aspectmenu.visible = Not (mplayer.getP("audioonly") Or fsform.fullscreen)
-    mplayer.Renice(GeneralOptions.NiceLevelSpinBox.value)
     CorrectAreaAspect()
     ' LogWindow.clearlogs()
     ' LogWindow.ShowLogs()
@@ -11371,7 +11370,7 @@ Public Sub ActivateThumbler()
   While mthumbler.get_property_mpv("video-params/aspect") = mplayer.unavailable_str 'needed later to size the thumbler box
     Wait 0.1
   Wend
-  mthumbler.Renice(GeneralOptions.NiceLevelSpinBox.value + 5, True)
+  mthumbler.Renice(5, True)
   ThumblerActive = True
   'movethumble()
   ' If global.MouseInside(panel9) Then
