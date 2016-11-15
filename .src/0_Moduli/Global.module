@@ -732,8 +732,8 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   Dim ALabel, AComment, aTitle As Label
   Dim i As Integer
   Dim f As Float
-  Dim ASpinBox As Spinbar
-  Dim AFloatSpinBox As Spinbar
+  Dim ASpinBox As Spinbox
+  Dim AFloatSpinBox As FloatSpinBox
   Dim CurrentParams As String[]
   Dim MyVslider As VSlider
   Dim MyReq As StringFileReqClass
@@ -959,24 +959,30 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     Else If CurrentParams[0] = "RANGE" Then 'Let's Draw a SpinBox
       'Syntax for TheParameters is: ["RANGE", Caption, Min, Default , Max, SpinBoxName,Comment]
 
-      ASpinBox = New SpinBar(AnHBox) As "dynaobj"
+      ASpinBox = New Spinbox(AnHBox) As "dynaobj"
       ASpinBox.Name = CurrentParams[CurrentParams.Count - 2] & ".SpinBox"
       
       'aSpinbar generates errors if min>max and probably even if value is not included in boundaries
       'so wi try our best to set them multiple times until it works. 3 times should suffice.
-      For j = 1 To 3
-        i = CurrentParams[4]
-        Try ASpinBox.MaxValue = i
-        If Error Then error_test = True
-        i = CurrentParams[2]  
-        Try ASpinBox.MinValue = i
-        If Error Then error_test = True
-        i = CurrentParams[3]
-        Try ASpinBox.Value = i
-        If Error Then error_test = True
-        If Not error_test Then Break
-      Next 'j
-      
+      ' For j = 1 To 3
+      '   i = CurrentParams[4]
+      '   Try ASpinBox.MaxValue = i
+      '   If Error Then error_test = True
+      '   i = CurrentParams[2]  
+      '   Try ASpinBox.MinValue = i
+      '   If Error Then error_test = True
+      '   i = CurrentParams[3]
+      '   Try ASpinBox.Value = i
+      '   If Error Then error_test = True
+      '   If Not error_test Then Break
+      ' Next 'j
+     
+      i = CurrentParams[2]
+      ASpinBox.MinValue = i
+      i = CurrentParams[4]
+      ASpinBox.MaxValue = i
+      i = CurrentParams[3]
+      ASpinBox.Value = i
       ASpinBox.expand = True
       ASpinBox.step = 1
 
@@ -1013,7 +1019,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     Else If CurrentParams[0] = "RANGEFLOAT" Then 'Let's Draw a FloatSpinBox
         'Syntax for TheParameters is: ["RANGE", Caption, Min, Default , Max, SpinBoxName,Comment]
 
-        AFloatSpinBox = New Spinbar(AnHBox) As "dynaobj"
+        AFloatSpinBox = New FloatSpinBox(AnHBox) As "dynaobj"
         'AFloatSpinBox.DecimalSeparator = "."
         AFloatSpinBox.Name = CurrentParams[CurrentParams.Count - 2] & ".FloatSpinBox"
         f = CurrentParams[2]
@@ -1086,7 +1092,7 @@ Public Sub ManageNotifies_Change(LastObj As Object)
   'that way i can manage their changes
   'and notify users that it needs to apply new settings
   Dim goon As Boolean = False
-  If (LastObj Is Checkbox) Or (LastObj Is SpinBox) Or (LastObj Is Spinbar) Or (LastObj Is Textbox) Then
+  If (LastObj Is Checkbox) Or (LastObj Is SpinBox) Or (LastObj Is Spinbar) Or (LastObj Is Textbox) Or (LastObj Is FloatSpinBox) Then
     goon = True
   Endif
   If (LastObj Is Label) Or (LastObj Is Slider) Or (LastObj Is Combobox) Then
