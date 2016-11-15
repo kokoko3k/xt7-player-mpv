@@ -40,6 +40,8 @@ Public Subfile As String = ""
 Public Quick As Boolean = False                         'Skip mediainfo code
 Public osdlevel As String = ""
 Public lua_scripts As New String[]
+Public af_current As String 'keep track of realtime filters
+Public vf_current As String 'keep track of realtime filters
 
 Public Function version(Optional full_line As Boolean = False) As String
   Dim out As String
@@ -609,6 +611,8 @@ Public Function do_play(filename As String, Optional string_options As String = 
   'Dim killer_script As String = Temp()
   Dim data As String
   Dim internal_opts As New Collection
+  af_current = "."
+  vf_current = "."
   return_value = 0
   If string_options Like "*-idle *" Then 
     Stop
@@ -1448,7 +1452,8 @@ Public Sub playerprocess_kill()
   return_value = playerprocess.value
   If (Not restarting) Then 
     ClearMediaProperties()
-
+    af_current = "."
+    vf_current = "."
     Raise mykill(return_value)
 
     'post cmd is supposed to be filled in the mykill() event handler.
@@ -2221,7 +2226,6 @@ Private Function what_changes(oldc As Collection, newc As Collection) As Collect
 End
 
 
-
 Private ignore_opts As String[]
 
 Public Sub do_apply(new_opts As Collection) ', Optional only_check_vdpaurb As Boolean = False)
@@ -2239,7 +2243,7 @@ Public Sub do_apply(new_opts As Collection) ', Optional only_check_vdpaurb As Bo
   'see if we need a restart
   'make a list of changed options
   changed_opts = what_changes(mpvoptions, new_opts)
-
+  If changed_opts.count = 0 Then Return '(unlikely to happen)
   For Each changed_opts
     name = changed_opts.Key
     data = changed_opts[changed_opts.Key]
@@ -2313,7 +2317,7 @@ Next
 
   If af_new = "|(removed)|" Then af_new = ""
   If vf_new = "|(removed)|" Then vf_new = ""
-  set_property_mpv("af", af_new, True)
+
 ' ' ' Stop
 ' ' '       'This part is entirely for reinitialize playback with vdpaurb video filter
 ' ' '           If vf_new <> "" Then
@@ -2328,8 +2332,21 @@ Next
 ' ' '             Endif
 ' ' '           Endif
 
-  set_property_mpv("vf", vf_new, True)
-
+  'only apply New Filters In realtime If something changed
+    get_properties_mpv(["vf", "af"], True, False, 1)
+    
+    If vf_current <> vf_new Then 
+      Debug vf_current, vf_new
+      set_property_mpv("vf", vf_new, True)
+      vf_current = vf_new
+    Endif
+    
+    If af_current <> af_new Then 
+      Debug af_current, af_new
+      set_property_mpv("af", af_new, True)
+      af_current = af_new
+    Endif
+  
   ReturnLabel:
   Return
 
