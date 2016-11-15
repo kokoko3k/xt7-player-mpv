@@ -985,6 +985,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       ASpinBox.Value = i
       ASpinBox.expand = True
       ASpinBox.step = 1
+      
 
       ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
       ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"

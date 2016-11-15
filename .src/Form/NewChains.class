@@ -1063,9 +1063,9 @@ Public Function parse_drivers(audio As Boolean) As MpvOption[]
     If cBox.value = CheckBox.True Then
       drivers_list &= "," & item_name
       If audio Then 
-        driver_opts.Insert(parse_audio_driver(item_name, item_container.tag))
+        Try driver_opts.Insert(parse_audio_driver(item_name, item_container.tag))
           Else
-        driver_opts.Insert(parse_video_Driver(item_name, item_container.tag))
+        Try driver_opts.Insert(parse_video_Driver(item_name, item_container.tag))
       Endif
     Endif
   Next
@@ -1633,7 +1633,7 @@ Public Function parse_audio_driver(driver_name As String, aTabstrip As Tabstrip)
 
   If aTabstrip.Children.count = 0 Then 
     global.mydebug("aTabstrip.Children.count is actually 0 (?), could not parse audio driver.")
-    Return ""
+    Return Null
   Endif
   If aTabstrip.Children[0] Is Scrollview Then 
     container_obj = aTabstrip.Children[0]

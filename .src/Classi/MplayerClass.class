@@ -413,7 +413,6 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
   Dim tc As Integer = 0
   Dim waittime As Float = 0.01
   setP("idle", "no")
-
   Repeat
     If Not ProcessRunningOvr() Then Return False
     Wait waittime
@@ -1715,7 +1714,10 @@ Public Function set_property_mpv(name As String, data As String, Optional osd As
   'mpv_command(["set_property_string", name, data])
   Dim s As String = "\\"
   Dim q As String = "\""
-
+  
+  ' Debug "Caller:", System.Backtrace[1], System.Backtrace[2]
+  ' Debug name, data
+  
   data = Replace(data, q, s & q)        'replace " with \"
   data = Replace(data, s & s & q, s & q) 'replace \\" with \" (in case we quoted an already quoted string)
   If osd Then 
@@ -2413,7 +2415,7 @@ Public Sub do_apply_restart(new_opts As Collection)
     properties_changed_runtime_old_datas[name] = data
   Next
   
-  
+
   If ProcessRunningOvr() Then
     clear_options()
     For Each data In new_opts
@@ -2423,11 +2425,10 @@ Public Sub do_apply_restart(new_opts As Collection)
     timepos = get_property_mpv("=time-pos")
     set_option("start", timepos)
     do_play(fullpath,, restart = True)
-    Wait 1
-    set_property_mpv("options/start", "0")
   Endif
 
   waitplayback(500)
+  set_property_mpv("options/start", "0")
 
   'Restore properties changed runtime before the restart
   'more tries are needed because mpv needs to initialize
