@@ -581,7 +581,6 @@ Public Sub LoadDefault()
   MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
   LoadWatchDir(global.confpath & "/" & global.CurrentProfile)
   Try LoadExcludeDir(global.confpath & "/" & global.CurrentProfile)
-  what_is_volume_property()
   Alreadyloaded = True
   TimesLoaded += 1
 End
@@ -1385,17 +1384,8 @@ Public Sub ShowCacheGaugeCHK_Click()
   Endif
 End
 
-Public Sub UseMpvInternalMixerCheckBox_Click()
-  what_is_volume_property()
-End
 
-Public Sub what_is_volume_property()
-  If UseMpvInternalMixerCheckBox.value = checkbox.true Then
-    fmain.mplayer.volumeproperty = "volume"
-      Else
-    fmain.mplayer.volumeproperty = "ao-volume"
-  Endif
-End
+
 
 Public Sub OLD_ComboOption_Click()
   Dim values As New String[]

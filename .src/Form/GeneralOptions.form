@@ -382,18 +382,6 @@
             Text = ("auto")
           }
         }
-        { adevicehbox2 HBox
-          MoveScaled(0,44,50,4.5714)
-          ToolTip = ("Select an audio driver and an audio device at once.\nNote that any audio driver explicitaly selected in the chains window\nwill override this setting.\n\nmpv option: --audio-device")
-          Spacing = True
-          { UseMpvInternalMixerCheckBox CheckBox
-            MoveScaled(1,0,47,5)
-            ToolTip = ("Checked: volume changes will affect the internal mpv volume.\nUnchecked: volume changes will change the system volume:\n(on ALSA this usually changes system-wide audio,\nwhile with PulseAudio, this controls per-application volume.)\n\nHINT: Pulseaudio users may want to UNCHECK this.")
-            AutoResize = True
-            Text = ("Use mpv internal mixer (enables maximum amplification)")
-            Value = CheckBox.True
-          }
-        }
       }
       Index = 2
       Text = ("Screen")
