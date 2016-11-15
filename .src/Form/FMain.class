@@ -1682,20 +1682,9 @@ Public Sub SaveFormGeometry()
   
   Dim PrevScreenX As Integer = fmain.screenx
   Dim PrevScreeny As Integer = fmain.screeny
-  Dim deltax As Integer
-  Dim deltay As Integer
   
   If (GeneralOptions.SaveGeometryCHK.value = True) Then
-    If (GeneralOptions.SaveGeometryCompizCHK.value = True) Then
-      fmain.Move(fmain.screenx, fmain.screeny)
-      fmain.refresh
-      Wait 0.03
-      deltax = (fmain.screenx - prevscreenx) * 2
-      deltay = (fmain.screeny - prevscreeny) * 2
-      SubSaveFormGeometry(- deltax, - deltay)
-    Else
       SubSaveFormGeometry(fmain.x - fmain.screenx, fmain.y - fmain.screeny)
-    Endif
   Endif
 
 End
