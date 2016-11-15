@@ -355,7 +355,7 @@
           Stretch = True
         }
         { HBox2 ScrollView
-          MoveScaled(-2,15,111,25)
+          MoveScaled(-49,14,111,25)
           Arrangement = Arrange.Horizontal
           Spacing = True
           Margin = True
@@ -376,35 +376,30 @@
               Expand = True
               Value = True
             }
-            { f1 SpinBar EqControls
+            { f1 SpinBox EqControls
               Name = "f1"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
-              Value = 200
-              MaxValue = 500
               MinValue = 1
-              Text = ("Freq")
-              Step = 1
+              MaxValue = 500
+              Value = 200
             }
-            { g1 SpinBar EqControls
+            { g1 SpinBox EqControls
               Name = "g1"
               MoveScaled(2,12,17,4)
               Font = Font["-2"]
               Expand = True
-              MaxValue = 30
               MinValue = -30
-              Text = ("Gain")
+              MaxValue = 30
             }
-            { w1 SpinBar EqControls
+            { w1 SpinBox EqControls
               Name = "w1"
               MoveScaled(2,17,17,4)
               Font = Font["-2"]
               Expand = True
-              Value = 200
               MaxValue = 1000
-              Text = ("Width")
-              Step = 1
+              Value = 200
             }
           }
           { FrameBand2 Panel
@@ -421,35 +416,30 @@
               Expand = True
               Value = True
             }
-            { f2 SpinBar EqControls
+            { f2 SpinBox EqControls
               Name = "f2"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
-              Value = 600
-              MaxValue = 2000
               MinValue = 1
-              Text = ("Freq")
-              Step = 1
+              MaxValue = 2000
+              Value = 600
             }
-            { g2 SpinBar EqControls
+            { g2 SpinBox EqControls
               Name = "g2"
               MoveScaled(2,12,17,4)
               Font = Font["-2"]
               Expand = True
-              MaxValue = 30
               MinValue = -30
-              Text = ("Gain")
+              MaxValue = 30
             }
-            { w2 SpinBar EqControls
+            { w2 SpinBox EqControls
               Name = "w2"
               MoveScaled(2,17,17,4)
               Font = Font["-2"]
               Expand = True
-              Value = 200
               MaxValue = 2000
-              Text = ("Width")
-              Step = 1
+              Value = 200
             }
           }
           { FrameBand3 Panel
@@ -466,35 +456,30 @@
               Expand = True
               Value = True
             }
-            { f3 SpinBar EqControls
+            { f3 SpinBox EqControls
               Name = "f3"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
-              Value = 1000
-              MaxValue = 4000
               MinValue = 600
-              Text = ("Freq")
-              Step = 1
+              MaxValue = 4000
+              Value = 1000
             }
-            { g3 SpinBar EqControls
+            { g3 SpinBox EqControls
               Name = "g3"
               MoveScaled(2,12,17,4)
               Font = Font["-2"]
               Expand = True
-              MaxValue = 30
               MinValue = -30
-              Text = ("Gain")
+              MaxValue = 30
             }
-            { w3 SpinBar EqControls
+            { w3 SpinBox EqControls
               Name = "w3"
               MoveScaled(2,17,17,4)
               Font = Font["-2"]
               Expand = True
-              Value = 200
               MaxValue = 3000
-              Text = ("Width")
-              Step = 1
+              Value = 200
             }
           }
           { FrameBand4 Panel
@@ -511,33 +496,28 @@
               Expand = True
               Value = True
             }
-            { f4 SpinBar EqControls
+            { f4 SpinBox EqControls
               Name = "f4"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
-              Value = 6000
-              MaxValue = 24000
               MinValue = 2000
-              Text = ("Freq")
-              Step = 1
+              MaxValue = 24000
+              Value = 6000
             }
-            { g4 SpinBar EqControls
+            { g4 SpinBox EqControls
               Name = "g4"
               MoveScaled(2,12,17,4)
               Expand = True
-              MaxValue = 30
               MinValue = -30
-              Text = ("Gain")
+              MaxValue = 30
             }
-            { w4 SpinBar EqControls
+            { w4 SpinBox EqControls
               Name = "w4"
               MoveScaled(2,17,17,4)
               Expand = True
-              Value = 200
               MaxValue = 3000
-              Text = ("Width")
-              Step = 1
+              Value = 200
             }
           }
           { FrameBand5 Panel
@@ -554,33 +534,28 @@
               Expand = True
               Value = True
             }
-            { f5 SpinBar EqControls
+            { f5 SpinBox EqControls
               Name = "f5"
               MoveScaled(2,7,17,4)
               Font = Font["-2"]
               Expand = True
-              Value = 6000
-              MaxValue = 24000
               MinValue = 2000
-              Text = ("Freq")
-              Step = 1
+              MaxValue = 24000
+              Value = 6000
             }
-            { g5 SpinBar EqControls
+            { g5 SpinBox EqControls
               Name = "g5"
               MoveScaled(2,12,17,4)
               Expand = True
-              MaxValue = 30
               MinValue = -30
-              Text = ("Gain")
+              MaxValue = 30
             }
-            { w5 SpinBar EqControls
+            { w5 SpinBox EqControls
               Name = "w5"
               MoveScaled(2,17,17,4)
               Expand = True
-              Value = 200
               MaxValue = 3000
-              Text = ("Width")
-              Step = 1
+              Value = 200
             }
           }
         }
