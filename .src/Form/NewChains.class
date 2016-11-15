@@ -948,7 +948,6 @@ Private Function Parse_audio_filter(Filtername As String, Optional For_realtime 
   Dim subtext As String
   Dim anequalizer_string As String
   i = aTabstrip.index
-  Debug atabstrip.i, atabstrip.caption
 
   'Find the ParsedFilter Tab and activate it:
   aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
