@@ -2549,7 +2549,7 @@ Public Sub static_options() As Collection
   Return opts
 End
 
-Public Sub user_options(fullpath As String, Optional for_realtime As Boolean = False) As Collection
+Public Sub user_options(fullpath As String) As Collection
   'user options configured through gui
   Dim opts As New Collection
   Dim opt As Mpvoption
@@ -2588,7 +2588,7 @@ Public Sub user_options(fullpath As String, Optional for_realtime As Boolean = F
     'opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
 
     opts["vf-add"] = NewChains.parse_filters(False)
-    opts["af-add"] = NewChains.parse_filters(True, for_realtime)
+    opts["af-add"] = NewChains.parse_filters(True)
   Endif
 
   For Each opt In generaloptions.Parse()
@@ -2783,7 +2783,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     mplayer.set_option(opts.key, data)
   Next  
 
-  opts = user_options(fullpath, False)
+  opts = user_options(fullpath)
 
   For Each data In opts
     mplayer.set_option(opts.key, data, False)
@@ -5125,7 +5125,7 @@ Public Sub MenuConfigureAudioFilters_Click()
   
 End
 
-Private Function get_apply_opts(Optional for_realtime As Boolean = False) As Collection
+Private Function get_apply_opts() As Collection
   'return options needed to apply changes
   Dim temp_opts As New Collection
   Dim new_opts As New Collection
@@ -5148,7 +5148,7 @@ Private Function get_apply_opts(Optional for_realtime As Boolean = False) As Col
       new_opts[temp_opts.key] = data
     Next
 
-    temp_opts = user_options(fullpath, for_realtime)
+    temp_opts = user_options(fullpath)
 
     For Each data In temp_opts
       new_opts[temp_opts.key] = data
@@ -5164,9 +5164,9 @@ End
 Public Sub Apply(Optional force_restart As Boolean = False)
   If Not mplayer.ProcessRunningOvr() Then Return
   If force_restart Then
-    mplayer.do_apply_restart(get_apply_opts(False))
+    mplayer.do_apply_restart(get_apply_opts())
       Else
-    mplayer.do_Apply(get_apply_opts(True))
+    mplayer.do_Apply(get_apply_opts())
   Endif
   
    global.ResetApplyBtnColor()

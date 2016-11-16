@@ -2345,6 +2345,7 @@ Next
     Endif
     
     If af_current <> af_new Then 
+      af_new = fix_for_anequalizer(af_new)
       set_property_mpv("af", af_new, True)
       af_current = af_new
     Endif
@@ -2353,6 +2354,23 @@ Next
   Return
 
 End
+
+Private Function fix_for_anequalizer(af As String) As String
+  Dim istart, iend As Integer
+  Dim sOut As String
+'  lavfi=[anequalizer=" & eqstring(False) & "]     this way it works in realtime only
+'  lavfi='[anequalizer=" & eqstring(False) & "]'   this way it works at start
+  istart = InStr(af, "'[anequalizer=")
+  If istart = 0 Then Return af
+  
+  iend = InStr(af, "]'", istart)
+  If iend = 0 Then Return af 'something wrong...
+
+  sOut = Left(af, istart - 1) & "[" & Mid(af, istart + 2, iend - Len(af)) & Right(af, - iend - 1)
+
+  Return sout
+End
+
 
 ' Public Function vdpau_blocked_by_Filters() As Boolean
 '   Dim vfs As String

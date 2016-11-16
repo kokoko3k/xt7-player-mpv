@@ -933,7 +933,7 @@ End
 ' End
 
 
-Private Function Parse_audio_filter(Filtername As String, Optional For_realtime As Boolean = False) As String
+Private Function Parse_audio_filter(Filtername As String) As String
   'will parse the tabstrip at filtername index and output
   'a commandline to add a filter in mplayer
   Dim ParsedFilter As String = Lower((FilterName))
@@ -959,17 +959,18 @@ Private Function Parse_audio_filter(Filtername As String, Optional For_realtime 
   Else If Parsedfilter = "anequalizer" Then
     '--af=lavfi="[anequalizer=c0:f=1000]" 
     anequalizer_string = eqstring(False)
-  If For_realtime Then
-    If anequalizer_string <> "" Then 
-      aTabstrip.index = i
-      Return "lavfi=[anequalizer=" & eqstring(False) & "]" 'this way it works in realtime only
-    Endif
-        Else
-    If anequalizer_string <> "" Then 
-      aTabstrip.index = i
+  ' If For_realtime Then
+  '   If anequalizer_string <> "" Then 
+  '     aTabstrip.index = i
+  '     Return "lavfi=[anequalizer=" & eqstring(False) & "]" 'this way it works in realtime only
+  '   Endif
+  '       Else
+  '   If anequalizer_string <> "" Then 
+  '     aTabstrip.index = i
+  '     Return "lavfi='[anequalizer=" & eqstring(False) & "]'" 'this way it works at start time only 
+  '   Endif
       Return "lavfi='[anequalizer=" & eqstring(False) & "]'" 'this way it works at start time only 
-    Endif
-  Endif
+
   Else If Parsedfilter Like "customaudio*" Then
     out = parse_audio_filter_custom()
     aTabstrip.index = i 
@@ -1139,7 +1140,7 @@ End
 
 
 
-Public Function parse_filters(audio As Boolean, Optional For_realtime As Boolean = False) As String
+Public Function parse_filters(audio As Boolean) As String
   Dim item_name As String
   Dim item_box As Hbox
   Dim cBox As Checkbox
@@ -1159,7 +1160,7 @@ Public Function parse_filters(audio As Boolean, Optional For_realtime As Boolean
     cBox = Me.Controls[item_name & "_checkbox_" & filters_container.name]
     If cBox.value = True Then
       If audio Then 
-        filter = Parse_audio_filter(item_name, For_realtime)
+        filter = Parse_audio_filter(item_name)
         If filter <> "" Then filters &= filter & ","  'null custom filters
           Else
         filter = Parse_video_filter(item_name)        'needed to fix
