@@ -1023,6 +1023,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
         AFloatSpinBox = New FloatSpinBox(AnHBox) As "dynaobj"
         'AFloatSpinBox.DecimalSeparator = "."
         AFloatSpinBox.Name = CurrentParams[CurrentParams.Count - 2] & ".FloatSpinBox"
+        AFloatSpinBox.DecimalSeparator = "."
         f = CurrentParams[2]
         AFloatSpinBox.MinValue = f
         f = CurrentParams[4]
