@@ -73,6 +73,7 @@ Private Sub Init_filters_video()
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
   Next
+
   filters_video_container.tag = TabStrip_filters_video
   fill_tabstrip(TabStrip_filters_video, filters_video_container)
   draw_filters_video_cfg()
@@ -242,7 +243,7 @@ Public Sub filter_button_up_click()
   'move it  
   chain_item_move(Last.parent, up = True)
   
-  If trig Then dynaobj_change(Last)
+  If trig Then dynaobj_change()
   
 End
 
@@ -262,7 +263,7 @@ Public Sub filter_button_down_click()
   'move it
   chain_item_move(Last.parent, up = False)
 
-  If trig Then dynaobj_change(Last)
+  If trig Then dynaobj_change()
   
 End
 
@@ -401,7 +402,7 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["ROCHOOSE", "bitrate=", "auto", "96", "128", "192", "224", "320", "448", "512", "640", "lavcac3enc2", ("The bitrate use for the AC-3 stream.")])
   AllParams.add(["ROCHOOSE", "minch=", "3", "2", "3", "4", "5", "6", "lavcac3enc3", ("If the input channel number is less than <minchn>, the filter will detach itself (default: 3).")])
   AllParams.Add(["TIP", ("This filter must be the last in the chain"), "lavcac3enc4", ""])
-  Global.DrawGui(AllParams, "lavcac3enc", aTabstrip, switchable)
+  Global.DrawGui(AllParams, "lavcac3enc", aTabstrip, switchable,,,, Me)
   AllParams.Clear
   
   
@@ -420,13 +421,13 @@ Private Sub draw_filters_audio_cfg()
     AllParams.add(["ROCHOOSE", "replaygain-album=", "yes", "no", "Volume3", ("Like replaygain-track, but using the album-gain value")])
     AllParams.add(["ROCHOOSE", "replaygain-clip=", "yes", "no", "Volume5", ("Prevent replaygain clipping by lowering the gain")])
     AllParams.add(["ROCHOOSE", "softclip=", "yes", "no", "Volume6", ("Turns on soft clipping")])
-    Global.DrawGui(AllParams, "volume", aTabstrip, Switchable)
+    Global.DrawGui(AllParams, "volume", aTabstrip, switchable,,,, Me)
     AllParams.Clear
     
     
   'volume[=<volumedb>[:...]]
     AllParams.Add(["TITLE", "- earwax -", "earwax0", ""])
-    Global.DrawGui(AllParams, "earwax", aTabstrip, False, "",, "lavfi")
+    Global.DrawGui(AllParams, "earwax", aTabstrip, False, "",, "lavfi", Me)
     
     AllParams.Clear
     
@@ -438,14 +439,14 @@ Private Sub draw_filters_audio_cfg()
     AllParams.add(["RANGE", "stride=", "5", "60", "500", "scaletempo2", ""])
     AllParams.add(["RANGEFLOAT", "overlap=", "0.10", "0.20", "1", "scaletempo3", ""])
     AllParams.add(["RANGE", "search=", "1", "14", "100", "scaletempo4", ""])
-    Global.DrawGui(AllParams, "scaletempo", aTabstrip, Switchable)
+    Global.DrawGui(AllParams, "scaletempo", aTabstrip, switchable,,,, Me)
     AllParams.Clear
     
 
   'extrastereo lavfi
   AllParams.Add(["TITLE", "- Adds live effect to playback - (ffmpeg >=3.0 only)", "ExtraStereo0", ""])
   AllParams.add(["RANGEFLOAT", ("Amount"), "0", "2.25", "10", "ExtraStereo1", ""])
-  Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable,,, "lavfi")
+  Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable,,, "lavfi", Me)
   AllParams.Clear
 
   ' 'alimiter lavfi
@@ -462,7 +463,7 @@ Private Sub draw_filters_audio_cfg()
   
   AllParams.Add(["TIP", ("This filter is a good volume normalizer"), "alimiter6", ""])
   AllParams.Add(["TIP", ("It is best to place the volume filter after alimiter"), "alimiter7", ""])
-  Global.DrawGui(AllParams, "alimiter", aTabstrip, False,,, "lavfi")
+  Global.DrawGui(AllParams, "alimiter", aTabstrip, False,,, "lavfi", Me)
   AllParams.Clear
 
   ' lavrresample
@@ -470,7 +471,7 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["RANGE", "phase-shift=", "4", "10", "20", "lavrresample1", "Higher=slower and better quality"]) 
   AllParams.add(["ROCHOOSE", "linear=", "yes", "no", "lavrresample2", "filter linear interpolation"])
   AllParams.Add(["TIP", ("Put this filter at the end of the chain, but before lavcac3enc"), "lavrresample3", ""])
-  Global.DrawGui(AllParams, "lavrresample", aTabstrip, switchable,,, "")
+  Global.DrawGui(AllParams, "lavrresample", aTabstrip, switchable,,, "", Me)
   
   AllParams.Clear
 
@@ -488,7 +489,7 @@ Private Sub draw_filters_audio_cfg()
     AllParams.add(["ROCHOOSE", "Enable alternative boundary mode", "1 - enable", "0 - disable", "dynaudnorm8", ""])
     AllParams.add(["RANGEFLOAT", "Compress factor", "0", "0", "30", "dynaudnorm9", ""])    
     AllParams.Add(["TIP", ("It is best to place the volume filter after dynaudnorm"), "dynaudnorm110", ""])
-    Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, False,,, "lavfi")
+    Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, False,,, "lavfi", Me)
     AllParams.Clear
     'or 50 11 1 5  0 0 0 0 0
 
@@ -499,7 +500,7 @@ Private Sub draw_filters_audio_cfg()
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom14", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom15", ("E.g.:resample=44100:1:2,hrtf=s")])
     If ladspacompiledin Then
-      Global.DrawGui(AllParams, "CustomAudio1", aTabstrip, Switchable,, ButtonLadspaHelper)
+      Global.DrawGui(AllParams, "CustomAudio1", aTabstrip, Switchable,, ButtonLadspaHelper,, Me)
         Else
       Print "WARNING:----------------------------------------------"
       Print "        Your ffmpeg has not been compiled with ladspa support"
@@ -508,7 +509,7 @@ Private Sub draw_filters_audio_cfg()
       Print "        Recompile ffmpeg with ladspa support or ask your"
       Print "        distribution mantainers to do that."
       Print ""
-      Global.DrawGui(AllParams, "CustomAudio1", aTabstrip, Switchable)
+      Global.DrawGui(AllParams, "CustomAudio1", aTabstrip, switchable,,,, Me)
       
     Endif
     AllParams.Clear
@@ -519,9 +520,9 @@ Private Sub draw_filters_audio_cfg()
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom24", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom25", ("E.g.:resample=44100:1:2,hrtf=s")])
     If ladspacompiledin Then
-      Global.DrawGui(AllParams, "CustomAudio2", aTabstrip, Switchable,, ButtonLadspaHelper)
+      Global.DrawGui(AllParams, "CustomAudio2", aTabstrip, Switchable,, ButtonLadspaHelper,, Me)
         Else
-      Global.DrawGui(AllParams, "CustomAudio2", aTabstrip, Switchable)
+      Global.DrawGui(AllParams, "CustomAudio2", aTabstrip, switchable,,,, Me)
     Endif
     AllParams.Clear
     
@@ -532,9 +533,9 @@ Private Sub draw_filters_audio_cfg()
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom29", ("E.g.:resample=44100:1:2,hrtf=s")])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom30", ("E.g.:resample=44100:1:2,hrtf=s")])
     If ladspacompiledin Then
-      Global.DrawGui(AllParams, "CustomAudio3", aTabstrip, Switchable,, ButtonLadspaHelper)
+      Global.DrawGui(AllParams, "CustomAudio3", aTabstrip, Switchable,, ButtonLadspaHelper,, Me)
         Else
-      Global.DrawGui(AllParams, "CustomAudio3", aTabstrip, Switchable)
+      Global.DrawGui(AllParams, "CustomAudio3", aTabstrip, switchable,,,, Me)
     Endif
 
     AllParams.clear
@@ -568,7 +569,7 @@ Private Sub draw_filters_video_cfg()
   
   AllParams.Add(["TITLE", "- Allow filters with vdpau hwrdware decoding -", "vdpaurb0", ""])
   AllParams.Add(["TIP", ("Place this filter before any other (on top)"), "vdpaurb1", ""])
-  Global.DrawGui(AllParams, "vdpaurb", aTabstrip, NotSwitchable)
+  Global.DrawGui(AllParams, "vdpaurb", aTabstrip, NotSwitchable,,,, Me)
   AllParams.Clear
   
   ' unsharp[=l|cWxH:amount[:l|cWxH:amount]]
@@ -578,7 +579,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.add(["CHOOSE", ("Chrominance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp3", ("The higher, the slower")])
   AllParams.add(["RANGEFLOAT", ("Chroma amount"), "-2", "0", "5", "Sharp4", ("Negative means blur")])
   AllParams.add(["ROCHOOSE", "Enable opencl", "0 - disable", "1 - enable", "Sharp5", ("Needs ffmpeg compiled with opencl support")])
-  Global.DrawGui(AllParams, "unsharp", aTabstrip, NotSwitchable, "",, "lavfi")
+  Global.DrawGui(AllParams, "unsharp", aTabstrip, NotSwitchable, "",, "lavfi", Me)
   AllParams.Clear
   
   'expand[ = w: h: x: y: o: a: r]
@@ -589,7 +590,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.add(["RANGE", ("Y Position"), "-1", "-1", "2048", "Expand4", ("Original image position; -1 to center")])
   AllParams.add(["CHOOSE", ("Fit an aspect instead of a resolution"), "", "4/3", "3/2", "16/9", "16/10", "1.85/1", "2.35/1", "2.39/1", "Expand6", ""])
   AllParams.add(["RANGE", ("Make Width and Height divisible by"), "1", "1", "64", "Expand7", ""])
-  Global.DrawGui(AllParams, "expand", aTabstrip, NotSwitchable,,, "lavfi")
+  Global.DrawGui(AllParams, "expand", aTabstrip, NotSwitchable,,, "lavfi", Me)
   AllParams.Clear
   
    
@@ -599,7 +600,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["RANGE", ("Spatial chroma strength"), "0", "3", "200", "HqDn3D2", ""])
   AllParams.Add(["RANGE", ("Temporal luma strength"), "0", "6", "200", "HqDn3D3", ""])
   AllParams.Add(["RANGE", ("Temporal chroma strength"), "0", "4", "200", "HqDn3D4", ""])
-  Global.DrawGui(AllParams, "hqdn3d", aTabstrip, notswitchable,,, "lavfi")
+  Global.DrawGui(AllParams, "hqdn3d", aTabstrip, notswitchable,,, "lavfi", Me)
   AllParams.Clear
   
   'scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]
@@ -611,7 +612,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["ROCHOOSE", ("Chroma skipping"), ("0 - Use all available input lines for chroma"), ("1 - Use only every 2. input line for chroma"), ("2 - Use only every 4. input line for chroma"), ("3 - Use only every 8. input line for chroma"), "Scale4", ("lower=slower")])
   AllParams.Add(["ROCHOOSE", ("Disable Upscaling"), ("0 - Allow Upscaling"), ("1 - Disallow if one dimensions exceeds its original value"), ("2 - Disallow if both dimensions exceed their original values"), "scale8", ""])
   AllParams.Add(["ROCHOOSE", ("Accurate Rounding"), ("no - Disable Accurate rounding"), ("yes - Enable Accurate rounding"), "scale9", ""])
-  Global.DrawGui(AllParams, "scale", aTabstrip, NotSwitchable)
+  Global.DrawGui(AllParams, "scale", aTabstrip, NotSwitchable,,,, Me)
   AllParams.Clear
   
   'delogo[=x:y:w:h:t]
@@ -622,7 +623,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["RANGE", ("Height"), "0", "50", "2048", "Delogo4", ""])
   AllParams.Add(["RANGE", ("Tickness"), "1", "4", "2048", "Delogo5", ""])
   AllParams.add(["ROCHOOSE", "Show borders", "0 - disable", "1 - enable", "Delogo5", ("Draw rectangle borders")])
-  Global.DrawGui(AllParams, "delogo", aTabstrip, NotSwitchable,,, "lavfi")
+  Global.DrawGui(AllParams, "delogo", aTabstrip, NotSwitchable,,, "lavfi", Me)
   AllParams.Clear
 
   'spp[
@@ -630,14 +631,14 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["RANGE", "quality=", "0", "3", "6", "spp1", ("Set quality. This option defines the number of levels for averaging")])
   AllParams.Add(["RANGE", "qp=", "0", "0", "63", "spp2", ("Force a constant quantization parameter.")])
   AllParams.add(["ROCHOOSE", "mode=", "0 - hard", "1 - soft", "spp3", ("Thresholding mode,soft is blurrer but derings better")])
-  Global.DrawGui(AllParams, "spp", aTabstrip, Switchable,,, "lavfi")
+  Global.DrawGui(AllParams, "spp", aTabstrip, Switchable,,, "lavfi", Me)
   AllParams.Clear
   
   'uspp
   AllParams.Add(["TITLE", "- Ultra slow/simple postprocessing filter -", "uspp0", ""])
   AllParams.Add(["RANGE", "quality=", "0", "3", "8", "uspp1", ("Set quality. This option defines the number of levels for averaging")])
   AllParams.Add(["RANGE", "qp=", "0", "0", "63", "uspp2", ("Force a constant quantization parameter.")])
-  Global.DrawGui(AllParams, "uspp", aTabstrip, Switchable,,, "lavfi")
+  Global.DrawGui(AllParams, "uspp", aTabstrip, Switchable,,, "lavfi", Me)
   AllParams.Clear
 
   AllParams.Add(["TITLE", "- Custom video filters - ", "vcustom001", ""])
@@ -646,7 +647,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom13", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom14", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom15", ("E.g.:mirror,smartblur=0.4:0.5:10")])
-  Global.DrawGui(AllParams, "CustomVideo1", aTabstrip, Switchable)
+  Global.DrawGui(AllParams, "CustomVideo1", aTabstrip, switchable,,,, Me)
   AllParams.Clear
 
   AllParams.Add(["TITLE", "- Custom video filters - ", "vcustom002", ""])
@@ -655,7 +656,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom23", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom24", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom25", ("E.g.:mirror,smartblur=0.4:0.5:10")])
-  Global.DrawGui(AllParams, "CustomVideo2", aTabstrip, Switchable)
+  Global.DrawGui(AllParams, "CustomVideo2", aTabstrip, switchable,,,, Me)
   AllParams.Clear
 
   AllParams.Add(["TITLE", "- Custom video filters - ", "vcustom003", ""])
@@ -664,7 +665,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom28", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom29", ("E.g.:mirror,smartblur=0.4:0.5:10")])
   AllParams.Add(["FREE", ("Custom video filter(s):"), "", "VCustom30", ("E.g.:mirror,smartblur=0.4:0.5:10")])
-  Global.DrawGui(AllParams, "CustomVideo3", aTabstrip, Switchable)
+  Global.DrawGui(AllParams, "CustomVideo3", aTabstrip, switchable,,,, Me)
   AllParams.Clear
       
   'eq2[=gamma:contrast:brightness:saturation:rg:gg:bg:weight]
@@ -677,7 +678,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.add(["RANGEFLOAT", ("Gamma Green"), "0.1", "1.0", "10", "Eq6", ("gamma for the green component (default: 1.0)")])
   AllParams.add(["RANGEFLOAT", ("Gamma Blue"), "0.1", "1.0", "10", "Eq7", ("gamma for the blue component (default: 1.0)")])
   AllParams.add(["RANGEFLOAT", ("Weight"), "0", "1.0", "1", "Eq8", ("Reduce effect of gamma correction")])
-  Global.DrawGui(AllParams, "eq", aTabstrip, NotSwitchable)
+  Global.DrawGui(AllParams, "eq", aTabstrip, NotSwitchable,,,, Me)
   AllParams.Clear
 
 
@@ -685,14 +686,14 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["TITLE", "- Debands video quickly using gradients. -", "gradfun0", ""])
   AllParams.Add(["RANGEFLOAT", ("Strength"), "0.51", "1.5", "64", "gradfun1", ("Maximum amount by which the filter will change any one pixel.  Also the threshold for detecting nearly flat regions (default: 1.2).")])
   AllParams.Add(["RANGE", ("Radius"), "0", "16", "32", "gradfun2", ("Neighborhood to fit the gradient to.  Larger radius makes for smoother gradients, but also prevents the filter from modifying pixels near detailed regions (default: 16).")])
-  Global.DrawGui(AllParams, "gradfun", aTabstrip, NotSwitchable,,, "lavfi")
+  Global.DrawGui(AllParams, "gradfun", aTabstrip, NotSwitchable,,, "lavfi", Me)
   AllParams.Clear
   
  'yadif=[mode[:field_dominance]]
   AllParams.Add(["TITLE", "- Yet Another Deinterlace Filter. -", "yadif0", ""])
   AllParams.Add(["ROCHOOSE", ("Deinterlace mode"), "", ("frame - Output 1 frame for each frame."), ("field - Output 1 frame for each field."), ("frame-nospatial - Like 0 but skips spatial interlacing check."), ("field-nospatial - Like 1 but skips spatial interlacing check"), "yadif1", ""])
   AllParams.Add(["ROCHOOSE", ("Interlaced only"), "", ("no"), ("yes"), "yadif1", "Only deinterlace frames marked as interlaced "])
-  Global.DrawGui(AllParams, "yadif", aTabstrip, NotSwitchable)
+  Global.DrawGui(AllParams, "yadif", aTabstrip, NotSwitchable,,,, Me)
   AllParams.Clear
   
   AllParams.Add(["TITLE", "- VDPAU video postprocessing - ", "vdpaupp0", ""])
@@ -705,21 +706,21 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["ROCHOOSE", "interlaced-only=", "yes", "no", "vdpaupp7", ("If yes (default), only deinterlace frames marked as interlaced.")])
   AllParams.Add(["ROCHOOSE", "hqscaling=", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "vdpaupp8", ("Apply high quality VDPAU scaling (needs capable hardware).")])
   AllParams.Add(["TIP", ("This filter only works with vdpau and opengl video outputs"), "vdpaupp9", ""])
-  Global.DrawGui(AllParams, "vdpaupp", aTabstrip, Switchable,,, "")
+  Global.DrawGui(AllParams, "vdpaupp", aTabstrip, Switchable,,, "", Me)
   AllParams.Clear
 
   AllParams.Add(["TITLE", "- VAAPI video postprocessing - ", "vavpp0", ""])
   AllParams.Add(["ROCHOOSE", "deint=", "bob", "first-field", "weave", "motion-adaptive", "motion-compensated", "vvavpp1", ("Select the deinterlacing algorithm.")])
   AllParams.Add(["ROCHOOSE", "interlaced-only=", "yes", "no", "vavpp2", ("If yes (default), only deinterlace frames marked as interlaced.")])
   AllParams.Add(["TIP", ("This filter only works with vaapi and opengl video outputs"), "vavpp3", ""])
-  Global.DrawGui(AllParams, "vavpp", aTabstrip, Switchable,,, "")
+  Global.DrawGui(AllParams, "vavpp", aTabstrip, Switchable,,, "", Me)
   AllParams.Clear
   
   'stereo3d=[in:out]
   AllParams.Add(["TITLE", "- Converts betweed stereoscopic image formats - ", "stereo3d0", ""])
   AllParams.Add(["CHOOSE", ("Input format"), ("sbsl - side by side parallel (left eye left, right eye right)"), ("sbsr - side by side crosseye (right eye left, left eye right)"), ("abl - above-below (left eye above, right eye below)"), ("abr - above-below (right eye above, left eye below)"), ("ab2l - above-below with half height resolution (left eye above, right eye below)"), ("ab2r - above-below with half height resolution (right eye above, left eye below)"), "stereo3d1", ""])
   AllParams.add(["CHOOSE", ("Output format"), ("arcg - anaglyph red/cyan gray (red filter on left eye, cyan filter on right eye)"), ("arch - anaglyph red/cyan half colored (red filter on left eye, cyan filter on right eye)"), ("arcc - anaglyph red/cyan color (red filter on left eye, cyan filter on right eye)"), ("arcd - anaglyph red/cyan color optimized with the least squares projection of dubois (red filter on left eye, cyan filter on right eye)"), ("agmg - anaglyph green/magenta gray (green filter on left eye, magenta filter on right eye)"), ("agmh - anaglyph green/magenta half colored (green filter on left eye, magenta filter on right eye)"), ("agmc - anaglyph green/magenta colored (green filter on left eye, magenta filter on right eye)"), ("aybg - anaglyph yellow/blue gray (yellow filter on left eye, blue filter on right eye)"), ("aybh - anaglyph yellow/blue half colored (yellow filter on left eye, blue filter on right eye)"), ("aybc - anaglyph yellow/blue colored (yellow filter on left eye, blue filter on right eye)"), ("irl - Interleaved rows (left eye has top row, right eye starts on next row)"), ("irr - Interleaved rows (right eye has top row, left eye starts on next row)"), ("ml - mono output (left eye only)"), ("mr - mono output (right eye only)"), ("al - alternating mode, left first"), ("ar - alternating mode, right first"), "stereo3d2", ""])  
-  Global.DrawGui(AllParams, "stereo3d", aTabstrip, NotSwitchable)
+  Global.DrawGui(AllParams, "stereo3d", aTabstrip, NotSwitchable,,,, Me)
   AllParams.Clear
 End
 
@@ -1222,7 +1223,7 @@ Public Sub SlidersFreq_Change(Optional realtime As Boolean = True)
   params = Left$(params, Len(params) - 1)
   NewEq = "equalizer=" & params
   If Lower(PresetsCombobox.text) = "custom" Then SaveCustomEqSettings(params)
-  If realtime Then dynaobj_change(Last)
+  If realtime Then dynaobj_change()
 End
 
 Private presetting As Boolean = False
@@ -1277,7 +1278,7 @@ Public Sub PresetsCombobox_click()
   End Select
   SlidersFreq_Change()
   presetting = False
-  dynaobj_change(Last)
+  dynaobj_change()
 End
 
 Private UpdatingGui As Boolean = False
@@ -1881,7 +1882,7 @@ End
 
 Public timer_dynaobj_delayed_change As Timer
 
-Public Sub dynaobj_change(obj As Object)
+Public Sub dynaobj_change()
   Dim initial_value, current_value As String
   
   'there is no need to apply anything if the user did not just changed it
@@ -1899,10 +1900,17 @@ Public Sub dynaobj_change(obj As Object)
     timer_dynaobj_delayed_change.Stop
     timer_dynaobj_delayed_change.start
   Endif
- 
 End
+' 
+' Public Sub dynaobj_MouseDown()
+'   dynaobj_mouse_is_down = True
+' End
+' 
+' Public Sub dynaobj_mouseup()
+'   dynaobj_mouse_is_down = False
+' End
 
-
+Private dynaobj_mouse_is_down As Boolean = False
 
 Public Sub timer_dynaobj_delayed_change_Timer()
   timer_dynaobj_delayed_change.stop
@@ -1923,7 +1931,7 @@ Public Sub switchers_Click()
   'is at least a band enabled?
   If Not (switchbutton1.Value Or switchbutton2.Value Or switchbutton3.Value Or switchbutton4.Value Or switchbutton5.Value) Then
     picturebox1.Picture = Null
-    dynaobj_change(Last)
+    dynaobj_change()
     DrawGraph_part2(False)
     Return
   Endif
@@ -2137,7 +2145,7 @@ Public Sub EqControls_Change()
   If Not FMain.FullyLoaded Then Return
   If Not Me.visible Then Return
   If Not TabStrip_filters_audio.caption = "anequalizer" Then Return
-  dynaobj_change(Last)
+  dynaobj_change()
   If Not FMain.mplayer.ProcessRunningOvr() Then 'graph is generated if mpv is running
     start_delay_graph_timer()
   Endif

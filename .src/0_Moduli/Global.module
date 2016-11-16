@@ -707,7 +707,7 @@ Dim theobject As Object
       Return -1
 End
 
-Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip As Tabstrip, Switchable As Boolean, Optional TheTooltip As String = "", Optional helper As Button, Optional tag As String = "")
+Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip As Tabstrip, Switchable As Boolean, Optional TheTooltip As String = "", Optional helper As Button, Optional tag As String = "", Optional attach_to As Object = Me)
   
   ' TabstripS
   '     Tabstrip
@@ -747,7 +747,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   Dim checkbox_no_text_width As Integer
   Dim error_test As Boolean = False
   Dim j As Integer
- 
+
   'find the width of an empty checkbox
   alabel = New Label(zzzfake)
   alabel.text = "sometext"
@@ -775,11 +775,13 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   For Each CurrentParams In TheParameters
     If CurrentParams[0] = "TITLE" Then 'Let's Draw a readonly TextBox
       AnHbox = New HBox(myscrollview) As "dynaobj"
+      Object.Attach(AnHbox, Attach_to, "dynaobj")
       AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".NoparseBox"
       AnHbox.spacing = True
       AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
-      'AnHbox.width = 400
+
       aTitle = New Label(AnHbox) As "dynaobj"
+      Object.Attach(aTitle, Attach_to, "dynaobj")
       aTitle.name = "NOPARSE" & CurrentParams[CurrentParams.count - 2] & ".CommentLabel"
       aTitle.text = CurrentParams[1]
       aTitle.Font.bold = True
@@ -795,6 +797,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     If CurrentParams[0] = "TIP" Then 'image + label
          asep = New Separator(myscrollview)
          AnHbox = New HBox(myscrollview) As "dynaobj"
+         Object.Attach(AnHbox, Attach_to, "dynaobj")
          AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".NoparseBox"
          AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
          AnHbox.spacing = True
@@ -805,6 +808,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
          tipimage.h = tipimage.Picture.Image.w
          'AnHbox.width = 400
          aTitle = New Label(AnHbox) As "dynaobj"
+         Object.Attach(aTitle, Attach_to, "dynaobj")
          aTitle.name = "NOPARSE" & CurrentParams[CurrentParams.count - 2] & ".CommentLabel"
          aTitle.text = CurrentParams[1]
          aTitle.Font.italic = True
@@ -814,7 +818,6 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
          aTitle.expand = True
          aTitle.Alignment = Align.Left
          aTitle.border = Border.None
-
          AnHBOX.height = tipimage.Picture.h + (Desktop.scale * 2)
 
          Goto prossimo
@@ -822,6 +825,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     'Write the comment
     If CurrentParams[CurrentParams.Count - 1] <> "" Then
         AComment = New Label(myscrollview) As "dynaobj"
+        Object.Attach(AComment, Attach_to, "dynaobj")
         AComment.name = "NOPARSE" & CurrentParams[CurrentParams.count - 2] & ".CommentLabel"
         AComment.text = CurrentParams[CurrentParams.Count - 1]
         AComment.AutoResize = True
@@ -834,6 +838,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     If Not (CurrentParams[0] = "VSLIDER") Then
      'Make a subcontainer, child of the scrollview
       AnHbox = New HBox(myscrollview) As "dynaobj"
+      Object.Attach(AnHbox, Attach_to, "dynaobj")
       AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
       AnHBOX.height = AnHBOX.Font.textHeight("|") * 2
       AnHbox.spacing = True
@@ -842,6 +847,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       MyScrollView.Arrangement = Arrange.LeftRight 'With Vslider we must arrange horizontally
       MyScrollView.spacing = 2
       AnHbox = New VBox(myscrollview) As "dynaobj"
+      Object.Attach(AnHbox, Attach_to, "dynaobj")
       AnHbox.name = CurrentParams[CurrentParams.count - 2] & ".HBox"
       AnHBOX.Width = FMain.Font.TextWidth("31.25")
       AnHBOX.Height = 200
@@ -852,6 +858,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     If Not ((CurrentParams[0] = "SWITCH") Or (CurrentParams[0] = "SUBLABEL") Or (CurrentParams[0] = "COMMENT")) Then
       If (Not Switchable) Then
         ALabel = New Label(AnHBox) As "dynaobj"
+        Object.Attach(alabel, Attach_to, "dynaobj")
         ALabel.name = CurrentParams[CurrentParams.count - 2] & ".Label"
         ALabel.text = CurrentParams[1]
         l = alabel.Font.TextWidth(alabel.text)
@@ -861,6 +868,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
         ALabel.Foreground = Color.TextForeground
           Else
         ACheckbox = New Checkbox(AnHBox) As "dynaobj"
+        Object.Attach(acheckbox, Attach_to, "dynaobj")
         ACheckbox.Name = CurrentParams[CurrentParams.Count - 2] & ".CheckBox"
         ACheckbox.text = CurrentParams[1]
         l = ACheckBox.Font.TextWidth(ACheckBox.text) + checkbox_no_text_width
@@ -874,24 +882,25 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
     If CurrentParams[0] = "FREE" Then 'Let's Draw a TextBox
       'AnHBOX.padding = 3
       ATextBox = New TextBox(AnHBox) As "dynaobj"
+      Object.Attach(ATextBox, Attach_to, "dynaobj")
       ATextBox.name = CurrentParams[CurrentParams.count - 2] & ".TextBox"
       ATextBox.text = CurrentParams[2]
       ATextBox.expand = True
       ATextBox.refresh
-
     Else If CurrentParams[0] = "ROSTRING" Then 'Let's Draw a readonly TextBox
       'AnHBOX.padding = 3
       ATextBox = New TextBox(AnHBox) As "dynaobj"
+      Object.Attach(ATextBox, Attach_to, "dynaobj")
       ATextBox.name = CurrentParams[CurrentParams.count - 2] & ".TextBox"
       ATextBox.text = CurrentParams[2]
       ATextBox.ReadOnly = True
       ATextBox.expand = True
       ATextBox.refresh
-
     'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
     Else If CurrentParams[0] = "SUBLABEL" Then 'Let's Draw a Textlabel
       'AnHBOX.padding = 3
       Atextlabel = New TextLabel(AnHBOX) As "dynaobj"
+      Object.Attach(ATextlabel, Attach_to, "dynaobj")
       ATextLabel.Alignment = Align.left
       AtextLabel.name = CurrentParams[CurrentParams.count - 2] & ".textlabel"
       ATextLabel.text = CurrentParams[1]
@@ -899,13 +908,12 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       ' [GB2:FNTW] ATextLabel.w = Atextlabel.Font.TextWidth(CurrentParams[1])
       ATextLabel.w = Atextlabel.Font.TextWidth(CurrentParams[1])
       AtextLabel.refresh
-
     Else If CurrentParams[0] = "CHOOSE" Then       'Let's Draw a ComboBox
     'Syntax for TheParameters is: ["CHOOSE", Caption, Choice1,...., ChoiceN, CheckBoxName,Comment]
       AComboBox = New ComboBox(AnHBox) As "dynaobj"
+      Object.Attach(Acombobox, Attach_to, "dynaobj")
       AComboBox.refresh
       AComboBox.name = CurrentParams[CurrentParams.count - 2] & ".ComboBox"
-
       For i = 2 To CurrentParams.count - 3
         AComboBox.Add(CurrentParams[i])
         'Resize(AcomboBox)
@@ -914,12 +922,14 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       AComboBox.expand = True
 
       ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
+      Object.Attach(ResetDefault, Attach_to, "dynaobj")
       ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"
       ResetDefault.tag = CurrentParams[2]
 
     Else If CurrentParams[0] = "ROCHOOSE" Then       'Let's Draw a readonky ComboBox
     'Syntax for TheParameters is: ["CHOOSE", Caption, Choice1,...., ChoiceN, CheckBoxName,Comment]
       AComboBox = New ComboBox(AnHBox) As "dynaobj"
+      Object.Attach(Acombobox, Attach_to, "dynaobj")
       AComboBox.refresh
       AComboBox.name = CurrentParams[CurrentParams.count - 2] & ".ComboBox"
 
@@ -932,6 +942,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       AComboBox.expand = True
 
       ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
+      Object.Attach(ResetDefault, Attach_to, "dynaobj")
       ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"
       ResetDefault.tag = CurrentParams[2]
 
@@ -942,6 +953,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       'Syntax for TheParameters is: ["VSLIDER", Caption, Min, Default , Max, VsliderName,Comment]
 
       MyVslider = New VSlider(AnHBox) As "dynaobj"
+      Object.Attach(MyVslider, Attach_to, "dynaobj")
       MyVslider.Arrangement = Arrange.Vertical
       MyVslider.Name = CurrentParams[CurrentParams.Count - 2] & ".Vslider"
 
@@ -960,7 +972,9 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       'Syntax for TheParameters is: ["RANGE", Caption, Min, Default , Max, SpinBoxName,Comment]
 
       ASpinBox = New Spinbox(AnHBox) As "dynaobj"
+      Object.Attach(aspinbox, Attach_to, "dynaobj")
       ASpinBox.Name = CurrentParams[CurrentParams.Count - 2] & ".SpinBox"
+
       
       'aSpinbar generates errors if min>max and probably even if value is not included in boundaries
       'so wi try our best to set them multiple times until it works. 3 times should suffice.
@@ -988,12 +1002,14 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       
 
       ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
+      Object.Attach(ResetDefault, Attach_to, "dynaobj")
       ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"
       ResetDefault.tag = CurrentParams[3]
       
     Else If CurrentParams[0] = "SWITCH" Then 'Let's Draw a checkbox
       'Syntax for TheParameters is: ["SWITCH", Caption, ENABLED|DISABLED, SpinBoxName,Comment]
       Acheckbox = New CheckBox(AnHbox) As "dynaobj"
+      Object.Attach(Acheckbox, Attach_to, "dynaobj")
       Acheckbox.name = CurrentParams[CurrentParams.Count - 2] & ".CheckBox"
       Acheckbox.text = CurrentParams[1]
 
@@ -1012,6 +1028,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
       'Syntax for TheParameters is:["FILEREQ", Caption, "FILE"|"DIR", FileReq Name ,comment]
 
       MyReq = New StringFileReqClass(AnHbox) As "dynaobj"
+      Object.Attach(MyReq, Attach_to, "dynaobj")
       MyReq.name = CurrentParams[CurrentParams.Count - 2] & ".StringFileReqClass"
       MyReq.FileMode = (CurrentParams[2] = "FILE")
       'hack: write default path here in case of -dvd-device
@@ -1021,6 +1038,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
         'Syntax for TheParameters is: ["RANGE", Caption, Min, Default , Max, SpinBoxName,Comment]
 
         AFloatSpinBox = New FloatSpinBox(AnHBox) As "dynaobj"
+        Object.Attach(AFloatSpinBox, Attach_to, "dynaobj")
         'AFloatSpinBox.DecimalSeparator = "."
         AFloatSpinBox.Name = CurrentParams[CurrentParams.Count - 2] & ".FloatSpinBox"
         AFloatSpinBox.DecimalSeparator = "."
@@ -1033,6 +1051,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
         AFloatSpinBox.expand = True
 
    ResetDefault = New MyresetButton(AnHBOX) As "dynaobj"
+        Object.Attach(ResetDefault, Attach_to, "dynaobj")
         ResetDefault.name = "NOPARSE" & CurrentParams[CurrentParams.Count - 2] & ".toolbutton"
         ResetDefault.tag = CurrentParams[3]
 
@@ -1085,11 +1104,9 @@ Public Function OneOf(one As String, two As String) As String
 End
 
 
-Public Sub dynaobj_change()
-  ManageNotifies_Change(Last)
-End
 
-Public Sub ManageNotifies_Change(LastObj As Object)
+
+Public Sub ManageNotifies_Change(LastObj As Object, theform As Form)
   'dynamically created objects are all on group "dynaobj"
   'that way i can manage their changes
   'and notify users that it needs to apply new settings
@@ -1101,38 +1118,29 @@ Public Sub ManageNotifies_Change(LastObj As Object)
     goon = True
   Endif
   If Not goon Then Return
-  NotifyChanges(LastObj)
+  NotifyChanges(LastObj, theform)
 End
 
-Public Sub ManageNotifies_click(LastObj As Object)
+Public Sub ManageNotifies_click(LastObj As Object, theform As Form)
   Dim goon As Boolean = False
   If (LastObj Is Checkbox) Or (LastObj Is Combobox) Then
     goon = True
   Endif
   If Not goon Then Return
-  NotifyChanges(LastObj)
-End
-
-
-Public Sub dynaobj_click()
-  ManageNotifies_click(Last)
+  NotifyChanges(LastObj, theform)
 End
 
 
 
-Public Sub NotifyChanges(obj As Object)
-  Dim myform As Object
+
+
+Public Sub NotifyChanges(obj As Object, theform As Form)
   Dim newvalue As String
   Try newvalue = obj.value
   If Error Then newvalue = obj.text
   
-  myform = Last
-  Repeat
-    If Not (myform Is Form) Then Try myform = myform.parent
-  Until (myform Is Form)
   If fmain.fullyloaded Then
-    Try Object.Call(myform, "dynaobj_change", [obj])
-    If myform.visible Then
+    If theform.visible Then
       RedApplyBtnColor()
     Endif
   Endif

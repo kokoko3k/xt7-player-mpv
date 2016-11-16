@@ -105,6 +105,14 @@ Public Sub Init()
   InitDone = True
 End
 
+Public Sub dynaobj_change()
+  global.ManageNotifies_Change(Last, Me)
+End
+
+Public Sub dynaobj_click()
+  global.ManageNotifies_click(Last, Me)
+End
+
 
 Private Sub DrawFiltersGui()
   Dim Switchable As Boolean = True
@@ -115,7 +123,7 @@ Private Sub DrawFiltersGui()
 
   '-volume-max <100.0-1000.0>
     AllParams.add(["RANGE", ("Maximum Amplification"), "100", "100", "1000", "volume000max", ("Allows volume over 100%")])
-    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Set the maximum amplification level (disabling this means 130).\n A value of 130 will allow you to adjust the volume up to a maximum of about double the current level.\n mpv option: -volume-max"))
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Set the maximum amplification level (disabling this means 130).\n A value of 130 will allow you to adjust the volume up to a maximum of about double the current level.\n mpv option: -volume-max"),,, Me)
     Try Object.SetProperty(Me.Controls["volume000max.CheckBox"], "value", True) 'enabled by default
     AllParams.Clear
 
@@ -125,13 +133,13 @@ Private Sub DrawFiltersGui()
 
   '-ad-lavc-ac3drc=<level>
     AllParams.Add(["ROCHOOSE", ("AC3 dynamic range compression"), "1.0 - full compression", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0.0 - no compression", "ad000lavc000ac3drc", "AC-3 audio streams only: make loud passages more silent and vice versa"])
-    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, (("Select  the  Dynamic  Range Compression level for AC-3 audio streams.\n<level> is a float value ranging from 0 to 1, where 0 means no compression\nand 1 means full compression (make loud passages more silent and vice versa).\nThis option only shows an effect if the AC-3 stream contains\nthe required range compression information.\nmpv option: --ad-lavc-ac3drc=<level>")))
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, (("Select  the  Dynamic  Range Compression level for AC-3 audio streams.\n<level> is a float value ranging from 0 to 1, where 0 means no compression\nand 1 means full compression (make loud passages more silent and vice versa).\nThis option only shows an effect if the AC-3 stream contains\nthe required range compression information.\nmpv option: --ad-lavc-ac3drc=<level>")),,, Me)
     Try Object.SetProperty(Me["ad000lavc000ac3drc.CheckBox"], "value", True)
     AllParams.Clear
     
   '-channels <number> (also see -af channels) 
     AllParams.Add(["ROCHOOSE", ("Output Channels"), "2 - Stereo", "4 - Surround", "6 - Full 5.1", "8 - Full 7.1", "audio000channels", ""])
-    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Request the number of playback channels (default: 2).\n This is usually only important when playing videos with AC-3 audio (like DVDs).\n mpv option: audio-channels"))
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Request the number of playback channels (default: 2).\n This is usually only important when playing videos with AC-3 audio (like DVDs).\n mpv option: audio-channels"),,, Me)
     Try Object.SetProperty(Me["audio000channels.CheckBox"], "value", True)
     If Error Then global.myDebug("EE: Cannot set default value audio000channels.CheckBox = true")
     Try Object.SetProperty(Me["audio000channels.ComboBox"], "text", "2 - Stereo")
@@ -141,7 +149,7 @@ Private Sub DrawFiltersGui()
     
   '-speed <0.01-100>
     AllParams.Add(["CHOOSE", ("Initial speed"), "0.5 #-12", "0.529731547179648 #-11", "0.561231024154687 #-10", "0.594603557501361 #-9", "0.629960524947437 #-8", "0.667419927085017 #-7", "0.707106781186548 #-6", "0.749153538438341 #-5", "0.7937005259841 #-4", "0.840896415253715 #3-", "0.890898718140339 #-2", "0.943874312681693 #-1", "1 #0", "1.05946309435295 #+1", "1.12246204829593 #+2", "1.18920711498136 #+3", "1.2599210498647 #+4", "1.33483985413008 #+5", "1.4142135623223 #+6", "1.4983070768139 #+7", "1.58740105189218 #+8", "1.68179283041682 #+9", "1.78179743617402#+10", "1.88774862523908 #+11", "2 #+12", "speed", ("Set initial playback tempo/pitch")])
-    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("#-12..#+12 are semitones.\n See also 'speed' under 'scaletempo' filter in chains window.\n mpv option: speed"))
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("#-12..#+12 are semitones.\n See also 'speed' under 'scaletempo' filter in chains window.\n mpv option: speed"),,, Me)
     AllParams.Clear
 
   ' '-delay < sec >
@@ -161,7 +169,7 @@ Private Sub DrawFiltersGui()
 
   '-stop-xscreensaver
     AllParams.add(["SWITCH", "Stop screensaver", "Enabled", "stop000screensaver", ("Turns off xscreensaver at startup")])
-    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Turns off screensaver at startup and turns it on again on exit.\nUses XSS and XResetScreenSaver API.\nmpv option: -stop-xscreensaver"))
+    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Turns off screensaver at startup and turns it on again on exit.\nUses XSS and XResetScreenSaver API.\nmpv option: -stop-xscreensaver"),,, Me)
     AllParams.Clear
    
   ' '-aspect <ratio> (also see -zoom)
@@ -177,12 +185,12 @@ Private Sub DrawFiltersGui()
   ' 
    '-autosync
      AllParams.add(["RANGE", "autosync", "0", "30", "10000", "autosync", ("Gradually adjusts the A/V sync based on audio delay measurements.")])
-     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Try  -autosync 30 to smooth out problems with sound drivers which do not implement a perfect audio delay measurement.\n [..] mpv option: autosync"))
+     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Try  -autosync 30 to smooth out problems with sound drivers which do not implement a perfect audio delay measurement.\n [..] mpv option: autosync"),,, Me)
      AllParams.Clear
      
      '-mc
      AllParams.add(["RANGEFLOAT", "mc", "0", "0.001", "1", "mc", ("maximum A-V sync correction per frame (in seconds)")])
-     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("maximum A-V sync correction per frame (in seconds)\n mpv options: -mc"))
+     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("maximum A-V sync correction per frame (in seconds)\n mpv options: -mc"),,, Me)
      AllParams.Clear
      
 
@@ -190,12 +198,12 @@ Private Sub DrawFiltersGui()
 
   '-cookies
     AllParams.add(["SWITCH", ("Send cookies"), "DISABLED", "cookies", ("Only valid for http:// Uries")])
-    Global.DrawGui(AllParams, ("Network"), Tabstrip1, NotSwitchable, ("Send cookies to websites when playing http:// Uries,\n Cookie file must be in Netscape format.\n mpv option: cookies"))
+    Global.DrawGui(AllParams, ("Network"), Tabstrip1, NotSwitchable, ("Send cookies to websites when playing http:// Uries,\n Cookie file must be in Netscape format.\n mpv option: cookies"),,, Me)
     AllParams.Clear
   
   '-cookies-file <filename> (network only)
     AllParams.add(["FILEREQ", "\"" & "cookies.txt" & "\"" & " " & ("location") & ": ", "DIR", "cookies000file ", " "])
-    Global.DrawGui(AllParams, ("Network"), Tabstrip1, NotSwitchable, ("Specify cookies.txt location\n mpv option: cookies-file"))
+    Global.DrawGui(AllParams, ("Network"), Tabstrip1, NotSwitchable, ("Specify cookies.txt location\n mpv option: cookies-file"),,, Me)
     AllParams.Clear
 
   ' 
@@ -206,7 +214,7 @@ Private Sub DrawFiltersGui()
 
   '-lavdopts threads
     AllParams.Add(["RANGE", "threads (lavdopts)", "0", "0", "16", "vd000lavc000threads", ("(MPEG-1/2 and H.264 only)")])
-    Global.DrawGui(allParams, ("Tweaks"), Tabstrip1, Switchable, ("Number of threads to use for decoding.\n0 means autodetect\nmpv option: vd-lavc-threads "))
+    Global.DrawGui(allParams, ("Tweaks"), Tabstrip1, Switchable, ("Number of threads to use for decoding.\n0 means autodetect\nmpv option: vd-lavc-threads "),,, Me)
     AllParams.Clear
       
   ' '-lavdopts lowres
@@ -217,12 +225,12 @@ Private Sub DrawFiltersGui()
 
   '-lavdopts fast
     AllParams.add(["SWITCH", "Fast (lavdopts)", "DISABLED", "vd000lavc000fast", ("(MPEG-2, MPEG-4, and H.264 only)")])
-    Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Enable optimizations which do not comply to the specification\nand might potentially cause problems, like simpler dequantization,\nsimpler motion compensation, assuming use of the  default\nquantization  matrix, assuming YUV 4:2:0 and skipping\na few checks to detect damaged bitstreams.\n mpv option: vd-lavc-fast"))
+    Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Enable optimizations which do not comply to the specification\nand might potentially cause problems, like simpler dequantization,\nsimpler motion compensation, assuming use of the  default\nquantization  matrix, assuming YUV 4:2:0 and skipping\na few checks to detect damaged bitstreams.\n mpv option: vd-lavc-fast"),,, Me)
     AllParams.Clear
 
   '-lavdopts skiploopfilter
     AllParams.Add(["ROCHOOSE", "Skiploopfilter (lavdopts)", "none", "default", "nonref", "bidir", "nokey", "all", "vd000lavc000skiploopfilter", ("(H.264 only)")])
-    Global.DrawGui(allParams, ("Tweaks"), Tabstrip1, Switchable, ("Skips the loop filter (AKA deblocking) during H.264 decoding.\nthis has a worse effect on quality\nBut at least for high bitrate HDTV this provides a big speedup\nwith  no visible quality loss.\n mpv option: vd-lavc-skiploopfilter"))
+    Global.DrawGui(allParams, ("Tweaks"), Tabstrip1, Switchable, ("Skips the loop filter (AKA deblocking) during H.264 decoding.\nthis has a worse effect on quality\nBut at least for high bitrate HDTV this provides a big speedup\nwith  no visible quality loss.\n mpv option: vd-lavc-skiploopfilter"),,, Me)
     AllParams.Clear
     
   ' '-noslices 
@@ -242,12 +250,12 @@ Private Sub DrawFiltersGui()
     
   '-framedrop
     AllParams.add(["ROCHOOSE", "FrameDrop", "vo", "no", "decoder", "decoder+vo", "framedrop", ("Skip frames to maintain A/V sync")])
-    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Skip displaying some frames to maintain A/V sync,\n or playing high framerate video on video output that have a lower upper framerate limit\nmpv option: -framedrop"))
+    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Skip displaying some frames to maintain A/V sync,\n or playing high framerate video on video output that have a lower upper framerate limit\nmpv option: -framedrop"),,, Me)
     AllParams.Clear
     
   '-framedrop
     AllParams.add(["ROCHOOSE", ("Field dominance"), "auto", "auto", "top", "bottom", "field000dominance", ("Set the dominant field (for interlaced videos)")])
-    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Set first field for interlaced content\n mpv option: -field-dominance"))
+    Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Set first field for interlaced content\n mpv option: -field-dominance"),,, Me)
     AllParams.Clear
     
   ' '-dvd-speed
@@ -263,7 +271,7 @@ Private Sub DrawFiltersGui()
 
   '-hr-mp3-seek
     AllParams.add(["ROCHOOSE", ("High resolution seek"), "no", "absolute", "yes", "hr-seek", ("Hi-res MP3 seeking")])
-    Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Select when to use precise seeks that are not limited to keyframes. \nMay be slower\nmpv option: hr-seek"))
+    Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Select when to use precise seeks that are not limited to keyframes. \nMay be slower\nmpv option: hr-seek"),,, Me)
     AllParams.Clear
   
   
@@ -943,13 +951,13 @@ Public Sub notifyobj_Click()
     Try Last.next.enabled = Last.value
     Try Last.next.next.next.enabled = Last.next.enabled
   Endif
-  If alreadyloaded Then global.ManageNotifies_click(Last) 
+  If alreadyloaded Then global.ManageNotifies_click(Last, Me) 
 End
 
 Public Sub notifyobj_Change()
   If fmain.fullyloaded Then 
    ' If alreadyloaded Then 
-      If timesloaded > 1 Then global.ManageNotifies_Change(Last)
+      If timesloaded > 1 Then global.ManageNotifies_Change(Last, Me)
    ' Endif
   Endif
 End
@@ -1540,5 +1548,6 @@ Public Sub SyncUserOptions(ValueCombobox As Combobox, Optional overwrite As Bool
   'strip trailing "*" used by mpv to list some options
   If Right(ValueCombobox.text) = "*" Then ValueCombobox.text = Left(ValueCombobox.text, -1)
 End
+
 
 
