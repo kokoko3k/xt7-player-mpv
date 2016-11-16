@@ -122,6 +122,7 @@ Property Value As Variant
 
 Public Sub MySpinButton_MouseUp()
   TimerIncDec.stop
+  Raise MouseUp()
 End
 
 
@@ -136,6 +137,7 @@ Public Sub MySpinButton_MouseDown()
     TimerIncDec_Timer
     TimerIncDec.start
   Endif
+  Raise MouseDown()
 End
 
 Private Sub CheckMinMax()
@@ -183,3 +185,5 @@ End
 
 Event Change()
 Event Activate()
+Event MouseDown()
+Event MouseUp()

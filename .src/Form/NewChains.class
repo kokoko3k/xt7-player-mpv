@@ -1893,7 +1893,6 @@ Public Sub dynaobj_mouseup()
   Dim current_value As String
   dynaobj_mouse_is_down = False
   Try current_value = Last.value
-  Debug current_value, dynaobj_prev_value
   If current_value <> dynaobj_prev_value Then 
     Try timer_dynaobj_delayed_change.delay = 100
     If Error Then
