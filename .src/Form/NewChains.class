@@ -1962,7 +1962,7 @@ Public Sub switchers_Click()
   Dim child As Object
   Dim band_enabled As Boolean = False
   'is at least a band enabled?
-  If Not (switchbutton1.Value Or switchbutton2.Value Or switchbutton3.Value Or switchbutton4.Value Or switchbutton5.Value) Then
+  If Not (SwitchButton2.Value Or SwitchButton1.Value Or switchbutton3.Value Or switchbutton4.Value Or switchbutton5.Value) Then
     picturebox1.Picture = Null
     dynaobj_change()
     DrawGraph_part2(False)
@@ -2119,9 +2119,9 @@ Public Function eqstring(Optional complex As Boolean = True) As String
     For Each subobj In band_container.children
       If subobj Is SwitchButton Then
         If subobj.value = True Then
-          f = subobj.next.value
-          g = subobj.next.next.value
-          w = subobj.next.next.next.value
+          f = subobj.next.children[1].value
+          g = subobj.next.next.children[1].value
+          w = subobj.next.next.next.children[1].value
           out_bands.Add("f=" & f & " w=" & w & " g=" & g & " t=0")
         Endif
       Endif
@@ -2204,7 +2204,7 @@ End
 
 
 Private last_hbox2_w As Integer = -1
-Public Sub AnEqualizerPanel_beforeArrange()
+Public Sub AnEqualizerPanel_Arrange()
   Dim firstchild, lastchild As Object
   start_delay_graph_timer()
 
@@ -2214,12 +2214,12 @@ Public Sub AnEqualizerPanel_beforeArrange()
   If Not Me.visible Then Return
   If TabStrip_filters_audio.text <> "anequalizer" Then Return
   
- 
   firstchild = HBox2.Children[1]
   lastchild = HBox2.Children[HBox2.Children.count - 1]
-
+  
+  aneqleftspacer.w = 1
   aneqleftspacer.w = (AnEqualizerPanel.w - (lastchild.x + lastchild.w - firstchild.x)) Div 2
-  'aneqleftspacer.w = (AnEqualizerPanel.w - aneqleftspacer.w - (lastchild.x + lastchild.w)) Div 2
+
 End
 
 

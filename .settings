@@ -1,11 +1,11 @@
-[Bookmarks]
-Global=[]
-
 [Breakpoints]
 Count=0
 
 [DebugWindow]
-Count=0
+Count=3
+DebugWindow[1]="subobj"
+DebugWindow[2]="subobj.next"
+DebugWindow[3]="subobj.next.next"
 
 [DebugWindow/ASpinBox]
 Geometry=[52,0,224,280]
@@ -153,6 +153,18 @@ Geometry=[1280,0,224,280]
 
 [DebugWindow/return_opts[0]]
 Geometry=[1280,312,224,280]
+
+[DebugWindow/subobj]
+Geometry=[1461,143,224,280]
+
+[DebugWindow/subobj.next]
+Geometry=[1738,150,224,445]
+
+[DebugWindow/subobj.next.next]
+Geometry=[2029,116,242,351]
+
+[DebugWindow/subobj.next.next.children[1]]
+Geometry=[52,0,224,280]
 
 [DebugWindow/temp_opts]
 Geometry=[1280,0,224,280]
