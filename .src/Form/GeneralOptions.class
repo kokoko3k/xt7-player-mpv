@@ -183,16 +183,6 @@ Private Sub DrawFiltersGui()
   '   Global.DrawGui(AllParams, ("Video"), Tabstrip1, Switchable, ("Force video Framerate.\n Will probably cause Audio/Video desync.\n mpv option: -fps"))
   '   AllParams.Clear
   ' 
-   '-autosync
-     AllParams.add(["RANGE", "autosync", "0", "30", "10000", "autosync", ("Gradually adjusts the A/V sync based on audio delay measurements.")])
-     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Try  -autosync 30 to smooth out problems with sound drivers which do not implement a perfect audio delay measurement.\n [..] mpv option: autosync"),,, Me)
-     AllParams.Clear
-     
-     '-mc
-     AllParams.add(["RANGEFLOAT", "mc", "0", "0.001", "1", "mc", ("maximum A-V sync correction per frame (in seconds)")])
-     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("maximum A-V sync correction per frame (in seconds)\n mpv options: -mc"),,, Me)
-     AllParams.Clear
-     
 
 
 
@@ -211,6 +201,16 @@ Private Sub DrawFiltersGui()
   '   AllParams.add(["SWITCH", ("prefer-ipv4"), "DISABLED", "prefer000ipv4", ("try ipv4 first")])
   '   Global.DrawGui(AllParams, ("Network"), Tabstrip1, NotSwitchable, ("Use IPv4 on network connections.  Falls back on IPv6 automatically.\n-prefer-ipv4 (network only)"))
   '   AllParams.Clear
+   
+   '-autosync
+     AllParams.add(["RANGE", "autosync", "0", "30", "10000", "autosync", ("Gradually adjusts the A/V sync based on audio delay measurements.")])
+     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("Try  -autosync 30 to smooth out problems with sound drivers which do not implement a perfect audio delay measurement.\n [..] mpv option: autosync"),,, Me)
+     AllParams.Clear
+     
+     '-mc
+     AllParams.add(["RANGEFLOAT", "mc", "0", "0.001", "1", "mc", ("maximum A-V sync correction per frame (in seconds)")])
+     Global.DrawGui(AllParams, ("Tweaks"), Tabstrip1, Switchable, ("maximum A-V sync correction per frame (in seconds)\n mpv options: -mc"),,, Me)
+     AllParams.Clear
 
   '-lavdopts threads
     AllParams.Add(["RANGE", "threads (lavdopts)", "0", "0", "16", "vd000lavc000threads", ("(MPEG-1/2 and H.264 only)")])

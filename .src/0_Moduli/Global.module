@@ -683,8 +683,8 @@ Dim i As Integer
 Dim UPTabName As String
 Dim theobject As Object
       UPTABName = Upper(TabName)
+      If UPTABNAME = "TWEAKS" Then Stop
       If UPTABNAME = "MYEXPAND" Then UPTABName = "EXPAND" 'gb3 workaround
-
         For i = 0 To TheTabStrip.count - 1
           If (UPTABName = Upper(RemoveShortCut(TheTabStrip[i].text))) Or (UPTABName = pre & Upper(RemoveShortCut(TheTabStrip[i].text))) Then Return i
           For Each theobject In TheTabStrip[i].Children
@@ -763,7 +763,7 @@ Public Sub DrawGui(TheParameters As Variant[], TabCaption As String, TheTabstrip
   alabel.delete
   
   'Find the destination Tab
-  Try TheTabstrip.index = TabIndexByName(TabCaption, TheTabStrip)
+   TheTabstrip.index = TabIndexByName(TabCaption, TheTabStrip)
   'Find the Scrollview 
   For Each MyScrollview In TheTabstrip.Children
     If MyScrollview Is Scrollview Then 
