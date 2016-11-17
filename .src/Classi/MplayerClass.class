@@ -339,14 +339,14 @@ Public mpvoptions As New Collection
 
 
 
-Public Sub set_option(name As String, data As String, Optional allow_dupes As Boolean = True)
+Public Sub set_option(name As String, data As String, Optional allow_dupes As Boolean = True, Optional options As Collection = mpvoptions)
  'chr(8) is used instead of null because the collection doesn't keep null values
   If allow_dupes Then
-    While mpvoptions.Exist(name)
+    While options.Exist(name)
       name = " " & name 'prefix white spaces to use multiple options with the same name
     Wend
   Endif
-  mpvOptions[name] = data
+  options[name] = data
   global.myDebug(name, data)
 End
 
@@ -389,7 +389,7 @@ Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As
         Else If return_opts.Key = "interpolation" Then
           If data = "yes" Then
             Print "It seems that user requested opengl temporal interpolation; setting --video-sync=display-vdrop" 
-            set_option("video-sync", "display-vdrop")
+            set_option("video-sync", "display-vdrop",, return_opts)
           Endif
     Endif
   Next
