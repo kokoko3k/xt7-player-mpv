@@ -1342,7 +1342,7 @@ Public Sub FillPropertiesGrid()
 
   If Not mplayer.getP("audioonly") Then
     PropertiesGrid[16, 1].text = mplayer.getP("width") & "x" & mplayer.getP("height")
-    PropertiesGrid[17, 1].text = mplayer.getP("fps")
+    PropertiesGrid[17, 1].text = mplayer.getP("container-fps")
     If PropertiesGrid[17, 1].text Like "*unavailable*" Then
       PropertiesGrid[17, 1].text = mplayer.get_property_mpv("estimated-vf-fps")
     Endif
@@ -12034,7 +12034,7 @@ Public Sub Make_modes_menu()
   If mplayer.ProcessRunningOvr() And (Not mplayer.getP("audioonly")) Then
 
     'refresh rate condition needs to know the video fps:
-      Try fps = CFloat(mplayer.get_property_mpv("fps"))
+      Try fps = CFloat(mplayer.get_property_mpv("container-fps"))
       If Error Then
         Try fps = CFloat(mplayer.get_property_mpv("estimated-vf-fps"))
         If Error Then Return
@@ -12159,7 +12159,7 @@ Public Sub speed_compensate(Optional HZ_ERROR_MAX As Float = 100)
 
   If Not mplayer.ProcessRunningOvr() Then Return
   If mplayer.getP("audioonly") Then Return
-  Try s_fps = mplayer.getP("fps")
+  Try s_fps = mplayer.getP("container-fps")
   If Error Then Return
 
   mode = randr.Xmode_from_obj(fmain)  
@@ -12281,4 +12281,5 @@ End
 Public Sub VideoAreaGroup_KeyRelease()
     HotKeysHelper.keyRelease()
 End
+
 

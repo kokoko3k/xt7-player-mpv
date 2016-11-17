@@ -235,7 +235,7 @@ local function append_perfdata(s)
     end
 
     local ds = mp.get_property_bool("display-sync-active", false)
-    local target_fps = ds and mp.get_property_number("display-fps", 0) or mp.get_property_number("fps", 0)
+    local target_fps = ds and mp.get_property_number("display-fps", 0) or mp.get_property_number("container-fps", 0)
     if target_fps > 0 then target_fps = 1 / target_fps * 1e6 end
 
     local last_s = vo_p["render-last"] + vo_p["present-last"] + vo_p["upload-last"]
@@ -391,7 +391,7 @@ local function add_video(s)
                         {prefix="Display FPS:", suffix=" (estimated)"})
     end
     if append_property(s, "container-fps", {prefix="FPS:", suffix=" (specified)"}) or
-        append_property(s, "fps", {prefix="FPS:", suffix=" (specified)"}) then
+        append_property(s, "container-fps", {prefix="FPS:", suffix=" (specified)"}) then
         append_property(s, "estimated-vf-fps",
                         {suffix=" (estimated)", nl="", indent=""})
     else

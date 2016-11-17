@@ -1262,7 +1262,7 @@ Dim fileUtf8 As String
     cha = mplayertag.getP("=audio-params/channels")
     vco = mplayertag.getP("Video-Codec")
     vbi = mplayertag.getP("=Video-Bitrate")
-    fps = mplayertag.getP("Fps")
+    fps = mplayertag.getP("container-fps")
     w = mplayertag.getP("Width")
     h = mplayertag.getP("Height")
     art = mplayertag.getP("Artist")

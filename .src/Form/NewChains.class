@@ -969,7 +969,8 @@ Private Function Parse_audio_filter(Filtername As String) As String
   '     aTabstrip.index = i
   '     Return "lavfi='[anequalizer=" & eqstring(False) & "]'" 'this way it works at start time only 
   '   Endif
-      Return "lavfi='[anequalizer=" & eqstring(False) & "]'" 'this way it works at start time only 
+      'Return "lavfi='[anequalizer=" & eqstring(False) & "]'" 'this way it works at start time only 
+      Return "lavfi=['anequalizer=" & eqstring(False) & "']" 'this way it works at start time only" 
 
   Else If Parsedfilter Like "customaudio*" Then
     out = parse_audio_filter_custom()

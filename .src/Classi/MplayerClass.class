@@ -926,7 +926,7 @@ Public Function get_mediainfo(Optional cddb As Boolean = True, Optional force_au
         Else 'for not audio only files, use mpv
       properties.insert(["=duration", "duration"])
       If (Not getP("audioonly")) Then
-        properties.Insert(["=video-bitrate", "width", "height", "fps"])            
+        properties.Insert(["=video-bitrate", "width", "height", "container-fps"])            
       Endif
 
   Endif
@@ -2103,6 +2103,7 @@ Public Sub mpv_command(command As String[])
   sbuf = Left(sbuf, -1)
   send(sbuf)
   global.myDebug(sbuf)
+  If sbuf Like "*anequalizer*" Then Debug sbuf
 End
 
 
@@ -2345,7 +2346,7 @@ Next
     Endif
     
     If af_current <> af_new Then 
-      af_new = fix_for_anequalizer(af_new)
+      'af_new = fix_for_anequalizer(af_new)
       set_property_mpv("af", af_new, True)
       af_current = af_new
     Endif
