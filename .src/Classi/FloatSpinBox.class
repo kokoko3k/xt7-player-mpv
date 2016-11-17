@@ -170,9 +170,16 @@ End
 
 Public Sub MyValueBox_MouseWheel()
  MySpinButton_MouseWheel()
+ Raise Mousewheel()
 End
 
+Public Sub myvaluebox_GotFocus()
+  Raise GotFocus()
+End
 
+Public Sub myvaluebox_LostFocus()
+  Raise LostFocus()
+End
 
 Public Sub MyValueBox_Change()
  Try CheckMinMax()
@@ -187,3 +194,6 @@ Event Change()
 Event Activate()
 Event MouseDown()
 Event MouseUp()
+Event Mousewheel()
+Event GotFocus()
+Event LostFocus()

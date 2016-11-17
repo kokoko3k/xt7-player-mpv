@@ -40,7 +40,7 @@
       }
     }
     { Tabstrip1 TabStrip
-      MoveScaled(25,0,64,67)
+      MoveScaled(27,0,64,67)
       Tag = "User options"
       Expand = True
       Arrangement = Arrange.Vertical
@@ -1090,7 +1090,7 @@
       Index = 7
       Text = ("Network")
       { ScrollView4 ScrollView
-        MoveScaled(1,1,58,60)
+        MoveScaled(5,0,58,60)
         Tag = "network"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -2183,7 +2183,8 @@
       }
       Index = 12
       Text = ("Style")
-      { ScrollView9 ScrollView
+      { ScrollView9 ScrollView Scrollviews
+        Name = "ScrollView9"
         MoveScaled(2,1,59,61)
         Tag = "style"
         Expand = True

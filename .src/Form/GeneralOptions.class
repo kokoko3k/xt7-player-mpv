@@ -67,7 +67,6 @@ Private Sub OptionFromTab()
     Endif
   Next 'i
   Try optionslist[OptionsList.Item.Key].selected = True
-
 End
 
 Public Sub TabStrip1_Click()
@@ -1167,6 +1166,7 @@ Public Sub ScrollViewUserOptions_Arrange()
   Dim c As Combobox
   Dim opt As String
   Dim t As String
+
   For Each o In ScrollViewUserOptions.children
     If o Is Hbox Then
       If o.Children[0] Is CheckBox Then
@@ -1457,7 +1457,7 @@ Public Sub uservalue_mousedown()
   SyncUserOptions(Last)
 End
 
-Public Sub ComboOption_Click()
+Public Sub ComboOption_gotfocus()
   Dim OverWrite As Boolean = True
   If Last.next.next Is Combobox Then
     SyncUserOptions(Last.next.next, overwrite)
@@ -1550,4 +1550,32 @@ Public Sub SyncUserOptions(ValueCombobox As Combobox, Optional overwrite As Bool
 End
 
 
+' '---------------- HACKY WORKAROUND TO STOP SCROLLVIEWS SCROLLING WHEN OBJECTS ARE FOCUSED
+'     Private Scrollview_is_focused As New Collection
+'     Private scrollview_scrolly As New Collection
+'     
+'     Public Sub ScrollViews_GotFocus()
+'       'store focused state for each scrollbar
+'       Scrollview_is_focused[Object.Address(Last)] = True
+'     End
+'     Public Sub ScrollViews_LostFocus()
+'       'store focused state for each scrollbar
+'       Scrollview_is_focused[Object.Address(Last)] = False
+'     End
+'     
+'     Private last_scrolly As Integer
+'     Public Sub ScrollViews_mousewheel()
+'       'store pre-scroll position for each scrollbar
+'       scrollview_scrolly[Object.Address(Last)] = Last.scrolly
+'     End
+' 
+'     Public Sub ScrollViews_scroll()
+'       'Restore pre-scroll position for each scrollbar when it is not focused
+'       If Not scrollview_is_focused[Object.Address(Last)] Then
+'         Last.scrolly = last_scrolly
+'         
+'       Endif
+'     End
+'     
+' '---------------- /HACKY WORKAROUND TO STOP SCROLLVIEWS SCROLLING WHEN OBJECTS ARE FOCUSED
 

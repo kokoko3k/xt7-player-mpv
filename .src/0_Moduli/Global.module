@@ -683,7 +683,6 @@ Dim i As Integer
 Dim UPTabName As String
 Dim theobject As Object
       UPTABName = Upper(TabName)
-      If UPTABNAME = "TWEAKS" Then Stop
       If UPTABNAME = "MYEXPAND" Then UPTABName = "EXPAND" 'gb3 workaround
         For i = 0 To TheTabStrip.count - 1
           If (UPTABName = Upper(RemoveShortCut(TheTabStrip[i].text))) Or (UPTABName = pre & Upper(RemoveShortCut(TheTabStrip[i].text))) Then Return i
