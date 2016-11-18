@@ -12151,7 +12151,8 @@ End
 
 Public Sub speed_compensate(Optional HZ_ERROR_MAX As Float = 100)
   Dim mode As Xmode
-  Dim r As Float
+  Dim r, r1, r2 As Float
+  Dim sr2 As String
   Dim Hz_error As Float
   Dim s_fps As Float
   Dim t_int As Integer
@@ -12162,9 +12163,25 @@ Public Sub speed_compensate(Optional HZ_ERROR_MAX As Float = 100)
   Try s_fps = mplayer.getP("container-fps")
   If Error Then Return
 
+  'try to get the mode and refresh from xrandr
   mode = randr.Xmode_from_obj(fmain)  
-  r = mode.r
+  r1 = mode.r
   
+  'try to get the refresh from mpv
+  sr2 = mplayer.get_property_mpv("display-fps", True)
+  r2 = 0
+  Try r2 = CFloat(sr2)
+  
+  'see if they are consistent:
+  If Abs(r1 - r2) < 0.1 Then
+    'if they are, prefer mpv
+    r = r2
+      Else
+    'if, not, prefer xrandr
+    r = r1
+  Endif
+  global.myDebug("Display refresh rate detected:" & r)
+
   t_int = Round(r / s_fps)
   perfect_refresh = s_fps * t_int
   Try compensation = r / perfect_refresh
