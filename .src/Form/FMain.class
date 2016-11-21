@@ -1810,7 +1810,6 @@ End
 
 
 Public Sub ButtonStop_Click()
-
   Try mousehider.stop
   Try TimerFullScreen.Stop
   Try mplayer.event_loop.stop
@@ -12192,6 +12191,10 @@ Public Sub speed_compensate(Optional HZ_ERROR_MAX As Float = 100)
 
   If Abs(Hz_error) < (HZ_ERROR_MAX) Then
     change_speed(compensation)
+    'Wait 1
+    'mplayer.do_pause()
+    'Wait 1
+    'mplayer.do_leave_pause()
   Endif
 
 End
@@ -12297,6 +12300,10 @@ End
 
 Public Sub VideoAreaGroup_KeyRelease()
     HotKeysHelper.keyRelease()
+End
+
+Public Sub current_display_device() As String
+  Return randr.Xmode_from_obj(fmain).output_name
 End
 
 

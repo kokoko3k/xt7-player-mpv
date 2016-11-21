@@ -56,8 +56,19 @@ End
 Public Function executable(Optional timeout As Integer = -1) As String
   Dim out As String
   Dim proxy As String
+  Dim current_display As String
   
-  out &= out & GeneralOptions.MplayerEnvVars.text & " " 'user specified environment variables
+  If GeneralOptions.glsync_CheckBox.value Then 
+    'export __GL_SYNC_DISPLAY_DEVICE:
+    Stop
+    current_display = FMain.current_display_device()
+    If current_display <> "" Then 
+      out &= " " & "__GL_SYNC_DISPLAY_DEVICE=" & current_display
+    Endif
+  Endif
+  
+  
+  out &= GeneralOptions.MplayerEnvVars.text & " " 'user specified environment variables
   If GeneralOptions.vdpauooverlaycheck.value = True Then
     out &= " " & "VDPAU_NVIDIA_NO_OVERLAY=1" & " "
   Endif

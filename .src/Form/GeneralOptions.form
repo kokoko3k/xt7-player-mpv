@@ -394,10 +394,25 @@
         Margin = True
         Padding = 6
         { NOPARSESSeparator2 Separator
-          MoveScaled(2,2,52,2)
+          MoveScaled(2,1,52,2)
+        }
+        { NoparseHbox12 HBox
+          MoveScaled(2,3,52,4.5714)
+          ToolTip = ("Fill the resolutions menu with entries that\nmatches the video played using the following conditions.")
+          AutoResize = True
+          Spacing = True
+          { glsync_CheckBox CheckBox
+            MoveScaled(0,0,35,4.5714)
+            ToolTip = ("May help or not with stuttering on multi head setups.\nExplaination:\nConsumer GPUs can only sync to one monitor (default is primary),\nchecking this will set __GL_SYNC_DISPLAY_DEVICE the the one mpv is running on.\nPlease note that:\n1) The variable is set only once per play, this means that moving video window\nover another screen while mpv is playing would defeat the purpose.\n2) If you are running a composite manager while playing the video, \nyou'll probably need to make sure that his environment variable is set to the same value.")
+            AutoResize = True
+            Text = ("export __GL_SYNC_DISPLAY_DEVICE")
+          }
+        }
+        { NOPARSESSeparator3 Separator
+          MoveScaled(1,8,52,2)
         }
         { NoparseHbox11 HBox
-          MoveScaled(2,5,52,6)
+          MoveScaled(2,10,52,6)
           ToolTip = ("Fill the resolutions menu with entries that\nmatches the video played using the following conditions.")
           Spacing = True
           { Label3 Label
@@ -409,10 +424,10 @@
           }
         }
         { NOPARSESSeparator1 Separator
-          MoveScaled(2,11,52,2)
+          MoveScaled(2,16,52,2)
         }
         { NoparseHbox555 HBox
-          MoveScaled(2,14,52,4.5714)
+          MoveScaled(2,19,52,4.5714)
           ToolTip = ("Fill the resolutions menu with entries that\nmatches the video played using the following conditions.")
           AutoResize = True
           Spacing = True
@@ -423,7 +438,7 @@
           }
         }
         { NoparseHbox6 HBox
-          MoveScaled(3,20,52,4.5714)
+          MoveScaled(2,25,52,4.5714)
           ToolTip = ("Select resolutions with a refresh rate multiple\nof the fps of the video played in a defined error range.\n\nThis will produce smoother playback.")
           Spacing = True
           Indent = True
@@ -441,12 +456,12 @@
           }
         }
         { NoparseHbox7 HBox
-          MoveScaled(2,25,52,4.5714)
+          MoveScaled(2,31,52,4.5714)
           ToolTip = ("Select resolutions with a vertical\nresolution higher than this value.")
           Spacing = True
           Indent = True
           { Switchres_height_CheckBox CheckBox
-            MoveScaled(3,0,36,4.5714)
+            MoveScaled(2,0,36,4.5714)
             AutoResize = True
             Text = ("...with an height of at least")
           }
@@ -459,7 +474,7 @@
           }
         }
         { NoparseHbox10 HBox
-          MoveScaled(2,31,52,4.5714)
+          MoveScaled(2,37,52,4.5714)
           Spacing = True
           Indent = True
           { Switchres_W_H_CheckBox2 CheckBox
@@ -469,7 +484,7 @@
           }
         }
         { Noparsesep675 Separator
-          MoveScaled(4,36,45,1)
+          MoveScaled(4,42,45,1)
         }
         { NoparseHbox8 HBox
           MoveScaled(2,44,52,4.5714)
