@@ -60,7 +60,6 @@ Public Function executable(Optional timeout As Integer = -1) As String
   
   If GeneralOptions.glsync_CheckBox.value Then 
     'export __GL_SYNC_DISPLAY_DEVICE:
-    Stop
     current_display = FMain.current_display_device()
     If current_display <> "" Then 
       out &= " " & "__GL_SYNC_DISPLAY_DEVICE=" & current_display
