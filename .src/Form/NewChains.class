@@ -1952,7 +1952,7 @@ Public Sub switchers_Click()
   If Not (SwitchButton2.Value Or SwitchButton1.Value Or switchbutton3.Value Or switchbutton4.Value Or switchbutton5.Value) Then
     picturebox1.Picture = Null
     dynaobj_change()
-    DrawGraph_part2(False)
+    DrawGraph_part2()
     Return
   Endif
   EqControls_Change()
@@ -1964,7 +1964,7 @@ Public Sub mpveq_mykill(retcode As Integer)
  DrawGraph_part2()
 End
 
-Public Sub DrawGraph_part2(Optional graph_response As Boolean = True)
+Public Sub DrawGraph_part2()
  Dim picfile As String
   Dim img As Image
   Dim img_graph As Image
@@ -1988,8 +1988,7 @@ Public Sub DrawGraph_part2(Optional graph_response As Boolean = True)
     If mpveq.ProcessRunningOvr() Then Return
   Endif
   
-  Try picfile = tempdir & "/" & Dir(tempdir)[0]
-  If Not Error Then  
+ 
     img = New Image(picturebox1.w, picturebox1.h, back_color)
     Paint.Begin(img)
       'light
@@ -2030,7 +2029,8 @@ Public Sub DrawGraph_part2(Optional graph_response As Boolean = True)
     paint_db_line(12, img, line_color)
     paint_db_line(24, img, line_color)
 
-    If graph_response Then Try img_graph = Image.Load(picfile).Opacity(0.7)
+    Try picfile = tempdir & "/" & Dir(tempdir)[0]
+    Try img_graph = Image.Load(picfile).Opacity(0.7)
     If img_graph <> Null Then
       Paint.Begin(img_graph)
         Paint.operator = Paint.OperatorAdd
@@ -2040,7 +2040,8 @@ Public Sub DrawGraph_part2(Optional graph_response As Boolean = True)
         Else
       picturebox1.picture = img.picture
     Endif
-  Endif
+
+  Try Kill picfile
 End
 
 
@@ -2134,6 +2135,7 @@ End
 
 Public Sub DrawGraph()
   Dim eq_string As String
+
   tempdir = Global.tmpdir & "/anequalizer"
   If Not Exist(tempdir) Then 
     Try Mkdir tempdir
@@ -2154,6 +2156,8 @@ Public Sub DrawGraph()
     mpveq.mpvoptions["vo-image-outdir"] = tempdir
     mpveq.mpvoptions["frames"] = "1"
     mpveq.do_play("av://lavfi:anullsrc")
+      Else
+    DrawGraph_part2()
   Endif
 End
 
@@ -2173,6 +2177,7 @@ Public Sub EqControls_Change()
 End
 
 Private Sub start_delay_graph_timer(Optional force As Boolean = False)
+
   If Not force Then 
     If Not FMain.FullyLoaded Then Return
     If Not Me.visible Then Return
@@ -2194,14 +2199,14 @@ End
 Private last_hbox2_w As Integer = -1
 Public Sub AnEqualizerPanel_Arrange()
   Dim firstchild, lastchild As Object
-  start_delay_graph_timer()
 
-  'If Last_hbox2_w = HBox2.w Then Return
-  'Last_hbox2_w = HBox2.w
   If Not FMain.FullyLoaded Then Return
   If Not Me.visible Then Return
   If TabStrip_filters_audio.text <> "anequalizer" Then Return
-  
+
+  'DrawGraph_part2()
+  start_delay_graph_timer()
+    
   firstchild = HBox2.Children[1]
   lastchild = HBox2.Children[HBox2.Children.count - 1]
   
@@ -2211,15 +2216,4 @@ Public Sub AnEqualizerPanel_Arrange()
 End
 
 '-END MANAGE ANEQUALIZER------------------------------------------------------------------------------------------
-
-
-
-Public Sub TabStrip_filters_audio_Click()
-
-  If Lower(TabStrip_filters_audio.caption) = "anequalizer" Then
-    DrawGraph_part2(False)
-  Endif
-
-End
-
 
