@@ -1955,7 +1955,6 @@ Public Sub switchers_Click()
     DrawGraph_part2(False)
     Return
   Endif
-
   EqControls_Change()
 End
 
@@ -2170,9 +2169,7 @@ Public Sub EqControls_Change()
   If Not Me.visible Then Return
   If Not TabStrip_filters_audio.caption = "anequalizer" Then Return
   dynaobj_change()
-  If Not FMain.mplayer.ProcessRunningOvr() Then 'graph is generated if mpv is running
-    start_delay_graph_timer()
-  Endif
+  start_delay_graph_timer()
 End
 
 Private Sub start_delay_graph_timer(Optional force As Boolean = False)
@@ -2224,3 +2221,5 @@ Public Sub TabStrip_filters_audio_Click()
   Endif
 
 End
+
+
