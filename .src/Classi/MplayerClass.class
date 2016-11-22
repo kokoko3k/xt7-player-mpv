@@ -2369,6 +2369,7 @@ End
 Private Function fix_for_anequalizer(af As String) As String
   Dim istart, iend As Integer
   Dim sOut As String
+  Return af
 '  lavfi=[anequalizer=" & eqstring(False) & "]     this way it works in realtime only
 '  lavfi='[anequalizer=" & eqstring(False) & "]'   this way it works at start
   istart = InStr(af, "'[anequalizer=")

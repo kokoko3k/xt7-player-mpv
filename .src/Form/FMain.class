@@ -2847,7 +2847,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     If Not mplayer.ProcessRunningOvr() Then 
       If mplayer.return_value <> 0 Then 'try to use youtube-dl 
         'If mplayer.get_option("ytdl") = Null Then 
-        If Not user_options(fullpath, False).Exist("ytdl") Then 
+        If Not user_options(fullpath).Exist("ytdl") Then 
           mplayer.set_option("ytdl", "yes")
         Endif
       Endif
