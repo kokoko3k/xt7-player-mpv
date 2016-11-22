@@ -1870,23 +1870,20 @@ Public Sub ConfigureTabs_video_Click()
 End
 
 
-Private dynaobj_mouse_is_down As Boolean = False
 Private dynaobj_prev_value As Boolean = False
 
 Public Sub dynaobj_MouseDown()
-   dynaobj_mouse_is_down = True
    Try dynaobj_prev_value = Last.value
 End
 ' 
 Public Sub dynaobj_mouseup()
   Dim current_value As String
-  dynaobj_mouse_is_down = False
   Try current_value = Last.value
   If current_value <> dynaobj_prev_value Then 
-    Try timer_dynaobj_delayed_change.delay = 100
+    Try timer_dynaobj_delayed_change.delay = 200
     If Error Then
       timer_dynaobj_delayed_change = New Timer As "timer_dynaobj_delayed_change" 'initialize timer if needed
-      timer_dynaobj_delayed_change.delay = 100
+      timer_dynaobj_delayed_change.delay = 200
       timer_dynaobj_delayed_change.trigger
         Else
       timer_dynaobj_delayed_change.trigger
@@ -1917,10 +1914,10 @@ Public Sub dynaobj_change()
   
   'trigger a new timer to check if the changed value is stable
   'we use a timer to keep the gui responsive
-  Try timer_dynaobj_delayed_change.delay = 100
+  Try timer_dynaobj_delayed_change.delay = 200
   If Error Then
     timer_dynaobj_delayed_change = New Timer As "timer_dynaobj_delayed_change" 'initialize timer if needed
-    timer_dynaobj_delayed_change.delay = 100
+    timer_dynaobj_delayed_change.delay = 200
     timer_dynaobj_delayed_change.Stop
     timer_dynaobj_delayed_change.start
       Else
@@ -1929,11 +1926,17 @@ Public Sub dynaobj_change()
   Endif
 End
 ' 
-
+Public Sub dynaobj_click()
+  If Last Is Combobox Then
+    If Last.readonly Then
+      ApplyBTN_Click()
+    Endif
+  Endif
+End
 
 Public Sub timer_dynaobj_delayed_change_Timer()
   timer_dynaobj_delayed_change.stop
-  If dynaobj_mouse_is_down Then Return
+  'If dynaobj_mouse_is_down Then Return
   ApplyBTN_Click()
 End
 
@@ -2216,4 +2219,6 @@ Public Sub AnEqualizerPanel_Arrange()
 End
 
 '-END MANAGE ANEQUALIZER------------------------------------------------------------------------------------------
+
+
 
