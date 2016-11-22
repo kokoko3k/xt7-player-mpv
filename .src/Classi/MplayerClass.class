@@ -2243,7 +2243,7 @@ End
 
 Private ignore_opts As String[]
 
-Public Sub do_apply(new_opts As Collection) ', Optional only_check_vdpaurb As Boolean = False)
+Public Sub do_apply(new_opts As Collection) 
   Dim realtime_opts As String[] = ["af", "af-add", "af-clr", "af-pre", "vf", "vf-add", "vf-clr", "vf-pre"]
   Dim name, data As String
   Dim changed_opts As New Collection
@@ -2253,7 +2253,6 @@ Public Sub do_apply(new_opts As Collection) ', Optional only_check_vdpaurb As Bo
   Dim vf_pre_new As String = ""
 
   new_opts = fix_options(new_opts)
-  'If only_check_vdpaurb Then Goto rt_options
   
   'see if we need a restart
   'make a list of changed options
@@ -2333,19 +2332,6 @@ Next
   If af_new = "|(removed)|" Then af_new = ""
   If vf_new = "|(removed)|" Then vf_new = ""
 
-' ' ' Stop
-' ' '       'This part is entirely for reinitialize playback with vdpaurb video filter
-' ' '           If vf_new <> "" Then
-' ' '             If want_vdpau() Then 
-' ' '               'we can't add vdpaurb if we're not hw decoding yet, so:
-' ' '                 'clear video filters
-' ' '                 set_property_mpv("vf", "", True)
-' ' '                 Wait 2
-' ' '                 'request hw decoding
-' ' '                 set_property_mpv("hwdec", "vdpau", True)
-' ' '               vf_new = "vdpaurb," & vf_new
-' ' '             Endif
-' ' '           Endif
 
   'only apply New Filters In realtime If something changed
     get_properties_mpv(["vf", "af"], True, False, 1)
@@ -2370,9 +2356,8 @@ Private Function fix_for_anequalizer(af As String) As String
   Dim istart, iend As Integer
   Dim sOut As String
 
-
 '  "lavfi=[anequalizer=" & eqstring(False) & ]"     this way it works in realtime only
-'  lavfi='[anequalizer=" & eqstring(False) & "]'   this way it works at start
+'  lavfi=[anequalizer=" & eqstring(False) & "]   this way it works at start
   istart = InStr(af, "\"lavfi=[anequalizer")
   
   If istart = 0 Then Return af
@@ -2380,29 +2365,10 @@ Private Function fix_for_anequalizer(af As String) As String
   iend = InStr(af, "]\"")
   If iend = 0 Then Return af 'something wrong...
   sOut = Left(af, istart - 1) & Mid(af, istart + 1, iend - Len(af)) & Right(af, - iend - 1)
-  'sOut = Left(af, istart - 1) & "[" & Mid(af, istart + 2, iend - Len(af)) & Right(af, - iend - 1)
 
   Return sout
 End
 
-
-' Public Function vdpau_blocked_by_Filters() As Boolean
-'   Dim vfs As String
-'   If ProcessRunningOvr() Then
-'     If Not getP("audioonly") Then
-'       Debug get_property_mpv("hwdec") 
-'       If get_property_mpv("hwdec") Like "*vdpau*" Then
-'         vfs = mpvoptions["vf"] 
-'         If vfs <> "" Then
-'           If Not (vfs Like "*vdpaurb*") Then
-'             Return True
-'           Endif
-'         Endif
-'       Endif
-'     Endif
-'   Endif
-'   Return False
-' End
 
 Public Function want_vdpau() As Boolean
   Dim hwdec, hwdec_active, hwdec_detected, vf As String
@@ -2417,7 +2383,7 @@ Public Function want_vdpau() As Boolean
   If hwdec_detected <> "vdpau" Then Return 'continue only if we're using vdpau
 
   ' vf = Trim(get_property_mpv("vf"))
-  ' If vf <> "(empty)" Then Return 'no need of vdpaurb if no filters are requested
+
 
   'If we are here thaen it means:
   'user wants hardware decoding through vdpau
@@ -2486,8 +2452,6 @@ Public Sub do_apply_restart(new_opts As Collection)
         set_property_mpv(name, data, False)
         global.myDebug("Restore property:", name, newdata, data)
     Next
-
-  'do_apply(new_opts, only_check_vdpaurb)
 
   restarting = False
 
