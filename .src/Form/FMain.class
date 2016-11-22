@@ -12307,3 +12307,9 @@ Public Sub current_display_device() As String
 End
 
 
+
+Public Sub TextBox2856_activate()
+
+  mplayer.set_property_mpv("af", Last.text, True)
+
+End
