@@ -1894,11 +1894,13 @@ Public Sub dynaobj_mouseup()
   Endif
 End
 
-Public Sub dynaobj_click()
-  ' Dim current_value As String
-  ' Try current_value = Last.value
-  ' If current_value <> dynaobj_prev_value Then ApplyBTN_Click()
-End
+' Public Sub dynaobj_click()
+' 
+'   If Last Is Combobox Then
+'     'readonly comboboxes only raises click() event, not change
+'     If Last.readonly Then ApplyBTN_Click()
+'   Endif
+' End
 
 
 
@@ -1906,7 +1908,7 @@ Public timer_dynaobj_delayed_change As Timer
 
 Public Sub dynaobj_change()
   Dim initial_value, current_value As String
-  
+
   'there is no need to apply anything if the user did not just changed it
   If Not Me.visible Then Return
   If RealTimeCHK.value = CheckBox.false Then Return
@@ -1927,8 +1929,6 @@ Public Sub dynaobj_change()
   Endif
 End
 ' 
-
-
 
 
 Public Sub timer_dynaobj_delayed_change_Timer()
@@ -1974,6 +1974,7 @@ Public Sub DrawGraph_part2(Optional graph_response As Boolean = True)
   Dim colors As New Integer[]
   Dim steps As New Float[]
   Dim p As PaintBrush
+  Dim mpveq_is_running As Boolean = False
   Dim shadowsize As Integer
   Dim line_color As Integer = Color.RGB(40, 120, 190)
   'Dim back_color As Integer = Color.RGB(230, 239, 119)
@@ -1983,9 +1984,12 @@ Public Sub DrawGraph_part2(Optional graph_response As Boolean = True)
   
   colors = [Color.SetAlpha(Color.black, 128), Color.Transparent]
   steps = [0, 1]
-  If mpveq.ProcessRunningOvr() Then Return
-  Try picfile = tempdir & "/" & Dir(tempdir)[0]
 
+  If Object.IsValid(mpveq) Then
+    If mpveq.ProcessRunningOvr() Then Return
+  Endif
+  
+  Try picfile = tempdir & "/" & Dir(tempdir)[0]
   If Not Error Then  
     img = New Image(picturebox1.w, picturebox1.h, back_color)
     Paint.Begin(img)
@@ -2212,3 +2216,11 @@ End
 '-END MANAGE ANEQUALIZER------------------------------------------------------------------------------------------
 
 
+
+Public Sub TabStrip_filters_audio_Click()
+
+  If Lower(TabStrip_filters_audio.caption) = "anequalizer" Then
+    DrawGraph_part2(False)
+  Endif
+
+End
