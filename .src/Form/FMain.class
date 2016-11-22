@@ -1525,7 +1525,7 @@ Public Sub Form_Close()
   global.kill_players()
   global.myDebug("mpv stopped")
   Try HotKeys.xbindkeys.kill
-  Print "xbindkeys killed"
+  global.myDebug("xbindkeys killed")
 
   If fmain.fullyloaded Then
     If GeneralOptions.SaveOnExitCHK.value = True Then
