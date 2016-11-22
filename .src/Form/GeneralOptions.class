@@ -306,8 +306,8 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Dim pt As String
   Previndex = Tabstrip1.index
   For i = 0 To TabStrip1.count - 1
-    TabStrip1.index = i
-    For Each TheScrollview In Tabstrip1.children
+    'TabStrip1.index = i
+    For Each TheScrollview In Tabstrip1[i].children
       For Each TheBox In TheScrollview.children
         If Not (Upper(TheBox.name) Like "NOPARSE*") Then
           For Each Option In TheBox.children

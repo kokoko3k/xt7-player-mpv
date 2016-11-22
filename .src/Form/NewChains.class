@@ -724,7 +724,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
 End
 
-Private Function parse_video_filter_custom() As String
+Private Function parse_video_filter_custom(atabstrip_index As Integer) As String
 'will parse the filter which the user can freely configure.
   Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
                               'in the tab, it is created in the fillfilters function
@@ -732,7 +732,7 @@ Private Function parse_video_filter_custom() As String
                             'it is created by DrawFiltersGui function
   Dim SubObject As Object
   Dim customfilter As String = ""
-  For Each MyScrollview In TabStrip_filters_video.Children
+  For Each MyScrollview In TabStrip_filters_video[atabstrip_index].Children
     For Each PanelObject In MyScrollView.Children
       If PanelObject.name Like "*HBox" Then
         For Each SubObject In PanelObject.Children
@@ -759,7 +759,7 @@ Private Function parse_video_filter_custom() As String
 End
 
 
-Private Function parse_audio_filter_custom() As String
+Private Function parse_audio_filter_custom(atabstrip_index As Integer) As String
 'will parse the filter which the user can freely configure.
   Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
                               'in the tab, it is created in the fillfilters function
@@ -768,7 +768,7 @@ Private Function parse_audio_filter_custom() As String
   Dim SubObject As Object
   Dim customfilter As String = ""
 
-  For Each MyScrollview In TabStrip_filters_audio.Children
+  For Each MyScrollview In TabStrip_filters_audio[atabstrip_index].Children
     For Each PanelObject In MyScrollView.Children
       If PanelObject.name Like "*HBox" Then
         For Each SubObject In PanelObject.Children
@@ -809,19 +809,19 @@ Private Function Parse_video_filter(Filtername As String) As String
   Dim out As String
   Dim is_lavfi As Boolean = False
   Dim subtext As String
+  Dim atabstrip_index As Integer
+
   
-  i = aTabstrip.index
   'Find the ParsedFilter Tab and activate it:
-  aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
+  atabstrip_index = aTabstrip.Tag.Find(ParsedFilter)
   If Parsedfilter Like "customvideo*" Then
-    out = parse_video_filter_custom()
-    aTabstrip.index = i 
+    out = parse_video_filter_custom(atabstrip_index)
     Return out
       Else
     'Discend the Tab objects,parse them and build the commandline
     'hierarchy is:
     'Tabstrip -> scrollviews -> Panels -> ParameterObjects
-    For Each MyScrollview In aTabstrip.Children
+    For Each MyScrollview In aTabstrip[atabstrip_index].Children
       If MyScrollView.tag = "lavfi" Then is_lavfi = True
       For Each PanelObject In MyScrollView.Children
         If PanelObject.name Like "*HBox" Then
@@ -863,7 +863,7 @@ Private Function Parse_video_filter(Filtername As String) As String
     If (Right(tmpstring) = ":") Then
       TmpString = Left(Tmpstring, - 1)
     Endif
-    aTabstrip.index = i
+
     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
     If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
     Return ParsedFilter
@@ -948,27 +948,26 @@ Private Function Parse_audio_filter(Filtername As String) As String
   Dim is_lavfi As Boolean = False
   Dim subtext As String
   Dim anequalizer_string As String
-  i = aTabstrip.index
+  Dim atabstrip_index As Integer
+
 
   'Find the ParsedFilter Tab and activate it:
-  aTabstrip.index = aTabstrip.Tag.Find(ParsedFilter)
+  atabstrip_index = aTabstrip.Tag.Find(ParsedFilter)
   If ParsedFilter = "equalizer" Then
     out = ParseEq() 
-    aTabstrip.index = i
     Return out
   Else If Parsedfilter = "anequalizer" Then
     anequalizer_string = eqstring(False)
     Return "\"lavfi=[anequalizer=" & eqstring(False) & "]\"" 'this way it works at start time only" 
 
   Else If Parsedfilter Like "customaudio*" Then
-    out = parse_audio_filter_custom()
-    aTabstrip.index = i 
+    out = parse_audio_filter_custom(atabstrip_index)
     Return out
       Else
     'Discend the Tab objects,parse them and build the commandline
     'hierarchy is:
     'Tabstrip -> scrollviews -> Panels -> ParameterObjects
-    For Each MyScrollview In aTabstrip.Children
+    For Each MyScrollview In aTabstrip[atabstrip_index].Children
       If MyScrollView.tag = "lavfi" Then is_lavfi = True
       For Each PanelObject In MyScrollView.Children
         If PanelObject.name Like "*HBox" Then
@@ -1008,7 +1007,7 @@ Private Function Parse_audio_filter(Filtername As String) As String
     If (Right(tmpstring) = ":") Then
       TmpString = Left(Tmpstring, - 1)
     Endif
-    aTabstrip.index = i
+
     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
     If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
     Return ParsedFilter
