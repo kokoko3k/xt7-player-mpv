@@ -68,7 +68,7 @@ End
 Private Sub Init_filters_video()
   Dim filters_video_list As New String[]
   Dim filter As String
-  filters_video_list = ["vdpaurb", "Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "Expand"]
+  filters_video_list = ["Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "Expand"]
   filters_video_list.Insert(["Stereo3D", "vdpaupp", "vavpp", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
@@ -567,10 +567,10 @@ Private Sub draw_filters_video_cfg()
   
   AllParams.Clear
   
-  AllParams.Add(["TITLE", "- Allow filters with vdpau hwrdware decoding -", "vdpaurb0", ""])
-  AllParams.Add(["TIP", ("Place this filter before any other (on top)"), "vdpaurb1", ""])
-  Global.DrawGui(AllParams, "vdpaurb", aTabstrip, NotSwitchable,,,, Me)
-  AllParams.Clear
+  ' AllParams.Add(["TITLE", "- Allow filters with vdpau hwrdware decoding -", "vdpaurb0", ""])
+  ' AllParams.Add(["TIP", ("Place this filter before any other (on top)"), "vdpaurb1", ""])
+  ' Global.DrawGui(AllParams, "vdpaurb", aTabstrip, NotSwitchable,,,, Me)
+  ' AllParams.Clear
   
   ' unsharp[=l|cWxH:amount[:l|cWxH:amount]]
   AllParams.Add(["TITLE", "- Sharpen or blur the input video -", "Sharp0", ""])
