@@ -334,12 +334,12 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
 
   If item_tab >= 0 Then 
     aTabstrip.index = item_tab
-    HelpBox.reparent(aTabstrip)
+    If atabstrip.caption <> "anequalizer" Then HelpBox.reparent(aTabstrip)
       Else
     For i = 0 To aTabstrip.count - 1
       aTabstrip.index = i
       If Lower(aTabstrip.caption) = item_name Then 
-        HelpBox.reparent(aTabstrip)
+        If atabstrip.caption <> "anequalizer" Then HelpBox.reparent(aTabstrip)
         Goto returnlabel
       Endif
     Next
