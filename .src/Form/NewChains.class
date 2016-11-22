@@ -617,8 +617,8 @@ Private Sub draw_filters_video_cfg()
   
   'delogo[=x:y:w:h:t]
   AllParams.Add(["TITLE", "- Remove logo from input video -", "Delogo0", ""])
-  AllParams.Add(["RANGE", "X", "0", "0", "2048", "Delogo1", ("TopLeft Corner")])
-  AllParams.Add(["RANGE", "Y", "0", "0", "2048", "Delogo2", ("TopLeft Corner")])
+  AllParams.Add(["RANGE", "X", "1", "1", "2048", "Delogo1", ("TopLeft Corner")])
+  AllParams.Add(["RANGE", "Y", "1", "1", "2048", "Delogo2", ("TopLeft Corner")])
   AllParams.Add(["RANGE", ("Width"), "0", "50", "2048", "Delogo3", ""])
   AllParams.Add(["RANGE", ("Height"), "0", "50", "2048", "Delogo4", ""])
   AllParams.Add(["RANGE", ("Tickness"), "1", "4", "2048", "Delogo5", ""])
