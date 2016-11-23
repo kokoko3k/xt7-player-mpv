@@ -1,6 +1,4 @@
 pausa se aumentano i drop nel vo
-xrandr, usa display-fps invece che chiamare xrandr
-pausa, cambio speed, unpausa
 
 opzioni aggiuntive opengl?
 custom audio/custom video?
@@ -43,15 +41,8 @@ uguali, crea dei link e rimuovine una.
 - invertire l'ordine dei risultati youtube?
 - opzione "-volume" per il volume iniziale (possibile prenderla direttamente dalla barra del volume?)
 
--crash alla seconda ripetizione dei sub con queste opzioni:
-__GL_SYNC_TO_VBLANK=1  /usr/local/bin/pagecache-management.sh -k 1024 mplayer -identify -slave  -wid 60820713 -noconfig all  -mouse-movements -mf fps=1:type=bmp -loop 0  -ass  -ass-force-style FontName="Segoe UI",FontSize=22,Bold=1,Italic=Alignment=2,outline=1,OutlineColour=H00000000,MarginV=0,PrimaryColour=H0000FFFF,shadow=2,BackColour=H80000000 -subcp enca:it:iso-8859-1 -sub-fuzziness 0  -font "Bitstream Vera Sans" -sub-bg-alpha 210 -subfont-blur 3 -osd-duration 1000 -subfont-osd-scale 2 -subfont-text-scale 2 -subpos 0 -osdlevel 3 -vf-add scale -vf-pre scale -vo x11  -ao null      -alang "" -slang "" -sub '/tmp/gambas.0/7993/SubSrt.srt.tmp' "mf:///home/root/.config/gambas3/Xt7-Player/SubBackImage*.bmp"
 
 
-
-* opensubtitles integration?
-* mettere lA CATEGORIA AUDIOVIDEO
-* trovare un modo per levare i messaggi di errore di mplayertag dai log
-* ordinare i canali quando si incolonnano nella griglia
 
 
 Se attivi un driver video, poi non si può più disabilitare se è
