@@ -276,9 +276,17 @@ End
 Private Function GlobalGrab() As String
   Dim xbindkeys_output As String
   Dim outputS As String[]
-  Dim hotkey As String
+  Dim hotkey, g As String
+  Dim x, y, w, h As Integer
+
+  w = Me.w
+  h = Me.h
+  x = Me.screenx + (Me.w Div 2) - (w Div 2)
+  y = Me.screeny + (Me.h Div 2) - (h Div 2)
+  g = " -g " & w & "x" & h & "+" & x & "+" & y & " " 
+  
   Shell "touch /tmp/xbindkeysrc" Wait
-  Shell Global.XbindkeysBIN & " -k -f /tmp/xbindkeysrc" To xbindkeys_output
+  Shell Global.XbindkeysBIN & g & " -k -f /tmp/xbindkeysrc" To xbindkeys_output
   outputS = Split(xbindkeys_output, "\n", "", True)
   hotkey = Trim(outputS[outputS.count - 1])
   Return hotkey
