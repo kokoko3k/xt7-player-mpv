@@ -279,8 +279,8 @@ Private Function GlobalGrab() As String
   Dim hotkey, g As String
   Dim x, y, w, h As Integer
 
-  w = Me.w
-  h = Me.h
+  w = Me.Font.TextWidth("_") * 50
+  h = Me.Font.textheight("|") * 10
   x = Me.screenx + (Me.w Div 2) - (w Div 2)
   y = Me.screeny + (Me.h Div 2) - (h Div 2)
   g = " -g " & w & "x" & h & "+" & x & "+" & y & " " 
