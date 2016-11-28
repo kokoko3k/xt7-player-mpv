@@ -35,47 +35,47 @@ Property Read org_mpris_MediaPlayer2_SupportedUriSchemes As String[]
 Property Read org_mpris_MediaPlayer2_SupportedMimeTypes As String[]
  
 Function org_mpris_MediaPlayer2_CanQuit_Read() As Boolean
-  Debug "Dbus"
+  'debug "Dbus"
   Return True
 End
 
 Function org_mpris_MediaPlayer2_CanRaise_Read() As Boolean
-  Debug "Dbus"
+  'debug "Dbus"
   Return True
 End
 
 Function org_mpris_MediaPlayer2_HasTrackList_Read() As Boolean
-  Debug "Dbus"
+  'debug "Dbus"
   Return True
 End
 
 Function org_mpris_MediaPlayer2_Identity_Read() As String
-  Debug "Dbus"
+  'debug "Dbus"
   Return "xt7-player-mpv"
 End
  
 Function org_mpris_MediaPlayer2_DesktopEntry_Read() As String
-  Debug "Dbus"
+  'debug "Dbus"
   Return "xt7-player-mpv"
 End
 
 Function org_mpris_MediaPlayer2_SupportedUriSchemes_Read() As String[]
-  Debug "Dbus"
+  'debug "Dbus"
   Return ["file", "http"]
 End
  
 Function org_mpris_MediaPlayer2_SupportedMimeTypes_Read() As String[]
-  Debug "Dbus"
+  'debug "Dbus"
   Return ["application/ogg", "application/x-ogg", "application/x-ogm-audio", "audio/aac", "audio/mp4", "audio/mpeg", "audio/mpegurl", "audio/ogg", "audio/vnd.rn-realaudio", "audio/vorbis", "audio/x-flac", "audio/x-mp3", "audio/x-mpeg", "audio/x-mpegurl", "audio/x-ms-wma", "audio/x-musepack", "audio/x-oggflac", "audio/x-pn-realaudio", "audio/x-scpls", "audio/x-speex", "audio/x-vorbis", "audio/x-vorbis+ogg", "audio/x-wav", "video/x-ms-asf", "x-content/audio-player"]
 End
 
 Public Function org_mpris_MediaPlayer2_Raise() 
-  Debug "Dbus"
+  'debug "Dbus"
   FMain.Show()
 End
 
  Public Function org_mpris_MediaPlayer2_Quit()
-  Debug "Dbus"
+  'debug "Dbus"
     'we cannot just quit the application, because it would unregister
     'dbus before we exit this kifunction, leading to a runtime error
     'so use a timer to program a delayed quit.
@@ -102,7 +102,7 @@ Property Read org_mpris_MediaPlayer2_Player_CanControl As Boolean
 
 Function org_mpris_MediaPlayer2_Player_PlayBackStatus_Read() As String
   Dim processrunning As Boolean = False
-  Debug "Dbus"
+  'debug "Dbus"
   Try processrunning = FMain.mplayer.ProcessRunningOvr() 
   If Not processrunning Then Return "Stopped"
   If FMain.mplayer.paused(True) Then Return "Paused"
@@ -110,7 +110,7 @@ Function org_mpris_MediaPlayer2_Player_PlayBackStatus_Read() As String
 End
 
 Function org_mpris_MediaPlayer2_Player_LoopStatus_Read() As String
-Debug "Dbus"
+'debug "Dbus"
   If FMain.TogglePls.value Then 
     Return "Playlist"
       Else
@@ -119,14 +119,14 @@ Debug "Dbus"
 End
 
 Function org_mpris_MediaPlayer2_Player_LoopStatus_Write(p As String)
-Debug "Dbus"
+'debug "Dbus"
   FMain.TogglePls.value = (p = "Playlist")
 End
 
 Function org_mpris_MediaPlayer2_Player_Rate_Read() As Float
   Dim out As String
   Dim fout As Float
-  Debug "Dbus"
+  'debug "Dbus"
   If Not FMain.mplayer.ProcessRunningOvr() Then Return 1
   out = FMain.mplayer.get_property_mpv("speed",,, True)
   Try fout = CFloat(out)
@@ -135,16 +135,16 @@ Function org_mpris_MediaPlayer2_Player_Rate_Read() As Float
 End
 
 Function org_mpris_MediaPlayer2_Player_Rate_Write(p As Float) 
-  Debug "Dbus"
+  'debug "Dbus"
 End
 
 Function org_mpris_MediaPlayer2_Player_Shuffle_Read() As Boolean
-  Debug "Dbus"
+  'debug "Dbus"
   Return FMain.ShufflePls.value
 End
 
 Function org_mpris_MediaPlayer2_Player_Shuffle_Write(p As Boolean) 
-  Debug "Dbus"
+  'debug "Dbus"
   FMain.ShufflePls.value = p
 End
 
@@ -164,76 +164,76 @@ Function org_mpris_MediaPlayer2_Player_Metadata_Read() As Collection
 End
 
 Function org_mpris_MediaPlayer2_Player_Volume_Read() As Float
-Debug "Dbus"
+'debug "Dbus"
    Return (FMain.SaveVolumeSlider.value * (100 Div FMain.SaveVolumeSlider.MaxValue))
 End
 
 
 
 Function org_mpris_MediaPlayer2_Player_Position_Read() As Long
-  Debug "Dbus"
+  'debug "Dbus"
   If Not (FMain.mplayer.ProcessRunningOvr()) Then Return
   Return FMain.mplayer.CurrentTime(True) * 1000000
 End
 
 Function org_mpris_MediaPlayer2_Player_Position_Write() As Long
-Debug "Dbus"
+'debug "Dbus"
 End
 
 Function org_mpris_MediaPlayer2_Player_MinimumRate_Read() As Float
   Return "0.01"
-Debug "Dbus"
+'debug "Dbus"
 End
 
 Function org_mpris_MediaPlayer2_Player_MaximumRate_Read() As Float
   Return "1000"
-Debug "Dbus"
+'debug "Dbus"
 End
 
 Function org_mpris_MediaPlayer2_Player_CanGoNext_Read() As Boolean
-Debug "Dbus"
+'debug "Dbus"
   Return True
 End
 
 Function org_mpris_MediaPlayer2_Player_CanGoPrevious_Read() As Boolean
-Debug "Dbus"
+'debug "Dbus"
   Return True
 End
 
 Function org_mpris_MediaPlayer2_Player_CanPlay_Read() As Boolean
-Debug "Dbus"
+'debug "Dbus"
   Return True
 End
 
 Function org_mpris_MediaPlayer2_Player_CanPause_Read() As Boolean
-Debug "Dbus"
+'debug "Dbus"
   Return True
 End
 
 Function org_mpris_MediaPlayer2_Player_CanSeek_Read() As Boolean
-Debug "Dbus"
+'debug "Dbus"
   Return True
 End
 
 Function org_mpris_MediaPlayer2_Player_CanControl_Read() As Boolean
-Debug "Dbus"
+'debug "Dbus"
   Return True
 End
 
 
 
 Public Function org_mpris_MediaPlayer2_Player_Next()
-Debug "Dbus"
+'debug "Dbus"
   FMain.SelectNext(False, FMain.GetActivePlayQueue())
 End
 
 Public Function org_mpris_MediaPlayer2_Player_Previous()
-Debug "Dbus"
+'debug "Dbus"
   FMain.ButtonPrev_click()
 End
 
 Public Function org_mpris_MediaPlayer2_Player_Pause()
-Debug "Dbus"
+'debug "Dbus"
   If Not (FMain.mplayer.ProcessRunningOvr()) Then Return
 
     If FMain.mplayer.Paused() Then 
@@ -244,17 +244,17 @@ Debug "Dbus"
 End
 
 Public Function org_mpris_MediaPlayer2_Player_PlayPause()
-Debug "Dbus"
+'debug "Dbus"
    FMain.ButtonPlay_click()
 End
 
 Public Function org_mpris_MediaPlayer2_Player_Stop()
-Debug "Dbus"
+'debug "Dbus"
   FMain.buttonstop_click()
 End
 
 Public Function org_mpris_MediaPlayer2_Player_Play()
-Debug "Dbus"
+'debug "Dbus"
   If (FMain.mplayer.ProcessRunningOvr()) And (Not FMain.mplayer.paused()) Then Return 
   FMain.ButtonPlay_click()
 End
@@ -275,7 +275,7 @@ global.myDebug("DBUS")
 End
 
 Function org_mpris_MediaPlayer2_Player_Volume_Write(p As Float)
-Debug "Dbus"
+'debug "Dbus"
   If p <= 0 Then
     FMain.volume_set("0")
       Else
