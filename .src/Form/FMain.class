@@ -2461,7 +2461,9 @@ Public Sub ExportDbusProperties()
      global.myDebug("Error setting up dbus")
       Return
     Endif
-    Try DBus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player", "org.mpris.MediaPlayer2.TrackList", "org.mpris.MediaPlayer2.Playlists", "org.freedesktop.Dbus.Properties", "org.freedesktop.Dbus.Introspectable"])
+    'Try DBus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player", "org.mpris.MediaPlayer2.TrackList", "org.mpris.MediaPlayer2.Playlists" ,"org.freedesktop.Dbus.Properties", "org.freedesktop.Dbus.Introspectable"])
+    'Try DBus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player", "org.freedesktop.Dbus.Properties", "org.freedesktop.Dbus.Introspectable"])
+    Try DBus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player"])
     If Error Then 
       global.myDebug("Error setting up dbus")
       Return
@@ -3940,6 +3942,10 @@ Public Sub mplayer_property_change(name As String, data_old As String, data_new 
   End Select
 
   Returnlabel:
+    If DbusAlreadyRegistered Then 'cercami
+      mpris.emit_propertychanged() 'cercami
+    Endif
+  
   Return
 
 End
@@ -12313,3 +12319,8 @@ Public Sub TextBox2856_activate()
   mplayer.set_property_mpv("af", Last.text, True)
 
 End
+
+
+
+
+

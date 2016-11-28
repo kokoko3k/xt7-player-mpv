@@ -17,7 +17,8 @@ Public Sub Start()
     Try global.arg_new_instance = Args.Has("n", "new-instance", ("Play in a new instance even if one is already running"))
     Try global.arg_start_tray = Args.Has("t", "tray", ("Start minimized in the tray"))
     Try global.arg_debug = Args.Has("v", "verbose", ("Enable debug output"))
-
+    If global.arg_debug Then DBus.Debug = True
+    DBus.Debug = True 'cercami
     
   Try global.arg_file = Args.end()[0]
 
