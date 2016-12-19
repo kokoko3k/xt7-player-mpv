@@ -665,18 +665,18 @@ Public Function FindAndSeek2(mystream As File, myblock As Long, mypattern1 As St
 End
 
 Public Function LookForJpg(filename As String, Optional saveto As String = "", Optional ByRef fileerror As Boolean = False) As Boolean
-   Dim mystream As File
-   Dim myjpg As String = ""
-   Dim m1 As String = "image/"
-   Dim isvalid As Boolean = False
-   Dim tmpfile As String = Temp & ".jpg"
-   Dim tmppic As Picture
-   Dim chunk As String
-   Dim m1pos As Long
-   Dim jpgstartmarker As String = Chr(255) & Chr(216) 'FFD8
-   Dim jpgendmarker As String = Chr(255) & Chr(217)   'FFD9
-   Dim jpgstart, jpgend As Long
-   
+  Dim mystream As File
+  Dim myjpg As String = ""
+  Dim m1 As String = "image/"
+  Dim isvalid As Boolean = False
+  Dim tmpfile As String = Temp & ".jpg"
+  Dim tmppic As Picture
+  Dim chunk As String
+  Dim m1pos As Long
+  Dim jpgstartmarker As String = Chr(255) & Chr(216) 'FFD8
+  Dim jpgendmarker As String = Chr(255) & Chr(217)   'FFD9
+  Dim jpgstart, jpgend As Long
+
   If IsUncovered(filename) Then Return False
 
   Try mystream = Open filename For Input
@@ -716,9 +716,10 @@ Public Function LookForJpg(filename As String, Optional saveto As String = "", O
 
     myjpg = Read #mystream, (jpgend - jpgstart) 
     file.Save(tmpfile, myjpg)
-    Try tmppic = picture.Load(tmpfile)
+    Try tmppic = image.Load(tmpfile).picture
     If Not Error Then 
       isvalid = True
+      Stop
       Seek #mystream, jpgstart
         Else
       Seek #mystream, jpgend
@@ -797,6 +798,8 @@ Public Function LookForJpgHeuristic(filename As String, Optional saveto As Strin
     Seek #mystream, jpgstart
 
     myjpg = Read #mystream, (jpgend - jpgstart) 
+    Stop
+    
     file.Save(tmpfile, myjpg)
     Try tmppic = picture.Load(tmpfile)
     If Not Error Then 

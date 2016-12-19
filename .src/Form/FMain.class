@@ -9342,7 +9342,7 @@ Public Sub MenuUpdateCover_click()
 End
 
 Public Sub MenuEmbeddedCoversPls_click()
-  UpdateCoverFromSelected(playlistgrid, playlistclass)
+  UpdateCoverFromSelected(playlistgrid, myplaylist)
 End
 
 Public Sub MenuPlsSetCover_click()
@@ -9361,7 +9361,6 @@ Public Sub UpdateCoverFromSelected(mygrid As Gridview, mylibrary As Playlistclas
   Dim r As Integer
   Dim coverfilename As String
   Dim fullpath, album, artist As String
-  
   If MyQuestion.Ask(("xt7 will try to update the cover,\nBeware that covers set by you will be lost."), "Ok", "Cancel") = 2 Then Return
   mygrid.mouse = mouse.wait
   mygrid.enabled = False
@@ -10154,7 +10153,12 @@ Public Sub HSplit1_Resize()
 
   prevlayout = hsplit1.Layout
   Wait 0.025
-  If prevlayout[0] <> hsplit1.layout[0] Then Return
+  If hsplit1.Layout.count > 0 Then
+    If prevlayout.count > 0 Then
+      If prevlayout[0] <> hsplit1.layout[0] Then Return    
+    Endif
+  Endif
+  
 
   timerhideshowvideo.start
 
