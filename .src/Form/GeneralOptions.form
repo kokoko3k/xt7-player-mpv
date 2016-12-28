@@ -1633,25 +1633,6 @@
             Value = CheckBox.True
           }
         }
-        { NoParse21 HBox
-          MoveScaled(1,55,50,4.5714)
-          ToolTip = ("Save xt7 position and size on program exit.")
-          Spacing = True
-          { SaveGeometryCHK CheckBox
-            MoveScaled(0,0,49,4.5714)
-            Text = ("Also save xt7 geometry on exit")
-            Value = CheckBox.True
-          }
-        }
-        { NoParse22 HBox
-          MoveScaled(1,59,50,4.5714)
-          ToolTip = ("If your window manager is not kwin\nand you find that form position is not correctly restored,\ntry checking this.")
-          Spacing = True
-          { SaveGeometryCompizCHK CheckBox
-            MoveScaled(-1,0,48,4.5714)
-            Text = ("Alternative saving method (compiz/emerald)")
-          }
-        }
       }
       Index = 11
       Text = ("User Options")
