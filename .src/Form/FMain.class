@@ -1684,11 +1684,7 @@ Public Sub SaveFormGeometry()
   
   Dim PrevScreenX As Integer = fmain.screenx
   Dim PrevScreeny As Integer = fmain.screeny
-  
-  If (GeneralOptions.SaveGeometryCHK.value = True) Then
-      SubSaveFormGeometry(fmain.x - fmain.screenx, fmain.y - fmain.screeny)
-  Endif
-
+  SubSaveFormGeometry(fmain.x - fmain.screenx, fmain.y - fmain.screeny)
 End
 
 Public Sub SubSaveFormGeometry(offsetx As Integer, offsety As Integer)
