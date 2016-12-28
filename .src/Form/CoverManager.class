@@ -1221,15 +1221,16 @@ Public Function FolderPicture(Directory As String) As String
 End
 
 
-
 Public Sub EmbeddedToCoverCache(artist As String, album As String, fullpath As String, coverfilename As String, mygrid As Gridview, row As Integer, column As Integer)
   Select Case Lower(file.Ext(fullpath))
     Case "mp3"
-      LookForJpg(fullpath, coverfilename)
-      Try mygrid[row, column].text = ""
-      Try mygrid[row, column].clear
+      makevideothumb(fullpath, coverfilename, mygrid, row, column, 1)
+      'LookForJpg(fullpath, coverfilename)
+      'Try mygrid[row, column].text = ""
+      'Try mygrid[row, column].clear
       Return
     Case "ogg"
+      LookForJpg(fullpath, coverfilename)
       If LookForJpgb64(fullpath, coverfilename) Then 
         Try mygrid[row, column].text = ""
         Try mygrid[row, column].clea
@@ -1268,7 +1269,7 @@ Private mplayerthumb As Mplayerclass
 
 
 Private lastthumbpath As String = ""
-Public Sub makevideothumb(fullpath As String, coverfilepath As String, mygrid As Gridview, row As Integer, column As Integer)
+Public Sub makevideothumb(fullpath As String, coverfilepath As String, mygrid As Gridview, row As Integer, column As Integer, Optional seconds As Integer = 300)
   If fullpath = lastthumbpath Then Return
   lastthumbpath = fullpath
 
@@ -1281,7 +1282,7 @@ Public Sub makevideothumb(fullpath As String, coverfilepath As String, mygrid As
   mplayerthumb = New Mplayerclass As "thumbnailer"
   runningthumblers += 1
   global.myDebug(runningthumblers)
-  mplayerthumb.savethumb(fullpath, coverfilepath,,, mygrid, row, column)
+  mplayerthumb.savethumb(fullpath, coverfilepath,, seconds, mygrid, row, column)
 End
 
 

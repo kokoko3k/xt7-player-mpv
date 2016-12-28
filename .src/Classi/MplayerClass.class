@@ -1445,7 +1445,7 @@ Public Sub savethumb(fullpath As String, newfilename As String, Optional width A
   'Create the thumb, but exit after 30 seconds 
   cmdline = executable(5) & " " & Shell(fullpath) & " --cache=no "
   cmdline &= "-vf scale=" & width & ":-2" & ",expand=::::1/1" & " --no-sub" & " --start " & seconds 
-  cmdline &= " -frames 1 --no-audio --vo=image:format=jpg:jpeg-quality=80:outdir=" & outdir
+  cmdline &= " -frames 1 --no-audio --vo=image --vo-image-format=jpg --vo-image-jpeg-quality=80 --vo-image-outdir=" & outdir
   cmdline &= " --config=no -quiet &>/dev/null"
 
   newfilenamepriv = newfilename
