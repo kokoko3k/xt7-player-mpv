@@ -948,8 +948,9 @@ Private Function Parse_audio_filter(Filtername As String) As String
   Dim is_lavfi As Boolean = False
   Dim subtext As String
   Dim anequalizer_string As String
+  Dim out_anequalizer As String = ""
   Dim atabstrip_index As Integer
-
+  Dim autogaindB As Integer
 
   'Find the ParsedFilter Tab and activate it:
   atabstrip_index = aTabstrip.Tag.Find(ParsedFilter)
@@ -957,8 +958,14 @@ Private Function Parse_audio_filter(Filtername As String) As String
     out = ParseEq() 
     Return out
   Else If Parsedfilter = "anequalizer" Then
-    anequalizer_string = eqstring(False)
-    Return "\"lavfi=[anequalizer=" & eqstring(False) & "]\"" 'this way it works at start time only" 
+    anequalizer_string = eqstring(False, ByRef autogaindB)
+    If autogaindB > 0 Then
+      out_anequalizer = "lavfi=[volume=-" & autogaindB & "dB],"
+    Endif   
+    out_anequalizer &= "\"lavfi=[anequalizer=" & anequalizer_string & "]\"" 'this way it works at start time only" 
+    Debug out_anequalizer
+    Return out_anequalizer
+    
 
   Else If Parsedfilter Like "customaudio*" Then
     out = parse_audio_filter_custom(atabstrip_index)
@@ -1951,7 +1958,7 @@ Public Sub switchers_Click()
   Dim child As Object
   Dim band_enabled As Boolean = False
   'is at least a band enabled?
-  If Not (SwitchButton2.Value Or SwitchButton1.Value Or switchbutton3.Value Or switchbutton4.Value Or switchbutton5.Value) Then
+  If Not (SwitchButton2.Value Or SwitchButton1.Value Or switchbutton3.Value Or switchbutton4.Value Or switchbutton5.Value Or switchbutton6.Value) Then
     picturebox1.Picture = Null
     dynaobj_change()
     DrawGraph_part2()
@@ -2096,13 +2103,14 @@ Private Function p(percent As Float, v As Integer) As Integer
 End
 
 
-Public Function eqstring(Optional complex As Boolean = True) As String
+Public Function eqstring(Optional complex As Boolean = True, Optional ByRef autogaindB As Integer) As String
   Dim band_containers As New Object[]
   Dim band_container, subobj As Object
   Dim f, g, w, out_band, outstring As String
   Dim out_bands As New String[]
   Dim i As Integer
-
+  Dim maxgain As Integer = 0
+  
   band_containers.Add(frameband1)
   band_containers.Add(frameband2)
   band_containers.Add(frameband3)
@@ -2117,10 +2125,12 @@ Public Function eqstring(Optional complex As Boolean = True) As String
           g = subobj.next.next.children[1].value
           w = subobj.next.next.next.children[1].value
           out_bands.Add("f=" & f & " w=" & w & " g=" & g & " t=0")
+          maxgain = Max(CInt(g), maxgain)
         Endif
       Endif
     Next
   Next
+  autogaindB = maxgain
   If out_bands.Count = 0 Then Return ""
   If complex Then outstring = "[aid1]anequalizer="
   'Pretend we have 10 channels audio (unused channels should be discarded by anequalizer)
