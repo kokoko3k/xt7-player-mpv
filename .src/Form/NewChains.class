@@ -363,8 +363,6 @@ Public Sub Init()
   Init_filters_audio()
   Init_filters_video()
   tabstrip1.index = 0
-  
-  
   f1.value = 50
   g1.value = 0
   w1.value = 100
@@ -380,7 +378,9 @@ Public Sub Init()
   f5.value = 4000
   g5.value = 0
   w5.value = 1000
-  
+  f6.value = 8000
+  g6.value = 0
+  w6.value = 1000
   initdone = True
 End
 
@@ -1023,6 +1023,8 @@ Private Function Parse_audio_filter(Filtername As String) As String
 End
 
 Public Sub ApplyBTN_Click()
+    If Not initdone Then Return
+    If Not alreadyloaded Then Return
     OkToChangeToCustom = False
     Fmain.apply
     OkToChangeToCustom = True
