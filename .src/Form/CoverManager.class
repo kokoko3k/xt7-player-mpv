@@ -1208,8 +1208,11 @@ Public Function FolderPicture(Directory As String) As String
 
 
   For Each sFile In (Dir(Directory, "*"))
+
+    If sFile Like "*.png" Then Stop
     For Each sMatch In Matches
       If sFile Like sMatch Then 
+        
         folderpictures.Add(sFile, directory)
         Return sFile
       Endif

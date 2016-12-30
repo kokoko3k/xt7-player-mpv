@@ -632,7 +632,7 @@
             }
           }
           { FrameBand5 Panel
-            MoveScaled(94,-1,21,24)
+            MoveScaled(94,-2,21,24)
             Font = Font["-1"]
             Arrangement = Arrange.Vertical
             AutoResize = True
@@ -689,6 +689,73 @@
               }
               { w5 SpinBox EqControls
                 Name = "w5"
+                MoveScaled(4,0,13,4)
+                Font = Font["-2"]
+                Expand = True
+                MinValue = 1
+                MaxValue = 24000
+                Value = 2000
+              }
+            }
+          }
+          { FrameBand6 Panel
+            MoveScaled(116,-3,21,24)
+            Font = Font["-1"]
+            Arrangement = Arrange.Vertical
+            AutoResize = True
+            Spacing = True
+            Margin = True
+            Border = Border.Etched
+            { SwitchButton6 SwitchButton switchers
+              Name = "SwitchButton6"
+              MoveScaled(2,2,17,4)
+              Value = True
+            }
+            { Panel17 Panel
+              MoveScaled(2,7,17,4)
+              ToolTip = ("Center Frequency")
+              Arrangement = Arrange.Horizontal
+              { Label31 Label
+                MoveScaled(1,0,2,4)
+                Text = ("F")
+              }
+              { f6 SpinBox EqControls
+                Name = "f6"
+                MoveScaled(4,0,13,4)
+                Font = Font["-2"]
+                Expand = True
+                MinValue = 1
+                MaxValue = 24000
+                Value = 12000
+              }
+            }
+            { Panel18 Panel
+              MoveScaled(2,12,17,4)
+              ToolTip = ("Gain (dB)")
+              Arrangement = Arrange.Horizontal
+              { Label32 Label
+                MoveScaled(1,0,2,4)
+                Text = ("G")
+              }
+              { g6 SpinBox EqControls
+                Name = "g6"
+                MoveScaled(4,0,13,4)
+                Font = Font["-2"]
+                Expand = True
+                MinValue = -30
+                MaxValue = 30
+              }
+            }
+            { Panel19 Panel
+              MoveScaled(2,17,17,4)
+              ToolTip = ("Filter width (Hz)")
+              Arrangement = Arrange.Horizontal
+              { Label33 Label
+                MoveScaled(1,0,2,4)
+                Text = ("W")
+              }
+              { w6 SpinBox EqControls
+                Name = "w6"
                 MoveScaled(4,0,13,4)
                 Font = Font["-2"]
                 Expand = True

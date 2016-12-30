@@ -529,7 +529,6 @@ End
 
 Public Sub LoadAllSettings(ProfileName As String) 'THIS Is PROBABLY BROKEN
   Dim MySettings As New SettingsClass
-
   MySettings.Load(Fmain, Global.confpath & "/" & ProfileName)
   MySettings.Load(GeneralOptions, Global.confpath & "/" & ProfileName)
   

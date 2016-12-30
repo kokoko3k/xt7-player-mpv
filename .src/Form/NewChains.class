@@ -1443,7 +1443,6 @@ End
 
 Private aligned As Boolean = False
 Public Sub Form_Open()
-
   If Not initdone Then 
     Try GeneralOptions.FirstLoadIfNeeded()
     Init()
@@ -2109,6 +2108,7 @@ Public Function eqstring(Optional complex As Boolean = True) As String
   band_containers.Add(frameband3)
   band_containers.Add(frameband4)
   band_containers.Add(frameband5)
+  band_containers.Add(frameband6)
   For Each band_container In band_containers
     For Each subobj In band_container.children
       If subobj Is SwitchButton Then
