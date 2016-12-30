@@ -963,7 +963,6 @@ Private Function Parse_audio_filter(Filtername As String) As String
       out_anequalizer = "lavfi=[volume=-" & autogaindB & "dB],"
     Endif   
     out_anequalizer &= "\"lavfi=[anequalizer=" & anequalizer_string & "]\"" 'this way it works at start time only" 
-    Debug out_anequalizer
     Return out_anequalizer
     
 
