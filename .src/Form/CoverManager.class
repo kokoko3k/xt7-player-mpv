@@ -1297,6 +1297,7 @@ Public Sub thumbnailer_ThumbAvailableFor(fullpath As String, g As Gridview, r As
    g.refresh
    Wait
   global.myDebug(runningthumblers)
+  UnMarkUncovered(fullpath)
 End
 
 Public Sub thumbnailer_ThumbErrorFor(fullpath As String, g As Gridview, r As Integer, c As Integer)
