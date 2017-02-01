@@ -62,7 +62,7 @@
       Index = 0
       Text = "tabstrip1"
       { HelpBox Panel
-        MoveScaled(3,11,54,29)
+        MoveScaled(1,5,54,33)
         Tag = "0"
         Arrangement = Arrange.Vertical
         { Button_show_man ToggleButton
@@ -103,7 +103,7 @@
       Picture = Picture["icon:/16/tools"]
     }
     { TabStrip_filters_audio TabStrip
-      MoveScaled(31,-1,56,47)
+      MoveScaled(34,0,56,47)
       #Translate = False
       Expand = True
       Arrangement = Arrange.Fill
@@ -113,7 +113,7 @@
       Index = 0
       Text = "equalizer"
       { ScrollView1xx Panel
-        MoveScaled(0,1,64,39)
+        MoveScaled(0,0,64,39)
         Expand = True
         Arrangement = Arrange.Horizontal
         Spacing = True
@@ -344,7 +344,7 @@
       Index = 1
       Text = "anequalizer"
       { AnEqualizerPanel Panel
-        MoveScaled(-3,2,88,38)
+        MoveScaled(3,2,88,38)
         Expand = True
         Arrangement = Arrange.Vertical
         { PictureBox1 PictureBox
@@ -768,15 +768,17 @@
       }
       Index = 2
       Text = "compand"
-      { VBox2 VBox
-        MoveScaled(2,2,52,38)
-        Expand = True
+      { vboxcompand Panel
+        MoveScaled(1,4,52,36)
+        Ignore = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
         { Hbox8 HBox
-          MoveScaled(0,1,51,6)
-          AutoResize = True
+          MoveScaled(3,2,51,6)
           Padding = 6
           { Label34 Label
-            MoveScaled(2,1,17,5)
+            MoveScaled(1,0,17,5)
             Text = ("Makeup Gain (dB)")
           }
           { makeupgainspinbox SpinBox compand_dynaobj
@@ -791,12 +793,11 @@
           }
         }
         { Button_compand_autovalues ToggleButton
-          MoveScaled(0,8,51,4)
+          MoveScaled(1,10,51,4)
           Text = ("Auto values")
         }
         { hboxsoftknee HBox
-          MoveScaled(0,17,51,6)
-          AutoResize = True
+          MoveScaled(1,15,51,6)
           Padding = 6
           { Label35 Label
             MoveScaled(2,0,17,5)
@@ -813,8 +814,7 @@
           }
         }
         { hboxdecay HBox
-          MoveScaled(0,24,51,6)
-          AutoResize = True
+          MoveScaled(1,22,51,6)
           Padding = 6
           { Label36 Label
             MoveScaled(1,0,17,5)
@@ -829,6 +829,9 @@
             Step = 10
             Value = 150
           }
+        }
+        { Button3 Button
+          MoveScaled(11,29,16,4)
         }
       }
       Index = 0

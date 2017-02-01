@@ -453,7 +453,6 @@ Public Sub InitEarlyForms()
   global.initearlyformsdone = True
   SubAndOsd.Init()
   GeneralOptions.Init()
-  Stop
   generaloptions.BackColorChooseBTN2.background = Color.Merge(Color.TextBackground, Color.black, 0.05)
   Try Last.mouse = mouse.default
   fmain.mouse = mouse.default

@@ -330,16 +330,27 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
     Next
   object.Attach(atabstrip, atabstrip.parent, atabstrip.name)
 
+
+
+
   Try item_tab = aTabstrip.Tag.Find(Lower(item_name))
 
   If item_tab >= 0 Then 
     aTabstrip.index = item_tab
-    If atabstrip.caption <> "anequalizer" Then HelpBox.reparent(aTabstrip)
+    If atabstrip.caption <> "anequalizer" Then 
+      If atabstrip.caption <> "compand" Then 
+        HelpBox.reparent(aTabstrip)
+      Endif
+    Endif
       Else
     For i = 0 To aTabstrip.count - 1
       aTabstrip.index = i
       If Lower(aTabstrip.caption) = item_name Then 
-        If atabstrip.caption <> "anequalizer" Then HelpBox.reparent(aTabstrip)
+        If atabstrip.caption <> "anequalizer" Then 
+          If atabstrip.caption <> "compband" Then 
+            HelpBox.reparent(aTabstrip)
+          Endif
+        Endif
         Goto returnlabel
       Endif
     Next
@@ -421,6 +432,7 @@ Private Sub draw_filters_audio_cfg()
     AllParams.add(["ROCHOOSE", "replaygain-album=", "yes", "no", "Volume3", ("Like replaygain-track, but using the album-gain value")])
     AllParams.add(["ROCHOOSE", "replaygain-clip=", "yes", "no", "Volume5", ("Prevent replaygain clipping by lowering the gain")])
     AllParams.add(["ROCHOOSE", "softclip=", "yes", "no", "Volume6", ("Turns on soft clipping")])
+    AllParams.Add(["TIP", ("Put this filter at the end of the chain, but before lavrresample (if enabled)"), "Volume7", ""])
     Global.DrawGui(AllParams, "volume", aTabstrip, switchable,,,, Me)
     AllParams.Clear
     
@@ -449,6 +461,7 @@ Private Sub draw_filters_audio_cfg()
   Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable,,, "lavfi", Me)
   AllParams.Clear
 
+
   ' 'alimiter lavfi
   AllParams.Add(["TITLE", "Keep input signal under a desired threshold - (ffmpeg >=3.0 only)", "alimiter0", ""])
   AllParams.add(["RANGEFLOAT", "Input gain", "0.1", "5", "64", "alimiter1", ""])
@@ -462,7 +475,6 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["RANGEFLOAT", "asc_level", "0", "1", "1", "alimiter7", ""]) 
   
   AllParams.Add(["TIP", ("This filter is a good volume normalizer"), "alimiter6", ""])
-  AllParams.Add(["TIP", ("It is best to place the volume filter after alimiter"), "alimiter7", ""])
   Global.DrawGui(AllParams, "alimiter", aTabstrip, False,,, "lavfi", Me)
   AllParams.Clear
 
@@ -470,7 +482,7 @@ Private Sub draw_filters_audio_cfg()
   AllParams.Add(["TITLE", "Audio resampler: set the default audio resampler quality", "lavrresample0", ""])
   AllParams.add(["RANGE", "phase-shift=", "4", "10", "20", "lavrresample1", "Higher=slower and better quality"]) 
   AllParams.add(["ROCHOOSE", "linear=", "yes", "no", "lavrresample2", "filter linear interpolation"])
-  AllParams.Add(["TIP", ("Put this filter at the end of the chain, but before lavcac3enc"), "lavrresample3", ""])
+  AllParams.Add(["TIP", ("Put this filter at the end of the chain, but before lavcac3enc (if enabled)"), "lavrresample3", ""])
   Global.DrawGui(AllParams, "lavrresample", aTabstrip, switchable,,, "", Me)
   
   AllParams.Clear
@@ -488,7 +500,6 @@ Private Sub draw_filters_audio_cfg()
     AllParams.add(["ROCHOOSE", "Enable DC bias correction", "0 - disable", "1 - enable", "dynaudnorm7", ""])
     AllParams.add(["ROCHOOSE", "Enable alternative boundary mode", "1 - enable", "0 - disable", "dynaudnorm8", ""])
     AllParams.add(["RANGEFLOAT", "Compress factor", "0", "0", "30", "dynaudnorm9", ""])    
-    AllParams.Add(["TIP", ("It is best to place the volume filter after dynaudnorm"), "dynaudnorm110", ""])
     Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, False,,, "lavfi", Me)
     AllParams.Clear
     'or 50 11 1 5  0 0 0 0 0
@@ -2283,4 +2294,9 @@ End
 Public Sub compand_dynaobj_Change()
   update_compand()
   dynaobj_change()
+End
+
+
+Public Sub TabStrip1_arrange()
+  vboxcompand.Move(Desktop.scale, Desktop.scale, TabStrip_filters_audio.w - (Desktop.scale * 2), TabStrip_filters_audio.h - (Desktop.scale * 2))
 End
