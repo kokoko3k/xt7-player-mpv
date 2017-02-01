@@ -105,11 +105,10 @@
     { TabStrip_filters_audio TabStrip
       MoveScaled(31,-1,56,47)
       #Translate = False
-      Tag = "anequalizer"
       Expand = True
       Arrangement = Arrange.Fill
       Margin = True
-      Count = 2
+      Count = 3
       TextFont = Font["-1"]
       Index = 0
       Text = "equalizer"
@@ -764,6 +763,71 @@
                 Value = 2000
               }
             }
+          }
+        }
+      }
+      Index = 2
+      Text = "compand"
+      { VBox2 VBox
+        MoveScaled(2,2,52,38)
+        Expand = True
+        { Hbox8 HBox
+          MoveScaled(0,1,51,6)
+          AutoResize = True
+          Padding = 6
+          { Label34 Label
+            MoveScaled(2,1,17,5)
+            Text = ("Makeup Gain (dB)")
+          }
+          { makeupgainspinbox SpinBox compand_dynaobj
+            Name = "makeupgainspinbox"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MinValue = 1
+            MaxValue = 1000
+            Step = 5
+            Value = 15
+          }
+        }
+        { Button_compand_autovalues ToggleButton
+          MoveScaled(0,8,51,4)
+          Text = ("Auto values")
+        }
+        { hboxsoftknee HBox
+          MoveScaled(0,17,51,6)
+          AutoResize = True
+          Padding = 6
+          { Label35 Label
+            MoveScaled(2,0,17,5)
+            Text = ("Soft knee radius")
+          }
+          { softkneespinbox SpinBox compand_dynaobj
+            Name = "softkneespinbox"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MaxValue = 900
+            Step = 5
+            Value = 7
+          }
+        }
+        { hboxdecay HBox
+          MoveScaled(0,24,51,6)
+          AutoResize = True
+          Padding = 6
+          { Label36 Label
+            MoveScaled(1,0,17,5)
+            Text = ("Decay (decisecs)")
+          }
+          { DecaySpinbox SpinBox compand_dynaobj
+            Name = "DecaySpinbox"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MaxValue = 999999
+            Step = 10
+            Value = 150
           }
         }
       }

@@ -677,7 +677,7 @@
           Indent = True
           { CacheCheckbox CheckBox notifyobj
             Name = "CacheCheckbox"
-            MoveScaled(1,0,26,4.5714)
+            MoveScaled(2,0,26,4.5714)
             AutoResize = True
             Text = ("Local file cache size (KB)")
             Value = CheckBox.True
@@ -685,9 +685,16 @@
           { CacheSpinBox SpinBox notifyobj
             Name = "CacheSpinBox"
             MoveScaled(29,0,11,4.5714)
+            Expand = True
             MinValue = 100
             MaxValue = 1048576
             Value = 10240
+          }
+          { Label11 Label labelcheck
+            Name = "Label11"
+            MoveScaled(40,0,6,4.5714)
+            AutoResize = True
+            Text = ("KBytes")
           }
         }
         { NoParse44 HBox
@@ -705,6 +712,7 @@
           { CacheMinSpinboxFile SpinBox notifyobj
             Name = "CacheMinSpinboxFile"
             MoveScaled(29,0,11,4.5714)
+            Expand = True
             MaxValue = 100000
           }
           { Label19 Label labelcheck
@@ -741,9 +749,16 @@
           { CDDACacheSpinBox SpinBox notifyobj
             Name = "CDDACacheSpinBox"
             MoveScaled(26,0,11,4.5714)
+            Expand = True
             MinValue = 100
             MaxValue = 1048576
             Value = 10240
+          }
+          { Label15 Label labelcheck
+            Name = "Label15"
+            MoveScaled(39,0,6,4.5714)
+            AutoResize = True
+            Text = ("KBytes")
           }
         }
         { NoParse24 HBox
@@ -760,9 +775,16 @@
           { DVDCacheSpinBox SpinBox notifyobj
             Name = "DVDCacheSpinBox"
             MoveScaled(24,1,11,4.5714)
+            Expand = True
             MinValue = 100
             MaxValue = 1048576
             Value = 1024
+          }
+          { Label17 Label labelcheck
+            Name = "Label17"
+            MoveScaled(38,0,6,4.5714)
+            AutoResize = True
+            Text = ("KBytes")
           }
         }
         { NoParseTitleLabel3 Panel
@@ -793,9 +815,16 @@
           { NetCacheSpinBox SpinBox notifyobj
             Name = "NetCacheSpinBox"
             MoveScaled(28,0,11,4.5714)
+            Expand = True
             MinValue = 100
             MaxValue = 1048576
             Value = 1024
+          }
+          { Label18 Label labelcheck
+            Name = "Label18"
+            MoveScaled(41,0,6,4.5714)
+            AutoResize = True
+            Text = ("KBytes")
           }
         }
         { NoParse32 HBox
@@ -813,13 +842,14 @@
           { cacheminspinbox SpinBox notifyobj
             Name = "cacheminspinbox"
             MoveScaled(25,0,11,4.5714)
+            Expand = True
             MaxValue = 100000
           }
           { Label9 Label labelcheck
             Name = "Label9"
             MoveScaled(40,0,8,4.5714)
             AutoResize = True
-            Text = ("Kbytes")
+            Text = ("KBytes")
           }
         }
         { NoParse34 HBox
@@ -837,13 +867,14 @@
           { cacheseekspinbox SpinBox notifyobj
             Name = "cacheseekspinbox"
             MoveScaled(25,1,11,4.5714)
+            Expand = True
             MaxValue = 100000
           }
           { Label12 Label labelcheck
             Name = "Label12"
             MoveScaled(40,1,9,4.5714)
             AutoResize = True
-            Text = ("Kbytes")
+            Text = ("KBytes")
           }
         }
         { NoParseTitleLabel4 Panel
@@ -873,10 +904,17 @@
           }
           { dvbtCacheSpinBox SpinBox notifyobj
             Name = "dvbtCacheSpinBox"
-            MoveScaled(34,0,11,4.5714)
+            MoveScaled(30,0,11,4.5714)
+            Expand = True
             MinValue = 100
             MaxValue = 1048576
             Value = 10240
+          }
+          { Label20 Label labelcheck
+            Name = "Label20"
+            MoveScaled(43,0,6,4.5714)
+            AutoResize = True
+            Text = ("KBytes")
           }
         }
         { NoParse39 HBox
@@ -894,13 +932,14 @@
           { dvbtcacheminspinbox SpinBox notifyobj
             Name = "dvbtcacheminspinbox"
             MoveScaled(24,1,8,4.5714)
+            Expand = True
             MaxValue = 99
           }
           { Label16 Label labelcheck
             Name = "Label16"
             MoveScaled(33,0,14,4.5714)
             AutoResize = True
-            Text = ("Kbytes")
+            Text = ("KBytes")
           }
         }
       }

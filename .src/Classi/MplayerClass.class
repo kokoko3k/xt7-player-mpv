@@ -2343,13 +2343,32 @@ Next
     
     If af_current <> af_new Then 
       af_new = fix_for_anequalizer(af_new)
+      af_new = fix_for_compand(af_new)
       set_property_mpv("af", af_new, True)
       af_current = af_new
+      File.Save("/tmp/out.txt", af_new)
     Endif
   
   ReturnLabel:
   Return
 
+End
+
+Private Function fix_for_compand(af As String) As String
+  Dim istart, iend As Integer
+  Dim sOut As String
+
+'  "lavfi=[compand=" & eqstring(False) & ]"     this way it works in realtime only
+'  lavfi=[compand=" & eqstring(False) & "]   this way it works at start
+  istart = InStr(af, "\"lavfi=[compand")
+  
+  If istart = 0 Then Return af
+
+  iend = InStr(af, "]\"", istart)
+  If iend = 0 Then Return af 'something wrong...
+  sOut = Left(af, istart - 1) & Mid(af, istart + 1, iend - Len(af)) & Right(af, - iend - 1)
+
+  Return sout
 End
 
 Private Function fix_for_anequalizer(af As String) As String
@@ -2362,7 +2381,7 @@ Private Function fix_for_anequalizer(af As String) As String
   
   If istart = 0 Then Return af
 
-  iend = InStr(af, "]\"")
+  iend = InStr(af, "]\"", istart)
   If iend = 0 Then Return af 'something wrong...
   sOut = Left(af, istart - 1) & Mid(af, istart + 1, iend - Len(af)) & Right(af, - iend - 1)
 

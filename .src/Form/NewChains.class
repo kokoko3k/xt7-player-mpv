@@ -50,7 +50,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "anequalizer", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
+  filters_audio_list = ["equalizer", "anequalizer", "compand", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -964,6 +964,8 @@ Private Function Parse_audio_filter(Filtername As String) As String
     Endif   
     out_anequalizer &= "\"lavfi=[anequalizer=" & anequalizer_string & "]\"" 'this way it works at start time only" 
     Return out_anequalizer
+  Else If Parsedfilter = "compand" Then
+    Return parse_compand()
     
 
   Else If Parsedfilter Like "customaudio*" Then
@@ -1009,6 +1011,9 @@ Private Function Parse_audio_filter(Filtername As String) As String
         Endif
       Next
     Next
+    
+    
+    
 
     If (Right(tmpstring) = ":") Then
       TmpString = Left(Tmpstring, - 1)
@@ -1448,6 +1453,7 @@ End
 Public Sub OkBTN_Click()
   Me.hide
 End
+
 
 Private aligned As Boolean = False
 Public Sub Form_Open()
@@ -2104,6 +2110,27 @@ Private Function p(percent As Float, v As Integer) As Integer
 End
 
 
+Public Function parse_compand() As String
+  Dim v As Integer
+  Dim k, d As Float
+  Dim out As String
+  v = makeupgainspinbox.Value
+  k = softkneespinbox.Value
+  d = decayspinbox.value / 10
+  
+  If k = 0 Then k = k + 0.1
+  If d = 0 Then d = d + 0.1
+  
+  out = "lavfi=[volume=" & v & "dB],"
+  out &= "\"lavfi=[compand=attacks=0"
+  out &= ":decays=" & d 
+  out &= ":soft-knee=" & k
+  out &= ":points=0/-0.1|1000/-0.1]\""
+  Return out
+End
+
+
+
 Public Function eqstring(Optional complex As Boolean = True, Optional ByRef autogaindB As Integer) As String
   Dim band_containers As New Object[]
   Dim band_container, subobj As Object
@@ -2233,3 +2260,27 @@ End
 
 
 
+Public Sub Button_compand_autovalues_Click()
+  update_compand()
+End
+
+Public Sub VBox2_Arrange()
+  If Not FMain.fullyloaded Then Return
+  update_compand()
+End
+
+Public Sub update_compand()
+  hboxsoftknee.Enabled = (Button_compand_autovalues.value = False)
+  hboxdecay.enabled = (Button_compand_autovalues.value = False)
+
+  If Button_compand_autovalues.value = True Then
+    softkneespinbox.value = makeupgainspinbox.value Div 2
+    decayspinbox.value = makeupgainspinbox.value * 10
+  Endif
+End
+
+
+Public Sub compand_dynaobj_Change()
+  update_compand()
+  dynaobj_change()
+End
