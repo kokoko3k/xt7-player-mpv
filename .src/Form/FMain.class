@@ -1987,11 +1987,13 @@ Public Function FillStreamsMenu()
       'primary
       SubMenu = New Menu(PrimaryMenu) As "MenuswitchsubPrimary"
       SubMenu.name = "SubMenuID" & i
-      SubMenu.caption = mplayer.getP("subtitletracks")[i]
+      SubMenu.tag = mplayer.getP("subtitletracks")[i]
+      SubMenu.caption = submenu.tag
       'secondary
       SubMenu = New Menu(SecondaryMenu) As "MenuswitchsubSecondary"
       SubMenu.name = "SubMenuID" & i
-      SubMenu.caption = mplayer.getP("subtitletracks")[i]
+      submenu.tag = mplayer.getP("subtitletracks")[i]
+      SubMenu.caption = submenu.tag
     Next 'i
   Endif
 
@@ -2431,9 +2433,9 @@ Public Sub MenuswitchsubSecondary_Click()
     brother.checked = False
   Next
   Last.checked = True
-  sid = Split(Last.caption, " ", "", True)[0]
+  sid = Split(Last.tag, " ", "", True)[0]
   mplayer.set_property_mpv("secondary-sid", sid)
-  mplayer.ShowText(("Secondary subtitle") & ": " & Last.caption)
+  mplayer.ShowText(("Secondary subtitle") & ": " & Last.tag)
 End
 
 
@@ -2444,9 +2446,9 @@ Public Sub MenuswitchsubPrimary_click()
     brother.checked = False
   Next
   Last.checked = True
-  sid = Split(Last.caption, " ", "", True)[0]
+  sid = Split(Last.tag, " ", "", True)[0]
   mplayer.set_property_mpv("sid", sid)
-  mplayer.ShowText(("Primary subtitle") & ": " & Last.caption)
+  mplayer.ShowText(("Primary subtitle") & ": " & Last.tag)
 End
 
 
