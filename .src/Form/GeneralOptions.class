@@ -353,7 +353,9 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
      myopts.Add(newopt("demuxer-lavf-probesize", comboboxtsprobe.text))
   Endif
   
-  
+  'audio-device
+  myopts.Add(newopt("audio-device", Split(nopParseaudiodevicecombo.text, "~")[0]))
+                                          
   'audio passthrough
   For Each option In noparsevboxpt.Children
     If option Is Togglebutton Then
@@ -1144,24 +1146,6 @@ End
 
 
 
-
-
-Public Sub NopParseAudioDeviceCombo_Enter()
-  Dim d, ad, t As String
-  t = Last.text
-  If NopParseAudioDeviceCombo.count < 2 Then
-    Shell fmain.mplayer.executable(5) & " --audio-device=help " To ad
-    For Each d In Split(ad, "\n", "", True)
-      Try NopParseAudioDeviceCombo.Add(Split(d, "'", "", True)[1])
-      Try global.myDebug(Split(d, "'", "", True)[1])
-    Next
-  Endif
-  Last.text = t
-
-End
-
-
-
 Public Sub ScrollViewUserOptions_Arrange()
   Dim o As Object
   Dim c As Combobox
@@ -1548,6 +1532,81 @@ Public Sub SyncUserOptions(ValueCombobox As Combobox, Optional overwrite As Bool
   ReturnLabel:
   'strip trailing "*" used by mpv to list some options
   If Right(ValueCombobox.text) = "*" Then ValueCombobox.text = Left(ValueCombobox.text, -1)
+End
+
+
+' Public Sub GetAlsaDevices() As String[]
+'   Dim acard, acardid, acardname, apcm, apcminfo, apcminfos, apcmid As String
+'   Dim adevices As New String[]
+'   Dim apcms As New String[]
+'   Dim acards As New String[]
+'   Dim sep As String = Chr(126)
+'   adevices.Add("plug:dmix" & " " & sep & " " & "(" & ("Default device, software mixing") & ")")
+'   adevices.Add("default" & " " & sep & " " & "(" & ("Default alsa device") & ")")
+'   adevices.Add("spdif" & " " & sep & " " & "(" & ("Default S/PDIF device") & ")")
+'   adevices.Add("hdmi" & " " & sep & " " & "(" & ("Default hdmi device") & ")")
+'   Try acards = Dir("/proc/asound/", "card*", gb.directory)
+'   If Not Error Then
+'     For Each acard In acards
+'       Try acardname = Trim(File.Load("/proc/asound/" & acard & "/id"))
+'       If Error Then acardname = "Unknown Card"
+'       acardid = Replace(acard, "card", "")
+'       Try apcms = Dir("/proc/asound/" & acard, "pcm*p").Sort(gb.Ascent)
+'       If Not Error Then
+'         For Each apcm In apcms
+'           Try apcminfos = Trim(File.Load("/proc/asound/" & acard & "/" & apcm & "/info"))
+'           If Error Then apcminfos = "name: No pcm info"
+'           For Each apcminfo In Split(apcminfos, "\n", "", True)
+'             If apcminfo Like "name: *" Then
+'               apcminfo = Trim(Split(apcminfo, ":", "", True)[1])
+'               apcmid = Replace(apcm, "pcm", "")
+'               apcmid = Trim(Replace(apcmid, "p", ""))
+'               Break
+'             Endif
+'           Next
+'          ' global.myDebug( acardid, apcmid, acardname, apcminfo)
+'           adevices.add("[plughw:" & acardid & "," & apcmid & "]" & " " & sep & " " & "(" & acardname & ":" & apcminfo & ")")
+'         Next
+'       Endif
+' 
+'     Next
+'   Endif
+'   
+'  Return adevices
+'   
+' End
+
+
+'Public Sub NopParseAudioDeviceCombo_Enter()
+  ' Dim d, ad, t, adevice As String
+  ' Dim out As New String[]
+  ' t = Last.text
+  ' If NopParseAudioDeviceCombo.count < 2 Then
+  '   Shell fmain.mplayer.executable(5) & " --audio-device=help " To ad
+  '   For Each d In Split(ad, "\n", "", True)
+  '     Try out.Add(Split(d, "'", "", True)[1])
+  '     Try global.myDebug(Split(d, "'", "", True)[1])
+  '   Next
+  '   For Each adevice In GetAlsaDevices()
+  '     out.Add("alsa/" & adevice)
+  '   Next
+  '   NopParseAudioDeviceCombo.List = out.Sort()
+  ' 
+  '   Last.text = t
+  ' Endif
+'End
+
+Public Sub NopParseAudioDeviceCombo_Enter()
+  Dim t As String
+  t = Last.text
+  Object.Lock(Last)
+  Last.enabled = False
+  If NopParseAudioDeviceCombo.count < 2 Then
+    NopParseAudioDeviceCombo.List = fmain.mplayer.audio_devices_list(" ~ ")
+  Endif
+  Last.text = t
+  Object.unLock(Last)
+  Last.enabled = True
 End
 
 

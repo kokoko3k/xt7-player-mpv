@@ -1690,46 +1690,7 @@ Public Sub PcmFileOpen_Click()
     TextBox8pcm.text = "\"" & myDialog.Path & "\""
 End
 
-Public Sub GetAlsaDevices() As String[]
-  Dim acard, acardid, acardname, apcm, apcminfo, apcminfos, apcmid As String
-  Dim adevices As New String[]
-  Dim apcms As New String[]
-  Dim acards As New String[]
-  Dim sep As String = Chr(126)
-  adevices.Add("plug:dmix" & " " & sep & " " & "(" & ("Default device, software mixing") & ")")
-  adevices.Add("default" & " " & sep & " " & "(" & ("Default alsa device") & ")")
-  adevices.Add("spdif" & " " & sep & " " & "(" & ("Default S/PDIF device") & ")")
-  adevices.Add("hdmi" & " " & sep & " " & "(" & ("Default hdmi device") & ")")
-  Try acards = Dir("/proc/asound/", "card*", gb.directory)
-  If Not Error Then
-    For Each acard In acards
-      Try acardname = Trim(File.Load("/proc/asound/" & acard & "/id"))
-      If Error Then acardname = "Unknown Card"
-      acardid = Replace(acard, "card", "")
-      Try apcms = Dir("/proc/asound/" & acard, "pcm*p").Sort(gb.Ascent)
-      If Not Error Then
-        For Each apcm In apcms
-          Try apcminfos = Trim(File.Load("/proc/asound/" & acard & "/" & apcm & "/info"))
-          If Error Then apcminfos = "name: No pcm info"
-          For Each apcminfo In Split(apcminfos, "\n", "", True)
-            If apcminfo Like "name: *" Then
-              apcminfo = Trim(Split(apcminfo, ":", "", True)[1])
-              apcmid = Replace(apcm, "pcm", "")
-              apcmid = Trim(Replace(apcmid, "p", ""))
-              Break
-            Endif
-          Next
-         ' global.myDebug( acardid, apcmid, acardname, apcminfo)
-          adevices.add("[plughw:" & acardid & "," & apcmid & "]" & " " & sep & " " & "(" & acardname & ":" & apcminfo & ")")
-        Next
-      Endif
 
-    Next
-  Endif
-  
- Return adevices
-  
-End
 
 
 
@@ -1795,46 +1756,6 @@ Public Sub xvScrollview_Arrange()
   TextBoxAdaptorsxv.text = ("Adaptors list:\n---------------------------------\n") & TextBoxAdaptorsxv.text
 End
 
-
-
-Private GotAlsaDevices As Boolean = False
-Public Sub AlsaDeviceTextBox_Enter()
-  Dim adevice As String 
-  Dim prevtext As String = Last.text
-  If GotAlsaDevices Then Return
-  For Each adevice In GetAlsaDevices()
-    AlsaDeviceTextBox.Add(adevice)
-  Next
-  If AlsaDeviceTextBox.find(prevtext) = -1 Then AlsaDeviceTextBox.Add(prevtext, 0)
-  GotAlsaDevices = True
-  AlsaDeviceTextBox.text = prevtext
-End
-
-
-' Public Sub Button1_Click()
-'   Dim oglopts, oglopt As String
-'   If combooglopts.count = 0 Then
-'     Shell FMain.mplayer.executable() & " -vo opengl:help" To oglopts
-'     If Trim(oglopts) = "" Then Return
-'     If Error Then Return
-'     For Each oglopt In Split(oglopts, "\n", "", True)
-'       combooglopts.add(oglopt)
-'     Next
-'   Endif
-'   combooglopts.x = OglAddOptsTextbox.x
-'   combooglopts.w = OglAddOptsTextbox.w
-'   combooglopts.y = OglAddOptsTextbox.y
-'   Wait
-'   combooglopts.Popup
-' End
-
-' Public Sub ComboOglOpts_Click()
-'   Dim opt As String = Split(combooglopts.Current.Text, " ", "", True)[0] & "="
-'   If Trim(OglAddOptsTextbox.text) <> "" Then 
-'     If Right(OglAddOptsTextbox.text) <> ":" Then opt = ":" & opt
-'   Endif
-'   OglAddOptsTextbox.text &= opt
-' End
 
 Public Sub Button2_Click()
   Dim hqvalue As New Collection

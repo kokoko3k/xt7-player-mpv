@@ -2584,3 +2584,30 @@ End
 Public Function audio_add(filename As String)
   mpv_command(["audio-add", filename])
 End
+
+Public Function get_offline_property(p As String) As String
+  Dim out As String
+  Dim cmd As String
+  cmd = "echo -e print_text '${" & p & "} \n quit' | " & executable(5) & " --idle=yes --input-file=/dev/stdin" 
+  Shell cmd To out
+  Return out
+End
+
+Public Function audio_devices_list(Optional separator As String = " ~ ") As String[]
+  Dim devices As New String[]
+  Dim j, name, desc As String 
+  Dim jdecoded As New Collection[]
+  Dim i As Integer
+  j = get_offline_property("=audio-device-list")
+  If Trim(j) = "" Then Return Null
+  Try jdecoded = json.Decode(j)
+  If Error Then Return Null
+  If jdecoded.count = 0 Then Return Null
+  For i = 0 To jdecoded.max
+    name = jdecoded[i]["name"]
+    desc = jdecoded[i]["description"]
+    devices.Add(name & separator & desc)
+  Next
+  Return devices
+End
+
