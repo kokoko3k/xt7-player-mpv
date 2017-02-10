@@ -2207,7 +2207,7 @@ Public Sub update_compand()
 
   If Button_compand_autovalues.value = True Then
     softkneespinbox.value = makeupgainspinbox.value Div 2
-    decayspinbox.value = makeupgainspinbox.value * 10
+    decayspinbox.value = (makeupgainspinbox.value * 10) Div 2
   Endif
 End
 
@@ -2218,6 +2218,3 @@ Public Sub compand_dynaobj_Change()
 End
 
 
-'Public Sub TabStrip1_arrange()
-  'vboxcompand.Move(Desktop.scale, Desktop.scale, TabStrip_filters_audio.w - (Desktop.scale * 2), TabStrip_filters_audio.h - (Desktop.scale * 2))
-'End
