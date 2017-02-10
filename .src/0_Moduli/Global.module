@@ -46,6 +46,7 @@ Public StartFolder As String
 Public ScreenshotFolder As String 
 Public CurrentProfile As String 
 Public Historyfile As String
+Public Bookmarksfile As String
 Public FormW As Integer 
 Public FormH As Integer 
 Public FormX As Integer 
@@ -115,6 +116,7 @@ Public Sub init()
   ScreenshotFolder = settings.defaultdir & "/" & Appname & "/" & ".xt7-screenshots/"
   YPCacheFile = settings.defaultdir & "/" & Appname & "/" & ".ypcachefile"
   HistoryFile = settings.defaultdir & "/" & Appname & "/" & ".history.txt"
+  BookmarksFile = settings.defaultdir & "/" & Appname & "/" & ".bookmarks.txt"
   CurrentProfile = ""
   FormW = 400      'As gambas does not update form dimesions on fullscreen switch
   FormH = 300      'we have TO DO it manually

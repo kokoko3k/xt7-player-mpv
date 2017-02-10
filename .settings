@@ -2,7 +2,8 @@
 Count=0
 
 [DebugWindow]
-Count=0
+Count=1
+DebugWindow[1]="devices"
 
 [DebugWindow/(Dir(Directory, "*"))]
 Geometry=[1280,0,224,280]
@@ -73,6 +74,9 @@ Geometry=[52,0,224,280]
 [DebugWindow/data]
 Geometry=[1280,0,224,280]
 
+[DebugWindow/devices]
+Geometry=[52,0,224,280]
+
 [DebugWindow/driver_opts]
 Geometry=[1280,0,224,280]
 
@@ -114,6 +118,12 @@ Geometry=[596,177,265,356]
 
 [DebugWindow/jdec["default-value"]]
 Geometry=[1294,14,224,280]
+
+[DebugWindow/jdecoded]
+Geometry=[52,0,224,280]
+
+[DebugWindow/jdecoded[0]]
+Geometry=[66,14,224,280]
 
 [DebugWindow/last_dynaobj_changed]
 Geometry=[688,443,224,280]
@@ -258,14 +268,14 @@ Path="xt7-player-mpv.gambas"
 
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:62.197"
-File[2]=".src/Classi/MplayerClass.class:0.2344"
-Active=6
+File[2]=".src/Classi/MplayerClass.class:6.2609"
+Active=7
 File[3]=".src/Form/NewChains.class:0.2223"
-Count=27
+Count=28
 File[4]=".src/Form/FMain.form"
-File[5]=".src/Form/FMain.class:0.455"
+File[5]=".src/Form/FMain.class:21.11263"
 File[6]=".src/Form/NewChains.form"
-File[7]=".src/Form/GeneralOptions.class:4.411"
+File[7]=".src/Form/GeneralOptions.class:19.1608"
 File[8]=".src/0_Moduli/Global.module:0.772"
 File[9]=".src/Form/GeneralOptions.form"
 File[10]=".src/Classi/FloatSpinBox.class:12.180"
@@ -286,6 +296,7 @@ File[24]=".src/Classi/TagLib.class:0.22"
 File[25]=".src/Form/AudioForm.form"
 File[26]=".src/Form/AudioForm.class:0.0"
 File[27]=".src/Form/MyQuestion.form"
+File[28]=".src/Classi/YoutubeClass.class:37.413"
 
 [Watches]
 Count=0

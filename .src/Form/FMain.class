@@ -1249,6 +1249,7 @@ Public Sub ShowBrowseTabTo(fullpath As String)
   Endif
   Try UrlBox.text = path
   Try FileView1.dir = path
+  Wait
   gridpanels_arrange()
   FileView1.ShowDetailed = True
   
@@ -6915,7 +6916,6 @@ Public Sub LeftSideTabs_Click()
 
   If tabselectedbrowse() Then
     Wait 
-    'FileView1_beforeArrange()
     gridpanels_arrange()
   Endif
 
@@ -9280,6 +9280,7 @@ End
 Private Sub HideScrollbars(librarygrid As Gridview)
 
   librarygrid.Scrollbar = Scroll.none
+  Wait
   GridPanels_Arrange() 'pre
 
 End
@@ -9451,6 +9452,7 @@ Public Sub ButtonUp_Click()
   If String.Right(FileView1.dir, 1) = "/" Then FileView1.dir = String.Left(FileView1.dir, Len(FileView1.dir) - 1)
   FileView1.dir = File.dir(FileView1.dir)
   urlbox.text = Replace(FileView1.dir, "//", "/")
+  Wait
   gridpanels_arrange()
   Object.unLock(urlbox)
 End
@@ -9472,6 +9474,7 @@ Public Sub ActivateFile(fullpathitem As String)
   Try selecteditem = FileView1.Selection[0]
   If IsDir(fullpathitem) Then
     FileView1.dir = fullpathitem
+    Wait
     gridpanels_arrange()
     urlbox.text = Replace(FileView1.dir, "//", "/")
     If String.Right(urlbox.text, 1) = "/" Then urlbox.text = String.Left(urlbox.text, Len(urlbox.text) - 1)
@@ -9494,6 +9497,7 @@ Public Sub Urlbox_KeyPress()
   If (key.code = key.enter) Or (key.code = key.Return) Then
     If Urlbox.text <> FileView1.dir Then
       FileView1.dir = Urlbox.text
+      Wait
       gridpanels_arrange()
     Endif
   Endif
@@ -9586,6 +9590,7 @@ Public Sub UrlBox_Click()
   
   If Trim(Urlbox.text) = "" Then Urlbox.text = "/"
   FileView1.dir = Urlbox.text
+  Wait
   gridpanels_arrange()
 End
 
@@ -10219,13 +10224,7 @@ Public Sub ShadeList(brother As Object, Optional dltx As Integer = 0, Optional d
   shadeup.x = brother.x + dltx 
   Try shadeup.y = brother.clienty + brother.Columns.Height + dlty
   If Error Then Try shadeup.y = brother.clienty + dlty
-  ' If (brother.Scrollbar = Scroll.Both Or brother.Scrollbar = Scroll.Horizontal) Then
-  '   shadelow.y = brother.clienty + brother.clienth - shadelow.h + 2 + dlty
-  ' Else
-  '   shadelow.y = brother.clienty + brother.h - shadelow.h + 2 + dlty
-  ' Endif
   Try shadeup.w = brother.clientw + 2
-  ' shadelow.w = brother.clientw + 2
 End
 
 Public Sub GridPanels_BeforeArrange()
@@ -10241,7 +10240,7 @@ Public Sub GridPanels_Arrange()
   Dim brother As Object
   Dim newsize As Integer = 9
   Dim achild As Object
-  
+
   '  If Not (fmain.fullyloaded) Then Return
   
   For Each brother In shadeup.Parent.Children 
@@ -10266,7 +10265,6 @@ Public Sub GridPanels_Arrange()
         Next
   Endif
 
-  
 
 End
 
@@ -11270,6 +11268,7 @@ Public Sub UrlBox_Change()
   If Not fmain.fullyloaded Then Return
   fileview1.Refresh()
   fileview1.UnselectAll()
+  Wait
   gridpanels_arrange()
 End
 
@@ -11981,6 +11980,7 @@ End
 Public Sub menu_mountpoint_Click()
   urlbox.text = Last.text
   FileView1.dir = Urlbox.text
+  Wait
   gridpanels_arrange()
 End
 
@@ -12319,12 +12319,73 @@ End
 
 
 Public Sub TextBox2856_activate()
-
   mplayer.set_property_mpv("af", Last.text, True)
-
 End
 
 
 
 
+
+
+Public Sub Button_bookmarks_Click()
+  Dim menu_bookmarks As New Menu(fmain)
+  Dim menu_bookmark As Menu
+  Dim menu_edit_bookmarks As Menu
+  Dim bookmarks_data As String[]
+  Dim bookmark As String
+  menu_bookmark = New Menu(menu_bookmarks)
+
+
+
+
+
+
+  If Exist(global.Bookmarksfile, True) Then
+    Try bookmarks_data = Split(File.Load(global.Bookmarksfile), "\n", "", True)
+    If Error Then 
+      global.myDebug("Cannot load boookmarks!")
+        Else
+      For Each bookmark In bookmarks_data
+        menu_bookmark = New Menu(menu_bookmarks) As "menu_selected_bookmark"
+        menu_bookmark.text = bookmark
+        menu_bookmark.tag = bookmark
+        menu_bookmark.Picture = Picture["icon:/small/bookmark"]
+      Next
+      menu_bookmark = New Menu(menu_bookmarks) As "menu_separator"
+      menu_bookmark.Enabled = False
+      
+      menu_edit_bookmarks = New Menu(menu_bookmarks) As "menu_edit_bookmarks"
+      menu_edit_bookmarks.text = ("Edit bookmarks")
+      menu_edit_bookmarks.Picture = Picture["icon:/small/edit"]
+
+
+    Endif
+    
+  Endif
+  menu_bookmark = New Menu(menu_bookmarks) As "menu_add_bookmark"
+  menu_bookmark.text = ("Add to bookmarks")
+  menu_bookmark.Picture = Picture["icon:/small/add"]
+  
+  menu_bookmarks.popup
+End
+
+Public Sub menu_add_bookmark_click()
+  Dim bookmarks As New String[]
+  Try bookmarks = Split(File.Load(global.Bookmarksfile), "\n", "", True)
+  If bookmarks.Find(fileview1.dir) = -1 Then bookmarks.add(fileview1.Dir)
+  Try File.Save(global.Bookmarksfile, bookmarks.Join("\n"))
+
+End
+
+
+Public Sub menu_selected_bookmark_click()
+  urlbox.text = Last.tag
+  FileView1.dir = Urlbox.text
+  Wait
+  gridpanels_arrange()
+End
+
+Public Sub menu_edit_bookmarks_click()
+  Try Desktop.Open(global.Bookmarksfile)
+End
 

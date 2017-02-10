@@ -826,7 +826,7 @@
         Orientation = Align.Left
         Index = 0
         Text = ("Library")
-        Picture = Picture["icon:/16/book"]
+        Picture = Picture["icon:/small/book"]
         { NOPARSETABLIBRARY Label
           MoveScaled(1,1,8,3)
           Visible = False
@@ -994,7 +994,7 @@
         }
         Index = 3
         Text = ("Browse")
-        Picture = Picture["icon:/16/directory"]
+        Picture = Picture["icon:/small/directory"]
         { NOPARSETABBROWSE Label
           MoveScaled(1,1,8,3)
           Visible = False
@@ -1009,14 +1009,19 @@
           Margin = True
           Padding = 1
           { Button_mounts Button
-            MoveScaled(1,0,4,4.5714)
+            MoveScaled(0,0,4,4.5714)
             ToolTip = ("Mounted devices")
-            Picture = Picture["icon:/16/computer"]
+            Picture = Picture["icon:/small/computer"]
+          }
+          { Button_bookmarks Button
+            MoveScaled(5,0,4,4.5714)
+            ToolTip = ("Mounted devices")
+            Picture = Picture["icon:/small/bookmark"]
           }
           { ButtonUp Button
             MoveScaled(10,0,4,4.5714)
             ToolTip = ("Parent")
-            Picture = Picture["icon:/16/up"]
+            Picture = Picture["icon:/small/up"]
           }
           { UrlBox ComboBox
             MoveScaled(15,0,7,4.5714)
@@ -1030,12 +1035,12 @@
           { ButtonRefresh Button
             MoveScaled(24,0,4,4.5714)
             ToolTip = ("Refresh")
-            Picture = Picture["icon:/16/refresh"]
+            Picture = Picture["icon:/small/refresh"]
           }
           { ButtonHidden Button
             MoveScaled(29,0,4,4.5714)
             ToolTip = ("Show/Hide hidden files")
-            Picture = Picture["icon:/16/watch"]
+            Picture = Picture["icon:/small/watch"]
           }
         }
         { Panel16 Panel gridpanels
@@ -1054,7 +1059,7 @@
           }
           { shadeup PictureBox shadeuplow
             Name = "shadeup"
-            MoveScaled(-6,0,31,2)
+            MoveScaled(0,2,31,2)
             Visible = False
             Ignore = True
             Picture = Picture["shadeup.png"]
@@ -1063,7 +1068,7 @@
         }
         Index = 4
         Text = ("Chapters")
-        Picture = Picture["icon:/16/view-detail"]
+        Picture = Picture["icon:/small/view-detail"]
         { NOPARSETABCHAPTERS Label
           MoveScaled(0,0,8,3)
           Visible = False
@@ -1183,7 +1188,7 @@
         }
         Index = 7
         Text = ("DVD")
-        Picture = Picture["icon:/16/cdrom"]
+        Picture = Picture["icon:/small/cdrom"]
         { NOPARSETABDVD Label
           MoveScaled(2,1,8,3)
           Visible = False
@@ -1408,7 +1413,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-47.2857,18,4.5714)
+              MoveScaled(9.4286,-49.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1636,7 +1641,7 @@
         }
         Index = 13
         Text = ("Profiles")
-        Picture = Picture["icon:/16/properties"]
+        Picture = Picture["icon:/small/properties"]
         { NOPARSETABPROFILES Label
           MoveScaled(2,1,8,3)
           Visible = False
@@ -1720,7 +1725,7 @@
             MoveScaled(0,0,4,4.5714)
             ToolTip = ("Show and select the possible search fields")
             AutoResize = True
-            Picture = Picture["icon:/16/find"]
+            Picture = Picture["icon:/small/find"]
           }
           { SearchField ComboBox
             MoveScaled(5,0,5,4.5714)
@@ -1747,7 +1752,7 @@
             MoveScaled(24,0,5,4.5714)
             Background = Color.Background
             ToolTip = ("Show media info when hovering a list item.")
-            Picture = Picture["icon:/16/info"]
+            Picture = Picture["icon:/small/info"]
             Value = True
           }
         }
@@ -1755,7 +1760,7 @@
           MoveScaled(31,0,5,4.5714)
           Background = Color.Background
           ToolTip = ("Play next media as the previous reaches the end.")
-          Picture = Picture["icon:/16/end"]
+          Picture = Picture["icon:/small/end"]
         }
       }
     }
