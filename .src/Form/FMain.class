@@ -10404,7 +10404,7 @@ Public Sub MenuLoadSubtitle_Click()
 
   tmp = myDialog.filter
   Try myDialog.path = file.Dir(mplayer.getP("fullpath"))
-  myDialog.filter = ["*.srt;*.sub;*.ass;*.ssa;*.txt", ("SubTitle files")]
+  myDialog.filter = ["*.srt;*.sub;*.ass;*.ssa;*.scc", ("SubTitle files")]
   If Not (myDialog.OpenFile()) Then
     If mplayer.IsSubFile(DConv(myDialog.Path)) Then sub_add(DConv(myDialog.Path))
   Endif
