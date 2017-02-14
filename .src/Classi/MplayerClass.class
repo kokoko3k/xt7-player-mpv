@@ -1191,7 +1191,7 @@ End
 
 Public Function IsSubFile(SubfilePath As String) As Boolean
 
-  Dim SubExtensions As String = "*.SRT;*.ASS;*.SUB;*.SSA;"
+  Dim SubExtensions As String = "*.SRT;*.ASS;*.SUB;*.SSA;*.SCC"
   Dim fileExt As String = "." & File.Ext(SubfilePath)
 
   If Fileext = "." Then Return False
