@@ -130,14 +130,12 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
   
   Try opts.Add(o("sub-auto", Split(Combofuzziness.text, " ", "", True)[0]))
   
-  If EncaComboBox.text Like "* *" Then
-    If Split(EncaComboBox.text, " ", "", True)[0] <> "xx" Then
-      opts.Add(o("sub-codepage", "enca:" & Split(EncaComboBox.text, " ")[0] & ":" & Split(ComboSubCp.text, " ", "", True)[0]))
+  If codepage_force_combobox.value = CheckBox.True Then 
+      opts.Add(o("sub-codepage", "+" & ComboSubCp.text))
         Else
       opts.Add(o("sub-codepage", ComboSubCp.text))
-    Endif
   Endif
-  
+
   If (fullpath <> "") Then
     If MkvWorkaroundCHK.value Then    'http://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870
       If (Lower(file.Ext((fullpath))) = "mkv") Then
@@ -419,3 +417,5 @@ Public Sub notifytest_Arrange()
   panelsubtitles.h = hbox1.y + hbox1.h + Desktop.scale * 2
 
 End
+
+

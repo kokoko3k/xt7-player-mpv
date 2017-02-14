@@ -422,9 +422,10 @@
           { ComboAlignment ComboBox notifytest
             Name = "ComboAlignment"
             MoveScaled(20,1,20,4.5714)
+            #Translate = False
             ReadOnly = True
-            List = [("2) Bottom/Center"), ("1) Bottom/Left"), ("3) Bottom/Right")]
-            Text = ("2) Bottom/Center")
+            List = ["2) Bottom/Center", "1) Bottom/Left", "3) Bottom/Right"]
+            Text = "2) Bottom/Center"
           }
         }
         { PositionHBox HBox
@@ -445,45 +446,40 @@
             Value = 95
           }
         }
-        { Panel5 Panel
-          MoveScaled(1,23,51,5)
-          Arrangement = Arrange.Horizontal
-          AutoResize = True
-          { Label2 Label
-            MoveScaled(0,0,24,4.5714)
-            Expand = True
-            Text = ("Guess codepage for:")
-            Alignment = Align.Left
-          }
-          { EncaComboBox ComboBox
-            MoveScaled(32,0,18,4.5714)
-            Expand = True
-            ReadOnly = True
-            List = [("xx (use fallback)"), ("aa (Afar)"), ("ab (Abkhazian)"), ("ae (Avestan)"), ("af (Afrikaans)"), ("ak (Akan)"), ("am (Amharic)"), ("an (Aragonese)"), ("ar (Arabic)"), ("as (Assamese)"), ("av (Avaric)"), ("ay (Aymara)"), ("az (Azerbaijani)"), ("ba (Bashkir)"), ("be (Belarusian)"), ("bg (Bulgarian)"), ("bh (Bihari)"), ("bi (Bislama)"), ("bm (Bambara)"), ("bn (Bengali)"), ("bo (Tibetan)"), ("br (Breton)"), ("bs (Bosnian)"), ("ca (Catalan)"), ("ce (Chechen)"), ("co (Corsican)"), ("cr (Cree)"), ("cs (Czech)"), ("cu (Church)"), ("cv (Chuvash)"), ("cy (Welsh)"), ("da (Danish)")].Insert([("de (German)"), ("dv (Divehi)"), ("dz (Dzongkha)"), ("ee (Ewe)"), ("el (Greek)"), ("en (English)"), ("eo (Esperanto)"), ("es (Spanish)"), ("et (Estonian)"), ("eu (Basque)"), ("fa (Persian)"), ("ff (Fulah)"), ("fi (Finnish)"), ("fj (Fijian)"), ("fo (Faroese)"), ("fr (French)"), ("fy (Frisian)"), ("ga (Irish)"), ("gd (Gaelic)"), ("gl (Galician)"), ("gn (Guarani)"), ("gu (Gujarati)"), ("gv (Manx)"), ("ha (Hausa)"), ("he (Hebrew)"), ("hi (Hindi)"), ("ho (Hiri)"), ("hr (Croatian)"), ("ht (Haitian)"), ("hu (Hungarian)"), ("hy (Armenian)"), ("hz (Herero)")]).Insert([("ch (Chamorro)"), ("ia (Interlingua)"), ("id (Indonesian)"), ("ie (Interlingue)"), ("ig (Igbo)"), ("ii (Sichuan)"), ("ik (Inupiaq)"), ("io (Ido)"), ("is (Icelandic)"), ("it (Italian)"), ("iu (Inuktitut)"), ("ja (Japanese)"), ("jv (Javanese)"), ("ka (Georgian)"), ("kg (Kongo)"), ("ki (Kikuyu)"), ("kj (Kuanyama)"), ("kk (Kazakh)"), ("kl (Greenlandic)"), ("km (Khmer)"), ("kn (Kannada)"), ("ko (Korean)"), ("kr (Kanuri)"), ("ks (Kashmiri)"), ("ku (Kurdish)"), ("kv (Komi)"), ("kw (Cornish)"), ("ky (Kirghiz)"), ("la (Latin)"), ("lb (Luxembourgish)"), ("lg (Ganda)"), ("li (Limburgan)")]).Insert([("ln (Lingala)"), ("lo (Lao)"), ("lt (Lithuanian)"), ("lu (Luba-Katanga)"), ("lv (Latvian)"), ("mg (Malagasy)"), ("mh (Marshallese)"), ("mi (Maori)"), ("mk (Macedonian)"), ("ml (Malayalam)"), ("mn (Mongolian)"), ("mo (Moldavian)"), ("mr (Marathi)"), ("ms (Malay)"), ("mt (Maltese)"), ("my (Burmese)"), ("na (Nauru)"), ("nd (Ndebele)"), ("ne (Nepali)"), ("ng (Ndonga)"), ("nl (Dutch)"), ("nn (Norwegian)"), ("no (Norwegian)"), ("nr (Ndebele)"), ("nv (Navajo)"), ("ny (Chichewa)"), ("oc (Occitan)"), ("oj (Ojibwa)"), ("om (Oromo)"), ("or (Oriya)"), ("os (Ossetian)"), ("pa (Panjabi)")]).Insert([("pi (Pali)"), ("pl (Polish)"), ("ps (Pushto)"), ("pt (Portuguese)"), ("qu (Quechua)"), ("rm (Romansh)"), ("rn (Rundi)"), ("ro (Romanian)"), ("ru (Russian)"), ("rw (Kinyarwanda)"), ("sa (Sanskrit)"), ("sc (Sardinian)"), ("sd (Sindhi)"), ("se (Sami)"), ("sg (Sango)"), ("si (Sinhala)"), ("sk (Slovak)"), ("sl (Slovenian)"), ("sm (Samoan)"), ("sn (Shona)"), ("so (Somali)"), ("sq (Albanian)"), ("sr (Serbian)"), ("ss (Swati)"), ("st (Sotho)"), ("su (Sundanese)"), ("sv (Swedish)"), ("sw (Swahili)"), ("ta (Tamil)"), ("te (Telugu)"), ("tg (Tajik)"), ("th (Thai)")]).Insert([("ti (Tigrinya)"), ("tk (Turkmen)"), ("tl (Tagalog)"), ("tn (Tswana)"), ("to (Tonga)"), ("tr (Turkish)"), ("ts (Tsonga)"), ("tt (Tatar)"), ("tw (Twi)"), ("ty (Tahitian)"), ("ug (Uighur)"), ("uk (Ukrainian)"), ("ur (Urdu)"), ("uz (Uzbek)"), ("ve (Venda)"), ("vi (Vietnamese)"), ("wa (Walloon)"), ("wo (Wolof)"), ("xh (Xhosa)"), ("yi (Yiddish)"), ("yo (Yoruba)"), ("za (Zhuang)"), ("zh (Chinese)"), ("zu (Zulu)")])
-            Text = ("iso-8859-1")
-          }
-        }
         { Panel6 Panel
-          MoveScaled(1,28,50,5)
+          MoveScaled(1,24,50,5)
           Arrangement = Arrange.Horizontal
           AutoResize = True
           { Label1 Label
-            MoveScaled(0,0,24,4.5714)
+            MoveScaled(1,0,24,4.5714)
             Expand = True
-            Text = ("If guess fails, use:")
+            Text = ("Codepage")
             Alignment = Align.Left
           }
           { ComboSubCp ComboBox
             MoveScaled(32,0,17,4.5714)
+            #Translate = False
             Expand = True
             ReadOnly = True
-            List = [("big5"), ("cp936"), ("cp949"), ("cp1250"), ("cp1251"), ("cp1253"), ("cp1256"), ("cp874"), ("euc-kr"), ("gb2312"), ("iso-8859-1"), ("iso-8859-2"), ("iso-8859-3"), ("iso-8859-4"), ("iso-8859-5"), ("iso-8859-6"), ("iso-8859-7"), ("iso-8859-8"), ("iso-8859-9"), ("iso-8859-10"), ("iso-8859-11"), ("iso-8859-12"), ("iso-8859-13"), ("iso-8859-14"), ("iso-8859-15"), ("koi8-r"), ("koi8-r"), ("koi8-u/ru"), ("latin2"), ("shift-jis"), ("utf-8"), ("unicode")].Insert([("windows-1250"), ("windows-1251")])
-            Text = ("iso-8859-1")
+            List = ["auto", "big5", "cp936", "cp949", "cp1250", "cp1251", "cp1253", "cp1256", "cp874", "euc-kr", "gb2312", "iso-8859-1", "iso-8859-2", "iso-8859-3", "iso-8859-4", "iso-8859-5", "iso-8859-6", "iso-8859-7", "iso-8859-8", "iso-8859-9", "iso-8859-10", "iso-8859-11", "iso-8859-12", "iso-8859-13", "iso-8859-14", "iso-8859-15", "koi8-r", "koi8-r", "koi8-u/ru", "latin2", "shift-jis", "utf-8"].Insert(["unicode", "windows-1250", "windows-1251"])
+            Text = "auto"
             Sorted = True
           }
         }
+        { SubDelayHbox3 HBox
+          MoveScaled(1,29,53,5)
+          ToolTip = ("Subtitle delay.\nmpv option: --sub-delay <sec>")
+          AutoResize = True
+          Spacing = True
+          Padding = 10
+          { codepage_force_combobox CheckBox
+            MoveScaled(1,0,49,5)
+            ToolTip = ("Setting a negative delay for subtitles embedded in mkv files, leads mpv\nto shift only the subtitle end time, because it reads the file sequentially.\nChecking this box will workaround the problem by adding:\n-subfile yourfile.mkv to mpv options, forcing mpv to read\nand shift the subtitles correctly.\nAlso, any ass rendering will be disabled.\nhttp://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870")
+            Text = ("Use that codepage even if input is NOT UTF-8")
+          }
+        }
         { SubDelayHbox HBox
-          MoveScaled(1,33,28,4.5714)
+          MoveScaled(1,34,28,4.5714)
           ToolTip = ("Subtitle delay.\nmpv option: --sub-delay <sec>")
           AutoResize = True
           Spacing = True
