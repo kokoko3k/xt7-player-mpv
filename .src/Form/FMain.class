@@ -10805,6 +10805,13 @@ Public Sub RenameGridItemWrapper(g As Gridview, p As Playlistclass)
   g.enabled = True
 End
 
+Public Function impv_version(dotted_version As String) As Integer
+  'convert x.y.z To integer
+  Dim v As New String[]
+  v = Split(dotted_version, ".", "", True)
+  Return (v[0] * 1000000) + (v[1] * 10000) + v[2]
+End
+
 
 Public Sub Startdumping(destfile As String)
  Dim mymsg As String
@@ -10835,13 +10842,28 @@ Public Sub Startdumping(destfile As String)
   mymsg = ("Dumping to: \n") & destfile
   mymsg &= ("\n\nYou can configure the paths in Generaloptions -> dvb-t")
   Message.Info(mymsg)
-  mplayer.set_property_mpv("stream-capture", destfile)
+  
+  If global.mpv_version = "" Then global.mpv_version = fmain.mplayer.version()
+  If impv_version(global.mpv_version) >= impv_version("0.24.0") Then 
+    mplayer.set_property_mpv("record-file", destfile)
+      Else
+    mplayer.set_property_mpv("stream-capture", destfile)
+  Endif
 End
 
 Private Sub StopDumping()
   Dim destfile As String
-  destfile = mplayer.get_property_mpv("stream-capture")
-  mplayer.set_property_mpv("stream_capture", "")
+  If global.mpv_version = "" Then global.mpv_version = fmain.mplayer.version()
+  If impv_version(global.mpv_version) >= impv_version("0.24.0") Then
+    mplayer.set_property_mpv("record-file", "")
+    destfile = mplayer.get_property_mpv("record-file")
+      Else
+    mplayer.set_property_mpv("stream_capture", "")
+    destfile = mplayer.get_property_mpv("stream-capture")
+  Endif
+  
+  
+  
   buttoncapture.value = 0
   buttoncapture.visible = buttoncapture.enabled
   ArrangeCpl()

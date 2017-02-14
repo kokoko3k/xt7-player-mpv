@@ -406,12 +406,7 @@ Public Function Visualization_opts() As MpvOption[]
     myopts.Add(newopt("osd-level", "0"))
     myopts.Add(newopt("osd-color", "#00000000"))
     myopts.Add(newopt("osd-scale", "0.01"))
-
-    If global.mpv_version = "" Then global.mpv_version = fmain.mplayer.version()
-    'If global.mpv_version = "0.21.0" Then
-      myopts.Add(newopt("hr-seek", "yes"))
-    'Endif
-    
+    myopts.Add(newopt("hr-seek", "yes"))
   Endif
   Return myopts
 End
