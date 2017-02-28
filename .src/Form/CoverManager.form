@@ -48,7 +48,8 @@
         MoveScaled(1,2,24,57)
         Spacing = True
         { VPanel1 HPanel
-          MoveScaled(1,1,22,8)
+          MoveScaled(2,1,22,8)
+          Visible = False
           AutoResize = True
           Spacing = True
           { CheckboxAmazon CheckBox
@@ -76,13 +77,20 @@
         }
       }
       { VBox3 VBox
-        MoveScaled(26,-3,64,63)
+        MoveScaled(28,-3,64,63)
         Spacing = True
-        { PictureBox1 PictureBox
-          MoveScaled(4,0,54,57)
-          Background = &H000000&
+        { Panel2 Panel
+          MoveScaled(2,0,55,58)
+          Background = Color.Black
           Expand = True
-          Alignment = Align.Center
+          Arrangement = Arrange.Vertical
+          Margin = True
+          { PictureBox1 PictureBox
+            MoveScaled(2,-1,54,57)
+            Background = &H000000&
+            Expand = True
+            Alignment = Align.Center
+          }
         }
         { Panel1 HBox
           MoveScaled(1,58,58,4.5714)

@@ -18,7 +18,10 @@ Public Function waitforhttp(myhttpclient As HttpClient, timeout As Integer) As B
       Return 
     Endif
   Wend
-  If timeout = 0 Then Return True
+  If timeout = 0 Then 
+    global.mydebug("Timed out waiting for " & myhttpclient.URL)
+    Return True
+  Endif
   Return False
 End
 
@@ -53,7 +56,7 @@ Public Sub GetCoversFromAmazon(query As String)
   Keyword = Chr(34) & Replace(query, " ", "%20") & Chr(34)
   Keyword = WebFriendly(keyword)
   PreRequest = "http://xt7-player.sourceforge.net/xt7forum/hmac.php?keywords=" & Keyword
-  Print PreRequest
+  global.myDebug(PreRequest)
   HttpClient1.url = PreRequest
   HttpClient1.Async = True
   HttpClient1.timeout = 10
@@ -95,7 +98,7 @@ Public Sub GetCoversFromAmazon(query As String)
   Splitted = Split(buffer, "<", "", True)
   global.myDebug("CoverManaer: Button1_Click(): Check dupes")
   For Each myline In Splitted
-    If (myline Like "*http://*") And (myline Like "*.jpg") Then
+    If (myline Like "*http?://*") And (myline Like "*.jpg") Then
       ImageUrl = Split(myline, ">")[1]
       If ImagesURL.Find(ImageUrl) < 0 Then ImagesURL.Add(ImageUrl)
     Endif
@@ -111,7 +114,7 @@ Public Sub GetCoversFromAmazon(query As String)
   global.myDebug("CoverManaer: Button1_Click(): Start downloading covers Now")
   global.myDebug("")
   For Each ImageUrl In ImagesURL
-    If (Imageurl Like "http://*") And (Not HitCancel) Then
+    If (Imageurl Like "http?://*") And (Not HitCancel) Then
       HttpClient1.Async = True
       HttpClient1.url = ImageUrl
       HttpClient1.timeout = 10
@@ -294,9 +297,10 @@ Public Sub Search()
   ButtonLoad.enabled = False
   Coverlist.Clear
   Coverlist.refresh
-
-  If checkboxamazon.value Then GetCoversFromAmazon(textbox1.text)
-  If checkboxGoogle.value Then GetCoversFromGoogle(textbox1.text)
+  
+  GetCoversFromAmazon(textbox1.text)
+  'If checkboxamazon.value Then GetCoversFromAmazon(textbox1.text)
+  'If checkboxGoogle.value Then GetCoversFromGoogle(textbox1.text)
   If Coverlist.count = 0 Then Message.Error(("No covers found for:") & "\n" & textbox1.text & "\n" & ("Try to use less strict terms, remove symbols and so on..."), ("Ok"))
 
   'textbox1.enabled = True
