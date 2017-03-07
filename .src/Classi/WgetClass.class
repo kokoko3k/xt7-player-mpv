@@ -15,7 +15,7 @@ Public Function DownloadAsync(URL As String, Optional AsFile As Boolean = False)
   If URL = "" Then Return
   tmpfile = Temp()
   tries = 3
-  commandline = "wget " & URL & " -O " & tmpfile & timeouts & " >/dev/null 2>&1"
+  commandline = "wget -o /dev/null " & URL & " -O " & tmpfile & timeouts & " >/dev/null 2>&1"
   'commandline = "wget " & URL & " -O " & tmpfile & timeouts
   Repeat
     wgetprocess1 = Shell commandline For Output As "wgetprocess1"
