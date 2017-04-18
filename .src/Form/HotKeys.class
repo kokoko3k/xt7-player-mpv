@@ -6,6 +6,8 @@
 Public xbindkeys As Process
 Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings from disk at least one time
 
+Private predefined_hotkeys_number As Integer = 91
+
 Public Sub xbindkeys_read()
   Dim comando As String
   Line Input #xbindkeys, comando
@@ -37,13 +39,16 @@ Public Sub xbindkeys_read()
     End Select
 End
 
+Private already_filled As Boolean = False
 
 Private Sub FillGridHeaders()
   Dim r, c As Integer
+  If already_filled Then Return
+  already_filled = True
   'fixmempv
   'Local Hotkeys#####################################
   HotKeysGrid.Columns.count = 5
-  HotKeysGrid.rows.count = 92
+  HotKeysGrid.rows.count = 130
   HotKeysGrid.Columns[0].text = "HotKey 1"
   HotKeysGrid.Columns[1].text = "HotKey 2"
   HotKeysGrid.Columns[2].text = "HotKey 3"
@@ -141,10 +146,12 @@ Private Sub FillGridHeaders()
   HotKeysGrid.Rows[88].text = " "
   HotKeysGrid.Rows[89].text = "show runtime infos"
 
-
-
-  For r = 90 To HotKeysGrid.Rows.count - 1
+  For r = predefined_hotkeys_number - 1 To predefined_hotkeys_number 
     HotKeysGrid.Rows[r].text = " "
+  Next 'r
+
+  For r = predefined_hotkeys_number To HotKeysGrid.Rows.count - 1
+    HotKeysGrid.Rows[r].text = ("Click me to customize")
   Next 'r
   
   For r = 0 To HotKeysGrid.Rows.count - 1
@@ -366,6 +373,10 @@ Public Sub HotKeysGrid_DblClick()
   Dim GrabbedData As String
   Dim w1, w2 As Integer = 0
 
+  If pointedcol = -1 Then Return
+  If pointedrow = -1 Then Return
+  
+
   If MouseInsideGrid(HotKeysGrid) Then
     GrabbedData = Grab()
     'Insert Grabbed Data into a cell, discard if no Data is received (eg: shift pressed)
@@ -395,6 +406,7 @@ End
 Public Sub SaveHotKeys(ProfileName As String)
   'DIM filename AS String = ProfileName & "." & "HotKeys.txt"
   Dim filename As String = ProfileName & ".profile/" & "HotKeys.txt"
+  Dim filename_v2 As String = ProfileName & ".profile/" & "HotKeys_v2.txt"
   Dim filename_fs As String = ProfileName & ".profile/" & "HotKeys_fs.txt"
   Dim filename_global_hk As String = ProfileName & ".profile/" & "HotKeys_global_enabled.txt"
   Dim globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
@@ -402,6 +414,7 @@ Public Sub SaveHotKeys(ProfileName As String)
   Dim HotFile As File
   Dim globalhotfile As File
   Dim C, R As Integer
+  Dim local_data As String
 
   If dblclick_fs_checkbox.value Then
     File.Save(filename_fs, "TRUE")
@@ -422,15 +435,27 @@ Public Sub SaveHotKeys(ProfileName As String)
     Try Mkdir File.Dir(filename)
   Endif
   
-  'local hotkeys
-  HotFile = Open filename For Write Create
-  For c = 0 To HotKeysGrid.Columns.Count - 1
-    For r = 0 To HotKeysGrid.Rows.Count - 1
-      'PRINT c & "," & r
-      Write #HotFile, HotKeysGrid[R, C].text As String
-    Next 'r
-  Next 'c
-  Close #HotFile
+  ' 'local hotkeys
+  ' HotFile = Open filename For Write Create
+  ' For c = 0 To HotKeysGrid.Columns.Count - 1
+  '   For r = 0 To predefined_hotkeys_number - 1
+  '     'PRINT c & "," & r
+  '     Write #HotFile, HotKeysGrid[R, C].text As String
+  '   Next 'r
+  ' Next 'c
+  ' Close #HotFile
+
+  For r = 0 To HotKeysGrid.Rows.count - 1
+    For c = -1 To HotKeysGrid.Columns.Count - 1
+      If c = -1 Then
+        local_data &= "\n" & r & "," & c & "," & HotKeysGrid.rows[r].text  
+          Else
+        local_data &= "\n" & r & "," & c & "," & HotKeysGrid[r, c].text  
+      Endif
+    Next
+  Next
+  File.Save(filename_v2, local_data)
+  
   
   'global hotkeys
     'xbindkeys configuration file
@@ -466,14 +491,18 @@ End
 
 Public Sub LoadHotKeys(ProfileName As String)
   Dim filename As String = ProfileName & ".profile/" & "HotKeys.txt"
+  Dim filename_v2 As String = ProfileName & ".profile/" & "HotKeys_v2.txt"
   Dim filename_fs As String = ProfileName & ".profile/" & "HotKeys_fs.txt"
   Dim filename_global_hk As String = ProfileName & ".profile/" & "HotKeys_global_enabled.txt"
   Dim Globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
   Dim xbindkeysfilename As String = ProfileName & ".profile/" & "xbindkeysrc"
   Dim HotFile As File
   Dim GlobalHotFile As File
+  Dim local_data As String
+  Dim sRow, t As String
+  Dim aRow As String[]
   
-  Dim C, R, w1, w2 As Integer
+  Dim c, r, w1, w2 As Integer
 
   If Exist(filename_fs, True) Then
     Try dblclick_fs_checkbox.value = (File.Load(filename_fs) = "TRUE")
@@ -491,25 +520,45 @@ Public Sub LoadHotKeys(ProfileName As String)
   For c = 0 To HotKeysGrid.Columns.Count - 1
      HotKeysGrid.Columns[c].w = -1
   Next
-  'Local Hotkeys
-  If Exist(filename, True) Then 
-    If Stat(filename, True).size > 0 Then
-        HotFile = Open filename For Read
-        For c = 0 To HotKeysGrid.Columns.Count - 1
-          For r = 0 To HotKeysGrid.Rows.Count - 1
-            HotKeysGrid[R, C].text = Read #HotFile As String
-            'Expand the column
-            w1 = HotKeysGrid.Columns[c].width
-            ' [GB2:FNTW] w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[r, c].Text)
-            w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[r, c].Text)
-            If w1 < w2 Then
-              HotKeysGrid.Columns[c].width = w2 + 8
-            Endif
-          Next 'r
-        Next 'c
-        Close #HotFile
+
+  'Local Hotkeys, try to load new format, first.
+  If Exist(filename_v2, True) Then
+    For Each sRow In Split(File.Load(filename_v2), "\n", "", True, False)
+      Try aRow = Split(sRow, ",", "", False)
+      If aRow.count > 2 Then 
+        c = aRow[1]
+        r = aRow[0]
+        t = aRow[2]
+        If c = -1 Then 
+          HotKeysGrid.Rows[r].text = t
+            Else
+          HotKeysGrid[r, c].text = t
+        Endif
+      Endif
+    Next
+      Else
+    If Exist(filename, True) Then 
+      If Stat(filename, True).size > 0 Then
+          HotFile = Open filename For Read
+          For c = 0 To HotKeysGrid.Columns.Count - 1
+            For r = 0 To predefined_hotkeys_number - 1
+              HotKeysGrid[R, C].text = Read #HotFile As String
+              'Expand the column
+              w1 = HotKeysGrid.Columns[c].width
+              ' [GB2:FNTW] w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[r, c].Text)
+              w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[r, c].Text)
+              If w1 < w2 Then
+                HotKeysGrid.Columns[c].width = w2 + 8
+              Endif
+            Next 'r
+          Next 'c
+          Close #HotFile
+      Endif
     Endif
   Endif
+  
+  
+
   
   'Global Hotkeys grid:
    If Exist(filename, True) Then 
@@ -531,6 +580,7 @@ Public Sub LoadHotKeys(ProfileName As String)
     Endif
    Endif
    RestartXbindKeys(xbindkeysfilename)
+ 
 End
 
 Public Sub RestartXbindKeys(xbindkeysfilename As String)
@@ -761,4 +811,18 @@ Public Sub TabStrip1_Click()
   If TabStrip1.Children[0] = CheckBoxEnableGlobalHotkeys Then
    If checkboxenableglobalhotkeys.value = CheckBox.true Then checkxbindkeys()
   Endif
+End
+
+Public Sub HotKeysGrid_RowClick(Row As Integer)
+  Dim r As Integer = HotKeysGrid.row
+  Dim newvalue As String
+  Dim last_text As String = HotKeysGrid.rows[r].text
+  
+  newvalue = MyAskName.Ask(("Type an mpv input command"), HotKeysGrid.rows[r].text, True)
+  If newvalue = "" Then 
+    HotKeysGrid.rows[r].text = last_text
+      Else
+    HotKeysGrid.rows[r].text = newvalue
+  Endif
+  HotKeysGrid.Refresh
 End
