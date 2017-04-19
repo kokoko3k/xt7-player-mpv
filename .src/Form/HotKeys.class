@@ -541,7 +541,7 @@ Public Sub LoadHotKeys(ProfileName As String)
       If Stat(filename, True).size > 0 Then
           HotFile = Open filename For Read
           For c = 0 To HotKeysGrid.Columns.Count - 1
-            For r = 0 To predefined_hotkeys_number - 1
+            For r = 0 To 91
               HotKeysGrid[R, C].text = Read #HotFile As String
               'Expand the column
               w1 = HotKeysGrid.Columns[c].width
