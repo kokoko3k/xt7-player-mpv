@@ -1032,7 +1032,6 @@ Private Function Parse_audio_filter(Filtername As String) As String
 
     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
     If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
-    Stop
     Return "@label_" & Lower(filtername) & ":" & ParsedFilter
 
   Endif
