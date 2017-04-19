@@ -5373,7 +5373,7 @@ Public Sub HotKeyToMplayer(HotKey As String)
   Dim n As String
 
   global.myDebug(hotkey)
-  Action = Lower(HotKeys.ActionRelatedTo(Hotkey))
+  Action = HotKeys.ActionRelatedTo(Hotkey)
   
   global.myDebug(Action)
   
