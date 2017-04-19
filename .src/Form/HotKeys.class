@@ -8,6 +8,8 @@ Public AlreadyLoaded As Boolean = False 'true if the form loaded it's settings f
 
 Private predefined_hotkeys_number As Integer = 91
 
+Private customize_me_msg As String = ("Click me to customize")
+
 Public Sub xbindkeys_read()
   Dim comando As String
   Line Input #xbindkeys, comando
@@ -47,116 +49,125 @@ Private Sub FillGridHeaders()
   already_filled = True
   'fixmempv
   'Local Hotkeys#####################################
-  HotKeysGrid.Columns.count = 5
+  HotKeysGrid.header = GridView.Horizontal
+  HotKeysGrid.Columns.count = 6
   HotKeysGrid.rows.count = 130
-  HotKeysGrid.Columns[0].text = "HotKey 1"
-  HotKeysGrid.Columns[1].text = "HotKey 2"
-  HotKeysGrid.Columns[2].text = "HotKey 3"
-  HotKeysGrid.Columns[3].text = "HotKey 4"
-  HotKeysGrid.Columns[4].text = "HotKey 5"
   
-  HotKeysGrid.Rows[0].text = "switch fullscreen"
-  HotKeysGrid.Rows[1].text = "pause"
-  HotKeysGrid.Rows[2].text = " "
-  HotKeysGrid.Rows[3].text = "volume +1"
-  HotKeysGrid.Rows[4].text = "volume -1"
-  HotKeysGrid.Rows[5].text = "add balance +0.1"
-  HotKeysGrid.Rows[6].text = "add balance -0.1"
-  HotKeysGrid.Rows[7].text = "cycle mute"
-  HotKeysGrid.Rows[8].text = " "
-  HotKeysGrid.Rows[9].text = "seek +10"
-  HotKeysGrid.Rows[10].text = "seek -10"
-  HotKeysGrid.Rows[11].text = "seek +60"
-  HotKeysGrid.Rows[12].text = "seek -60"
-  HotKeysGrid.Rows[13].text = "seek +600"
-  HotKeysGrid.Rows[14].text = "seek -600"
-  HotKeysGrid.Rows[15].text = " "
-  HotKeysGrid.Rows[16].text = "add chapter +1"
-  HotKeysGrid.Rows[17].text = "add chapter -1"
-  HotKeysGrid.Rows[18].text = " "
-  HotKeysGrid.Rows[19].text = "frame-back-step"
-  HotKeysGrid.Rows[20].text = "frame-step"
-  HotKeysGrid.Rows[21].text = " "
-  HotKeysGrid.Rows[22].text = "set speed 1"
-  HotKeysGrid.Rows[23].text = "multiply speed 1.1"
-  HotKeysGrid.Rows[24].text = "multiply speed 0.9"
-  HotKeysGrid.Rows[25].text = "add speed +0.01"
-  HotKeysGrid.Rows[26].text = "add speed -0.01"
-  HotKeysGrid.Rows[27].text = " "
-  HotKeysGrid.Rows[28].text = "zoom +0.05"
-  HotKeysGrid.Rows[29].text = "zoom -0.05"
-  HotKeysGrid.Rows[30].text = " "
-  HotKeysGrid.Rows[31].text = "set video-aspect 4:3"
-  HotKeysGrid.Rows[32].text = "set video-aspect 16:9"
-  HotKeysGrid.Rows[33].text = "set video-aspect 16:10"
-  HotKeysGrid.Rows[34].text = "set video-aspect 2.35:1"
-  HotKeysGrid.Rows[35].text = "set video-aspect 1:1"
-  HotKeysGrid.Rows[36].text = "add video-aspect +0.05"
-  HotKeysGrid.Rows[37].text = "add video-aspect -0.05"
-  HotKeysGrid.Rows[38].text = " "
-  HotKeysGrid.Rows[39].text = "set video-rotate 0"
-  HotKeysGrid.Rows[40].text = "cycle-values video-rotate 90 180 270 0"
-  HotKeysGrid.Rows[41].text = " "
-  HotKeysGrid.Rows[42].text = " "
-  HotKeysGrid.Rows[43].text = "contrast +1"
-  HotKeysGrid.Rows[44].text = "contrast -1"
-  HotKeysGrid.Rows[45].text = "gamma +1"
-  HotKeysGrid.Rows[46].text = "gamma -1"
-  HotKeysGrid.Rows[47].text = "brightness +1"
-  HotKeysGrid.Rows[48].text = "brightness -1"
-  HotKeysGrid.Rows[49].text = "hue +1"
-  HotKeysGrid.Rows[50].text = "hue -1"
-  HotKeysGrid.Rows[51].text = "saturation +1"
-  HotKeysGrid.Rows[52].text = "saturation -1"
-  HotKeysGrid.Rows[53].text = " "
-  HotKeysGrid.Rows[54].text = "cycle audio"
-  HotKeysGrid.Rows[55].text = "add audio-delay +0.1"
-  HotKeysGrid.Rows[56].text = "add audio-delay -0.1"
-  HotKeysGrid.Rows[57].text = " "
-  HotKeysGrid.Rows[58].text = "cycle sub"
-  HotKeysGrid.Rows[59].text = "cycle subvisibility"
-  HotKeysGrid.Rows[60].text = "add sub-delay +0.1"
-  HotKeysGrid.Rows[61].text = "add sub-delay -0.1"
-  HotKeysGrid.Rows[62].text = "add sub-scale +0.1"
-  HotKeysGrid.Rows[63].text = "add sub-scale -0.1"
-  HotKeysGrid.Rows[64].text = "add sub-pos +5"
-  HotKeysGrid.Rows[65].text = "add sub-pos -5"
-  HotKeysGrid.Rows[66].text = "sub-reload"
-  HotKeysGrid.Rows[67].text = " "
-  HotKeysGrid.Rows[68].text = "cycle deinterlace"
-  HotKeysGrid.Rows[69].text = "cycle framedrop"
-  HotKeysGrid.Rows[70].text = " "
-  HotKeysGrid.Rows[71].text = "cycle tv-norm"
-  HotKeysGrid.Rows[72].text = "add tv-channel +1"
-  HotKeysGrid.Rows[73].text = "add tv-channel -1"
-  HotKeysGrid.Rows[74].text = "add tv-brightness +5"
-  HotKeysGrid.Rows[75].text = "add tv-brightness  -5"
-  HotKeysGrid.Rows[76].text = "add tv-contrast +5"
-  HotKeysGrid.Rows[77].text = "add tv-contrast -5"
-  HotKeysGrid.Rows[78].text = "add tv-hue +5"
-  HotKeysGrid.Rows[79].text = "add tv-hue -5"
-  HotKeysGrid.Rows[80].text = "add tv-saturation +5"
-  HotKeysGrid.Rows[81].text = "add tv-saturation -5"
-  HotKeysGrid.Rows[82].text = " "
-  HotKeysGrid.Rows[83].text = "cycle vid"
-  HotKeysGrid.Rows[84].text = "delete current file"
-  HotKeysGrid.Rows[85].text = "osd"
-  HotKeysGrid.Rows[86].text = "screenshot"
-  HotKeysGrid.Rows[87].text = "quit"
-  HotKeysGrid.Rows[88].text = " "
-  HotKeysGrid.Rows[89].text = "show runtime infos"
+  For r = 0 To HotKeysGrid.rows.count - 1
+    HotKeysGrid[r, 0].WordWrap = True
+  Next
+  
+  HotKeysGrid.Columns[0].text = "Action"
+  HotKeysGrid.Columns[1].text = "HotKey 1"
+  HotKeysGrid.Columns[2].text = "HotKey 2"
+  HotKeysGrid.Columns[3].text = "HotKey 3"
+  HotKeysGrid.Columns[4].text = "HotKey 4"
+  HotKeysGrid.Columns[5].text = "HotKey 5"
+  
+  HotKeysGrid[0, 0].text = "switch fullscreen"
+  HotKeysGrid[1, 0].text = "pause"
+  HotKeysGrid[2, 0].text = " "
+  HotKeysGrid[3, 0].text = "volume +1"
+  HotKeysGrid[4, 0].text = "volume -1"
+  HotKeysGrid[5, 0].text = "add balance +0.1"
+  HotKeysGrid[6, 0].text = "add balance -0.1"
+  HotKeysGrid[7, 0].text = "cycle mute"
+  HotKeysGrid[8, 0].text = " "
+  HotKeysGrid[9, 0].text = "seek +10"
+  HotKeysGrid[10, 0].text = "seek -10"
+  HotKeysGrid[11, 0].text = "seek +60"
+  HotKeysGrid[12, 0].text = "seek -60"
+  HotKeysGrid[13, 0].text = "seek +600"
+  HotKeysGrid[14, 0].text = "seek -600"
+  HotKeysGrid[15, 0].text = " "
+  HotKeysGrid[16, 0].text = "add chapter +1"
+  HotKeysGrid[17, 0].text = "add chapter -1"
+  HotKeysGrid[18, 0].text = " "
+  HotKeysGrid[19, 0].text = "frame-back-step"
+  HotKeysGrid[20, 0].text = "frame-step"
+  HotKeysGrid[21, 0].text = " "
+  HotKeysGrid[22, 0].text = "set speed 1"
+  HotKeysGrid[23, 0].text = "multiply speed 1.1"
+  HotKeysGrid[24, 0].text = "multiply speed 0.9"
+  HotKeysGrid[25, 0].text = "add speed +0.01"
+  HotKeysGrid[26, 0].text = "add speed -0.01"
+  HotKeysGrid[27, 0].text = " "
+  HotKeysGrid[28, 0].text = "zoom +0.05"
+  HotKeysGrid[29, 0].text = "zoom -0.05"
+  HotKeysGrid[30, 0].text = " "
+  HotKeysGrid[31, 0].text = "set video-aspect 4:3"
+  HotKeysGrid[32, 0].text = "set video-aspect 16:9"
+  HotKeysGrid[33, 0].text = "set video-aspect 16:10"
+  HotKeysGrid[34, 0].text = "set video-aspect 2.35:1"
+  HotKeysGrid[35, 0].text = "set video-aspect 1:1"
+  HotKeysGrid[36, 0].text = "add video-aspect +0.05"
+  HotKeysGrid[37, 0].text = "add video-aspect -0.05"
+  HotKeysGrid[38, 0].text = " "
+  HotKeysGrid[39, 0].text = "set video-rotate 0"
+  HotKeysGrid[40, 0].text = "cycle-values video-rotate 90 180 270 0"
+  HotKeysGrid[41, 0].text = " "
+  HotKeysGrid[42, 0].text = " "
+  HotKeysGrid[43, 0].text = "contrast +1"
+  HotKeysGrid[44, 0].text = "contrast -1"
+  HotKeysGrid[45, 0].text = "gamma +1"
+  HotKeysGrid[46, 0].text = "gamma -1"
+  HotKeysGrid[47, 0].text = "brightness +1"
+  HotKeysGrid[48, 0].text = "brightness -1"
+  HotKeysGrid[49, 0].text = "hue +1"
+  HotKeysGrid[50, 0].text = "hue -1"
+  HotKeysGrid[51, 0].text = "saturation +1"
+  HotKeysGrid[52, 0].text = "saturation -1"
+  HotKeysGrid[53, 0].text = " "
+  HotKeysGrid[54, 0].text = "cycle audio"
+  HotKeysGrid[55, 0].text = "add audio-delay +0.1"
+  HotKeysGrid[56, 0].text = "add audio-delay -0.1"
+  HotKeysGrid[57, 0].text = " "
+  HotKeysGrid[58, 0].text = "cycle sub"
+  HotKeysGrid[59, 0].text = "cycle subvisibility"
+  HotKeysGrid[60, 0].text = "add sub-delay +0.1"
+  HotKeysGrid[61, 0].text = "add sub-delay -0.1"
+  HotKeysGrid[62, 0].text = "add sub-scale +0.1"
+  HotKeysGrid[63, 0].text = "add sub-scale -0.1"
+  HotKeysGrid[64, 0].text = "add sub-pos +5"
+  HotKeysGrid[65, 0].text = "add sub-pos -5"
+  HotKeysGrid[66, 0].text = "sub-reload"
+  HotKeysGrid[67, 0].text = " "
+  HotKeysGrid[68, 0].text = "cycle deinterlace"
+  HotKeysGrid[69, 0].text = "cycle framedrop"
+  HotKeysGrid[70, 0].text = " "
+  HotKeysGrid[71, 0].text = "cycle tv-norm"
+  HotKeysGrid[72, 0].text = "add tv-channel +1"
+  HotKeysGrid[73, 0].text = "add tv-channel -1"
+  HotKeysGrid[74, 0].text = "add tv-brightness +5"
+  HotKeysGrid[75, 0].text = "add tv-brightness  -5"
+  HotKeysGrid[76, 0].text = "add tv-contrast +5"
+  HotKeysGrid[77, 0].text = "add tv-contrast -5"
+  HotKeysGrid[78, 0].text = "add tv-hue +5"
+  HotKeysGrid[79, 0].text = "add tv-hue -5"
+  HotKeysGrid[80, 0].text = "add tv-saturation +5"
+  HotKeysGrid[81, 0].text = "add tv-saturation -5"
+  HotKeysGrid[82, 0].text = " "
+  HotKeysGrid[83, 0].text = "cycle vid"
+  HotKeysGrid[84, 0].text = "delete current file"
+  HotKeysGrid[85, 0].text = "osd"
+  HotKeysGrid[86, 0].text = "screenshot"
+  HotKeysGrid[87, 0].text = "quit"
+  HotKeysGrid[88, 0].text = " "
+  HotKeysGrid[89, 0].text = "show runtime infos"
 
   For r = predefined_hotkeys_number - 1 To predefined_hotkeys_number 
-    HotKeysGrid.Rows[r].text = " "
+    HotKeysGrid[r, 1].text = " "
   Next 'r
 
   For r = predefined_hotkeys_number To HotKeysGrid.Rows.count - 1
-    HotKeysGrid.Rows[r].text = ("Click me to customize")
+    HotKeysGrid[r, 0].text = customize_me_msg
   Next 'r
   
   For r = 0 To HotKeysGrid.Rows.count - 1
+    HotKeysGrid[r, 0].Background = Color.ButtonBackground
+    HotKeysGrid[r, 0].Font.Bold = True
     If r Mod 2 = 0 Then
-      For c = 0 To HotKeysGrid.Columns.count - 1
+      For c = 1 To HotKeysGrid.Columns.count - 1
         HotKeysGrid[r, c].background = Global.Alternatecolor
       Next 'c
     Endif
@@ -204,69 +215,70 @@ Private Sub DefaultFill()
   Dim r, c As Integer
   'clear grid
     For r = 0 To HotKeysGrid.Rows.count - 1
-      For c = 0 To HotKeysGrid.Columns.count - 1
+      For c = 1 To HotKeysGrid.Columns.count - 1
         HotKeysGrid[r, c].Text = ""
       Next
     Next
-  HotKeysGrid[0, 0].text = "Mouse=0 Wheel=NONE Key=f"
-  HotKeysGrid[0, 1].text = "Mouse=4 Wheel=NONE Key="
-  HotKeysGrid[1, 0].text = "Mouse=0 Wheel=NONE Key=p"
-  HotKeysGrid[1, 1].text = "Mouse=1 Wheel=NONE Key="
-  HotKeysGrid[1, 2].text = "Mouse=0 Wheel=NONE Key=space"
-  HotKeysGrid[3, 0].text = "Mouse=0 Wheel=NONE Key=+"
-  HotKeysGrid[3, 1].text = "Mouse=0 Wheel=UP Key="
-  HotKeysGrid[4, 0].text = "Mouse=0 Wheel=NONE Key=-"
-  HotKeysGrid[4, 1].text = "Mouse=0 Wheel=DOWN Key="
-  HotKeysGrid[7, 0].text = "Mouse=0 Wheel=NONE Key=m"
-  HotKeysGrid[9, 0].text = "Mouse=0 Wheel=NONE Key=right"
-  HotKeysGrid[9, 1].text = "Mouse=1 Wheel=UP Key="
-  HotKeysGrid[10, 0].text = "Mouse=0 Wheel=NONE Key=left"
-  HotKeysGrid[10, 1].text = "Mouse=1 Wheel=DOWN Key="
-  HotKeysGrid[11, 0].text = "Mouse=0 Wheel=NONE Key=up"
-  HotKeysGrid[11, 1].text = "Mouse=3 Wheel=UP Key="
-  HotKeysGrid[12, 0].text = "Mouse=0 Wheel=NONE Key=down"
-  HotKeysGrid[12, 1].text = "Mouse=3 Wheel=DOWN Key="
-  HotKeysGrid[23, 0].text = "Mouse=0 Wheel=NONE Key=]"
-  HotKeysGrid[24, 0].text = "Mouse=0 Wheel=NONE Key=["
-  HotKeysGrid[28, 0].text = "Mouse=0 Wheel=NONE Key=e"
-  HotKeysGrid[28, 1].text = "Mouse=2 Wheel=UP Key="
-  HotKeysGrid[29, 0].text = "Mouse=0 Wheel=NONE Key=w"
-  HotKeysGrid[29, 1].text = "Mouse=2 Wheel=DOWN Key="
-  HotKeysGrid[31, 0].text = "Mouse=0 Wheel=NONE Key=f1"
-  HotKeysGrid[32, 0].text = "Mouse=0 Wheel=NONE Key=f2"
-  HotKeysGrid[33, 0].text = "Mouse=0 Wheel=NONE Key=f3"
-  HotKeysGrid[34, 0].text = "Mouse=0 Wheel=NONE Key=f4"
-  HotKeysGrid[35, 0].text = "Mouse=0 Wheel=NONE Key=f5"
-  HotKeysGrid[36, 0].text = "Mouse=0 Wheel=NONE Key=f6"
-  HotKeysGrid[37, 0].text = "Mouse=0 Wheel=NONE Key=f7"
-  HotKeysGrid[39, 0].text = "Mouse=0 Wheel=NONE Mod=Ctrl Key=r"
-  HotKeysGrid[40, 0].text = "Mouse=0 Wheel=NONE Key=r"
-  HotKeysGrid[41, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=r"
-  HotKeysGrid[43, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=c"
-  HotKeysGrid[44, 0].text = "Mouse=0 Wheel=NONE Key=c"
-  HotKeysGrid[45, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=g"
-  HotKeysGrid[46, 0].text = "Mouse=0 Wheel=NONE Key=g"
-  HotKeysGrid[47, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=b"
-  HotKeysGrid[48, 0].text = "Mouse=0 Wheel=NONE Key=b"
-  HotKeysGrid[49, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=h"
-  HotKeysGrid[50, 0].text = "Mouse=0 Wheel=NONE Key=h"
-  HotKeysGrid[51, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=s"
-  HotKeysGrid[52, 0].text = "Mouse=0 Wheel=NONE Key=s"
-  HotKeysGrid[54, 0].text = "Mouse=0 Wheel=NONE Key=a"
-  HotKeysGrid[55, 0].text = "Mouse=0 Wheel=NONE Key=."
-  HotKeysGrid[56, 0].text = "Mouse=0 Wheel=NONE Key=,"
-  HotKeysGrid[60, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=:"
-  HotKeysGrid[61, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=;"
-  HotKeysGrid[62, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=t"
-  HotKeysGrid[63, 0].text = "Mouse=0 Wheel=NONE Key=t"
-  HotKeysGrid[64, 0].text = "Mouse=0 Wheel=NONE Mod=CtrlShift Key=t"
-  HotKeysGrid[65, 0].text = "Mouse=0 Wheel=NONE Mod=Ctrl Key=t"
-  HotKeysGrid[68, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=d"
-  HotKeysGrid[84, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=del"
-  HotKeysGrid[85, 0].text = "Mouse=0 Wheel=NONE Key=o"
-  HotKeysGrid[85, 1].text = "Mouse=2 Wheel=NONE Key="
-  HotKeysGrid[87, 0].text = "Mouse=0 Wheel=NONE Key=esc"
-  HotKeysGrid[89, 0].text = "Mouse=0 Wheel=NONE Mod=Shift Key=backspace"
+  HotKeysGrid[0, 1].text = "Mouse=0 Wheel=NONE Key=f"
+  HotKeysGrid[0, 2].text = "Mouse=4 Wheel=NONE Key="
+  HotKeysGrid[1, 1].text = "Mouse=0 Wheel=NONE Key=p"
+  HotKeysGrid[1, 2].text = "Mouse=1 Wheel=NONE Key="
+  HotKeysGrid[1, 3].text = "Mouse=0 Wheel=NONE Key=space"
+  HotKeysGrid[3, 1].text = "Mouse=0 Wheel=NONE Key=+"
+  HotKeysGrid[3, 2].text = "Mouse=0 Wheel=UP Key="
+  HotKeysGrid[4, 1].text = "Mouse=0 Wheel=NONE Key=-"
+  HotKeysGrid[4, 2].text = "Mouse=0 Wheel=DOWN Key="
+  HotKeysGrid[7, 1].text = "Mouse=0 Wheel=NONE Key=m"
+  HotKeysGrid[9, 1].text = "Mouse=0 Wheel=NONE Key=right"
+  HotKeysGrid[9, 2].text = "Mouse=1 Wheel=UP Key="
+  HotKeysGrid[10, 1].text = "Mouse=0 Wheel=NONE Key=left"
+  HotKeysGrid[10, 2].text = "Mouse=1 Wheel=DOWN Key="
+  HotKeysGrid[11, 1].text = "Mouse=0 Wheel=NONE Key=up"
+  HotKeysGrid[11, 2].text = "Mouse=3 Wheel=UP Key="
+  HotKeysGrid[12, 1].text = "Mouse=0 Wheel=NONE Key=down"
+  HotKeysGrid[12, 2].text = "Mouse=3 Wheel=DOWN Key="
+  HotKeysGrid[23, 1].text = "Mouse=0 Wheel=NONE Key=]"
+  HotKeysGrid[24, 1].text = "Mouse=0 Wheel=NONE Key=["
+  HotKeysGrid[28, 1].text = "Mouse=0 Wheel=NONE Key=e"
+  HotKeysGrid[28, 2].text = "Mouse=2 Wheel=UP Key="
+  HotKeysGrid[29, 1].text = "Mouse=0 Wheel=NONE Key=w"
+  HotKeysGrid[29, 2].text = "Mouse=2 Wheel=DOWN Key="
+  HotKeysGrid[31, 1].text = "Mouse=0 Wheel=NONE Key=f1"
+  HotKeysGrid[32, 1].text = "Mouse=0 Wheel=NONE Key=f2"
+  HotKeysGrid[33, 1].text = "Mouse=0 Wheel=NONE Key=f3"
+  HotKeysGrid[34, 1].text = "Mouse=0 Wheel=NONE Key=f4"
+  HotKeysGrid[35, 1].text = "Mouse=0 Wheel=NONE Key=f5"
+  HotKeysGrid[36, 1].text = "Mouse=0 Wheel=NONE Key=f6"
+  HotKeysGrid[37, 1].text = "Mouse=0 Wheel=NONE Key=f7"
+  HotKeysGrid[39, 1].text = "Mouse=0 Wheel=NONE Mod=Ctrl Key=r"
+  HotKeysGrid[40, 1].text = "Mouse=0 Wheel=NONE Key=r"
+  HotKeysGrid[41, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=r"
+  HotKeysGrid[43, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=c"
+  HotKeysGrid[44, 1].text = "Mouse=0 Wheel=NONE Key=c"
+  HotKeysGrid[45, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=g"
+  HotKeysGrid[46, 1].text = "Mouse=0 Wheel=NONE Key=g"
+  HotKeysGrid[47, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=b"
+  HotKeysGrid[48, 1].text = "Mouse=0 Wheel=NONE Key=b"
+  HotKeysGrid[49, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=h"
+  HotKeysGrid[50, 1].text = "Mouse=0 Wheel=NONE Key=h"
+  HotKeysGrid[51, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=s"
+  HotKeysGrid[52, 1].text = "Mouse=0 Wheel=NONE Key=s"
+  HotKeysGrid[54, 1].text = "Mouse=0 Wheel=NONE Key=a"
+  HotKeysGrid[55, 1].text = "Mouse=0 Wheel=NONE Key=."
+  HotKeysGrid[56, 1].text = "Mouse=0 Wheel=NONE Key=,"
+  HotKeysGrid[60, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=:"
+  HotKeysGrid[61, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=;"
+  HotKeysGrid[62, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=t"
+  HotKeysGrid[63, 1].text = "Mouse=0 Wheel=NONE Key=t"
+  HotKeysGrid[64, 1].text = "Mouse=0 Wheel=NONE Mod=CtrlShift Key=t"
+  HotKeysGrid[65, 1].text = "Mouse=0 Wheel=NONE Mod=Ctrl Key=t"
+  HotKeysGrid[68, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=d"
+  HotKeysGrid[84, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=del"
+  HotKeysGrid[85, 1].text = "Mouse=0 Wheel=NONE Key=o"
+  HotKeysGrid[85, 2].text = "Mouse=2 Wheel=NONE Key="
+  HotKeysGrid[87, 1].text = "Mouse=0 Wheel=NONE Key=esc"
+  HotKeysGrid[89, 1].text = "Mouse=0 Wheel=NONE Mod=Shift Key=backspace"
+
 End
 
 
@@ -326,7 +338,7 @@ Private Function CheckDuplicate(Hotkey As String, RowSrc As Integer, ColSrc As I
   Dim FoundDupe As Boolean = False
   Dim DupedFunction As String
   Dim Answer As Integer
-  For c = 0 To MyGrid.Columns.Count - 1
+  For c = 1 To MyGrid.Columns.Count - 1
     For r = 0 To MyGrid.Rows.Count - 1
       If MyGrid[r, c].text = Hotkey Then
         FoundDupe = True
@@ -375,7 +387,10 @@ Public Sub HotKeysGrid_DblClick()
 
   If pointedcol = -1 Then Return
   If pointedrow = -1 Then Return
-  
+  If pointedcol = 0 Then 
+    action_click(pointedrow)
+    Return
+  Endif
 
   If MouseInsideGrid(HotKeysGrid) Then
     GrabbedData = Grab()
@@ -400,7 +415,19 @@ End
 Public Sub HotKeysGrid_KeyPress()
   Dim PointedRow As Integer = HotKeysGrid.row
   Dim PointedCol As Integer = HotKeysGrid.Column
-  If Key.code = Key.delete Then HotKeysGrid[pointedrow, PointedCol].text = ""
+  
+  If Key.code = Key.delete Then
+    If (pointedcol > 0) Then
+      HotKeysGrid[pointedrow, PointedCol].text = ""
+        Else 
+      If pointedrow >= (predefined_hotkeys_number) Then
+        HotKeysGrid[pointedrow, PointedCol].text = customize_me_msg
+      Endif
+    Endif
+
+  Endif
+
+  
 End
 
 Public Sub SaveHotKeys(ProfileName As String)
@@ -446,12 +473,8 @@ Public Sub SaveHotKeys(ProfileName As String)
   ' Close #HotFile
 
   For r = 0 To HotKeysGrid.Rows.count - 1
-    For c = -1 To HotKeysGrid.Columns.Count - 1
-      If c = -1 Then
-        local_data &= "\n" & r & "," & c & "," & HotKeysGrid.rows[r].text  
-          Else
-        local_data &= "\n" & r & "," & c & "," & HotKeysGrid[r, c].text  
-      Endif
+    For c = 0 To HotKeysGrid.Columns.Count - 1
+      local_data &= "\n" & r & "," & c & "," & HotKeysGrid[r, c].text  
     Next
   Next
   File.Save(filename_v2, local_data)
@@ -516,22 +539,24 @@ Public Sub LoadHotKeys(ProfileName As String)
   Endif
   
   
-  DefaultFill()
-  For c = 0 To HotKeysGrid.Columns.Count - 1
+  'DefaultFill()
+  For c = 1 To HotKeysGrid.Columns.Count - 1
      HotKeysGrid.Columns[c].w = -1
   Next
+
+  HotKeysGrid.Columns[0].Width = HotKeysGrid.Font.TextWidth("______________________________")
+  
 
   'Local Hotkeys, try to load new format, first.
   If Exist(filename_v2, True) Then
     For Each sRow In Split(File.Load(filename_v2), "\n", "", True, False)
       Try aRow = Split(sRow, ",", "", False)
       If aRow.count > 2 Then 
-        r = aRow[0]
         c = aRow[1]
+        r = aRow[0]
         t = aRow[2]
-
-        If c = -1 Then 
-          HotKeysGrid.Rows[r].text = Right(sRow, - Len(CStr(c)) - Len(CStr(r)) - 2)
+        If c = 0 Then 
+          HotKeysGrid[r, c].text = Right(sRow, - Len(CStr(c)) - Len(CStr(r)) - 2)
             Else
           HotKeysGrid[r, c].text = t
         Endif
@@ -541,7 +566,7 @@ Public Sub LoadHotKeys(ProfileName As String)
     If Exist(filename, True) Then 
       If Stat(filename, True).size > 0 Then
           HotFile = Open filename For Read
-          For c = 0 To HotKeysGrid.Columns.Count - 1
+          For c = 1 To HotKeysGrid.Columns.Count - 1
             For r = 0 To 91
               HotKeysGrid[R, C].text = Read #HotFile As String
               'Expand the column
@@ -620,9 +645,9 @@ Public Function ActionRelatedTo(Hotkey As String) As String
   '   If Lower(Split(Hotkey, " ")[0]) = "mouse=1" Then Return "discnav select"
   ' Endif
   If hotkey = "" Then Return "Nope"
-    For c = 0 To HotKeysGrid.Columns.Count - 1
+    For c = 1 To HotKeysGrid.Columns.Count - 1
       For r = 0 To HotKeysGrid.Rows.Count - 1
-        If (HotKeysGrid[r, c].text = Hotkey) Then Return HotKeysGrid.Rows[r].text
+        If (HotKeysGrid[r, c].text = Hotkey) Then Return HotKeysGrid[r, 0].text
       Next 'r
     Next 'c
   Return "Nope" 'no hotkey found
@@ -664,7 +689,7 @@ End
 Public Sub Button2_Click()
   Dim r, c As Integer
   For r = 0 To HotKeysGrid.Rows.Count - 1
-    For c = 0 To HotKeysGrid.columns.Count - 1
+    For c = 1 To HotKeysGrid.columns.Count - 1
         HotKeysGrid[r, c].text = ""
     Next 'c
   Next 'r
@@ -814,16 +839,17 @@ Public Sub TabStrip1_Click()
   Endif
 End
 
-Public Sub HotKeysGrid_RowClick(Row As Integer)
+Public Sub action_click(Row As Integer)
   Dim r As Integer = HotKeysGrid.row
   Dim newvalue As String
-  Dim last_text As String = HotKeysGrid.rows[r].text
+  Dim last_text As String = HotKeysGrid[r, 0].text
+  If row < predefined_hotkeys_number Then Return
   
-  newvalue = MyAskName.Ask(("Type an mpv input command"), HotKeysGrid.rows[r].text, True)
+  newvalue = MyAskName.Ask(("Type an mpv input command"), HotKeysGrid[r, 0].text, True)
   If newvalue = "" Then 
-    HotKeysGrid.rows[r].text = last_text
+    HotKeysGrid[r, 0].text = last_text
       Else
-    HotKeysGrid.rows[r].text = newvalue
+    HotKeysGrid[r, 0].text = newvalue
   Endif
   HotKeysGrid.Refresh
 End
