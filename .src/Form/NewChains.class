@@ -2053,11 +2053,22 @@ Public Function parse_compand() As String
   If k = 0 Then k = k + 0.1
   If d = 0 Then d = d + 0.1
   
-  out = "lavfi=[volume=" & v & "dB],"
-  out &= "\"lavfi=[compand=attacks=0"
+  ' out = "@label_compand:lavfi=[volume=" & v & "dB],"
+  ' out &= "\"lavfi=[compand=attacks=0"
+  ' out &= ":decays=" & d 
+  ' out &= ":soft-knee=" & k
+  ' out &= ":points=0/-0.1|1000/-0.1]\""
+        ' out = "@label_compand:\"lavfi=[volume=" & v & "dB,"
+        ' out &= "compand=attacks=0"
+        ' out &= ":decays=" & d 
+        ' out &= ":soft-knee=" & k
+        ' out &= ":points=0/-0.1|1000/-0.1]\""
+        
+  out &= "@label_compand:lavfi=[volume=" & v & "dB,compand=attacks=0"
   out &= ":decays=" & d 
   out &= ":soft-knee=" & k
-  out &= ":points=0/-0.1|1000/-0.1]\""
+  out &= ":points=0/-0.1'|'1000/-0.1]"
+
   Return out
 End
 

@@ -1725,11 +1725,10 @@ Public Function set_property_mpv(name As String, data As String, Optional osd As
   Dim s As String = "\\"
   Dim q As String = "\""
   
-  ' Debug "Caller:", System.Backtrace[1], System.Backtrace[2]
-  ' Debug name, data
+  If name Like "*af*" Then Debug name, data
   
-  data = Replace(data, q, s & q)        'replace " with \"
-  data = Replace(data, s & s & q, s & q) 'replace \\" with \" (in case we quoted an already quoted string)
+  'data = Replace(data, q, s & q)        'replace " with \"
+  'data = Replace(data, s & s & q, s & q) 'replace \\" with \" (in case we quoted an already quoted string)
   If osd Then 
     mpv_command(["osd-msg", "set", name, data])
       Else
