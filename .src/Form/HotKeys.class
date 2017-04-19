@@ -526,11 +526,12 @@ Public Sub LoadHotKeys(ProfileName As String)
     For Each sRow In Split(File.Load(filename_v2), "\n", "", True, False)
       Try aRow = Split(sRow, ",", "", False)
       If aRow.count > 2 Then 
-        c = aRow[1]
         r = aRow[0]
+        c = aRow[1]
         t = aRow[2]
+
         If c = -1 Then 
-          HotKeysGrid.Rows[r].text = t
+          HotKeysGrid.Rows[r].text = Right(sRow, - Len(CStr(c)) - Len(CStr(r)) - 2)
             Else
           HotKeysGrid[r, c].text = t
         Endif
