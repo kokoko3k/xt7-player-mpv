@@ -338,7 +338,7 @@ Private Function CheckDuplicate(Hotkey As String, RowSrc As Integer, ColSrc As I
   Dim FoundDupe As Boolean = False
   Dim DupedFunction As String
   Dim Answer As Integer
-  For c = 1 To MyGrid.Columns.Count - 1
+  For c = 0 To MyGrid.Columns.Count - 1
     For r = 0 To MyGrid.Rows.Count - 1
       If MyGrid[r, c].text = Hotkey Then
         FoundDupe = True
@@ -350,7 +350,11 @@ Private Function CheckDuplicate(Hotkey As String, RowSrc As Integer, ColSrc As I
   Next 'c
   
   If FoundDupe And (Not ((R = RowSrc) And (C = ColSrc))) Then
-    DupedFunction = MyGrid.rows[r].Text
+    If MyGrid.header = GridView.both Then 
+      DupedFunction = MyGrid.rows[r].Text
+        Else
+      DupedFunction = MyGrid[r, 0].Text
+    Endif
     Answer = Message.Warning(("The hotkey you entered is already defined for ") & DupedFunction, ("Delete old "), ("Delete new "), ("Assign nevertheless"))
     Select Case Answer
       Case 1 'delete old
