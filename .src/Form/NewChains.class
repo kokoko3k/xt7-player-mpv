@@ -68,7 +68,7 @@ End
 Private Sub Init_filters_video()
   Dim filters_video_list As New String[]
   Dim filter As String
-  filters_video_list = ["Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "Expand"]
+  filters_video_list = ["Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "vflip", "hflip", "expand"]
   filters_video_list.Insert(["Stereo3D", "vdpaupp", "vavpp", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
@@ -437,7 +437,6 @@ Private Sub draw_filters_audio_cfg()
     
   ' volume lavfi
   AllParams.Add(["TITLE", ("Adjust the input audio volume."), "volume0", ""])
-  'AllParams.Add(["ROCHOOSE", "interlaced-only=", "yes", "no", "vavpp2", ("If yes (default), only deinterlace frames marked as interlaced.")])
   AllParams.add(["CHOOSE", "volume=", "-100dB", "-50dB", "-25dB", "-15dB", "-10dB", "-5dB", "-3dB", "0dB", "3dB", "5dB", "10dB", "15dB", "25dB", "50dB", "100dB", "volume1", ("Input Gain in dB")])
   AllParams.add(["RANGEFLOAT", "volume=", "0", "1", "100", "volume2", ("Input gain multiplier")])
   AllParams.add(["ROCHOOSE", "replaygain=", "drop", "ignore", "track", "album", "volume3", ("Choose the behaviour on encountering ReplayGain side data in input frames. ")])
@@ -445,7 +444,7 @@ Private Sub draw_filters_audio_cfg()
   Global.DrawGui(AllParams, "volume", aTabstrip, switchable, "",, "lavfi", Me)
   AllParams.Clear
     
-  'earwax]
+  'earwax
     AllParams.Add(["TITLE", "- earwax -", "earwax0", ""])
     Global.DrawGui(AllParams, "earwax", aTabstrip, False, "",, "lavfi", Me)
     
@@ -632,6 +631,17 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["ROCHOOSE", ("Disable Upscaling"), ("0 - Allow Upscaling"), ("1 - Disallow if one dimensions exceeds its original value"), ("2 - Disallow if both dimensions exceed their original values"), "scale8", ""])
   AllParams.Add(["ROCHOOSE", ("Accurate Rounding"), ("no - Disable Accurate rounding"), ("yes - Enable Accurate rounding"), "scale9", ""])
   Global.DrawGui(AllParams, "scale", aTabstrip, NotSwitchable,,,, Me)
+  AllParams.Clear
+  
+  
+  'vflip
+  AllParams.Add(["TITLE", "- Vertical flip -", "vflip0", ""])
+  Global.DrawGui(AllParams, "vflip", aTabstrip, NotSwitchable, "",, "lavfi", Me)
+  AllParams.Clear
+
+  'hflip
+  AllParams.Add(["TITLE", "- Horizontal flip -", "hflip0", ""])
+  Global.DrawGui(AllParams, "hflip", aTabstrip, NotSwitchable, "",, "lavfi", Me)
   AllParams.Clear
   
   'delogo[=x:y:w:h:t]
@@ -890,67 +900,6 @@ Private Function Parse_video_filter(Filtername As String) As String
 
   Endif
 End
-
-
-
-
-' Private Function OLD_Parse_video_filter(Filtername As String) As String
-'   'will parse the tabstrip at filtername index and output
-'   'a commandline to add a filter in mplayer
-'   Dim ParsedFilter As String = Lower(FilterName)
-'   Dim TmpString As String = ""
-'   Dim MyScrollView As Object   'the scrollview present in every tab, parent of all the controls in the tab
-'   Dim PanelObject As Object 'the Hbox which contains a single parameter it Is Created by DrawFiltersGui
-'   Dim SubObject As Object
-'   Dim aTabstrip As Tabstrip = TabStrip_filters_video
-'   Dim i As Integer
-'   Dim parse As Boolean = True
-'   Dim out As String
-'   Dim is_lavfi As Boolean = False
-'   i = aTabstrip.index
-'   'Find the ParsedFilter Tab and activate it:
-'   aTabstrip.index = Global.TabIndexByName(ParsedFilter, aTabstrip)
-'   If Parsedfilter Like "customvideo*" Then
-'     out = Parse_video_filter_Custom()
-'     aTabstrip.index = i
-'     Return out
-'       Else
-'     'Discend the Tab objects,parse them and build the commandline
-'     'hierarchy is:
-'     'Tabstrip -> scrollviews -> Panels -> ParameterObjects
-'     For Each MyScrollview In aTabstrip.Children
-'       If MyScrollView.tag = "lavfi" Then is_lavfi = True
-'       For Each PanelObject In MyScrollView.Children
-'         If PanelObject.name Like "*HBox" Then
-'           For Each SubObject In PanelObject.Children
-'             If Not (SubObject Is Label) Then
-'               If Not ((SubObject Is Checkbox) Or (subobject.name Like "NOPARSE*")) Then
-'                 parse = True
-'                 ' Stop
-'                 ' If PanelObject.tag = "lavfi" Then
-'                 '   Break
-'                 ' Endif
-'                   Else
-'                 parse = SubObject.value '(is a checkbox,parse only if it is checked)
-'               Endif
-'               If SubObject.text <> "" Then
-'                 If parse Then TmpString = global.RemoveShortcut(TmpString & Split(SubObject.text, " ")[0] & ":")
-'                   Else
-'                 If parse Then TmpString = global.RemoveShortcut(TmpString & ":")
-'               Endif
-'             Endif
-'           Next
-'         Endif
-'       Next
-'     Next
-'     TmpString = Left(Tmpstring, Len(TmpString) - 1)
-'     aTabstrip.index = i
-'     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
-'     If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
-'     Return ParsedFilter
-' 
-'   Endif
-' End
 
 
 Private Function Parse_audio_filter(Filtername As String) As String
