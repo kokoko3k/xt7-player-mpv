@@ -443,9 +443,9 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["ROCHOOSE", "replaygain=", "drop", "ignore", "track", "album", "volume3", ("Choose the behaviour on encountering ReplayGain side data in input frames. ")])
   AllParams.add(["RANGEFLOAT", "replaygain_preamp=", "0", "0", "100", "volume4", ("Pre-amplification gain in dB to apply to the selected replaygain gain.")])
   Global.DrawGui(AllParams, "volume", aTabstrip, switchable, "",, "lavfi", Me)
+  AllParams.Clear
     
-    
-  'volume[=<volumedb>[:...]]
+  'earwax]
     AllParams.Add(["TITLE", "- earwax -", "earwax0", ""])
     Global.DrawGui(AllParams, "earwax", aTabstrip, False, "",, "lavfi", Me)
     
