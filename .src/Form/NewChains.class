@@ -27,7 +27,7 @@ Private Sub fill_tabstrip(aTabstrip As Tabstrip, aScrollview As Scrollview)
       aTabstrip.text = aScrollview.Children[i].name
       aTabstrip.Arrangement = Arrange.Vertical
       'do not make a scrollview for preconfigured (drawed with the ide) filters.
-      If (aScrollview.Children[i].name <> "equalizer") And (aScrollview.Children[i].name <> "anequalizer") Then 
+      If (aScrollview.Children[i].name <> "anequalizer") Then 
         tabScrollview = New ScrollView(aTabstrip)
         tabScrollview.name = aTabstrip.text & ".ScrollView"
         tabScrollview.expand = True
@@ -50,7 +50,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "anequalizer", "compand", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
+  filters_audio_list = ["anequalizer", "compand", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -974,10 +974,7 @@ Private Function Parse_audio_filter(Filtername As String) As String
 
   'Find the ParsedFilter Tab and activate it:
   atabstrip_index = aTabstrip.Tag.Find(ParsedFilter)
-  If ParsedFilter = "equalizer" Then
-    out = ParseEq() 
-    Return out
-  Else If Parsedfilter = "anequalizer" Then
+  If Parsedfilter = "anequalizer" Then
     anequalizer_string = eqstring(False, ByRef autogaindB)
     If autogaindB > 0 Then
       out_anequalizer = "lavfi=[volume=-" & autogaindB & "dB],"
@@ -1049,9 +1046,7 @@ End
 Public Sub ApplyBTN_Click()
     If Not initdone Then Return
     If Not alreadyloaded Then Return
-    OkToChangeToCustom = False
     Fmain.apply
-    OkToChangeToCustom = True
  End
 
 Public Function parse_drivers(audio As Boolean) As MpvOption[]
@@ -1194,144 +1189,6 @@ Public Function parse_filters(audio As Boolean) As String
   Wend
   Return filters
 End
-
-
-
-
-
-
-
-
-'-------------- Manage Audio Equalizer ------------------
-Public NewEq As String
-
-Private Function ParseEq() As String
-
-  'Force an update of neweq
-  SlidersFreq_Change(False)
-  Return neweq
-End
-
-'salva 'il settagio custom su un file
-'ricaricalo quando si sceglie custom
-'quando salvare il settaggio su un file?
-'basta salvarlo quando si cambia preset
-
-Private OkToChangeToCustom As Boolean = True
-
-Public Sub SlidersFreq_Change(Optional realtime As Boolean = True)
-  Dim Theslider, TheTextbox As Object
-  Dim params As String = ""
-  Dim i As Integer = 0
-  If Not presetting Then
-    If OkToChangeToCustom Then
-      customizing = True
-      PresetsCombobox.text = ("Custom")
-      customizing = False
-    Endif
-  Endif
-  If UpdatingGui Then Return
-  For Each Theslider In sliderscontainer.Children
-    If Theslider Is Slider Then
-      'params = params & (12 - TheSlider.value - 12) & ":"
-      params = params & (TheSlider.value) & ":"
-      'params = params & ":"
-      TheTextbox = valuescontainer.children[i]
-      'TheTextbox.text = (12 - TheSlider.value - 12)
-      TheTextbox.text = TheSlider.value
-      i = i + 1
-    Endif
-  Next 'slider
-  params = Left$(params, Len(params) - 1)
-  NewEq = "equalizer=" & params
-  If Lower(PresetsCombobox.text) = "custom" Then SaveCustomEqSettings(params)
-  If realtime Then dynaobj_change()
-End
-
-Private presetting As Boolean = False
-
-Private customizing As Boolean = False
-Public Sub PresetsCombobox_click()
-  If Customizing Then Return
-  presetting = True
-  Select Case Trim(Lower(PresetsCombobox.text))
-    Case "flat"
-      UpdateGui("0:0:0:0:0:0:0:0:0:0")
-    Case "1965"
-      UpdateGui("-20:-7:-4:-7:3:-2:-4:4:1:-6")
-    Case "air"
-      UpdateGui("0:0:0:0:0:0:0:0:0:3")
-    Case "brittle"
-      UpdateGui("-12:-9:-7:-5:-2:-2:-2:-1:4:1")
-    Case "car stereo"
-      UpdateGui("-5:1:0:-4:-5:-3:-2:-2:1:-2")
-    Case "classic v"
-     UpdateGui("5:0:-5:-8:-7:-4:-3:-1:3:5")
-    Case "clear"
-     UpdateGui("1:0:0:0:0:0:0:0:2:2")
-    Case "death"
-     UpdateGui("20:12:4:0:0:0:0:0:0:0")
-    Case "dark"
-      UpdateGui("-6:-2:-2:-2:-2:-2:-5:-8:-12:-18")
-    Case "drums"
-     UpdateGui("2:0:0:0:0:0:0:2:0:0")
-    Case "home theater"
-     UpdateGui("5:0:-3:-6:-5:-1:0:-1:3:3")
-    Case "loudness"
-      UpdateGui("4:4:-2:-2:-2:-2:-4:-10:0:4")
-    Case "metal"
-     UpdateGui("4:5:0:-2:0:1:1:1:-1:-1")
-    Case "pop"
-     UpdateGui("6:3:-2:-4:-3:0:0:2:2:5")
-    Case "premaster"
-     UpdateGui("0:3:-3:0:0:0:0:3:3:3")
-    Case "presence"
-      UpdateGui("0:0:0:0:0:5:4:3:0:0")
-    Case "punch & sparkle"
-      UpdateGui("3:3:-3:-5:-2:1:1:0:1:5")
-    Case "shimmer"
-      UpdateGui("0:0:-2:-5:0:0:0:4:3:4")
-    Case "soft bass"
-      UpdateGui("3:4:-13:-5:-1:5:1:-1:-2:-9")
-    Case "strings"
-      UpdateGui("-3:-4:-5:-4:-2:-2:-2:-1:3:-2")
-     Case "custom"
-       UpdateGui(LoadCustomEqSettings())
-  End Select
-  SlidersFreq_Change()
-  presetting = False
-  dynaobj_change()
-End
-
-Private UpdatingGui As Boolean = False
-Public Sub UpdateGui(Params As String)
-  Dim value As Integer
-  Dim i As Integer = 0
-  Dim valueobj, sliderobj As Object
-  UpdatingGui = True
-    For Each value In Split(params, ":", "", True)
-      valueobj = valuescontainer.children[i]
-      sliderobj = sliderscontainer.children[i]
-      valueobj.text = value
-      sliderobj.value = value
-      i = i + 1
-    Next 'value
-  UpdatingGui = False
-End
-
-Private Sub SaveCustomEqSettings(EqSettings As String)
-  File.Save(global.confpath & "/" & global.currentprofile & ".profile/audioequalizer.txt", EqSettings)
-End
-
-Private Function LoadCustomEqSettings() As String
-  Try Return File.Load(global.confpath & "/" & global.currentprofile & ".profile/audioequalizer.txt")
-End
-
-
-'-------------------- end manage equalizer
-
-
-
 
 
 'Save and Load Functions------------------------------------------------------
@@ -1864,7 +1721,6 @@ Public Sub dynaobj_change()
   If Not Me.visible Then Return
   If RealTimeCHK.value = CheckBox.false Then Return
   If Not FMain.mplayer.ProcessRunningOvr() Then Return
-  If presetting Then Return 'do not hammer mpv on equalizer changes
   
   'trigger a new timer to check if the changed value is stable
   'we use a timer to keep the gui responsive
