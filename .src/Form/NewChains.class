@@ -688,17 +688,18 @@ Private Sub draw_filters_video_cfg()
   Global.DrawGui(AllParams, "CustomVideo3", aTabstrip, switchable,,,, Me)
   AllParams.Clear
       
-  'eq2[=gamma:contrast:brightness:saturation:rg:gg:bg:weight]
+  'eq lavfi
   AllParams.Add(["TITLE", ("- Software equalizer -"), "Eq0", ""])
-  AllParams.add(["RANGEFLOAT", ("Gamma"), "0.1", "1.0", "10", "Eq1", ("Initial gamma value(default: 1.0)")])
-  AllParams.add(["RANGEFLOAT", ("Contrast"), "-2.0", "1.0", "2", "Eq2", ("Initial contrast (-x = negative image)")])
-  AllParams.add(["RANGEFLOAT", ("Brightness"), "-1", "0", "1", "Eq3", ("Initial brightness (default: 0.0)")])
-  AllParams.add(["RANGEFLOAT", ("Saturation"), "0", "1.0", "3", "Eq4", ("Initial Saturation (default: 0.0)")])
-  AllParams.add(["RANGEFLOAT", ("Gamma Red"), "0.1", "1.0", "10", "Eq5", ("gamma for the red component (default: 1.0)")])
-  AllParams.add(["RANGEFLOAT", ("Gamma Green"), "0.1", "1.0", "10", "Eq6", ("gamma for the green component (default: 1.0)")])
-  AllParams.add(["RANGEFLOAT", ("Gamma Blue"), "0.1", "1.0", "10", "Eq7", ("gamma for the blue component (default: 1.0)")])
-  AllParams.add(["RANGEFLOAT", ("Weight"), "0", "1.0", "1", "Eq8", ("Reduce effect of gamma correction")])
-  Global.DrawGui(AllParams, "eq", aTabstrip, NotSwitchable,,,, Me)
+  AllParams.add(["RANGEFLOAT", ("contrast="), "-2.0", "1.0", "2", "Eq2", ("Initial contrast (-x = negative image)")])
+  AllParams.add(["RANGEFLOAT", ("brightness="), "-1", "0", "1", "Eq3", ("Initial brightness (default: 0.0)")])
+  AllParams.add(["RANGEFLOAT", ("saturation="), "0", "1.0", "3", "Eq4", ("Initial Saturation (default: 0.0)")])
+  AllParams.add(["RANGEFLOAT", ("gamma="), "0.1", "1.0", "10", "Eq1", ("Initial gamma value(default: 1.0)")])  
+
+  AllParams.add(["RANGEFLOAT", ("gamma_r="), "0.1", "1.0", "10", "Eq5", ("gamma for the red component (default: 1.0)")])
+  AllParams.add(["RANGEFLOAT", ("gamma_g="), "0.1", "1.0", "10", "Eq6", ("gamma for the green component (default: 1.0)")])
+  AllParams.add(["RANGEFLOAT", ("gamma_b="), "0.1", "1.0", "10", "Eq7", ("gamma for the blue component (default: 1.0)")])
+  AllParams.add(["RANGEFLOAT", ("gamma_weight"), "0", "1.0", "1", "Eq8", ("Reduce effect of gamma correction")])
+  Global.DrawGui(AllParams, "eq", aTabstrip, Switchable,,, "lavfi", Me)
   AllParams.Clear
 
 
