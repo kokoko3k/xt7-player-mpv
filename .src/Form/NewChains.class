@@ -68,7 +68,7 @@ End
 Private Sub Init_filters_video()
   Dim filters_video_list As New String[]
   Dim filter As String
-  filters_video_list = ["Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "vflip", "hflip", "expand"]
+  filters_video_list = ["Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "vflip", "hflip", "rotate", "expand"]
   filters_video_list.Insert(["Stereo3D", "vdpaupp", "vavpp", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
@@ -635,13 +635,19 @@ Private Sub draw_filters_video_cfg()
   
   
   'vflip
-  AllParams.Add(["TITLE", "- Vertical flip -", "vflip0", ""])
+  AllParams.Add(["TITLE", ("- Vertical flip -"), "vflip0", ""])
   Global.DrawGui(AllParams, "vflip", aTabstrip, NotSwitchable, "",, "lavfi", Me)
   AllParams.Clear
 
   'hflip
-  AllParams.Add(["TITLE", "- Horizontal flip -", "hflip0", ""])
+  AllParams.Add(["TITLE", ("- Horizontal flip -"), "hflip0", ""])
   Global.DrawGui(AllParams, "hflip", aTabstrip, NotSwitchable, "",, "lavfi", Me)
+  AllParams.Clear
+
+  'rotate
+  AllParams.Add(["TITLE", ("- Rotate video -"), "rotate0", ""])
+  AllParams.Add(["CHOOSE", ("Angle"), "90*PI/180", "180*PI/180", "270*PI/180", "rotate1", ("lower=slower")])
+  Global.DrawGui(AllParams, "rotate", aTabstrip, NotSwitchable, "",, "lavfi", Me)
   AllParams.Clear
   
   'delogo[=x:y:w:h:t]
