@@ -297,7 +297,6 @@ Private Sub select_item(item As Object)
     Next
     item.parent.background = Color.SelectedBackground
     item.parent.foreground = Color.SelectedForeground
-    
     Select_tabstrip_item(item.parent.name, item.parent.parent.tag)  
   Endif
     
@@ -442,7 +441,7 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["CHOOSE", "volume=", "-100dB", "-50dB", "-25dB", "-15dB", "-10dB", "-5dB", "-3dB", "0dB", "3dB", "5dB", "10dB", "15dB", "25dB", "50dB", "100dB", "volume1", ("Input Gain in dB")])
   AllParams.add(["RANGEFLOAT", "volume=", "0", "1", "100", "volume2", ("Input gain multiplier")])
   AllParams.add(["ROCHOOSE", "replaygain=", "drop", "ignore", "track", "album", "volume3", ("Choose the behaviour on encountering ReplayGain side data in input frames. ")])
-  AllParams.add(["RANGEFLOAT", "replaygain_preamp=", "0", "0", "100", "volume2", ("Pre-amplification gain in dB to apply to the selected replaygain gain.")])
+  AllParams.add(["RANGEFLOAT", "replaygain_preamp=", "0", "0", "100", "volume4", ("Pre-amplification gain in dB to apply to the selected replaygain gain.")])
   Global.DrawGui(AllParams, "volume", aTabstrip, switchable, "",, "lavfi", Me)
     
     
