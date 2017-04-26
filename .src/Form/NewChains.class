@@ -50,7 +50,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["equalizer", "anequalizer", "compand", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
+  filters_audio_list = ["equalizer", "anequalizer", "compand", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -423,18 +423,18 @@ Private Sub draw_filters_audio_cfg()
   ' AllParams.Clear
 
 
-
-  'volume[=<volumedb>[:...]]
-    AllParams.Add(["TITLE", "- Software volume control -", "Volume0", ""])
-    'AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
-    AllParams.add(["RANGE", "replaygain-preamp=", "-20", "0", "20", "Volume4", ("Pre-amplification in dB to apply to the replaygain gain")])
-    AllParams.add(["ROCHOOSE", "replaygain-track=", "yes", "no", "Volume2", ("Use track-gain from replaygain metadata value")])
-    AllParams.add(["ROCHOOSE", "replaygain-album=", "yes", "no", "Volume3", ("Like replaygain-track, but using the album-gain value")])
-    AllParams.add(["ROCHOOSE", "replaygain-clip=", "yes", "no", "Volume5", ("Prevent replaygain clipping by lowering the gain")])
-    AllParams.add(["ROCHOOSE", "softclip=", "yes", "no", "Volume6", ("Turns on soft clipping")])
-    AllParams.Add(["TIP", ("Put this filter at the end of the chain, but before lavrresample (if enabled)"), "Volume7", ""])
-    Global.DrawGui(AllParams, "volume", aTabstrip, switchable,,,, Me)
-    AllParams.Clear
+'deprecated since 0.25
+  ' 'volume[=<volumedb>[:...]]
+  '   AllParams.Add(["TITLE", "- Software volume control -", "Volume0", ""])
+  '   'AllParams.add(["RANGE", "volumedb=", "-200", "0", "60", "Volume1", "db"])
+  '   AllParams.add(["RANGE", "replaygain-preamp=", "-20", "0", "20", "Volume4", ("Pre-amplification in dB to apply to the replaygain gain")])
+  '   AllParams.add(["ROCHOOSE", "replaygain-track=", "yes", "no", "Volume2", ("Use track-gain from replaygain metadata value")])
+  '   AllParams.add(["ROCHOOSE", "replaygain-album=", "yes", "no", "Volume3", ("Like replaygain-track, but using the album-gain value")])
+  '   AllParams.add(["ROCHOOSE", "replaygain-clip=", "yes", "no", "Volume5", ("Prevent replaygain clipping by lowering the gain")])
+  '   AllParams.add(["ROCHOOSE", "softclip=", "yes", "no", "Volume6", ("Turns on soft clipping")])
+  '   AllParams.Add(["TIP", ("Put this filter at the end of the chain, but before lavrresample (if enabled)"), "Volume7", ""])
+  '   Global.DrawGui(AllParams, "volume", aTabstrip, switchable,,,, Me)
+  '   AllParams.Clear
     
     
   'volume[=<volumedb>[:...]]
