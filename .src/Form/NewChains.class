@@ -447,7 +447,6 @@ Private Sub draw_filters_audio_cfg()
   'earwax
     AllParams.Add(["TITLE", "- earwax -", "earwax0", ""])
     Global.DrawGui(AllParams, "earwax", aTabstrip, False, "",, "lavfi", Me)
-    
     AllParams.Clear
     
   'scaletempo[=option1:option2:...]
@@ -476,11 +475,8 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["RANGEFLOAT", "limit", "0.1", "1", "1", "alimiter3", ""]) 
   AllParams.add(["RANGE", "attack", "1", "5", "80", "alimiter4", ""]) 
   AllParams.add(["RANGE", "release", "1", "2000", "8000", "alimiter5", ""]) 
-  
-  
   AllParams.add(["RANGE", "asc", "0", "1", "1", "alimiter6", ("Keep asc =1 active to avoid distortions on systems with more than 2 speakers")]) 
   AllParams.add(["RANGEFLOAT", "asc_level", "0", "1", "1", "alimiter7", ""]) 
-  
   AllParams.Add(["TIP", ("This filter is a good volume normalizer"), "alimiter6", ""])
   Global.DrawGui(AllParams, "alimiter", aTabstrip, False,,, "lavfi", Me)
   AllParams.Clear
@@ -491,7 +487,6 @@ Private Sub draw_filters_audio_cfg()
   AllParams.add(["ROCHOOSE", "linear=", "yes", "no", "lavrresample2", "filter linear interpolation"])
   AllParams.Add(["TIP", ("Put this filter at the end of the chain, but before lavcac3enc (if enabled)"), "lavrresample3", ""])
   Global.DrawGui(AllParams, "lavrresample", aTabstrip, switchable,,, "", Me)
-  
   AllParams.Clear
 
 
@@ -582,6 +577,7 @@ Private Sub draw_filters_video_cfg()
   Dim NotSwitchable As Boolean = False
   Dim Switchable As Boolean = True
   Dim aTabstrip As Tabstrip = TabStrip_filters_video
+  Dim t As Object
   
   AllParams.Clear
   
@@ -623,14 +619,13 @@ Private Sub draw_filters_video_cfg()
   
   'scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]
   AllParams.Add(["TITLE", ("- Software scaler -"), "Scale0", ""])
-  AllParams.Add(["RANGE", ("Width"), "-11", "0", "2048", "Scale1", ("0 disables scaling,see man below")])
-  AllParams.Add(["RANGE", ("Height"), "-11", "0", "2048", "Scale2", ("0 disables scaling,see man below")])
-  AllParams.Add(["FREE", ("Scaling Parameters"), "", "Scale5", ("Depends on sws, leave blank if unsure")])
-  AllParams.Add(["FREE", ("Scaling Parameters"), "", "Scale6", ("Depends on sws, leave blank if unsure")])
-  AllParams.Add(["ROCHOOSE", ("Chroma skipping"), ("0 - Use all available input lines for chroma"), ("1 - Use only every 2. input line for chroma"), ("2 - Use only every 4. input line for chroma"), ("3 - Use only every 8. input line for chroma"), "Scale4", ("lower=slower")])
-  AllParams.Add(["ROCHOOSE", ("Disable Upscaling"), ("0 - Allow Upscaling"), ("1 - Disallow if one dimensions exceeds its original value"), ("2 - Disallow if both dimensions exceed their original values"), "scale8", ""])
-  AllParams.Add(["ROCHOOSE", ("Accurate Rounding"), ("no - Disable Accurate rounding"), ("yes - Enable Accurate rounding"), "scale9", ""])
-  Global.DrawGui(AllParams, "scale", aTabstrip, NotSwitchable,,,, Me)
+  AllParams.Add(["RANGE", ("width="), "-11", "0", "4096", "Scale11", ("0 disables width scaling")])
+  AllParams.Add(["RANGE", ("height="), "-11", "0", "4096", "Scale12", ("0 disables height scaling")])
+  AllParams.add(["ROCHOOSE", ("interl="), ("0 - Do not apply interlaced scaling"), ("1 - Force interlaced aware scaling"), ("-1 - Automatic"), "scale13", ("Set the interlacing mode.")])
+  AllParams.add(["ROCHOOSE", ("force_original_aspect_ratio="), ("disable"), ("decrease"), ("increase"), "scale14", ("Enable decreasing or increasing output video width or height if necessary to keep the original aspect ratio.")])
+  Global.DrawGui(AllParams, "scale", aTabstrip, switchable,,, "lavfi", Me)
+  Try Object.SetProperty(Me.controls["Scale11.CheckBox"], "value", CheckBox.true)
+  Try Object.SetProperty(Me.controls["Scale12.CheckBox"], "value", CheckBox.true)
   AllParams.Clear
   
   
