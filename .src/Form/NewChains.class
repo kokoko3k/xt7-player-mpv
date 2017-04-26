@@ -722,9 +722,10 @@ Private Sub draw_filters_video_cfg()
   
  'yadif=[mode[:field_dominance]]
   AllParams.Add(["TITLE", ("- Yet Another Deinterlace Filter. -"), "yadif0", ""])
-  AllParams.Add(["ROCHOOSE", ("Deinterlace mode"), "", ("frame - Output 1 frame for each frame."), ("field - Output 1 frame for each field."), ("frame-nospatial - Like 0 but skips spatial interlacing check."), ("field-nospatial - Like 1 but skips spatial interlacing check"), "yadif1", ""])
-  AllParams.Add(["ROCHOOSE", ("Interlaced only"), "", ("no"), ("yes"), "yadif1", "Only deinterlace frames marked as interlaced "])
-  Global.DrawGui(AllParams, "yadif", aTabstrip, NotSwitchable,,,, Me)
+  AllParams.Add(["ROCHOOSE", ("mode="), ("0 - Output 1 frame for each frame."), ("1 - Output 1 frame for each field."), ("2 - Like 0 but skips spatial interlacing check."), ("3 - Like 1 but skips spatial interlacing check"), "yadif11", ""])
+  AllParams.Add(["ROCHOOSE", ("parity="), ("0 - top field first"), ("1 - bottom field first"), ("-1 - auto"), "yadif12", ("Picture field parity to assume")])
+  AllParams.Add(["ROCHOOSE", ("deint="), ("0 - deinterlace all frames"), ("1 - only deinterlace frames marked as interlaced"), "yadif13", "Only deinterlace frames marked as interlaced "])
+  Global.DrawGui(AllParams, "yadif", aTabstrip, Switchable,,, "lavfi", Me)
   AllParams.Clear
   
   AllParams.Add(["TITLE", ("- VDPAU video postprocessing - "), "vdpaupp0", ""])
