@@ -27,7 +27,7 @@ Private Sub fill_tabstrip(aTabstrip As Tabstrip, aScrollview As Scrollview)
       aTabstrip.text = aScrollview.Children[i].name
       aTabstrip.Arrangement = Arrange.Vertical
       'do not make a scrollview for preconfigured (drawed with the ide) filters.
-      If (aScrollview.Children[i].name <> "anequalizer") Then 
+      If (aScrollview.Children[i].name <> "anequalizer") And (aScrollview.Children[i].name <> "acompressor") And (aScrollview.Children[i].name <> "compand") Then 
         tabScrollview = New ScrollView(aTabstrip)
         tabScrollview.name = aTabstrip.text & ".ScrollView"
         tabScrollview.expand = True
@@ -50,7 +50,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["anequalizer", "compand", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
+  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -338,7 +338,9 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
     aTabstrip.index = item_tab
     If atabstrip.caption <> "anequalizer" Then 
       If atabstrip.caption <> "compand" Then 
-        HelpBox.reparent(aTabstrip)
+        If atabstrip.caption <> "acompressor" Then 
+          HelpBox.reparent(aTabstrip)
+        Endif
       Endif
     Endif
       Else
@@ -346,8 +348,10 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
       aTabstrip.index = i
       If Lower(aTabstrip.caption) = item_name Then 
         If atabstrip.caption <> "anequalizer" Then 
-          If atabstrip.caption <> "compband" Then 
-            HelpBox.reparent(aTabstrip)
+          If atabstrip.caption <> "compand" Then 
+            If atabstrip.caption <> "acompressor" Then 
+              HelpBox.reparent(aTabstrip)
+            Endif
           Endif
         Endif
         Goto returnlabel
@@ -934,6 +938,8 @@ Private Function Parse_audio_filter(Filtername As String) As String
     Return out_anequalizer
   Else If Parsedfilter = "compand" Then
     Return parse_compand()
+  Else If Parsedfilter = "acompressor" Then
+    Return parse_acompressor()
     
 
   Else If Parsedfilter Like "customaudio*" Then
@@ -1390,6 +1396,8 @@ Private Sub AlignObjects()
   containers.Add(jackScrollview)
   containers.Add(pulseScrollview)
   containers.Add(pcmscrollview)
+  containers.Add(vboxacompressor)
+
   
     'find the width of an empty checkbox
   alabel = New Label(zzzfake)
@@ -1406,7 +1414,6 @@ Private Sub AlignObjects()
   alabel.delete
 
   For Each acontainer In containers
-   
     max_obj_w = 0
     align_objs.clear
     For Each aBox In acontainer.children
@@ -1431,6 +1438,8 @@ Private Sub AlignObjects()
 
     'align labels
     For Each child In align_objs
+      'If child.parent.parent = vboxacompressor Then Stop
+      'Debug child.parent.name
       Object.SetProperty(child, "autoresize", False)
       Object.SetProperty(child, "w", max_obj_w)
     Next
@@ -2042,6 +2051,93 @@ End
 Public Sub compand_dynaobj_Change()
   update_compand()
   dynaobj_change()
+End
+
+
+
+Public Sub acompressor_dynaobj_Change()
+  update_acompressor()
+  dynaobj_change()
+End
+
+Public Sub update_acompressor()
+  Dim MakeupdB, threshold, ratio, attack, release, knee As Integer
+  
+  boxacompressor1.Enabled = (Button_acompressor_autovalues.value = False)
+  boxacompressor2.Enabled = (Button_acompressor_autovalues.value = False)
+  boxacompressor3.Enabled = (Button_acompressor_autovalues.value = False)
+  boxacompressor4.Enabled = (Button_acompressor_autovalues.value = False)
+  boxacompressor5.Enabled = (Button_acompressor_autovalues.value = False)
+  boxacompressor6.Enabled = (Button_acompressor_autovalues.value = False)
+  boxacompressor7.Enabled = (Button_acompressor_autovalues.value = False)
+
+  If Button_acompressor_autovalues.value = True Then
+    Makeupdb = makeupgainspinbox2.text
+    thresholdspinbox.value = - (Makeupdb + 3) '(+3 is to anticlip)
+    ratiospinbox.value = 20
+    attackspinbox.value = 0
+    releasespinbox.value = CInt(Min(90, (makeupdb * 2)))
+    kneespinbox.value = Min(8, makeupdb Div 4)
+    linkcombobox.text = "maximum"
+    detectioncombobox.text = "rms"
+  Endif
+
+End
+    
+Public Sub Button_acompressor_autovalues_Click()
+  update_acompressor()
+End
+
+Private Function dB2K(dB As Float) As Float
+  Return 10 ^ (dB / 20)
+End
+
+Private Function inrange(x As Float, fMin As Float, fMax As Float) As Float
+  If x < fMin Then Return fMin
+  If x > fMax Then Return fMax
+  Return x
+End
+
+
+Private Function parse_acompressor() As String
+  Dim out As String
+  Dim threshold, attack, release As Float
+  Dim ratio, makeup, knee As Integer
+  Dim slink, detection As String
+  
+  'level_in = dB2K(makeupgainspinbox2.value)
+  makeup = dB2K(makeupgainspinbox2.value)
+  threshold = dB2K(thresholdspinbox.value)
+  attack = attackspinbox.value * 10
+  release = releasespinbox.value * 100
+  ratio = ratiospinbox.value
+  knee = kneespinbox.value
+  sLink = linkcombobox.text
+  detection = detectioncombobox.text
+
+  'level_in = inrange(level_in, 0.015625, 64)
+  makeup = inrange(makeup, 1, 64)
+  threshold = inrange(threshold, 0.00097563, 1)
+  ratio = inrange(ratio, 1, 20)
+  attack = inrange(attack, 0.01, 2000)
+  release = inrange(release, 0.01, 9000)
+  knee = inrange(knee, 1, 8)
+
+  
+  out = "@label_acompressor:lavfi=[acompressor="
+  'out &= "level_in=" & level_in & ":"
+  out &= "makeup=" & makeup & ":"
+  out &= "threshold=" & threshold & ":"
+  out &= "ratio=" & ratio & ":"
+  out &= "attack=" & attack & ":"
+  out &= "release=" & release & ":"
+  out &= "knee=" & knee & ":"
+  out &= "link=" & sLink & ":"
+  out &= "detection=" & detection
+  out &= "]"
+
+  Return out
+  
 End
 
 

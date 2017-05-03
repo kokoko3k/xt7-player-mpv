@@ -103,17 +103,17 @@
       Picture = Picture["icon:/16/tools"]
     }
     { TabStrip_filters_audio TabStrip
-      MoveScaled(34,0,56,47)
+      MoveScaled(36,1,57,47)
       #Translate = False
       Expand = True
       Arrangement = Arrange.Fill
       Margin = True
-      Count = 2
+      Count = 3
       TextFont = Font["-1"]
       Index = 0
       Text = "anequalizer"
       { AnEqualizerPanel Panel
-        MoveScaled(3,2,88,38)
+        MoveScaled(2,1,88,38)
         Expand = True
         Arrangement = Arrange.Vertical
         { PictureBox1 PictureBox
@@ -538,7 +538,7 @@
       Index = 1
       Text = "compand"
       { vboxcompand Panel
-        MoveScaled(2,3,52,36)
+        MoveScaled(0,0,52,36)
         Arrangement = Arrange.Vertical
         Spacing = True
         Margin = True
@@ -596,6 +596,157 @@
             MaxValue = 999999
             Step = 10
             Value = 150
+          }
+        }
+      }
+      Index = 2
+      Text = "acompressor"
+      { vboxacompressor ScrollView
+        MoveScaled(0,0,52,40)
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Margin = True
+        ScrollBar = Scroll.Vertical
+        { Hbox3 HBox
+          MoveScaled(2,2,51,6)
+          Padding = 6
+          { Label2 Label
+            MoveScaled(1,0,18,5)
+            AutoResize = True
+            Text = ("Makeup Gain (dB)")
+          }
+          { makeupgainspinbox2 SpinBox acompressor_dynaobj
+            Name = "makeupgainspinbox2"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MaxValue = 36
+            Step = 5
+            Value = 15
+          }
+        }
+        { Button_acompressor_autovalues ToggleButton
+          MoveScaled(1,9,51,4)
+          Text = ("Auto values")
+        }
+        { boxacompressor1 HBox
+          MoveScaled(1,14,51,6)
+          Padding = 6
+          { Label5 Label
+            MoveScaled(2,0,17,5)
+            Text = ("Threshold (dB)")
+          }
+          { thresholdspinbox SpinBox acompressor_dynaobj
+            Name = "thresholdspinbox"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MinValue = -60
+            MaxValue = 0
+            Value = -18
+          }
+        }
+        { boxacompressor2 HBox
+          MoveScaled(1,21,51,6)
+          Padding = 6
+          { Label6 Label
+            MoveScaled(1,0,17,5)
+            Text = ("Ratio")
+          }
+          { ratiospinbox SpinBox acompressor_dynaobj
+            Name = "ratiospinbox"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MinValue = 1
+            MaxValue = 20
+            Value = 2
+          }
+        }
+        { boxacompressor3 HBox
+          MoveScaled(1,28,51,6)
+          Padding = 6
+          { Label7 Label
+            MoveScaled(1,0,17,5)
+            Text = ("Attack (centisecs)")
+          }
+          { attackspinbox SpinBox acompressor_dynaobj
+            Name = "attackspinbox"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MaxValue = 200
+            Step = 10
+            Value = 2
+          }
+        }
+        { boxacompressor4 HBox
+          MoveScaled(1,35,51,6)
+          Padding = 6
+          { Label4 Label
+            MoveScaled(1,0,17,5)
+            Text = ("Release (decisecs)")
+          }
+          { releasespinbox SpinBox acompressor_dynaobj
+            Name = "releasespinbox"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MaxValue = 90
+            Step = 10
+            Value = 150
+          }
+        }
+        { boxacompressor5 HBox
+          MoveScaled(1,42,51,6)
+          Padding = 6
+          { Label3 Label
+            MoveScaled(2,0,17,5)
+            Text = ("Soft knee radius")
+          }
+          { kneespinbox SpinBox acompressor_dynaobj
+            Name = "kneespinbox"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MinValue = 1
+            MaxValue = 8
+            Step = 5
+            Value = 7
+          }
+        }
+        { boxacompressor6 HBox
+          MoveScaled(1,49,51,6)
+          Padding = 6
+          { Label9 Label
+            MoveScaled(1,0,17,5)
+            Text = ("link")
+          }
+          { linkcombobox ComboBox acompressor_dynaobj
+            Name = "linkcombobox"
+            MoveScaled(26,1,24,4)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["average", "maximum"]
+            Text = "average"
+          }
+        }
+        { boxacompressor7 HBox
+          MoveScaled(1,56,51,6)
+          Padding = 6
+          { Label8 Label
+            MoveScaled(1,0,17,5)
+            Text = ("detection")
+          }
+          { detectioncombobox ComboBox acompressor_dynaobj
+            Name = "detectioncombobox"
+            MoveScaled(26,1,24,4)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["peak", "rms"]
+            Text = "rms"
           }
         }
       }
