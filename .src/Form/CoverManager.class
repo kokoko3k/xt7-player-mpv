@@ -1166,7 +1166,7 @@ Public Sub FolderPictureToCoverCache(Directory As String, coverfilename As Strin
   Dim folderpicturefile As String
   folderpicturefile = FolderPicture(directory)
   If folderpicturefile <> "" Then
-    Copy Directory & "/" & folderpicturefile To coverfilename
+    Try Copy Directory & "/" & folderpicturefile To coverfilename
     Try mygrid[row, column].text = ""
     Try mygrid[row, column].clear
   Endif

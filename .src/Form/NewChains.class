@@ -1787,10 +1787,10 @@ Public Sub DrawGraph_part2()
       Paint.fill      
     Paint.end
  
-    paint_freq_line("20Hz", 11.7, img, line_color)
+    paint_freq_line("20Hz", 5, img, line_color)
     paint_freq_line("100Hz", 20, img, line_color)
-    paint_freq_line("500Hz", 45.1, img, line_color)
-    paint_freq_line("1Khz", 55.2, img, line_color)
+    paint_freq_line("500Hz", 43.9, img, line_color)
+    paint_freq_line("1Khz", 54.07, img, line_color)
     paint_freq_line("10Khz", 88.5, img, line_color)
     paint_freq_line("20Khz", 98.6, img, line_color)
 
@@ -1804,6 +1804,7 @@ Public Sub DrawGraph_part2()
 
     Try picfile = tempdir & "/" & Dir(tempdir)[0]
     Try img_graph = Image.Load(picfile).Opacity(0.7)
+    Try img_graph = img_graph.Stretch(picturebox1.w, img_graph.h)
     If img_graph <> Null Then
       Paint.Begin(img_graph)
         Paint.operator = Paint.OperatorAdd
@@ -1898,6 +1899,7 @@ Public Function parse_compand() As String
 End
 
 
+Private graph_w As Integer = 840 'this values allow mark lines to stay in "sync" with ffmpeg graph values
 
 Public Function eqstring(Optional complex As Boolean = True, Optional ByRef autogaindB As Integer) As String
   Dim band_containers As New Object[]
@@ -1938,9 +1940,11 @@ Public Function eqstring(Optional complex As Boolean = True, Optional ByRef auto
   outstring = Left(outstring, -1)
   'debug picturebox1.h
   'If complex Then outstring &= ":\"curves=true:colors='transparent|white':fscale=1:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
-  If complex Then outstring &= ":\"curves=true:fscale=1:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
+  'If complex Then outstring &= ":\"curves=true:fscale=1:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
+  If complex Then outstring &= ":\"curves=true:fscale=1:size=" & graph_w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
   Return outstring
 End
+
 
 Public Sub DrawGraph()
   Dim eq_string As String
@@ -1959,6 +1963,7 @@ Public Sub DrawGraph()
   eq_string = eqstring()
   If eq_string <> "" Then
     mpveq.mpvoptions["lavfi-complex"] = "\"" & eqstring() & "\""
+    'mpveq.mpvoptions["vf"] = "scale=" & picturebox1.w & ":" & picturebox1.h
     mpveq.mpvoptions["vo"] = "image"
     mpveq.mpvoptions["ao"] = "null"
     mpveq.mpvoptions["vo-image-format"] = "png"
