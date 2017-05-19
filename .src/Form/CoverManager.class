@@ -1186,37 +1186,18 @@ Public Function FolderPicture(Directory As String) As String
     Return folderpictures[directory]
   Endif
 
-  Matches.Add("*ront*.jpg")
-  Matches.Add("*FRONT*.jpg") 
-  Matches.Add("*FRONT*.JPG")
-  Matches.Add("ront*.JPEG")
-  Matches.Add("*ront*.PNG")
-  Matches.Add("*ront*.BMP")
-
+  Matches.Add("*front*.jpg")
   Matches.Add("*folder*.jpg")
-  Matches.Add("*FOLDER*.jpg") 
-  Matches.Add("*FOLDER*.JPG")
-  Matches.Add("folder*.JPEG")
-  Matches.Add("*older*.PNG")
-  Matches.Add("*older*.BMP")
-
 
   Matches.Add("*.jpg")
-  Matches.Add("*.JPG")
   Matches.Add("*.jpeg")
-  Matches.Add("*.JPEG")
   Matches.Add("*.png")
-  Matches.Add("*.PNG")
   Matches.Add("*.bmp")
-  Matches.Add("*.BMP")
 
-
-  For Each sFile In (Dir(Directory, "*"))
-
-    If sFile Like "*.png" Then Stop
-    For Each sMatch In Matches
-      If sFile Like sMatch Then 
-        
+  For Each sMatch In Matches
+    For Each sFile In (Dir(Directory, "*"))
+    If Lower(sFile) Like "*.jpg" Then Stop
+      If Lower(sFile) Like sMatch Then     
         folderpictures.Add(sFile, directory)
         Return sFile
       Endif
