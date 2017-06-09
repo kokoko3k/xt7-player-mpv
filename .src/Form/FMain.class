@@ -273,7 +273,6 @@ End
 
 Public Sub Form_Open()
 
-
   SetFlexSpaceVisibility(False)
   'init dynagui toolbar objects
   DynaGuiTools.AllowedContainers = ["MainToolbar"] ', "SliderBox"]
@@ -566,6 +565,7 @@ Public Sub AllInit_Post()
   
   ' timer_runtime_infos = New Timer As "timer_runtime_infos"
   ' timer_runtime_infos.enabled = False
+
 End
 
 Private Sub MakeProfileMenu()
@@ -4442,12 +4442,23 @@ End
 Public Function DisableKDECompositing() As Boolean
   
   Dim wasactive As Boolean = False
-  
-  If DBus["org.kde.kwin"]["/KWin"].compositingActive() Then 
+  Dim t As String
+
+  'kde4:  
+    Try wasactive = DBus["org.kde.kwin"]["/KWin"].compositingActive() 
+    If Error Then Goto try_kde5
+    If wasactive Then
+      Shell "dbus-send --type=method_call --dest=org.kde.kwin /KWin org.kde.KWin.toggleCompositing" Wait
+      Return wasactive
+    Endif
     
-    wasactive = True
-    Shell "dbus-send --type=method_call --dest=org.kde.kwin /KWin org.kde.KWin.toggleCompositing"
-  Endif
+  try_kde5:
+    Shell "qdbus org.kde.KWin /Compositor active" To t
+    If t Begins "true" Then 
+      wasactive = True
+      Shell "qdbus org.kde.KWin /Compositor suspend" Wait
+    Endif
+  
   Return wasactive
   
 End
@@ -4455,11 +4466,26 @@ End
 Public Function EnableKDECompositing() As Boolean
   
   Dim wasinactive As Boolean = False
-  If Not (DBus["org.kde.kwin"]["/KWin"].compositingActive()) Then 
-    wasinactive = True
+  Dim t As String 
+  
+  Try wasinactive = (DBus["org.kde.kwin"]["/KWin"].compositingActive())
+  If Error Then Goto try_kde5
+  If wasinactive Then
     Shell "dbus-send --type=method_call --dest=org.kde.kwin /KWin org.kde.KWin.toggleCompositing"
+    Return wasinactive
   Endif
+
+  try_kde5:
+  Shell "qdbus org.kde.KWin /Compositor active" To t
+  If Not (t Begins "true") Then 
+    wasinactive = True
+    Shell "qdbus org.kde.KWin /Compositor resume"
+  Endif
+  
+  
   Return wasinactive
+  
+  
   
 End
 
@@ -4595,13 +4621,14 @@ Public Sub FullScreenSwitch()
   Else
     If global.IsImgFile(mplayer.getP("fullpath")) Then mplayer.do_seek(0)
     'Disable kde effects?
+
     If GeneralOptions.NoEffectsCheckbox.value Then
       Try KdeEffectsWereActive = DisableKDECompositing()
       If Error Then
         global.myDebug("Unable to disable kde effects, are you sure use kwin window manager?")
         KdeEffectsWereActive = False
           Else
-        Wait 1 'workaround possible driver bugs
+        'Wait 0.5 'workaround possible driver bugs
       Endif
     Endif
     SwitchToFS()
@@ -7256,8 +7283,8 @@ Public Sub Gridviews_Data(MyGrid As GridView, MyLibrary As Playlistclass, Row As
     MyGrid.data.background = Global.Alternatecolor
   Endif
   If row = hirow Then mygrid.Data.Font.bold = True
-  MyGrid.data.text = MyLibrary.CellValue(MyGrid, row, column)
 
+  MyGrid.data.text = MyLibrary.CellValue(MyGrid, row, column)
   mygrid.Data.Foreground = GeneralOptions.ColorChooseBTN1.Background
   
 End

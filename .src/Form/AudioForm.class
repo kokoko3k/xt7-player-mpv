@@ -302,11 +302,10 @@ Public Sub ShowBackground(Optional i As Image = Null)
   blurred = blurred.Stretch(10, 10)
   blurred = blurred.Stretch(5, 5)
   blurred = blurred.Stretch(10, 10)
-  blurred = blurred.Stretch(5, 5)
-  
-                                              
-
+  blurred = blurred.Stretch(5, 5)                                           
   blurred = blurred.Stretch(gradient.w, gradient.h)
+  blurred = blurred.Stretch(gradient.w, gradient.h)
+
   
   'normalize brightness
   mean = c_mean(blurred)

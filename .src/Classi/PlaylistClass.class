@@ -799,7 +799,7 @@ Public Sub UpdateSelected(G As Gridview)
         Endif
         Searchtable[sRow] = UpdateTableRow(Searchtable[sRow]) 'aggiornali in searchtable
         Ptable[pRow] = Searchtable[sRow]                      '...e rifletti la modifica in ptable
-  
+
         'Discard the uncovered state so that cover will be searched again
         CoverManager.UnMarkUncovered(p)
         'invalida la riga della gridview in modo che l'evento data la ricompili con le info aggiornate
