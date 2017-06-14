@@ -600,7 +600,7 @@ Private Sub draw_filters_video_cfg()
   Global.DrawGui(AllParams, "unsharp", aTabstrip, NotSwitchable, "",, "lavfi", Me)
   AllParams.Clear
   
-  'expand[ = w: h: x: y: o: a: r]
+  'pad
   AllParams.Add(["TITLE", ("- Expands (not scales) video resolution -"), "Expand0", ""])
   AllParams.add(["RANGE", ("Width"), "-2048", "0", "2048", "Expand1", ("0 to Disable; Negative as offset to original value")])
   AllParams.add(["RANGE", ("Height"), "-2048", "0", "2048", "Expand2", ("0 to Disable; Negative as offset to original value")])
@@ -608,8 +608,9 @@ Private Sub draw_filters_video_cfg()
   AllParams.add(["RANGE", ("Y Position"), "-1", "-1", "2048", "Expand4", ("Original image position; -1 to center")])
   AllParams.add(["CHOOSE", ("Fit an aspect instead of a resolution"), "", "4/3", "3/2", "16/9", "16/10", "1.85/1", "2.35/1", "2.39/1", "Expand6", ""])
   AllParams.add(["RANGE", ("Make Width and Height divisible by"), "1", "1", "64", "Expand7", ""])
-  Global.DrawGui(AllParams, "expand", aTabstrip, NotSwitchable,,, "lavfi", Me)
+  Global.DrawGui(AllParams, "expand", aTabstrip, NotSwitchable,,,, Me)
   AllParams.Clear
+  
   
    
   'hqdn3d[ = luma_spatial: chroma_spatial: luma_tmp: chroma_tmp]
