@@ -43,8 +43,9 @@
         Border = Border.Etched
         { TextLabel3 TextLabel
           MoveScaled(16,5,24,4.5714)
-          Font = Font["Bold,+2"]
+          Font = Font["Bold,+1"]
           Background = Color.TextBackground
+          AutoResize = True
           Text = ("OSD")
           Alignment = Align.Center
           Border = Border.Plain
@@ -199,8 +200,9 @@
         Border = Border.Etched
         { TextLabel2 TextLabel
           MoveScaled(18,1,24,4.5714)
-          Font = Font["Bold,+2"]
+          Font = Font["Bold,+1"]
           Background = Color.TextBackground
+          AutoResize = True
           Text = ("Subtitles")
           Alignment = Align.Center
           Border = Border.Plain
@@ -378,8 +380,9 @@
         Border = Border.Etched
         { TextLabel4 TextLabel
           MoveScaled(13,1,24,4.5714)
-          Font = Font["Bold,+2"]
+          Font = Font["Bold,+1"]
           Background = Color.TextBackground
+          AutoResize = True
           Text = ("Extra Settings")
           Alignment = Align.Center
           Border = Border.Plain
@@ -397,13 +400,15 @@
             MoveScaled(1,1,17,4.5714)
             Enabled = False
             Expand = True
+            AutoResize = True
             Text = ("Load subtitles")
             Value = CheckBox.True
           }
           { Combofuzziness ComboBox
             MoveScaled(23,0,14,4.5714)
+            Expand = True
             ReadOnly = True
-            List = [("exact - Match exact filename, but extension"), ("fuzzy - Load all subs containing movie name"), ("all - Load all subs in the current directory")]
+            List = [("exact - Match exact filename, but extension"), ("fuzzy - Load all subs containing movie name"), ("all - Load all subs in the current directory"), ("no - do not load external subtitles")]
             Text = ("exact - Match exact filename, but extension")
           }
         }
@@ -417,12 +422,14 @@
             Name = "AlignmentCHK"
             MoveScaled(1,1,17,4.5714)
             Expand = True
+            AutoResize = True
             Text = ("Alignment")
           }
           { ComboAlignment ComboBox notifytest
             Name = "ComboAlignment"
             MoveScaled(20,1,20,4.5714)
             #Translate = False
+            Expand = True
             ReadOnly = True
             List = ["2) Bottom/Center", "1) Bottom/Left", "3) Bottom/Right"]
             Text = "2) Bottom/Center"
@@ -438,6 +445,7 @@
             Name = "MarginVCHK"
             MoveScaled(1,1,17,4.5714)
             Expand = True
+            AutoResize = True
             Text = ("Position (%)")
           }
           { MarginVSpinBox SpinBox notify
@@ -475,6 +483,7 @@
           { codepage_force_combobox CheckBox
             MoveScaled(1,0,49,5)
             ToolTip = ("Setting a negative delay for subtitles embedded in mkv files, leads mpv\nto shift only the subtitle end time, because it reads the file sequentially.\nChecking this box will workaround the problem by adding:\n-subfile yourfile.mkv to mpv options, forcing mpv to read\nand shift the subtitles correctly.\nAlso, any ass rendering will be disabled.\nhttp://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870")
+            AutoResize = True
             Text = ("Use that codepage even if input is NOT UTF-8")
           }
         }
@@ -499,8 +508,9 @@
         Border = Border.Etched
         { TextLabel1 TextLabel
           MoveScaled(11,1,24,4.5714)
-          Font = Font["Bold,+2"]
+          Font = Font["Bold,+1"]
           Background = Color.TextBackground
+          AutoResize = True
           Text = ("Preview")
           Alignment = Align.Center
           Border = Border.Plain
@@ -536,6 +546,7 @@
           { pScaleFactorComboBox ComboBox
             MoveScaled(35,0,12,4.5714)
             #Translate = False
+            Expand = True
             ReadOnly = True
             List = ["0.30", "0.35", "0.40", "0.45", "0.50", "0.55", "0.60", "0.65", "0.70", "0.75", "0.80", "0.85", "0.90", "0.95", "1.00", "1.10", "1.20", "1.30", "1.40", "1.50", "1.60", "1.70", "1.80", "1.90", "2.00", "2.20", "2.40", "2.60", "2.80", "3.00"]
             Text = "1.00"
