@@ -42,6 +42,7 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
   Dim AssForceStyle As String = ""
   Dim opts As New MpvOption[]
   Dim opt As New MpvOption
+  Dim margins As String
 
   If ASSDisableCHK.value Then
     opt.name = "sub-ass"
@@ -147,6 +148,20 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
     Endif
   Endif
 
+  
+  'sub margins
+    margins = Trim(Split(SubMarginsCombobox.text, "-")[0])
+    Select Case margins
+      Case 1
+        opts.Add(o("sub-use-margins", "yes"))
+        opts.Add(o("sub-ass-force-margins", "no"))
+      Case 2
+        opts.Add(o("sub-ass-force-margins", "yes"))
+        opts.Add(o("sub-use-margins", "no"))
+      Case 3
+        opts.Add(o("sub-use-margins", "yes"))
+        opts.Add(o("sub-ass-force-margins", "yes"))
+    End Select
   
   
   For Each opt In opts

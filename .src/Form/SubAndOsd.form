@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,125,90)
+  MoveScaled(0,0,125,91.4286)
   Expand = True
   Text = ("Subtitles And Osd")
   Icon = Picture["icon:/16/font"]
@@ -49,9 +49,6 @@
           Text = ("OSD")
           Alignment = Align.Center
           Border = Border.Plain
-        }
-        { Separator2 Separator
-          MoveScaled(3,10,52,1)
         }
         { FontChooseHBox1 Panel
           MoveScaled(0,12,61,5)
@@ -190,9 +187,159 @@
           }
         }
       }
+      { PanelExtra Panel
+        MoveScaled(1,39,61,44)
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Border = Border.Etched
+        { TextLabel4 TextLabel
+          MoveScaled(13,1,24,4.5714)
+          Font = Font["Bold,+1"]
+          Background = Color.TextBackground
+          AutoResize = True
+          Text = ("Extra Settings")
+          Alignment = Align.Center
+          Border = Border.Plain
+        }
+        { FuzzinessHbox HBox
+          MoveScaled(3,8,41,4.5714)
+          ToolTip = ("mpv option:\n-sub-fuzziness <mode>")
+          AutoResize = True
+          Spacing = True
+          Padding = 8
+          { fuzzinesschk CheckBox
+            MoveScaled(1,1,17,4.5714)
+            Enabled = False
+            Expand = True
+            AutoResize = True
+            Text = ("Load subtitles")
+            Value = CheckBox.True
+          }
+          { Combofuzziness ComboBox
+            MoveScaled(23,0,14,4.5714)
+            Expand = True
+            ReadOnly = True
+            List = [("exact - Match exact filename, but extension"), ("fuzzy - Load all subs containing movie name"), ("all - Load all subs in the current directory"), ("no - do not load external subtitles")]
+            Text = ("exact - Match exact filename, but extension")
+          }
+        }
+        { AlignmentHBox HBox
+          MoveScaled(1,14,47,5)
+          ToolTip = ("mpv option:\n-ass-force-style Alignment=<align>")
+          AutoResize = True
+          Spacing = True
+          Padding = 8
+          { AlignmentCHK CheckBox notifytest
+            Name = "AlignmentCHK"
+            MoveScaled(1,1,17,4.5714)
+            Expand = True
+            AutoResize = True
+            Text = ("Alignment")
+          }
+          { ComboAlignment ComboBox notifytest
+            Name = "ComboAlignment"
+            MoveScaled(20,1,20,4.5714)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["2) Bottom/Center", "1) Bottom/Left", "3) Bottom/Right"]
+            Text = "2) Bottom/Center"
+          }
+        }
+        { Panel2 Panel
+          MoveScaled(1,20,50,5)
+          ToolTip = ("Show subtitles on \"black bars\" if they are available.\nNeeds a compatible video output driver:\n* does not work on legacy ones like xv or x11\n* from my testings, it works at least on opengl and vdpau, maybe others (?)\n\nmpv option: \n--sub-use-margins and/or --sub-ass-force-margins")
+          Arrangement = Arrange.Horizontal
+          AutoResize = True
+          { Label2 Label
+            MoveScaled(0,0,24,4.5714)
+            Expand = True
+            AutoResize = True
+            Text = ("Draw on margins")
+            Alignment = Align.Left
+          }
+          { SubMarginsCombobox ComboBox
+            MoveScaled(32,0,17,4.5714)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["0 - No", "1 - Sub only", "2 - Ass only", "3 - Sub and Ass"]
+            Text = "0 - No"
+            Sorted = True
+          }
+        }
+        { PositionHBox HBox
+          MoveScaled(0,26,61,4.5714)
+          ToolTip = ("Subtitle position on the screen from top or bottom.\n(it depends the alignment you choose)\nmpv option:\n-ass-force-style MarginV=<margin>\n\nIf you Disabled SSA, then the value is meant to be from top.\nmpv Option:\n-subpos <0-100>\n")
+          AutoResize = True
+          Spacing = True
+          Padding = 8
+          { MarginVCHK CheckBox notifytest
+            Name = "MarginVCHK"
+            MoveScaled(1,1,17,4.5714)
+            Expand = True
+            AutoResize = True
+            Text = ("Position (%)")
+          }
+          { MarginVSpinBox SpinBox notify
+            Name = "MarginVSpinBox"
+            MoveScaled(46,1,8,4.5714)
+            Value = 95
+          }
+        }
+        { Panel6 Panel
+          MoveScaled(1,31,50,5)
+          Arrangement = Arrange.Horizontal
+          AutoResize = True
+          { Label1 Label
+            MoveScaled(1,0,24,4.5714)
+            Expand = True
+            Text = ("Codepage")
+            Alignment = Align.Left
+          }
+          { ComboSubCp ComboBox
+            MoveScaled(32,0,17,4.5714)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["auto", "big5", "cp936", "cp949", "cp1250", "cp1251", "cp1253", "cp1256", "cp874", "euc-kr", "gb2312", "iso-8859-1", "iso-8859-2", "iso-8859-3", "iso-8859-4", "iso-8859-5", "iso-8859-6", "iso-8859-7", "iso-8859-8", "iso-8859-9", "iso-8859-10", "iso-8859-11", "iso-8859-12", "iso-8859-13", "iso-8859-14", "iso-8859-15", "koi8-r", "koi8-r", "koi8-u/ru", "latin2", "shift-jis", "utf-8"].Insert(["unicode", "windows-1250", "windows-1251"])
+            Text = "auto"
+            Sorted = True
+          }
+        }
+        { SubDelayHbox3 HBox
+          MoveScaled(1,36,53,5)
+          AutoResize = True
+          Spacing = True
+          Padding = 10
+          { codepage_force_combobox CheckBox
+            MoveScaled(1,0,49,5)
+            ToolTip = ("Setting a negative delay for subtitles embedded in mkv files, leads mpv\nto shift only the subtitle end time, because it reads the file sequentially.\nChecking this box will workaround the problem by adding:\n-subfile yourfile.mkv to mpv options, forcing mpv to read\nand shift the subtitles correctly.\nAlso, any ass rendering will be disabled.\nhttp://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870")
+            AutoResize = True
+            Text = ("Use that codepage even if input is NOT UTF-8")
+          }
+        }
+        { SubDelayHbox HBox
+          MoveScaled(1,41,28,4.5714)
+          AutoResize = True
+          Spacing = True
+          Padding = 10
+          { MkvWorkaroundCHK CheckBox
+            MoveScaled(1,0,18,4.5714)
+            ToolTip = ("Setting a negative delay for subtitles embedded in mkv files, leads mpv\nto shift only the subtitle end time, because it reads the file sequentially.\nChecking this box will workaround the problem by adding:\n-subfile yourfile.mkv to mpv options, forcing mpv to read\nand shift the subtitles correctly.\nAlso, any ass rendering will be disabled.\nhttp://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870")
+            Text = ("Mkv Workaround")
+          }
+        }
+      }
+    }
+    { VBox3 VBox
+      MoveScaled(64,1,58,82)
+      Expand = True
+      Margin = True
       { PanelSubTitles Panel notifytest
         Name = "PanelSubTitles"
-        MoveScaled(0,40,61,38)
+        MoveScaled(0,0,61,38)
         ToolTip = ("mpv option: \n-ass-forcestyle primarycolour=HHBBGGRR")
         Arrangement = Arrange.Vertical
         Spacing = True
@@ -206,9 +353,6 @@
           Text = ("Subtitles")
           Alignment = Align.Center
           Border = Border.Plain
-        }
-        { Separator1 Separator
-          MoveScaled(3,6,52,1)
         }
         { Panel1 Panel
           MoveScaled(0,8,59,4.5714)
@@ -367,157 +511,12 @@
           }
         }
       }
-    }
-    { VBox3 VBox
-      MoveScaled(64,1,58,82)
-      Expand = True
-      Margin = True
-      { PanelExtra Panel
-        MoveScaled(0,0,55,41)
-        Arrangement = Arrange.Vertical
-        Spacing = True
-        Margin = True
-        Border = Border.Etched
-        { TextLabel4 TextLabel
-          MoveScaled(13,1,24,4.5714)
-          Font = Font["Bold,+1"]
-          Background = Color.TextBackground
-          AutoResize = True
-          Text = ("Extra Settings")
-          Alignment = Align.Center
-          Border = Border.Plain
-        }
-        { Separator4 Separator
-          MoveScaled(1,6,52,1)
-        }
-        { FuzzinessHbox HBox
-          MoveScaled(3,8,41,4.5714)
-          ToolTip = ("mpv option:\n-sub-fuzziness <mode>")
-          AutoResize = True
-          Spacing = True
-          Padding = 8
-          { fuzzinesschk CheckBox
-            MoveScaled(1,1,17,4.5714)
-            Enabled = False
-            Expand = True
-            AutoResize = True
-            Text = ("Load subtitles")
-            Value = CheckBox.True
-          }
-          { Combofuzziness ComboBox
-            MoveScaled(23,0,14,4.5714)
-            Expand = True
-            ReadOnly = True
-            List = [("exact - Match exact filename, but extension"), ("fuzzy - Load all subs containing movie name"), ("all - Load all subs in the current directory"), ("no - do not load external subtitles")]
-            Text = ("exact - Match exact filename, but extension")
-          }
-        }
-        { AlignmentHBox HBox
-          MoveScaled(1,14,47,5)
-          ToolTip = ("mpv option:\n-ass-force-style Alignment=<align>")
-          AutoResize = True
-          Spacing = True
-          Padding = 8
-          { AlignmentCHK CheckBox notifytest
-            Name = "AlignmentCHK"
-            MoveScaled(1,1,17,4.5714)
-            Expand = True
-            AutoResize = True
-            Text = ("Alignment")
-          }
-          { ComboAlignment ComboBox notifytest
-            Name = "ComboAlignment"
-            MoveScaled(20,1,20,4.5714)
-            #Translate = False
-            Expand = True
-            ReadOnly = True
-            List = ["2) Bottom/Center", "1) Bottom/Left", "3) Bottom/Right"]
-            Text = "2) Bottom/Center"
-          }
-        }
-        { PositionHBox HBox
-          MoveScaled(0,19,61,4.5714)
-          ToolTip = ("Subtitle position on the screen from top or bottom.\n(it depends the alignment you choose)\nmpv option:\n-ass-force-style MarginV=<margin>\n\nIf you Disabled SSA, then the value is meant to be from top.\nmpv Option:\n-subpos <0-100>\n")
-          AutoResize = True
-          Spacing = True
-          Padding = 8
-          { MarginVCHK CheckBox notifytest
-            Name = "MarginVCHK"
-            MoveScaled(1,1,17,4.5714)
-            Expand = True
-            AutoResize = True
-            Text = ("Position (%)")
-          }
-          { MarginVSpinBox SpinBox notify
-            Name = "MarginVSpinBox"
-            MoveScaled(46,1,8,4.5714)
-            Value = 95
-          }
-        }
-        { Panel6 Panel
-          MoveScaled(1,24,50,5)
-          Arrangement = Arrange.Horizontal
-          AutoResize = True
-          { Label1 Label
-            MoveScaled(1,0,24,4.5714)
-            Expand = True
-            Text = ("Codepage")
-            Alignment = Align.Left
-          }
-          { ComboSubCp ComboBox
-            MoveScaled(32,0,17,4.5714)
-            #Translate = False
-            Expand = True
-            ReadOnly = True
-            List = ["auto", "big5", "cp936", "cp949", "cp1250", "cp1251", "cp1253", "cp1256", "cp874", "euc-kr", "gb2312", "iso-8859-1", "iso-8859-2", "iso-8859-3", "iso-8859-4", "iso-8859-5", "iso-8859-6", "iso-8859-7", "iso-8859-8", "iso-8859-9", "iso-8859-10", "iso-8859-11", "iso-8859-12", "iso-8859-13", "iso-8859-14", "iso-8859-15", "koi8-r", "koi8-r", "koi8-u/ru", "latin2", "shift-jis", "utf-8"].Insert(["unicode", "windows-1250", "windows-1251"])
-            Text = "auto"
-            Sorted = True
-          }
-        }
-        { SubDelayHbox3 HBox
-          MoveScaled(1,29,53,5)
-          ToolTip = ("Subtitle delay.\nmpv option: --sub-delay <sec>")
-          AutoResize = True
-          Spacing = True
-          Padding = 10
-          { codepage_force_combobox CheckBox
-            MoveScaled(1,0,49,5)
-            ToolTip = ("Setting a negative delay for subtitles embedded in mkv files, leads mpv\nto shift only the subtitle end time, because it reads the file sequentially.\nChecking this box will workaround the problem by adding:\n-subfile yourfile.mkv to mpv options, forcing mpv to read\nand shift the subtitles correctly.\nAlso, any ass rendering will be disabled.\nhttp://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870")
-            AutoResize = True
-            Text = ("Use that codepage even if input is NOT UTF-8")
-          }
-        }
-        { SubDelayHbox HBox
-          MoveScaled(1,34,28,4.5714)
-          ToolTip = ("Subtitle delay.\nmpv option: --sub-delay <sec>")
-          AutoResize = True
-          Spacing = True
-          Padding = 10
-          { MkvWorkaroundCHK CheckBox
-            MoveScaled(1,0,18,4.5714)
-            ToolTip = ("Setting a negative delay for subtitles embedded in mkv files, leads mpv\nto shift only the subtitle end time, because it reads the file sequentially.\nChecking this box will workaround the problem by adding:\n-subfile yourfile.mkv to mpv options, forcing mpv to read\nand shift the subtitles correctly.\nAlso, any ass rendering will be disabled.\nhttp://bugzilla.mplayerhq.hu/show_bug.cgi?id=1870")
-            Text = ("Mkv Workaround")
-          }
-        }
-      }
       { Panel7 Panel
         MoveScaled(3,39,52,36)
         Expand = True
         Arrangement = Arrange.Vertical
         Margin = True
         Border = Border.Etched
-        { TextLabel1 TextLabel
-          MoveScaled(11,1,24,4.5714)
-          Font = Font["Bold,+1"]
-          Background = Color.TextBackground
-          AutoResize = True
-          Text = ("Preview")
-          Alignment = Align.Center
-          Border = Border.Plain
-        }
-        { Separator5 Separator
-          MoveScaled(0,5,52,1)
-        }
         { DrawingArea1 DrawingArea
           MoveScaled(1,6,49,19)
           Background = &H000000&
