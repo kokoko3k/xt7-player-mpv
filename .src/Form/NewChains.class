@@ -624,8 +624,8 @@ Private Sub draw_filters_video_cfg()
   
   'scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]
   AllParams.Add(["TITLE", ("- Software scaler -"), "Scale0", ""])
-  AllParams.Add(["RANGE", ("width="), "-1", "0", "4096", "Scale11", ("0 disables width scaling, -1 calculates width from height")])
-  AllParams.Add(["RANGE", ("height="), "-1", "0", "4096", "Scale12", ("0 disables height scaling, -1 calculates heigth from width")])
+  AllParams.Add(["RANGE", ("width="), "-1", "1280", "4096", "Scale11", ("0 disables width scaling, -1 calculates width from height, * set them both * ")])
+  AllParams.Add(["RANGE", ("height="), "-1", "-1", "4096", "Scale12", ("0 disables height scaling, -1 calculates heigth from width, * set them BOTH *")])
   AllParams.add(["ROCHOOSE", ("interl="), ("0 - Do not apply interlaced scaling"), ("1 - Force interlaced aware scaling"), ("-1 - Automatic"), "scale13", ("Set the interlacing mode.")])
   AllParams.add(["ROCHOOSE", ("force_original_aspect_ratio="), ("disable"), ("decrease"), ("increase"), "scale14", ("Enable decreasing or increasing output video width or height if necessary to keep the original aspect ratio.")])
   AllParams.add(["ROCHOOSE", ("Up/Downscaling"), ("0 - Allow both"), ("1 - Allow upscaling only"), ("2 - Allow Downscaling only"), "noparse_allow_upscale", ("Choose if you want to allow upscaling and downscaling")])
