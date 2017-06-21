@@ -2976,9 +2976,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     Endif
   Endif
 
-  If generaloptions.switchres_compensate_checkbox.value Then
-    Try speed_compensate(CFloat(Left(generaloptions.switchres_compensate_combobox.text, -1))) 'will check if mplayer is running and not audioonly too
-  Endif
+  check_speed_compensate()
 
   'If mplayer.vdpau_blocked_by_filters() Then Popup_vdpau()
 
@@ -2990,11 +2988,13 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 End
 
 
-' Private Sub Popup_vdpau()
-'   
-'   
-'   
-' End
+Public Sub check_speed_compensate()
+  If generaloptions.switchres_compensate_checkbox.value Then
+    Try speed_compensate(CFloat(Left(generaloptions.switchres_compensate_combobox.text, -1))) 'will check if mplayer is running and not audioonly too
+      Else
+    change_speed(1)
+  Endif
+End
 
 
 Private Sub StartOverbrightAnalyze()

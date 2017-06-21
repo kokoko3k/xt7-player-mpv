@@ -1305,7 +1305,8 @@ Public Sub ScrollView7_Arrange()
 End
 
 Public Sub switchres_compensate_checkbox_Click()
-  EnableDisableSwitchResCheckboxes
+  EnableDisableSwitchResCheckboxes()
+  If fmain.FullyLoaded Then fmain.check_speed_compensate()
 End
 
 Public Sub EnableDisableSwitchResCheckboxes()
@@ -1634,3 +1635,9 @@ End
 '     
 ' '---------------- /HACKY WORKAROUND TO STOP SCROLLVIEWS SCROLLING WHEN OBJECTS ARE FOCUSED
 
+
+Public Sub ScrollView7_MouseDown()
+
+  
+
+End
