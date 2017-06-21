@@ -624,10 +624,11 @@ Private Sub draw_filters_video_cfg()
   
   'scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]
   AllParams.Add(["TITLE", ("- Software scaler -"), "Scale0", ""])
-  AllParams.Add(["RANGE", ("width="), "-11", "0", "4096", "Scale11", ("0 disables width scaling")])
-  AllParams.Add(["RANGE", ("height="), "-11", "0", "4096", "Scale12", ("0 disables height scaling")])
+  AllParams.Add(["RANGE", ("width="), "-1", "0", "4096", "Scale11", ("0 disables width scaling, -1 calculates width from height")])
+  AllParams.Add(["RANGE", ("height="), "-1", "0", "4096", "Scale12", ("0 disables height scaling, -1 calculates heigth from width")])
   AllParams.add(["ROCHOOSE", ("interl="), ("0 - Do not apply interlaced scaling"), ("1 - Force interlaced aware scaling"), ("-1 - Automatic"), "scale13", ("Set the interlacing mode.")])
   AllParams.add(["ROCHOOSE", ("force_original_aspect_ratio="), ("disable"), ("decrease"), ("increase"), "scale14", ("Enable decreasing or increasing output video width or height if necessary to keep the original aspect ratio.")])
+  AllParams.add(["ROCHOOSE", ("Up/Downscaling"), ("0 - Allow both"), ("1 - Allow upscaling only"), ("2 - Allow Downscaling only"), "noparse_allow_upscale", ("Choose if you want to allow upscaling and downscaling")])
   Global.DrawGui(AllParams, "scale", aTabstrip, switchable,,, "lavfi", Me)
   Try Object.SetProperty(Me.controls["Scale11.CheckBox"], "value", CheckBox.true)
   Try Object.SetProperty(Me.controls["Scale12.CheckBox"], "value", CheckBox.true)
@@ -867,10 +868,12 @@ Private Function Parse_video_filter(Filtername As String) As String
           '   Break
           ' Endif
           For Each SubObject In PanelObject.Children
+
             If Not (SubObject Is Label) Then
               If (SubObject Is Checkbox) Then
-                parse = SubObject.value '(is a checkbox,parse only if it is checked)
-                  Else If Lower(subobject.name) Like "noparse*" Then
+                '(is a checkbox,parse only if it is checked)
+                parse = SubObject.value And Not (Lower(subobject.name) Begins "noparse")
+                  Else If Lower(subobject.name) Begins "noparse" Then
                     parse = False
               Endif
               
@@ -958,8 +961,9 @@ Private Function Parse_audio_filter(Filtername As String) As String
           For Each SubObject In PanelObject.Children
             If Not (SubObject Is Label) Then
               If (SubObject Is Checkbox) Then
-                parse = SubObject.value '(is a checkbox,parse only if it is checked)
-                  Else If Lower(subobject.name) Like "noparse*" Then
+                '(is a checkbox,parse only if it is checked)
+                parse = SubObject.value And Not (Lower(subobject.name) Begins "noparse")
+                  Else If Lower(subobject.name) Begins "noparse" Then
                     parse = False
               Endif
               
