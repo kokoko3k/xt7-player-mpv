@@ -245,6 +245,7 @@ Public Sub playerprocess_read(Optional injected As String = "")
   Try Read #playerprocess, sBufs, -4096
 
   For Each sBuf In Split(sbufs, "\n", "", True)
+    'Debug sBuf
     If sBuf Like "*ANS_*|*" Then
       question = MidC(sBuf, "_", "|")
       answer = (MidC(sBuf, "|"))
@@ -1740,7 +1741,7 @@ Public Function add_property_mpv(name As String, data As String, Optional osd As
   'mpv_command(["set_property_string", name, data])
   Dim s As String = "\\"
   Dim q As String = "\""
-
+  'If InStr(data, "\\") > 0 Then Stop 
   data = Replace(data, q, s & q)        'replace " with \"
   data = Replace(data, s & s & q, s & q) 'replace \\" with \" (in case we quoted an already quoted string)
   If osd Then 
@@ -2103,11 +2104,16 @@ End
 
 Public Sub mpv_command(command As String[])
   Dim snip, sbuf As String
+  
+ 
   For Each snip In command
+    'If snip Like "*scale*" Then Stop
     sbuf &= "\"" & snip & "\"" 
     sbuf &= " "
   Next
   sbuf = Left(sbuf, -1)
+  'remove escaped commas:
+  sbuf = Replace(sbuf, "\\,", ",")
   send(sbuf)
   global.myDebug(sbuf)
   'If sbuf Like "*anequalizer*" Then Debug sbuf
