@@ -27,7 +27,9 @@ Private Sub fill_tabstrip(aTabstrip As Tabstrip, aScrollview As Scrollview)
       aTabstrip.text = aScrollview.Children[i].name
       aTabstrip.Arrangement = Arrange.Vertical
       'do not make a scrollview for preconfigured (drawed with the ide) filters.
-      If (aScrollview.Children[i].name <> "anequalizer") And (aScrollview.Children[i].name <> "acompressor") And (aScrollview.Children[i].name <> "compand") Then 
+
+      If Not (is_handmade_filter(aScrollview.Children[i].name)) Then
+      'If (aScrollview.Children[i].name <> "anequalizer") And (aScrollview.Children[i].name <> "acompressor") And (aScrollview.Children[i].name <> "compand") Then 
         tabScrollview = New ScrollView(aTabstrip)
         tabScrollview.name = aTabstrip.text & ".ScrollView"
         tabScrollview.expand = True
@@ -45,6 +47,16 @@ End
 
 Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "drivers_audio"] '<-this has to reflect the main tabs order
 
+Private Function is_handmade_filter(filter_name As String) As Boolean
+  Dim f As String
+  Dim filters_hand_made As New String[]
+  filters_hand_made = ["anequalizer", "acompressor", "compand", "scale"]
+  filter_name = Lower(filter_name)
+  For Each f In filters_hand_made
+    If f = filter_name Then Return True
+  Next
+  Return False
+End
 
 
 Private Sub Init_filters_audio()
@@ -68,7 +80,7 @@ End
 Private Sub Init_filters_video()
   Dim filters_video_list As New String[]
   Dim filter As String
-  filters_video_list = ["Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "Scale", "vflip", "hflip", "rotate", "expand"]
+  filters_video_list = ["Scale", "Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "vflip", "hflip", "rotate", "expand"]
   filters_video_list.Insert(["Stereo3D", "vdpaupp", "vavpp", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
@@ -622,18 +634,18 @@ Private Sub draw_filters_video_cfg()
   Global.DrawGui(AllParams, "hqdn3d", aTabstrip, notswitchable,,, "lavfi", Me)
   AllParams.Clear
   
-  'scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]
-  AllParams.Add(["TITLE", ("- Software scaler -"), "Scale0", ""])
-  AllParams.Add(["RANGE", ("width="), "-1", "1280", "4096", "Scale11", ("0 disables width scaling, -1 calculates width from height, * set them both * ")])
-  AllParams.Add(["RANGE", ("height="), "-1", "-1", "4096", "Scale12", ("0 disables height scaling, -1 calculates heigth from width, * set them BOTH *")])
-  AllParams.add(["ROCHOOSE", ("interl="), ("0 - Do not apply interlaced scaling"), ("1 - Force interlaced aware scaling"), ("-1 - Automatic"), "scale13", ("Set the interlacing mode.")])
-  AllParams.add(["ROCHOOSE", ("force_original_aspect_ratio="), ("disable"), ("decrease"), ("increase"), "scale14", ("Enable decreasing or increasing output video width or height if necessary to keep the original aspect ratio.")])
-  AllParams.add(["ROCHOOSE", ("Up/Downscaling"), ("0 - Allow both"), ("1 - Allow upscaling only"), ("2 - Allow Downscaling only"), "noparse_allow_upscale", ("Choose if you want to allow upscaling and downscaling")])
-  Global.DrawGui(AllParams, "scale", aTabstrip, switchable,,, "lavfi", Me)
-  Try Object.SetProperty(Me.controls["Scale11.CheckBox"], "value", CheckBox.true)
-  Try Object.SetProperty(Me.controls["Scale12.CheckBox"], "value", CheckBox.true)
-  AllParams.Clear
-  
+  ' 'scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]
+  ' AllParams.Add(["TITLE", ("- Software scaler -"), "Scale0", ""])
+  ' AllParams.Add(["RANGE", ("width="), "-1", "1280", "4096", "Scale_W", ("0 disables width scaling, -1 calculates width from height")])
+  ' AllParams.Add(["RANGE", ("height="), "-1", "-1", "4096", "Scale_H", ("0 disables height scaling, -1 calculates heigth from width")])
+  ' AllParams.add(["ROCHOOSE", ("interl="), ("0 - Do not apply interlaced scaling"), ("1 - Force interlaced aware scaling"), ("-1 - Automatic"), "scale_I", ("Set the interlacing mode.")])
+  ' AllParams.add(["ROCHOOSE", ("force_original_aspect_ratio="), ("disable"), ("decrease"), ("increase"), "scale_A", ("Enable decreasing or increasing output video width or height if necessary to keep the original aspect ratio.")])
+  ' AllParams.add(["ROCHOOSE", ("Up/Downscaling"), ("0 - Allow both"), ("1 - Allow upscaling only"), ("2 - Allow Downscaling only"), "noparse_scaleUD", ("Choose if you want to allow upscaling and downscaling")])
+  ' Global.DrawGui(AllParams, "scale", aTabstrip, switchable,,, "lavfi", Me)
+  ' Try Object.SetProperty(Me.controls["Scale11.CheckBox"], "value", CheckBox.true)
+  ' Try Object.SetProperty(Me.controls["Scale12.CheckBox"], "value", CheckBox.true)
+  ' AllParams.Clear
+  ' 
   
   'vflip
   AllParams.Add(["TITLE", ("- Vertical flip -"), "vflip0", ""])
@@ -832,6 +844,62 @@ Private Function parse_audio_filter_custom(atabstrip_index As Integer) As String
   Return customfilter
 End
 
+Private Function parse_scale() As String
+  Dim UD, interl, w, h As String
+  Dim force_original_aspect_ratio As String
+  Dim out As String
+
+  'Calculate width and height depending on the upscale preference
+  UD = Left(scale_ud.text, 1)
+  If UD = "" Then UD = 0
+    Select Case UD
+        Case 0 'all permitted
+            w = scale_w.value
+            h = scale_h.value
+        Case 1 'disallow downscaling
+            If scale_w.value > 1 Then
+                w = "'max(iw\\," & scale_w.value & ")'"
+                  Else
+                w = scale_w.value
+            Endif
+    
+            If scale_h.value > 1 Then
+                h = "'max(ih\\," & scale_h.value & ")'"
+                  Else
+                h = scale_h.value
+            Endif
+    
+        Case 2 'disallow upscaling
+            If scale_w.value > 1 Then
+                w = "'min(iw\\," & scale_w.value & ")'"
+                  Else
+                w = scale_w.value
+            Endif
+    
+            If scale_h.value > 1 Then
+                h = "'min(ih\\," & scale_h.value & ")'"
+                  Else
+                h = scale_h.value
+            Endif
+    End Select
+  
+  interl = -1
+  Try interl = Split(scale_i.text, " ")[0]
+  force_original_aspect_ratio = scale_a.Text
+  If Trim(force_original_aspect_ratio) = "" Then force_original_aspect_ratio = "disable"
+  
+  out = "lavfi=["
+    out &= "scale="
+    out &= "w=" & w & ":"
+    out &= "h=" & h & ":"
+    out &= "interl=" & interl & ":"
+    out &= "force_original_aspect_ratio=" & force_original_aspect_ratio 
+  out &= "]"  
+  Debug out
+  Return out
+End
+
+
 
 Private Function Parse_video_filter(Filtername As String) As String
   'will parse the tabstrip at filtername index and output
@@ -852,7 +920,10 @@ Private Function Parse_video_filter(Filtername As String) As String
   
   'Find the ParsedFilter Tab and activate it:
   atabstrip_index = aTabstrip.Tag.Find(ParsedFilter)
-  If Parsedfilter Like "customvideo*" Then
+  
+  If parsedfilter = "scale" Then Return parse_scale()
+  
+  If Parsedfilter Begins "customvideo" Then
     out = parse_video_filter_custom(atabstrip_index)
     Return out
       Else
@@ -946,7 +1017,7 @@ Private Function Parse_audio_filter(Filtername As String) As String
     Return parse_acompressor()
     
 
-  Else If Parsedfilter Like "customaudio*" Then
+  Else If Parsedfilter Begins "customaudio" Then
     out = parse_audio_filter_custom(atabstrip_index)
     Return out
       Else

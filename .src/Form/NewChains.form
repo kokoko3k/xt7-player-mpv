@@ -54,15 +54,15 @@
       Arrangement = Arrange.Vertical
     }
     { TabStrip_filters_video TabStrip
-      MoveScaled(33,2,59,46)
+      MoveScaled(32,2,59,52)
       #Translate = False
       Expand = True
       Margin = True
       TextFont = Font["-1"]
       Index = 0
-      Text = "tabstrip1"
+      Text = "scale"
       { HelpBox Panel
-        MoveScaled(1,5,54,33)
+        MoveScaled(53,22,54,33)
         Tag = "0"
         Arrangement = Arrange.Vertical
         { Button_show_man ToggleButton
@@ -83,6 +83,103 @@
         { TimerDelayShowHelp #Timer
           #MoveScaled(1,9)
           Delay = 500
+        }
+      }
+      { vboxscale1 Panel
+        MoveScaled(0,1,52,44)
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        { Hbox5 HBox
+          MoveScaled(1,1,51,6)
+          ToolTip = ("Select the desidered size, or:\n0 means disable width scaling\n-1 will calculate width from desidered height")
+          Padding = 6
+          { Label11 Label
+            MoveScaled(1,0,17,5)
+            Text = ("Width")
+          }
+          { scale_w SpinBox dynaobj
+            Name = "scale_w"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MinValue = -1
+            MaxValue = 8192
+            Step = 4
+            Value = 1280
+          }
+        }
+        { Hbox4 HBox
+          MoveScaled(1,8,51,6)
+          ToolTip = ("Select the desidered size, or:\n0 means disable height scaling\n-1 will calculate height from desidered width")
+          Padding = 6
+          { Label10 Label
+            MoveScaled(1,0,17,5)
+            Text = ("Height")
+          }
+          { scale_h SpinBox dynaobj
+            Name = "scale_h"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            MinValue = -1
+            MaxValue = 8192
+            Step = 4
+            Value = -1
+          }
+        }
+        { Hbox6 HBox
+          MoveScaled(1,17,51,6)
+          ToolTip = ("Set the interlacing mode.")
+          Padding = 6
+          { Label37 Label
+            MoveScaled(1,0,17,5)
+            Text = ("Interlaced scaling")
+          }
+          { scale_i ComboBox dynaobj
+            Name = "scale_i"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            ReadOnly = True
+            List = [("0 - Do not apply interlaced scaling"), ("1 - Force interlaced aware scaling"), ("-1 - Automatic")]
+            Text = ("- - Automatic")
+          }
+        }
+        { Hbox7 HBox
+          MoveScaled(0,27,51,6)
+          ToolTip = ("Enable decreasing or increasing output video width or height if necessary to keep the original aspect ratio.")
+          Padding = 6
+          { Label38 Label
+            MoveScaled(1,0,26,5)
+            Text = ("Force original aspect ratio")
+          }
+          { scale_a ComboBox dynaobj
+            Name = "scale_a"
+            MoveScaled(34,0,16,5)
+            #Translate = False
+            Font = Font["Monospace"]
+            Expand = True
+            ReadOnly = True
+            List = ["disable", "decrease", "increase"]
+          }
+        }
+        { Hbox9 HBox
+          MoveScaled(0,35,51,6)
+          ToolTip = ("Choose if you want to allow upscaling and downscaling")
+          Padding = 6
+          { Label39 Label
+            MoveScaled(1,0,26,5)
+            Text = ("Permit Up/Downscaling")
+          }
+          { scale_ud ComboBox dynaobj
+            Name = "scale_ud"
+            MoveScaled(34,0,16,5)
+            Font = Font["Monospace"]
+            Expand = True
+            ReadOnly = True
+            List = [("0 - Allow both"), ("1 - Allow upscaling only"), ("2 - Allow Downscaling only")]
+          }
         }
       }
       Index = 0
