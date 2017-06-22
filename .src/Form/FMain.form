@@ -1413,7 +1413,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-49.2857,18,4.5714)
+              MoveScaled(9.4286,-50.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -2029,7 +2029,7 @@
             Stretch = True
           }
           { ControlPanel Panel
-            MoveScaled(1,1,44,5)
+            MoveScaled(12,2,44,5)
             Font = Font["6"]
             Drop = True
             Arrangement = Arrange.Horizontal
@@ -2056,20 +2056,20 @@
               Border = False
             }
             { ButtonPlay ToolButton
-              MoveScaled(8,0,5,4.5714)
+              MoveScaled(12,0,4,5)
               Font = Font["6"]
               ToolTip = ("Play/pause")
               Action = "play"
               Picture = Picture["media-playback-start.png"]
             }
             { ButtonStop ToolButton
-              MoveScaled(11,0,4.4286,4.5714)
+              MoveScaled(18,0,4.4286,4.5714)
               Font = Font["6"]
               ToolTip = ("Stop")
               Picture = Picture["media-playback-stop.png"]
             }
             { ChaptersBtn Button
-              MoveScaled(16,-1,4,4.5714)
+              MoveScaled(24,-1,4,4.5714)
               Visible = False
               Font = Font["1"]
               ToolTip = ("Chapters available")
