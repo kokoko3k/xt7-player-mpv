@@ -2588,9 +2588,9 @@ Public Sub user_options(fullpath As String) As Collection
   
     
     'opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
-
     opts["vf-add"] = NewChains.parse_filters(False)
     opts["af-add"] = NewChains.parse_filters(True)
+
   Endif
 
   For Each opt In generaloptions.Parse()

@@ -647,7 +647,13 @@ Public Function do_play(filename As String, Optional string_options As String = 
   
   commandline = executable() & set_options() & string_options
   
+  If (global.IsAudioFile(filename)) Then
+    global.mydebug("Audio only file, clearing video filters")
+    commandline &= " --vf-clr "
+  Endif
+  
   commandline &= Shell(filename)
+  
   global.myDebug(commandline, commandline)
   last_media = filename
   
