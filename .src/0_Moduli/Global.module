@@ -29,6 +29,8 @@ Public TmpDir As String
 Public CustomBindKeys As String 
 Public XbindkeysBIN As String 
 Public SocketFile As String 
+Public mpv_size_file As String
+Public mpv_allowed_options_file As String
 Public rowpadding As Integer 
 Public Highlightmore As Integer 
 Public coverHeight As Integer 
@@ -117,6 +119,8 @@ Public Sub init()
   YPCacheFile = settings.defaultdir & "/" & Appname & "/" & ".ypcachefile"
   HistoryFile = settings.defaultdir & "/" & Appname & "/" & ".history.txt"
   BookmarksFile = settings.defaultdir & "/" & Appname & "/" & ".bookmarks.txt"
+  mpv_size_file = settings.defaultdir & "/" & Appname & "/" & ".mpv.size.txt"
+  mpv_allowed_options_file = settings.defaultdir & "/" & Appname & "/" & ".mpv.allowed_options.txt"
   CurrentProfile = ""
   FormW = 400      'As gambas does not update form dimesions on fullscreen switch
   FormH = 300      'we have TO DO it manually
@@ -450,6 +454,13 @@ End
 Public Function exist_cached_options(profilename As String) As Boolean
   Dim cached_options_file_name As String = global.confpath & "/" & profilename & ".cached"
   Return Exist(cached_options_file_name, True)
+End
+
+Public Function discard_cached_options(profilename As String) As Boolean
+  Dim cached_options_file_name As String = global.confpath & "/" & profilename & ".cached"
+  If Exist(cached_options_file_name, True) Then
+    Kill cached_options_file_name
+  Endif
 End
 
 

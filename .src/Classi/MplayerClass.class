@@ -42,6 +42,8 @@ Public osdlevel As String = ""
 Public lua_scripts As New String[]
 Public af_current As String 'keep track of realtime filters
 Public vf_current As String 'keep track of realtime filters
+Public allowed_options As New String[]
+
 
 Public Function version(Optional full_line As Boolean = False) As String
   Dim out As String
@@ -386,6 +388,25 @@ Private Function set_options() As String
 End
 
 
+Private Function only_allowed_options(source_opts As Collection) As Collection
+  Dim sData, sKey, sAllowed_opt As String
+  'check source_opts in allowed_options array for unsupported options and strip them
+  If allowed_options.count = 0 Then
+    global.myDebug("allowed_options.count is zero sized, skipping check")
+    Return source_opts
+  Endif
+  For Each sData In source_opts
+    sKey = Trim(source_opts.key)
+    If allowed_options.Find(skey) = -1 Then
+      source_opts.Remove(sKey)
+      global.myDebug("Removing " & skey & " option as it doesn't seem to be supported by the used mpv executable")
+    Endif
+  Next
+  Return source_opts
+End
+
+
+
 Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As Collection
   Dim return_opts As Collection = broken_opts.Copy()
   Dim data As String
@@ -404,6 +425,10 @@ Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As
           Endif
     Endif
   Next
+
+  'Return only allowed options
+  return_opts = only_allowed_options(return_opts)
+  
   Return return_opts
 End
 
@@ -642,7 +667,7 @@ Public Function do_play(filename As String, Optional string_options As String = 
   If global.IsImgFile(filename) Then
     mpvOptions["fps"] = "0.1"
   Endif
-  
+
   mpvoptions = fix_options(mpvoptions)
   
   commandline = executable() & set_options() & string_options

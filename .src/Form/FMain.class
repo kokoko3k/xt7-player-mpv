@@ -2714,6 +2714,58 @@ Private Sub Update_check_play_times()
   play_times.clear
 End
 
+Public Function mpv_exe_changed() As Boolean
+  Dim fsize_current, fsize_prec As String
+  Dim mpv_exe As String
+  
+  Shell "which " & GeneralOptions.MplayerExeText.Text To mpv_exe
+  mpv_exe = Trim(mpv_exe)
+  If mpv_exe = "" Then Return True
+  
+  Try fsize_prec = File.Load(global.mpv_size_file)
+  If Error Then Goto lerror
+ 
+  lerror:
+    Try fsize_current = CStr(Stat(mpv_exe, True).Size)
+    If fsize_current <> fsize_prec Then
+      global.myDebug("Updating mpv executable size")
+      File.save(global.mpv_size_file, fsize_current)
+      Return True
+        Else  
+      Return False
+    Endif
+End
+
+Public Function get_allowed_options() As String[]
+  Dim sAllowed_options, sAllowed_option, sOpt As String
+  Dim aAllowed_options As New String[]
+  
+  If Exist(global.mpv_allowed_options_file, True) Then
+    global.myDebug("Found previously saved " & global.mpv_allowed_options_file & ", using it")
+    sAllowed_options = File.Load(global.mpv_allowed_options_file)
+      Else
+    global.myDebug("Cannot find a previously saved " & global.mpv_allowed_options_file & ", this is expected if mpv executable has changed, generating a new one.")
+    Shell GeneralOptions.MplayerExeText.Text & " --list-options |cut -d ' ' -f 2" To sAllowed_options
+    Try File.Save(global.mpv_allowed_options_file, sAllowed_options)
+    If Error Then global.myDebug("Cannot save " & global.mpv_allowed_options_file)
+  Endif
+
+  For Each sAllowed_option In Split(sAllowed_options, "\n", "", True)
+    If sAllowed_option Begins "--" Then 
+      sOpt = Right(sAllowed_option, -2)
+      aAllowed_options.Add(sOpt)
+      If sOpt Ends "*" Then
+        sOpt = Left(sOpt, -1)
+        aAllowed_options.Add(sOpt & "-add")
+        aAllowed_options.Add(sOpt & "-del")
+        aAllowed_options.Add(sOpt & "-pre")
+        aAllowed_options.Add(sOpt & "-clr")
+      Endif
+    Endif 
+  Next
+
+  Return aAllowed_options
+End
 
 
 
@@ -2728,6 +2780,13 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   ' Dim exportfile As String 'mpv 0.11 removed af_export filter :(
   Dim opts As New Collection
   Dim data As String
+
+  If mpv_exe_changed() Then
+    global.myDebug("mpv executable has changed, discarding cached options and allowed options")
+    global.discard_cached_options(global.currentprofile)
+    Try Kill global.mpv_allowed_options_file
+  Endif
+  mplayer.allowed_options = get_allowed_options()
 'Stop
   mplayer.Precommand = generaloptions.NoParsePreCommand.text
 
