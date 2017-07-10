@@ -2556,7 +2556,7 @@ Public Function user_options(fullpath As String) As Collection
   Dim opts As New Collection
   Dim opt As Mpvoption
   Dim sFilter, sSpaces As String
-Stop
+
   'initialize uninitialized forms and load settings
   generaloptions.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
@@ -2603,12 +2603,7 @@ Stop
         opts[sSpaces & "af-add"] = sFilter
       Next
       
-      
-      ' opts["vf-add"] = NewChains.parse_filters(False)
-      ' opts["af-add"] = NewChains.parse_filters(True)
-      Stop
-      Return opts
-      
+
   Endif
 
   For Each opt In generaloptions.Parse()
