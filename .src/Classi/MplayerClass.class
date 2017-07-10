@@ -2308,8 +2308,6 @@ For Each new_opts
   Endif
 Next
 
-  ' If Left(af_new, "3") = "-1," Then af_new = Right(af_new, -3)
-  ' If Left(vf_new, "3") = "-1," Then vf_new = Right(vf_new, -3)
 
   If Left(af_new) = "," Then af_new = Right(af_new, -1)
   If Left(vf_new) = "," Then vf_new = Right(vf_new, -1)
