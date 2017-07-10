@@ -2588,8 +2588,8 @@ Stop
   
     
     'opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
-    opts["vf"] = NewChains.parse_filters(False)
-    opts["af"] = NewChains.parse_filters(True)
+    opts["vf-add"] = NewChains.parse_filters(False)
+    opts["af-add"] = NewChains.parse_filters(True)
 
   Endif
 
