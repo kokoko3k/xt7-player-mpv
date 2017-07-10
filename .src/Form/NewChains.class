@@ -901,7 +901,7 @@ End
 
 
 
-Private Function Parse_video_filter(Filtername As String) As String
+Private Function Parse_video_filter(Filtername As String) As String[]
   'will parse the tabstrip at filtername index and output
   'a commandline to add a filter in mplayer
   Dim ParsedFilter As String = Lower((FilterName))
@@ -912,7 +912,7 @@ Private Function Parse_video_filter(Filtername As String) As String
   Dim aTabstrip As Tabstrip = TabStrip_filters_video
   Dim i As Integer
   Dim parse As Boolean = True
-  Dim out As String
+  Dim out As New String[]
   Dim is_lavfi As Boolean = False
   Dim subtext As String
   Dim atabstrip_index As Integer
@@ -921,10 +921,10 @@ Private Function Parse_video_filter(Filtername As String) As String
   'Find the ParsedFilter Tab and activate it:
   atabstrip_index = aTabstrip.Tag.Find(ParsedFilter)
   
-  If parsedfilter = "scale" Then Return parse_scale()
+  If parsedfilter = "scale" Then Return [parse_scale()]
   
   If Parsedfilter Begins "customvideo" Then
-    out = parse_video_filter_custom(atabstrip_index)
+    out.add(parse_video_filter_custom(atabstrip_index))
     Return out
       Else
     'Discend the Tab objects,parse them and build the commandline
@@ -977,13 +977,107 @@ Private Function Parse_video_filter(Filtername As String) As String
 
     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
     If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
-    Return "@label_" & Lower(filtername) & ":" & ParsedFilter
+    Return ["@label_" & Lower(filtername) & ":" & ParsedFilter]
+
+  Endif
+End
+
+Private Function Parse_audio_filter(Filtername As String) As String[]
+  'will parse the tabstrip at filtername index and output
+  'a commandline to add a filter in mplayer
+  Dim ParsedFilter As String = Lower((FilterName))
+  Dim TmpString As String = ""
+  Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls in the tab
+  Dim PanelObject As Object 'the Hbox which contains a single parameter it is created by DrawFiltersGui function
+  Dim SubObject As Object
+  Dim aTabstrip As Tabstrip = TabStrip_filters_audio
+  Dim i As Integer
+  Dim parse As Boolean = True
+  Dim out As New String[]
+  Dim is_lavfi As Boolean = False
+  Dim subtext As String
+  Dim anequalizer_string As String
+  Dim out_anequalizer As String = ""
+  Dim atabstrip_index As Integer
+  Dim autogaindB As Integer
+
+  'Find the ParsedFilter Tab and activate it:
+  atabstrip_index = aTabstrip.Tag.Find(ParsedFilter)
+  If Parsedfilter = "anequalizer" Then
+    anequalizer_string = eqstring(False, ByRef autogaindB)
+    If autogaindB > 0 Then
+      out.Add("lavfi=[volume=-" & autogaindB & "dB]")
+    Endif   
+    out.Add("\"lavfi=[anequalizer=" & anequalizer_string & "]\"") 'this way it works at start time only" 
+    Return out
+    
+  Else If Parsedfilter = "compand" Then
+    Return [parse_compand()]
+  Else If Parsedfilter = "acompressor" Then
+    Return [parse_acompressor()]
+    
+
+  Else If Parsedfilter Begins "customaudio" Then
+    out.add(parse_audio_filter_custom(atabstrip_index))
+    Return out
+      Else
+    'Discend the Tab objects,parse them and build the commandline
+    'hierarchy is:
+    'Tabstrip -> scrollviews -> Panels -> ParameterObjects
+    For Each MyScrollview In aTabstrip[atabstrip_index].Children
+      If MyScrollView.tag = "lavfi" Then is_lavfi = True
+      For Each PanelObject In MyScrollView.Children
+        If PanelObject.name Like "*HBox" Then
+          parse = True
+          For Each SubObject In PanelObject.Children
+            If Not (SubObject Is Label) Then
+              If (SubObject Is Checkbox) Then
+                '(is a checkbox,parse only if it is checked)
+                parse = SubObject.value And Not (Lower(subobject.name) Begins "noparse")
+                  Else If Lower(subobject.name) Begins "noparse" Then
+                    parse = False
+              Endif
+              
+              'patch
+              If subobject Is Spinbar Then 
+                subtext = Replace(CString(subobject.value), ",", ".")
+                  Else
+                subtext = subobject.text
+              Endif
+              
+              If subtext <> "" Then
+                If (parse And Not (subobject Is Checkbox)) Then TmpString = global.RemoveShortcut(TmpString & Split(subtext, " ")[0] & ":")
+                If (parse And (subobject Is Checkbox)) Then
+                  TmpString = global.RemoveShortcut(TmpString & Split(Subtext, " ")[0]) 'fixmempv perchè non mette i due punti alla fine del checkbox?
+                Endif
+                  Else
+                If parse Then
+                  Print subobject.name
+                  TmpString = global.RemoveShortcut(TmpString & ":")
+                Endif
+              Endif
+            Endif
+          Next
+        Endif
+      Next
+    Next
+    
+    
+    
+
+    If (Right(tmpstring) = ":") Then
+      TmpString = Left(Tmpstring, - 1)
+    Endif
+
+    If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
+    If is_lavfi Then parsedfilter = "lavfi=[" & parsedfilter & "]"
+    Return ["@label_" & Lower(filtername) & ":" & ParsedFilter]
 
   Endif
 End
 
 
-Private Function Parse_audio_filter(Filtername As String) As String
+Private Function Parse_audio_filter_old(Filtername As String) As String
   'will parse the tabstrip at filtername index and output
   'a commandline to add a filter in mplayer
   Dim ParsedFilter As String = Lower((FilterName))
@@ -1010,6 +1104,8 @@ Private Function Parse_audio_filter(Filtername As String) As String
       out_anequalizer = "lavfi=[volume=-" & autogaindB & "dB],"
     Endif   
     out_anequalizer &= "\"lavfi=[anequalizer=" & anequalizer_string & "]\"" 'this way it works at start time only" 
+    
+    
     Return out_anequalizer
   Else If Parsedfilter = "compand" Then
     Return parse_compand()
@@ -1209,20 +1305,24 @@ Public Function parse_filters(audio As Boolean) As String[]
     item_name = item_box.name
     cBox = Me.Controls[item_name & "_checkbox_" & filters_container.name]
     If cBox.value = True Then
-      ' If audio Then 
-      '   filter = Parse_audio_filter(item_name)
-      '   If filter <> "" Then filters &= filter & ","  'null custom filters
-      '     Else
-      '   filter = Parse_video_filter(item_name)        'needed to fix
-      '   If filter <> "" Then filters &= filter & ","  'null custom filters
-      ' Endif
+    '   If audio Then 
+    '     filter = Parse_audio_filter(item_name)
+    '       Else
+    '     filter = Parse_video_filter(item_name)
+    '   Endif
+    '   If filter <> "" Then aFilters.Add(filter)
+    ' Endif
       If audio Then 
-        filter = Parse_audio_filter(item_name)
+        For Each filter In Parse_audio_filter(item_name)
+          If filter <> "" Then aFilters.Add(filter)
+        Next
           Else
-        filter = Parse_video_filter(item_name)
+        For Each filter In Parse_video_filter(item_name)
+          If filter <> "" Then aFilters.Add(filter) 
+        Next
       Endif
-      If filter <> "" Then aFilters.Add(filter)
     Endif
+
   Next
   ' While Right(filters) = ","
   '   filters = Left(filters, -1)
