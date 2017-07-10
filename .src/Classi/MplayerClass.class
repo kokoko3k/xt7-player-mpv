@@ -2183,6 +2183,15 @@ Private Function deQuote(S As String) As String
   Return s
 End
 
+Private Function cFuzzy_exist(sKey As String, c As Collection) As Boolean
+  Dim d As String
+  'return if "[spaces]&sKey" key is found in collection c
+  If c.Exist(sKey) Then Return True
+  For Each d In c
+    If Trim(skey) = Trim(c.key) Then Return True
+  Next
+  Return False
+End
 
 
 Private Function what_changes(oldc As Collection, newc As Collection) As Collection
@@ -2190,33 +2199,31 @@ Private Function what_changes(oldc As Collection, newc As Collection) As Collect
   Dim data, k As String
   
   Dim i As Integer
-  
+
   'given 2 collections, returns a new collection
   'built from changed key values, removed keys,added keys
   
   For Each data In newc
     k = Trim(newc.key)
-    If oldc.Exist(k) Then
+    If cFuzzy_exist(k, oldc) Then
       If deQuote(oldc[k]) <> deQuote(newc[k]) Then 
         global.myDebug("old option changed", k, oldc[k], newc[k])
         out[k] = newc[k]
-      Endif
+      Endif  
+        Else      'If Not (oldc.Exist(k)) Then
+     global.myDebug("New option added", k, newc[k])
+     out[k] = newc[k]
     Endif
-
-  If Not (oldc.Exist(k)) Then
-       global.myDebug("New option added", k, newc[k])
-       out[k] = newc[k]
-    Endif
+    
   Next
 
   For Each data In oldc
     k = Trim(oldc.key)
-    If Not (newc.Exist(k)) Then
+    If Not (cFuzzy_exist(k, newc)) Then
        global.myDebug("old option removed", k, oldc[k])
        out[k] = "|(removed)|"
     Endif
   Next
-
   Return out
   
 End
@@ -2232,6 +2239,8 @@ Public Sub do_apply(new_opts As Collection)
   Dim vf_new As String = ""
   Dim af_pre_new As String = ""
   Dim vf_pre_new As String = ""
+
+  
 
   new_opts = fix_options(new_opts)
   
@@ -2257,13 +2266,13 @@ Public Sub do_apply(new_opts As Collection)
 global.myDebug("No changed option requires restart, setting realtime properties instead")
 'rt_options:
 For Each new_opts
-  name = new_opts.Key
+  name = Trim(new_opts.Key)
   data = new_opts[new_opts.Key]
   If realtime_opts.Find(name) >= 0 Then
     Select Case name
-      Case "af"
+      Case Like "af"
         af_new = data
-      Case "af-add"
+      Case Like "af-add"
         If af_new <> "" Then
           af_new = af_new & "," & data
             Else
@@ -2298,7 +2307,7 @@ For Each new_opts
     End Select
   Endif
 Next
-'Stop
+
   ' If Left(af_new, "3") = "-1," Then af_new = Right(af_new, -3)
   ' If Left(vf_new, "3") = "-1," Then vf_new = Right(vf_new, -3)
 

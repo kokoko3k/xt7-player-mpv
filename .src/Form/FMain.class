@@ -5302,6 +5302,7 @@ Private Function get_apply_opts() As Collection
 End
 
 Public Sub Apply(Optional force_restart As Boolean = False)
+
   If Not mplayer.ProcessRunningOvr() Then Return
   If force_restart Then
     mplayer.do_apply_restart(get_apply_opts())
