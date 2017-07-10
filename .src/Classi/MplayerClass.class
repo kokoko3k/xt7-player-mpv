@@ -2270,9 +2270,9 @@ For Each new_opts
   data = new_opts[new_opts.Key]
   If realtime_opts.Find(name) >= 0 Then
     Select Case name
-      Case Like "af"
+      Case "af"
         af_new = data
-      Case Like "af-add"
+      Case "af-add"
         If af_new <> "" Then
           af_new = af_new & "," & data
             Else
