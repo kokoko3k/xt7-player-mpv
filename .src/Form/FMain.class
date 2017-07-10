@@ -2750,6 +2750,9 @@ Public Function get_allowed_options() As String[]
     If Error Then global.myDebug("Cannot save " & global.mpv_allowed_options_file)
   Endif
 
+  aAllowed_options.Add("vf")
+  aAllowed_options.Add("af")
+
   For Each sAllowed_option In Split(sAllowed_options, "\n", "", True)
     If sAllowed_option Begins "--" Then 
       sOpt = Right(sAllowed_option, -2)
