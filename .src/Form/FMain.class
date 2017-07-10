@@ -2559,7 +2559,7 @@ Public Sub user_options(fullpath As String) As Collection
   'initialize uninitialized forms and load settings
   generaloptions.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
-
+Stop
   'if exists a set of cached options for the current profile
   ' And we haven't initializaed newchains yet, use the cache:
   If global.exist_cached_options(global.CurrentProfile) And (Not NewChains.initdone) Then 
@@ -2588,8 +2588,8 @@ Public Sub user_options(fullpath As String) As Collection
   
     
     'opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
-    opts["vf-add"] = NewChains.parse_filters(False)
-    opts["af-add"] = NewChains.parse_filters(True)
+    opts["vf"] = NewChains.parse_filters(False)
+    opts["af"] = NewChains.parse_filters(True)
 
   Endif
 
@@ -2750,8 +2750,6 @@ Public Function get_allowed_options() As String[]
     If Error Then global.myDebug("Cannot save " & global.mpv_allowed_options_file)
   Endif
 
-  aAllowed_options.Add("vf")
-  aAllowed_options.Add("af")
 
   For Each sAllowed_option In Split(sAllowed_options, "\n", "", True)
     If sAllowed_option Begins "--" Then 
@@ -2759,6 +2757,7 @@ Public Function get_allowed_options() As String[]
       aAllowed_options.Add(sOpt)
       If sOpt Ends "*" Then
         sOpt = Left(sOpt, -1)
+        aAllowed_options.Add(sOpt)
         aAllowed_options.Add(sOpt & "-add")
         aAllowed_options.Add(sOpt & "-del")
         aAllowed_options.Add(sOpt & "-pre")

@@ -2039,7 +2039,6 @@ Public Sub DrawGraph()
   eq_string = eqstring()
   If eq_string <> "" Then
     mpveq.mpvoptions["lavfi-complex"] = "\"" & eqstring() & "\""
-    'mpveq.mpvoptions["vf"] = "scale=" & picturebox1.w & ":" & picturebox1.h
     mpveq.mpvoptions["vo"] = "image"
     mpveq.mpvoptions["ao"] = "null"
     mpveq.mpvoptions["vo-image-format"] = "png"
