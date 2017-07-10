@@ -2551,15 +2551,16 @@ Public Sub static_options() As Collection
   Return opts
 End
 
-Public Sub user_options(fullpath As String) As Collection
+Public Function user_options(fullpath As String) As Collection
   'user options configured through gui
   Dim opts As New Collection
   Dim opt As Mpvoption
-
+  Dim sFilter, sSpaces As String
+Stop
   'initialize uninitialized forms and load settings
   generaloptions.FirstLoadIfNeeded()
   SubAndOsd.FirstLoadIfNeeded()
-Stop
+
   'if exists a set of cached options for the current profile
   ' And we haven't initializaed newchains yet, use the cache:
   If global.exist_cached_options(global.CurrentProfile) And (Not NewChains.initdone) Then 
@@ -2569,28 +2570,45 @@ Stop
     'parse the chain if we have not a cache
     NewChains.FirstLoadIfNeeded()
     
-  For Each opt In newchains.parse_drivers(False)
-    If opt.data = "" Then opt.data = Chr(8)
-    While opts.Exist(opt.name)
-      opt.name = " " & opt.name 'to have multiple options with the same name
-    Wend
-    opts[opt.name] = opt.data
-  Next
+    For Each opt In newchains.parse_drivers(False)
+      If opt.data = "" Then opt.data = Chr(8)
+      While opts.Exist(opt.name)
+        opt.name = " " & opt.name 'to have multiple options with the same name
+      Wend
+      opts[opt.name] = opt.data
+    Next
     
-  For Each opt In newchains.parse_drivers(True)
-    If opt.data = "" Then opt.data = Chr(8)
-    While opts.Exist(opt.name)
-      opt.name = " " & opt.name 'to have multiple options with the same name
-    Wend
-    opts[opt.name] = opt.data
-  Next
-  
-  
-    
-    'opts["ao"] = NewChains.parse_drivers(True) 'XConfigureAudioDriver.ParsedAudioDriver()
-    opts["vf-add"] = NewChains.parse_filters(False)
-    opts["af-add"] = NewChains.parse_filters(True)
+    For Each opt In newchains.parse_drivers(True)
+      If opt.data = "" Then opt.data = Chr(8)
+      While opts.Exist(opt.name)
+        opt.name = " " & opt.name 'to have multiple options with the same name
+      Wend
+      opts[opt.name] = opt.data
+    Next
 
+      'since mpv deprecated multiple filters on a single vf*/af* option, we have to specify
+      'multiple vf-add and af-add commands.
+      'but since we use a collection, the key must be unique.
+      'handle that by prepending white spaces to vf-add and af-add options.
+      
+      For Each sFilter In NewChains.parse_filters(False)
+        sSpaces &= " "
+        opts[sSpaces & "vf-add"] = sFilter
+      Next
+      
+      sSpaces = ""
+
+      For Each sFilter In NewChains.parse_filters(True)
+        sSpaces &= " "
+        opts[sSpaces & "af-add"] = sFilter
+      Next
+      
+      
+      ' opts["vf-add"] = NewChains.parse_filters(False)
+      ' opts["af-add"] = NewChains.parse_filters(True)
+      Stop
+      Return opts
+      
   Endif
 
   For Each opt In generaloptions.Parse()

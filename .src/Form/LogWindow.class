@@ -51,7 +51,7 @@ Public Sub ShowLogs()
 
   For Each FMain.mplayer.mpvOptions
     name = FMain.mplayer.mpvOptions.Key
-    logarea.text &= "  --" & name
+    logarea.text &= "  --" & Trim(name)
     data = FMain.mplayer.mpvOptions[name]
     If data <> "" Then logarea.text &= "=" & data
     logarea.text &= "\n"

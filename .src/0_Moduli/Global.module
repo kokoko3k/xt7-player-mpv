@@ -493,9 +493,10 @@ End Struct
 Public Sub save_cached_options(ProfileName As String)
   'save mpv options in a profile format compatible with mpv
   Dim cached_file_name As String = global.confpath & "/" & Profilename & ".cached"
-  Dim cached_data, data As String
+  Dim cached_data, data, sFilter, sSpaces As String
   Dim driver_opts As MpvOption[]
   Dim opt As MpvOption
+  
 
   If Not Exist(global.confpath, True) Then 
     global.myDebug("Configuration directory not found; something is going VERY wrong.")
@@ -520,10 +521,21 @@ Public Sub save_cached_options(ProfileName As String)
       Next
     Endif
 
-    data = NewChains.parse_filters(False)
-    If data <> "" Then cached_data &= "vf-add=" & data & "\n"
-    data = NewChains.parse_filters(True)
-    If data <> "" Then cached_data &= "af-add=" & data & "\n"
+    'data = NewChains.parse_filters(False)
+    sSpaces = ""
+    For Each sFilter In NewChains.parse_filters(False)
+        sSpaces &= " "
+        If Trim(sFilter) <> "" Then cached_data &= sSpaces & "vf-add=" & sFilter & "\n"
+    Next
+    sSpaces = ""
+    For Each sFilter In NewChains.parse_filters(True)
+        sSpaces &= " "
+        If Trim(sFilter) <> "" Then cached_data &= sSpaces & "af-add=" & sFilter & "\n"
+    Next
+    
+    'If data <> "" Then cached_data &= "vf-add=" & data & "\n"
+    'data = NewChains.parse_filters(True)
+    'If data <> "" Then cached_data &= "af-add=" & data & "\n"
     File.Save(cached_file_name, cached_data)
 End
 
