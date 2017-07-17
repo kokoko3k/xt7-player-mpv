@@ -774,12 +774,14 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
 End
 
-Private Function parse_video_filter_custom(atabstrip_index As Integer) As String
+Private Function parse_video_filter_custom(atabstrip_index As Integer) As String[]
 'will parse the filter which the user can freely configure.
   Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
                               'in the tab, it is created in the fillfilters function
   Dim PanelObject As Object 'the Hbox which contains a single parameter
                             'it is created by DrawFiltersGui function
+
+  Dim out As New String[]                           
   Dim SubObject As Object
   Dim customfilter As String = ""
   For Each MyScrollview In TabStrip_filters_video[atabstrip_index].Children
@@ -790,13 +792,7 @@ Private Function parse_video_filter_custom(atabstrip_index As Integer) As String
             If (SubObject Is Checkbox) Then
               If subobject.value = True Then
                 If subobject.next Is Textbox Then
-                  If Trim(subobject.NEXT.text) <> "" Then
-                    If customfilter = "" Then
-                      customfilter = customfilter & subobject.NEXT.text
-                        Else
-                      customfilter = customfilter & "," & subobject.NEXT.text
-                    Endif
-                  Endif
+                  If Trim(subobject.NEXT.text) <> "" Then out.add(subobject.NEXT.text)
                 Endif
               Endif
             Endif
@@ -805,11 +801,11 @@ Private Function parse_video_filter_custom(atabstrip_index As Integer) As String
       Endif
     Next
   Next
-  Return customfilter
+  Return out
 End
 
 
-Private Function parse_audio_filter_custom(atabstrip_index As Integer) As String
+Private Function parse_audio_filter_custom(atabstrip_index As Integer) As String[]
 'will parse the filter which the user can freely configure.
   Dim MyScrollView As Object  'the scrollview present in every tab, parent of all the controls
                               'in the tab, it is created in the fillfilters function
@@ -817,6 +813,8 @@ Private Function parse_audio_filter_custom(atabstrip_index As Integer) As String
                             'it is created by DrawFiltersGui function
   Dim SubObject As Object
   Dim customfilter As String = ""
+
+  Dim out As New String[]
 
   For Each MyScrollview In TabStrip_filters_audio[atabstrip_index].Children
     For Each PanelObject In MyScrollView.Children
@@ -826,13 +824,7 @@ Private Function parse_audio_filter_custom(atabstrip_index As Integer) As String
             If (SubObject Is Checkbox) Then
               If subobject.value = True Then
                 If subobject.next Is Textbox Then
-                  If Trim(subobject.NEXT.text) <> "" Then
-                    If customfilter = "" Then
-                      customfilter = customfilter & subobject.NEXT.text
-                        Else
-                      customfilter = customfilter & "," & subobject.NEXT.text
-                    Endif
-                  Endif
+                  If Trim(subobject.NEXT.text) <> "" Then out.Add(subobject.NEXT.text)
                 Endif
               Endif
             Endif
@@ -841,7 +833,8 @@ Private Function parse_audio_filter_custom(atabstrip_index As Integer) As String
       Endif
     Next
   Next
-  Return customfilter
+  'Return customfilter
+  Return out
 End
 
 Private Function parse_scale() As String
@@ -924,7 +917,7 @@ Private Function Parse_video_filter(Filtername As String) As String[]
   If parsedfilter = "scale" Then Return [parse_scale()]
   
   If Parsedfilter Begins "customvideo" Then
-    out.add(parse_video_filter_custom(atabstrip_index))
+    out.insert(parse_video_filter_custom(atabstrip_index))
     Return out
       Else
     'Discend the Tab objects,parse them and build the commandline
@@ -1018,7 +1011,8 @@ Private Function Parse_audio_filter(Filtername As String) As String[]
     
 
   Else If Parsedfilter Begins "customaudio" Then
-    out.add(parse_audio_filter_custom(atabstrip_index))
+    out.Insert(parse_audio_filter_custom(atabstrip_index))
+    'out.add(parse_audio_filter_custom(atabstrip_index))
     Return out
       Else
     'Discend the Tab objects,parse them and build the commandline

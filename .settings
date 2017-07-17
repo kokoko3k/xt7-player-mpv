@@ -70,6 +70,9 @@ Geometry=[52,0,224,280]
 [DebugWindow/Spinbox]
 Geometry=[1280,0,224,280]
 
+[DebugWindow/Split(File.Load(cached_options_file_name), "\n", "", True)]
+Geometry=[52,0,235,568]
+
 [DebugWindow/Split(File.Load(filename_v2), "\n", "", True, False)]
 Geometry=[1280,0,224,280]
 
@@ -115,6 +118,9 @@ Geometry=[52,0,224,280]
 [DebugWindow/TheTabStrip]
 Geometry=[1280,0,224,280]
 
+[DebugWindow/aAllowed_options]
+Geometry=[52,0,224,280]
+
 [DebugWindow/aArg]
 Geometry=[1280,0,224,280]
 
@@ -132,6 +138,12 @@ Geometry=[52,0,224,280]
 
 [DebugWindow/aTabstrip.Tag]
 Geometry=[52,0,224,280]
+
+[DebugWindow/allowed_options]
+Geometry=[52,0,224,280]
+
+[DebugWindow/changed_opts]
+Geometry=[52,0,285,334]
 
 [DebugWindow/command]
 Geometry=[52,0,224,280]
@@ -196,6 +208,9 @@ Geometry=[52,0,224,280]
 [DebugWindow/jdecoded[0]]
 Geometry=[66,14,224,280]
 
+[DebugWindow/key]
+Geometry=[52,0,224,280]
+
 [DebugWindow/last_dynaobj_changed]
 Geometry=[688,443,224,280]
 
@@ -232,6 +247,9 @@ Geometry=[1280,0,224,280]
 [DebugWindow/new_opts]
 Geometry=[1280,0,581,744]
 
+[DebugWindow/newc]
+Geometry=[1542,33,612,925]
+
 [DebugWindow/o]
 Geometry=[52,0,378,804]
 
@@ -249,6 +267,9 @@ Geometry=[66,14,224,280]
 
 [DebugWindow/obj[1]]
 Geometry=[66,14,224,280]
+
+[DebugWindow/oldc]
+Geometry=[1657,0,406,933]
 
 [DebugWindow/option_info]
 Geometry=[776,353,224,280]
@@ -279,6 +300,9 @@ Geometry=[1340,343,224,280]
 
 [DebugWindow/options_infos[1]]
 Geometry=[1294,14,224,280]
+
+[DebugWindow/opts]
+Geometry=[52,0,816,565]
 
 [DebugWindow/opts["vo"]]
 Geometry=[1280,0,224,280]
@@ -313,6 +337,9 @@ Geometry=[1280,0,224,280]
 [DebugWindow/return_opts[0]]
 Geometry=[1280,312,224,280]
 
+[DebugWindow/source_opts]
+Geometry=[52,0,301,812]
+
 [DebugWindow/subobj]
 Geometry=[1461,143,224,280]
 
@@ -342,15 +369,15 @@ Path="xt7-player-mpv.gambas"
 
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:62.197"
-File[2]=".src/Classi/MplayerClass.class:2.648"
-Active=6
-File[3]=".src/Form/NewChains.class:31.108"
-Count=41
+File[2]=".src/Classi/MplayerClass.class:0.2363"
+Active=3
+File[3]=".src/Form/NewChains.class:38.1005"
+Count=44
 File[4]=".src/Form/FMain.form"
-File[5]=".src/Form/FMain.class:22.2712"
+File[5]=".src/Form/FMain.class:0.5304"
 File[6]=".src/Form/NewChains.form"
-File[7]=".src/Form/GeneralOptions.class:34.376"
-File[8]=".src/0_Moduli/Global.module:3.525"
+File[7]=".src/Form/GeneralOptions.class:3.29"
+File[8]=".src/0_Moduli/Global.module:3.142"
 File[9]=".src/Form/GeneralOptions.form"
 File[10]=".src/Classi/FloatSpinBox.class:12.180"
 File[11]="AA_ToDo:0.44"
@@ -360,7 +387,7 @@ File[14]=".src/Form/ChooseAspect.class:17.21"
 File[15]=".src/Classi/PlaylistClass.class:5.1084"
 File[16]=".src/Form/HotKeys.class:0.820"
 File[17]=".src/Form/zzzFake.form"
-File[18]=".src/Classi/StartClass.class:9.6"
+File[18]=".src/Classi/StartClass.class:8.24"
 File[19]=".src/Form/zzzFake.class:48.13"
 File[20]=".src/Classi/mpris.class:17.122"
 File[21]=".src/Classi/DbusProperties.class:19.2"
@@ -371,8 +398,8 @@ File[25]=".src/Form/AudioForm.class:34.304"
 File[26]=".src/Form/MyQuestion.form"
 File[27]=".src/Classi/YoutubeClass.class:22.342"
 File[28]=".src/Classi/MplayerClass_old.class:53.1228"
-File[29]=".src/Form/SubAndOsd.class:14.163"
-File[30]="_mpvstats.lua:0.384"
+File[29]=".src/Form/SubAndOsd.class:27.35"
+File[30]="_mpvstats.lua:27.427"
 File[31]=".src/Form/SubAndOsd.form"
 File[32]=".src/Form/CoverManager.form"
 File[33]=".src/Classi/OpenSubtitlesAPI.class:31.308"
@@ -381,9 +408,12 @@ File[35]=".src/Form/HotKeys.form"
 File[36]=".src/Form/FormLyrics.form"
 File[37]=".src/Form/FormLyrics.class:0.128"
 File[38]=".src/Classi/AlbumView.class:0.310"
-File[39]=".src/Classi/CDDB.class:25.118"
+File[39]=".src/Classi/CDDB.class:14.91"
 File[40]=".src/Form/CountDown.class:17.3"
 File[41]=".src/Classi/ShoutCastClass.class:22.395"
+File[42]="/tmp/gambas.1012/16963/1.console:31.18"
+File[43]=".src/Form/AudioConvert.class:14.108"
+File[44]=".src/Form/LogWindow.class:39.52"
 
 [Watches]
 Count=0
