@@ -142,7 +142,7 @@ Public Function ParseSubGui(Optional fullpath As String = "") As MpvOption[]
       If (Lower(file.Ext((fullpath))) = "mkv") Then
         opts.Add(o("sub-file", "'" & SConv(fullpath) & "'"))
         'opts.Add(o("sub-ass", "no")) 'deprecated, use the following instead:
-              opts.Add(o("sub-ass-style-override", "strip"))
+              opts.Add(o("sub-ass-override", "strip"))
               opts.Add(o("embeddedfonts", "no"))
       Endif
     Endif
