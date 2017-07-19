@@ -1483,24 +1483,8 @@
             Expand = True
           }
         }
-        { JackParseMeHBox3 HBox
-          MoveScaled(0,7,45,6)
-          AutoResize = True
-          Padding = 8
-          { CheckBox18jack3 CheckBox
-            MoveScaled(1,2,17,4.5714)
-            #Translate = False
-            Tag = "pulse-sink"
-            Text = "Sink"
-          }
-          { TextBox3jack3 TextBox
-            MoveScaled(19,1,22,4.5714)
-            #Translate = False
-            Expand = True
-          }
-        }
         { PulseParseMeHbox3 HBox
-          MoveScaled(0,15,46,6)
+          MoveScaled(0,8,46,6)
           AutoResize = True
           Padding = 6
           { AlsaDeviceChk3pulse CheckBox
@@ -1517,7 +1501,7 @@
           }
         }
         { PulseParseMeHbox2 HBox
-          MoveScaled(0,22,46,6)
+          MoveScaled(0,15,46,6)
           AutoResize = True
           Padding = 6
           { AlsaDeviceChk4pulse CheckBox
