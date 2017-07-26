@@ -277,8 +277,7 @@ Public Sub Form_Open()
   'init dynagui toolbar objects
   DynaGuiTools.AllowedContainers = ["MainToolbar"] ', "SliderBox"]
   DynaGuiTools.YOffset = - Me.Font.TextHeight("Ij") - 8
-  'Hide the coverbox
-  If GeneralOptions.CoverCHK2.value Then ShowAudioPanel(False)
+  ShowAudioPanel(False) 'Hide the coverbox
   'Popup translation needed dialog:
   If global.TranslationNeeded Then
     If Not (Exist(TranslationNeeded.Notranslatefile)) Then TranslationNeeded.show
@@ -1392,29 +1391,28 @@ Public Sub FillPropertiesGrid()
   PropertiesGrid.Columns[1].Width = "-1"      'Autosize Columns
   
   'init pretty panel too
-  If GeneralOptions.CoverCHK2.value Then
-    audioform.UpdateCell(audioform.gridup, 0, 1, PropertiesGrid[6, 1].text)
-    audioform.UpdateCell(audioform.gridup, 1, 1, PropertiesGrid[5, 1].text)
-    audioform.UpdateCell(audioform.gridup, 2, 1, PropertiesGrid[8, 1].text)
-    audioform.UpdateCell(audioform.gridup, 3, 1, PropertiesGrid[7, 1].text)
-    audioform.UpdateCell(audioform.gridup, 4, 1, PropertiesGrid[11, 1].text)
-    
-    'commented out the very next because this will be filled by mpv when the name property changes.
-    'audioform.label18.text = PropertiesGrid[1, 1].text
-    
-    'audioform.label19.text = PropertiesGrid[3, 1].text
-    If Trim(PropertiesGrid[2, 1].text) <> "" Then 
-      audioform.UpdateCell(audioform.griddown, 3, 1, PropertiesGrid[2, 1].text & "KB")
-    Else
-      audioform.UpdateCell(audioform.griddown, 3, 1, ("Unknown"))
-    Endif
-    Try audio_codec = Split(Trim(PropertiesGrid[14, 1].text), " ", "", True)[0]
-    If audio_codec <> "" Then audioform.UpdateCell(audioform.griddown, 4, 1, audio_codec)
-    If (Trim(PropertiesGrid[15, 1].text) <> "") Then audioform.UpdateCell(audioform.griddown, 4, 1, audioform.griddown[4, 1].text & "@" & PropertiesGrid[15, 1].text)
-    If (Trim(PropertiesGrid[12, 1].text) <> "") Then audioform.UpdateCell(audioform.griddown, 4, 1, audioform.griddown[4, 1].text & ", " & ("Channels") & ": " & PropertiesGrid[12, 1].text)
-    If (Trim(PropertiesGrid[13, 1].text) <> "") Then audioform.UpdateCell(audioform.griddown, 4, 1, audioform.griddown[4, 1].text & ", " & ("Rate") & ": " & PropertiesGrid[13, 1].text & "Hz")
-
+  audioform.UpdateCell(audioform.gridup, 0, 1, PropertiesGrid[6, 1].text) 'artist
+  audioform.UpdateCell(audioform.gridup, 1, 1, PropertiesGrid[5, 1].text) 'album
+  audioform.UpdateCell(audioform.gridup, 2, 1, PropertiesGrid[8, 1].text)
+  audioform.UpdateCell(audioform.gridup, 3, 1, PropertiesGrid[7, 1].text) 'year
+  audioform.UpdateCell(audioform.gridup, 4, 1, PropertiesGrid[11, 1].text) 'comment
+  
+  'commented out the very next because this will be filled by mpv when the name property changes.
+  'audioform.label18.text = PropertiesGrid[1, 1].text
+  
+  'audioform.label19.text = PropertiesGrid[3, 1].text
+  If Trim(PropertiesGrid[2, 1].text) <> "" Then 
+    audioform.UpdateCell(audioform.griddown, 3, 1, PropertiesGrid[2, 1].text & "KB")
+  Else
+    audioform.UpdateCell(audioform.griddown, 3, 1, ("Unknown"))
   Endif
+  Try audio_codec = Split(Trim(PropertiesGrid[14, 1].text), " ", "", True)[0]
+  If audio_codec <> "" Then audioform.UpdateCell(audioform.griddown, 4, 1, audio_codec)
+  If (Trim(PropertiesGrid[15, 1].text) <> "") Then audioform.UpdateCell(audioform.griddown, 4, 1, audioform.griddown[4, 1].text & "@" & PropertiesGrid[15, 1].text)
+  If (Trim(PropertiesGrid[12, 1].text) <> "") Then audioform.UpdateCell(audioform.griddown, 4, 1, audioform.griddown[4, 1].text & ", " & ("Channels") & ": " & PropertiesGrid[12, 1].text)
+  If (Trim(PropertiesGrid[13, 1].text) <> "") Then audioform.UpdateCell(audioform.griddown, 4, 1, audioform.griddown[4, 1].text & ", " & ("Rate") & ": " & PropertiesGrid[13, 1].text & "Hz")
+
+
   
   If (global.IsAudioFile(mplayer.getP("fullpath"))) Or (global.IsNetworkURI(mplayer.getP("fullpath"))) Or (Lower(mplayer.getP("fullpath")) Like "cdd?://*") Then
     audioform.AutoresizeAudioForm()
@@ -2990,7 +2988,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
         ShowAudioPanel(True)
       Endif
     Endif
-    If GeneralOptions.CoverCHK2.value Then CoverRefresh()
+    CoverRefresh()
       Else
     CorrectAreaAspect() 
     ShowAudioPanel(False)
@@ -7939,7 +7937,7 @@ Public Sub EditTagModeSwitch1_Click()
       Rightsidepanel.background = Color.Black
       tagpanel.visible = False
       OuterBox.visible = True
-      If mplayer.ProcessRunningOvr() And GeneralOptions.CoverCHK2.value Then
+      If mplayer.ProcessRunningOvr() Then
         If mplayer.getP("audioonly") Then
           FillPropertiesGrid()
           CoverRefresh()

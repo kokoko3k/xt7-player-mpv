@@ -744,9 +744,6 @@ Public Sub SlangComboBox_Click()
   Button2.visible = True
 End
 
-Public Sub CoverCHK2_Click()
-  If CoverCHK2.value = False Then FMain.ShowAudioPanel(False)
-End
 
 Public Sub AddBtn4_Click()
   Fmain.Mylibrary.Exclude(Fmain.LibraryGrid, NoParseExcludedListbox)

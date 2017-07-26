@@ -1636,18 +1636,6 @@
             Alignment = Align.Right
           }
         }
-        { NoParse18 HBox
-          MoveScaled(1,43,50,4.5714)
-          ToolTip = ("When an audio file is played, the right panel will show\ninformations on the file played, allowing to set covers\nfor your library items.")
-          Spacing = True
-          { CoverCHK2 CheckBox
-            MoveScaled(1,0,41,4.5714)
-            ToolTip = ("When an audio file is played, the right panel will show\ninformations on the file played, allowing to set covers\nfor your library items.")
-            Expand = True
-            Text = ("Use cover manager.")
-            Value = CheckBox.True
-          }
-        }
         { NOPARSESEP1 Separator
           MoveScaled(4,48,45,1)
         }
