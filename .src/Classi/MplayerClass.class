@@ -252,8 +252,34 @@ Public Sub playerprocess_read(Optional injected As String = "")
       question = MidC(sBuf, "_", "|")
       answer = (MidC(sBuf, "|"))
       Try prop.Remove(question)
+      
       setP(question, answer)
       setP_time(question, Timer())
+      
+      'duplicate/translate some metadata values for convenience
+      If InStr(question, "metadata/by-key") > 0 Then
+        Select Case Lower(question)
+          Case "metadata/by-key/artist"
+            setP("artist", answer)
+            If getP("metadata/by-key/author", "(unavailable_str)") = "(unavailable_str)" Then setP("author", answer)
+          Case "metadata/by-key/author"
+            setP("author", answer)
+            If getP("metadata/by-key/artist", "(unavailable_str)") = "(unavailable_str)" Then setP("artist", answer)
+          Case "metadata/by-key/genre"
+              setP("genre", answer)
+          Case "metadata/by-key/album"
+              setP("album", answer)
+          Case "metadata/by-key/date"
+              setP("year", answer)
+              setP("date", answer)
+          Case "metadata/by-key/track"
+              setP("TrackNo", answer)
+          Case "metadata/by-key/title"
+              setP("name", answer)
+              setP("title", answer)
+        End Select
+      Endif
+      
         Else If sbuf Like "\\[*\\] *" Then
           'filter some noisy ladspa plugins
           If Not (sbuf Like "*Parsed_ladspa_*") Then 
@@ -804,16 +830,6 @@ Public Function get_mediainfo(Optional cddb As Boolean = True, Optional force_au
   
   If fullpath = "" Then Return
 
-' ' ''ENUM Artist, title etc via mpv Metadata
-' '     metadatacount = GetPropertympv("metadata/list/count")
-' '     If metadatacount > 0 Then
-' '       For i = 0 To metadatacount - 1
-' '         metadataname = GetPropertympv("metadata/list/" & i & "/key")
-' '         global.myDebug( metadataname, GetPropertympv("metadata/by-key/" & metadataname))
-' '       Next
-' '     Endif
-' '   ''
-
   global.mydebug("Waiting for playback to start")
   If Not waitplayback(3000) Then
     global.myDebug("EE", "Playback didn't started or timeout waiting for it to start")
@@ -838,80 +854,83 @@ Public Function get_mediainfo(Optional cddb As Boolean = True, Optional force_au
   If Not getP("audioonly") Then
     properties.Insert(["video-codec", "video-params/dw", "video-params/dh"]) 'video files
   Endif
-
-  
   
   'for audio only files, try to get common audio tags
   'try first to get them using fast taglib
   'fixmempv --> but fallback to mplayer in idle mode <--fixmempv
-  If (getP("AudioOnly") And (Not Global.IsNetworkURI(FullPath))) Then
-    If media_taglib.IsSupported(fileutf8) And media_taglib.Init(Fullpath) Then
-      setP("artist", media_taglib.Artist)
-      setP("author", media_taglib.Artist)
-      setP("title", media_taglib.Title)
-      setP("album", media_taglib.Album)
-      setP("genre", media_taglib.Genre)
-      setP("year", media_taglib.MyYear)
-      setP("comment", Replace(Replace(media_taglib.Comment, "\n", " "), "\r", " "))
-      setP("comments", media_taglib.Comment)
-      setP("trackno", media_taglib.Track)
-      setP("=duration", media_taglib.Length)
-      setP("duration", FormatTime(media_taglib.Length))
-      If getP("=duration") = 0 Then properties.add("=duration")
-      If getP("duration") = 0 Then properties.add("duration")
-      setP("=Audio-Bitrate", media_taglib.Bitrate)
-      If getP("=Audio-Bitrate") = 0 Then properties.add("=audio-bitrate")
-      setP("=audio-params/channels", media_taglib.Channels)
-      If getP("=audio-params/channels") = 0 Then properties.add("=audio-params/channels")
-      setP("=audio-params/samplerate", media_taglib.Samplerate)
-      If getP("=audio-params/samplerate") = 0 Then properties.add("=audio-params/samplerate")
-      global.myDebug("got info from taglib on " & Fullpath & " --")
-      
-       media_taglib.tlFree()
-        Else  'there was a problem with TagLib Class initialization, fallback to mplayer
-              'or was a network uri or a cddb 
-      If global.IsCdaudio(Fullpath) Then 'fixmempv cddb allow to choose if user wants cddb
-        get_cdda_info(cdda_device(Fullpath), cddb)
-        If cddb Then
-          Try setP("Artist", Mycdinfo.Artist)
-          Try setP("author", Mycdinfo.Artist)
-          Try setP("year", Mycdinfo.years)
-          Try setP("year", Mycdinfo.years)
-          Try setP("album", Mycdinfo.title)
-        Endif
+  If (getP("AudioOnly") = True) Then ' then And (Not Global.IsNetworkURI(FullPath))) Then
+   
+    If (Not Global.IsNetworkURI(FullPath))
+      If media_taglib.IsSupported(fileutf8) And media_taglib.Init(Fullpath) Then
+        setP("artist", media_taglib.Artist)
+        setP("author", media_taglib.Artist)
+        setP("title", media_taglib.Title)
+        setP("album", media_taglib.Album)
+        setP("genre", media_taglib.Genre)
+        setP("year", media_taglib.MyYear)
+        setP("comment", Replace(Replace(media_taglib.Comment, "\n", " "), "\r", " "))
+        setP("comments", media_taglib.Comment)
+        setP("trackno", media_taglib.Track)
+        setP("=duration", media_taglib.Length)
+        setP("duration", FormatTime(media_taglib.Length))
+        setP("=Audio-Bitrate", media_taglib.Bitrate)
+        setP("=audio-params/channels", media_taglib.Channels)
+        setP("=audio-params/samplerate", media_taglib.Samplerate)
+        global.myDebug("got info from taglib on " & Fullpath & " --")
+        media_taglib.tlFree()
       Endif
-
-
-      If Not (global.IsCdaudio(Fullpath))
-        Try setP("Artist", get_property_mpv("metadata/by-key/ARTIST", True, 20))
-        Try setP("Author", get_property_mpv("metadata/by-key/AUTHOR", True, 2))
-        Try setP("Genre", get_property_mpv("metadata/by-key/GENRE", True, 2))
-        Try setP("Album", get_property_mpv("metadata/by-key/ALBUM", True, 2))
-        Try setP("Year", get_property_mpv("metadata/by-key/DATE", True, 2))
-        ' Try Media_CreationDate = DConv(FindAudioTag("creation date")) 'fixmempv
-        Try setP("TrackNo", get_property_mpv("metadata/by-key/track", True, 2))
-        Try setP("Title", get_property_mpv("metadata/by-key/TITLE", True, 2))
-        If getP("Title") = "" Then Try setP("name", get_property_mpv("metadata/by-key/TITLE", True, 2))
-        ' Try Media_Comment = DConv(FindAudioTag("comment")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
-        ' Try Media_Comments = DConv(FindAudioTag("comments")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
-      Endif
-
-      If Fullpath Like "*.cue" Then
-        Try cuetext = File.Load(fullpath)
-        If Not Error Then 
-          Try setP("year", get_main_cue_property(cuetext, "DATE"))
-          Try setP("comment", get_main_cue_property(cuetext, "COMMENT"))
-          Try setP("genre", get_main_cue_property(cuetext, "GENRE"))
-          Try setP("artist", get_main_cue_property(cuetext, "PERFORMER"))
-          Try setP("author", get_main_cue_property(cuetext, "PERFORMER"))
-          Try setP("Album", get_main_cue_property(cuetext, "TITLE"))
-        Endif
-      Endif
-      
-      
-      If (getP("=duration") = 0) Or (getP("=duration") = "") Then properties.insert(["=duration", "duration"])
-
     Endif
+
+    
+    If getP("=duration") = 0 Then properties.add("=duration")
+    If getP("duration") = 0 Then properties.add("duration")
+    If getP("=Audio-Bitrate") = 0 Then properties.add("=audio-bitrate")
+    If getP("=audio-params/channels") = 0 Then properties.add("=audio-params/channels")
+    
+    If getP("=audio-params/samplerate") = 0 Then properties.add("=audio-params/samplerate")
+  
+    If Not (global.IsCdaudio(Fullpath))
+          If getP("Artist", "(unavailable)") = "(unavailable)" Then properties.add("metadata/by-key/ARTIST")
+      If getP("Author", "(unavailable)") = "(unavailable)" Then properties.add("metadata/by-key/AUTHOR")
+      If getP("Genre", "(unavailable)") = "(unavailable)" Then properties.add("metadata/by-key/GENRE")
+      If getP("Album", "(unavailable)") = "(unavailable)" Then properties.add("metadata/by-key/ALBUM")
+      If getP("Year", "(unavailable)") = "(unavailable)" Then properties.add("metadata/by-key/DATE")
+      ' Try Media_CreationDate = DConv(FindAudioTag("creation date")) 'fixmempv
+      If getP("TrackNo", "(unavailable)") = "(unavailable)" Then properties.add("metadata/by-key/track")
+      If getP("Title", "(unavailable)") = "(unavailable)" Then properties.add("metadata/by-key/TITLE")
+      If getP("Title") = "" Then properties.add("metadata/by-key/TITLE")
+      ' Try Media_Comment = DConv(FindAudioTag("comment")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
+      ' Try Media_Comments = DConv(FindAudioTag("comments")) ' & Media_ExtraComment 'fixmempv mpv doesnt support comments...
+    Endif      
+  
+    If global.IsCdaudio(Fullpath) Then 'fixmempv cddb allow to choose if user wants cddb
+      get_cdda_info(cdda_device(Fullpath), cddb)
+      If cddb Then
+        Try setP("Artist", Mycdinfo.Artist)
+        Try setP("author", Mycdinfo.Artist)
+        Try setP("year", Mycdinfo.years)
+        Try setP("year", Mycdinfo.years)
+        Try setP("album", Mycdinfo.title)
+      Endif
+    Endif
+  
+  
+    If Fullpath Like "*.cue" Then
+      Try cuetext = File.Load(fullpath)
+      If Not Error Then 
+        Try setP("year", get_main_cue_property(cuetext, "DATE"))
+        Try setP("comment", get_main_cue_property(cuetext, "COMMENT"))
+        Try setP("genre", get_main_cue_property(cuetext, "GENRE"))
+        Try setP("artist", get_main_cue_property(cuetext, "PERFORMER"))
+        Try setP("author", get_main_cue_property(cuetext, "PERFORMER"))
+        Try setP("Album", get_main_cue_property(cuetext, "TITLE"))
+      Endif
+    Endif
+        
+        
+    If (getP("=duration") = 0) Or (getP("=duration") = "") Then properties.insert(["=duration", "duration"])
+  
+  
         Else 'for not audio only files, use mpv
       properties.insert(["=duration", "duration"])
       If (Not getP("audioonly")) Then
