@@ -64,7 +64,7 @@ Public Function executable(Optional timeout As Integer = -1) As String
     'export __GL_SYNC_DISPLAY_DEVICE:
     current_display = FMain.current_display_device()
     If current_display <> "" Then 
-      out &= " " & "__GL_SYNC_DISPLAY_DEVICE=" & current_display
+      out &= " " & "__GL_SYNC_DISPLAY_DEVICE=" & current_display & " "
     Endif
   Endif
   
