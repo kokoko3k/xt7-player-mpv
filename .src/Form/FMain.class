@@ -8222,6 +8222,7 @@ Public TimerHideTray As New Timer As "TimerHideTray"
 
 Public Sub TrayIcon2_middleclick() 'fixme trayicon (tutto commentato)
   Dim iconsize As Integer = 48 'hack.
+  Stop
   If mplayer.ProcessRunningOvr() Then
     OverlaytrayTip.Redraw("..:xt7-player::.", mouse.screenx - (iconsize), mouse.screeny - (iconsize))
     TimerHideTray.delay = 5000

@@ -1083,8 +1083,27 @@
         { Separator1 Separator
           MoveScaled(1,55,54,1)
         }
+        { openglParseMeHBox13 HBox
+          MoveScaled(0,55,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox6gl3 CheckBox
+            MoveScaled(1,0,17,4.5714)
+            #Translate = False
+            Tag = "opengl-waitvsync"
+            ToolTip = "My tests show that it helps with tearing on xf86-video-intel (with accel=sna or glamour)\n\nCall  glXWaitVideoSyncSGI  after  each  buffer swap (default: disabled). \nThis may or may not help with video timing accuracy and frame drop.\nIt's possible that this makes video output slower, or has no effect at all.\nmpv-option: --opengl-waitvsync\n\n"
+            Text = "waitvsync"
+          }
+          { ComboBox9 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "yes"
+          }
+        }
         { openglParseMeHBox3 HBox
-          MoveScaled(0,57,45,6)
+          MoveScaled(0,62,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox6gl CheckBox
@@ -1102,7 +1121,7 @@
           }
         }
         { openglParseMeHBox11 HBox
-          MoveScaled(0,63,45,6)
+          MoveScaled(0,68,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox4gl CheckBox
