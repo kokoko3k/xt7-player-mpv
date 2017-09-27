@@ -528,7 +528,7 @@ Public Sub LoadHotKeys(ProfileName As String)
   Dim local_data As String
   Dim sRow, t As String
   Dim aRow As String[]
-  
+ 
   Dim c, r, w1, w2 As Integer
 
   If Exist(filename_fs, True) Then
@@ -560,7 +560,7 @@ Public Sub LoadHotKeys(ProfileName As String)
         r = aRow[0]
         t = aRow[2]
         If c = 0 Then 
-          HotKeysGrid[r, c].text = Right(sRow, - Len(CStr(c)) - Len(CStr(r)) - 2)
+          If (r > 89) Then HotKeysGrid[r, c].text = Right(sRow, - Len(CStr(c)) - Len(CStr(r)) - 2)
             Else
           HotKeysGrid[r, c].text = t
         Endif
@@ -587,8 +587,6 @@ Public Sub LoadHotKeys(ProfileName As String)
     Endif
   Endif
   
-  
-
   
   'Global Hotkeys grid:
    If Exist(filename, True) Then 
