@@ -5590,8 +5590,9 @@ Public Sub HotKeyToMplayer(HotKey As String)
     Case Like "seek *"
       n = Split(Action, " ")[1]
       mplayer.do_seek_by(n, fsform.FullScreen)
-    Case "osd"
-      mplayer.Send(Action)
+    Case "osd-level"
+      'mplayer.Send(Action)
+      mplayer.mpv_command(["no-osd", "cycle", "osd-level", "up"])
       Try osd_level = mplayer.get_property_mpv("osd-level")
       Select Case osd_level
         Case "0" 
