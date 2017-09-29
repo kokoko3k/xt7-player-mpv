@@ -17,7 +17,8 @@ Public Function Ask(TheQuestionString As String, Optional defaultvalue As String
     Me.caption = TheQuestionString
     Me.x = Mouse.screenx - (Me.w Div 2)
     Me.y = Mouse.screeny - Me.h - 90
-    Me.showmodal()
+    Try Me.showmodal()
+    If Error Then Return " "
     Repeat
       Wait 0.1
     Until answer <> " "

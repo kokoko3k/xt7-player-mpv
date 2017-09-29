@@ -26,7 +26,8 @@ Public Function Ask(TheQuestionString As String, TheButton1String As String, The
 
     If Checkbox1.visible Then Me.h += Checkbox1.h
 
-    Me.ShowModal()
+    Try Me.ShowModal()
+    If Error Then Return "-1"
 
     If checkboxstring <> "" Then Checkboxobject.value = Checkbox1.value
 
