@@ -73,7 +73,7 @@ Private Sub GetAndShow(artist As String, song As String)
   Dim blackdomain As String
 
 
-  Dim i As Integer
+  Dim i, j As Integer
   Dim urls As New String[]
 
   'Debug strip("<td width=\"311px\" bgcolor=\"#C9EAFF\"><a href=\" title=\"Lyrics\"><img src=\"ilogo.jpg\" border=\"0\" width=\"311\" height=\"108\" alt=\"Lyrics\"></a></td>", "<a href", "</a>")
@@ -125,6 +125,7 @@ Private Sub GetAndShow(artist As String, song As String)
     
   googleurl = "https://duckduckgo.com/html/?q=" & snippet
   gresults &= httpget(googleurl, "/tmp/debug")
+
   global.myDebug(googleurl)
   Try resultlines = Split(gresults, "<", "", True)
   If Error Then
@@ -132,16 +133,23 @@ Private Sub GetAndShow(artist As String, song As String)
     Me.mouse = Mouse.Normal
     Return
   Endif
+  
+  For j = 0 To resultlines.count - 1
+    resultlines[j] = CGI.Decode(resultlines[j])
+  Next
+  
   For Each myline In resultlines
     blackfound = False
-    If myline Like "*href*http://*" Then
+    If myline Like "*href*http?://*" Then
       For Each blackdomain In Split(blackdomains, ";") 'strip out black domains
+                                                        
         If myline Like "*" & blackdomain & "*" Then
           blackfound = True
           ' global.myDebug( "blackdomain found: " & blackdomain)
           ' global.myDebug( "Into this line: " & myline)
           Break
         Endif
+        i = i + 1
       Next 'blackdomain
       If Not (blackfound) Then
         mystart = InStr(myline, "http", 0)
