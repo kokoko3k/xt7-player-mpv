@@ -60,8 +60,17 @@ Public Sub AudioAreaGroup_MouseDrag()
   FMain.VideoAreaGroup_MouseDrag()
   
 End
+Private Function mouse_over_mic() As Boolean 
+  If Lower(Last.name) = "gridup" Then
+    If GridUp.row = 5 Then 
+      Return True
+    Endif
+  Endif
+  Return False
+End
 
 Public Sub AudioAreaGroup_MouseDown()
+  If mouse_over_mic() Then Return 'don't pause playback
   FMain.VideoAreaGroup_MouseDown()
 End
 
@@ -156,13 +165,6 @@ Public Sub cutstrings()
 End
 
 
-Public Sub PictureBox2_Enter()
-  
-End
-Public Sub PictureBox2_leave()
-  'Last.border = False
-End
-
 Public Sub PictureBox2_MouseDown()
   If Trim(FMain.mplayer.getP("Artist")) = "" Or Trim(FMain.mplayer.getP("title")) = "" Then
     Message.Error(("Missing Artist and/or Song information"))
@@ -174,6 +176,7 @@ End
 
 
 Public Sub Label17_MouseDown()
+Stop
   PictureBox2_MouseDown()
 End
 
@@ -380,11 +383,7 @@ End
 
 
 Public Sub audioareagroup_Click()
-  If Lower(Last.name) = "gridup" Then
-    If GridUp.row = 5 Then 
-      PictureBox2_MouseDown()
-    Endif
-  Endif
+  If mouse_over_mic() Then PictureBox2_MouseDown()
 End
 
 
