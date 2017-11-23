@@ -144,3 +144,26 @@ Public Sub ComboBox1_KeyPress()
 End
 
 
+
+' Public Sub SubsView_KeyPress()
+'   download all subtitles at once... Is Not good, so leave it commented.
+'   Dim i As Integer
+'   Dim suburl, subname, fileout As String
+'   If Key.Control Then
+'     If Key.Shift Then
+'       If Key.Alt Then
+'         If Key.code = Key["a"] Then
+'           Message.Info("OK")
+'           For i = 0 To subsview.Rows.Max
+'             suburl = subsview[i, columnindex["SubDownloadLink"]].text
+'             subname = subsview[i, columnindex["SubFileName"]].text
+'             fileout = File.Dir(fmain.mplayer.getP("fullpath")) & "/" & subname
+'             OpenSubs.savesub(suburl, fileout)
+'             Debug i
+'           Next 'i 
+'         Endif
+'       Endif
+'     Endif
+'   Endif
+' 
+' End

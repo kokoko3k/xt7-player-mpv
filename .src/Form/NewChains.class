@@ -2051,6 +2051,7 @@ Public Function parse_compand() As String
         
   out &= "@label_compand:lavfi=[volume=" & v & "dB,compand=attacks=0"
   out &= ":decays=" & d 
+  out &= ":delay=0.03" 'anti-clip
   out &= ":soft-knee=" & k
   out &= ":points=0/-0.1'|'1000/-0.1]"
 
