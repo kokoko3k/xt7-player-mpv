@@ -80,7 +80,7 @@ End
 Private Sub Init_filters_video()
   Dim filters_video_list As New String[]
   Dim filter As String
-  filters_video_list = ["Scale", "Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "vflip", "hflip", "rotate", "expand"]
+  filters_video_list = ["Scale", "Yadif", "GradFun", "HqDn3D", "spp", "uspp", "UnSharp", "DeLogo", "Eq", "vflip", "hflip", "rotate", "pad"]
   filters_video_list.Insert(["Stereo3D", "vdpaupp", "vavpp", "CustomVideo1", "CustomVideo2", "CustomVideo3"])
   For Each filter In filters_video_list
     draw_list_item(filters_video_container, filter)
@@ -594,16 +594,24 @@ Private Sub draw_filters_video_cfg()
   AllParams.Clear
   
   'pad
-  AllParams.Add(["TITLE", ("- Expands (not scales) video resolution -"), "Expand0", ""])
-  AllParams.add(["RANGE", ("Width"), "-2048", "0", "2048", "Expand1", ("0 to Disable; Negative as offset to original value")])
-  AllParams.add(["RANGE", ("Height"), "-2048", "0", "2048", "Expand2", ("0 to Disable; Negative as offset to original value")])
-  AllParams.add(["RANGE", ("X Position"), "-1", "-1", "2048", "Expand3", ("Original image position; -1 to center")])
-  AllParams.add(["RANGE", ("Y Position"), "-1", "-1", "2048", "Expand4", ("Original image position; -1 to center")])
-  AllParams.add(["CHOOSE", ("Fit an aspect instead of a resolution"), "", "4/3", "3/2", "16/9", "16/10", "1.85/1", "2.35/1", "2.39/1", "Expand6", ""])
-  AllParams.add(["RANGE", ("Make Width and Height divisible by"), "1", "1", "64", "Expand7", ""])
-  Global.DrawGui(AllParams, "expand", aTabstrip, NotSwitchable,,,, Me)
-  AllParams.Clear
-  
+  ' AllParams.Add(["TITLE", ("- Expands (not scales) video resolution -"), "Expand0", ""])
+  ' AllParams.add(["RANGE", ("Width"), "-2048", "0", "2048", "Expand1", ("0 to Disable; Negative as offset to original value")])
+  ' AllParams.add(["RANGE", ("Height"), "-2048", "0", "2048", "Expand2", ("0 to Disable; Negative as offset to original value")])
+  ' AllParams.add(["RANGE", ("X Position"), "-1", "-1", "2048", "Expand3", ("Original image position; -1 to center")])
+  ' AllParams.add(["RANGE", ("Y Position"), "-1", "-1", "2048", "Expand4", ("Original image position; -1 to center")])
+  ' AllParams.add(["CHOOSE", ("Fit an aspect instead of a resolution"), "", "4/3", "3/2", "16/9", "16/10", "1.85/1", "2.35/1", "2.39/1", "Expand6", ""])
+  ' AllParams.add(["RANGE", ("Make Width and Height divisible by"), "1", "1", "64", "Expand7", ""])
+  ' Global.DrawGui(AllParams, "expand", aTabstrip, NotSwitchable,,,, Me)
+  ' AllParams.Clear
+  AllParams.Add(["TITLE", ("- Add paddings to the input image -"), "pad0", ""])
+  AllParams.add(["RANGE", ("width="), "0", "0", "8192", "pad1", ("0 to Disable; Width of the output image with the paddings added.")])
+  AllParams.add(["RANGE", ("height="), "0", "0", "8192", "pad2", ("0 to Disable; height of the output image with the paddings added.")])
+  AllParams.add(["RANGE", ("x="), "-1", "-1", "8192", "pad3", ("Original image position; -1 to center")])
+  AllParams.add(["RANGE", ("y="), "-1", "-1", "8192", "pad4", ("Original image position; -1 to center")])
+  AllParams.add(["CHOOSE", ("color="), "", "black", "white", "gray", "green", "red", "blue", "pad5", ("Use named colors or #rrggbb notation")])
+  AllParams.add(["CHOOSE", ("aspect="), "", "4/3", "3/2", "16/9", "16/10", "1.85/1", "2.35/1", "2.39/1", "pad6", ("Pad to aspect instead to a resolution. ")])
+  Global.DrawGui(AllParams, "pad", aTabstrip, Switchable,,, "lavfi", Me)
+  AllParams.Clear  
   
    
   'hqdn3d[ = luma_spatial: chroma_spatial: luma_tmp: chroma_tmp]
