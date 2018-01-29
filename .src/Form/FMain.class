@@ -2319,7 +2319,8 @@ Public Sub menuitemopensubtitle_Click()
     sub_add(DConv(subfile))  'add the subtitle and append it to mplayer.subtitletracks
     Dialog.filter = ["*." & file.Ext(subname), "Subtitle file"]
     Dialog.Title = ("Save the selected subtitle")
-    Dialog.Path = File.Dir(fmain.mplayer.getP("fullpath")) & "/" & subname
+    'Dialog.Path = File.Dir(fmain.mplayer.getP("fullpath")) & "/" & subname
+    Dialog.Path = File.Dir(fmain.mplayer.getP("fullpath")) & "/" & File.BaseName(fmain.mplayer.getP("fullpath")) & "." & file.ext(subfile)
     If MyQuestion.Ask(("Do you want to save") & " " & subname & "?", "Save", "Don't Save") = 1 Then
       Dialog.SaveFile()
       fileout = Dialog.path 
