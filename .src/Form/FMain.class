@@ -8349,11 +8349,8 @@ Public Sub MyFlash_NewVideo(lastvideopath As String) 'when a new flash video is 
 End
 
 Public Sub LeftSideTabs_Menu()
-  
-  UpdateMenuTabVisibility()
-  
+  UpdateMenuTabVisibility() 
   MenuTabs.popup
-
 End
 
 Private TabsonLeftMenu As Menu
@@ -8492,9 +8489,10 @@ Public Sub HideShowTabMenu_click()
   Next 'i
   'Focus the clicked Tab
   ClickedtabID = Global.TabIndexByName(Last.name, Leftsidetabs)
-  Leftsidetabs.Refresh
   If (ClickedTabId <> -1) Then Leftsidetabs.index = ClickedtabID
-  
+  Leftsidepanel.visible = False
+  Wait
+  Leftsidepanel.visible = True
 End
 
 Public Function IsTabVisible(tabname As String) As Boolean
