@@ -50,7 +50,7 @@ Private Function IsTabChildren(name As String, Optional index As Integer = 99999
       Endif
     Next 'theobject
   Else
-    For Each theobject In Leftsidetabs.Current.Children
+    For Each theobject In Leftsidetabs.Children
       If theobject.name = name Then
         found = True
         Break
@@ -8412,6 +8412,17 @@ Public Sub UpdateMenuTabVisibility()
   
 End
 
+
+Public Sub menutabs_click()
+  
+  Dim ClickedtabID As Integer
+  Stop
+  ClickedtabID = Global.TabIndexByName(Last.name, Leftsidetabs)
+  Leftsidetabs.Refresh
+  If (ClickedTabId <> -1) Then Leftsidetabs.index = ClickedtabID
+  
+End
+
 Public Function IsProfileTab(i As Integer) As Boolean
 
   Dim theobject As Object
@@ -8424,15 +8435,7 @@ Public Function IsProfileTab(i As Integer) As Boolean
 
 End
 
-Public Sub menutabs_click()
-  
-  Dim ClickedtabID As Integer
-  
-  ClickedtabID = Global.TabIndexByName(Last.name, Leftsidetabs)
-  Leftsidetabs.Refresh
-  If (ClickedTabId <> -1) Then Leftsidetabs.index = ClickedtabID
-  
-End
+
 
 Public Sub menuprofileselect_Click()
   Global.CurrentProfile = Last.tag
@@ -8469,7 +8472,14 @@ Public Sub HideShowTabMenu_click()
   Dim i As Integer
   Dim WasInvisible As Boolean
   Dim ClickedtabID As Integer
+  Dim text_check As String = ""
   
+  Try text_check = Leftsidetabs[0].text 
+  If text_check = "" Then 
+    Message.Info(("Cannot locate current tab,\nIf you disabled tab text, then enable it first to change tab visibility."))
+    Return
+  Endif
+   
   Last.checked = Not Last.checked
   For i = 0 To Leftsidetabs.count - 1
     WasInvisible = Not (Leftsidetabs[i].visible) 'we need the caption of the tab which is lost if it is invisible,
