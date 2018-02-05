@@ -8470,12 +8470,28 @@ Public Sub HideShowTabMenu_click()
   Dim WasInvisible As Boolean
   Dim ClickedtabID As Integer
   Dim text_check As String = ""
+  Dim howmanyvisible As Integer = 0
+ 
+  'Avoid hiding the tab if it is the only visible one.
+    If Last.checked Then
+      For i = 0 To Leftsidetabs.count - 1
+        If Leftsidetabs[i].visible = True Then 
+          howmanyvisible += 1
+          If howmanyvisible > 1 Then Break
+        Endif
+      Next
+      If howmanyvisible = 1 Then
+        Message.Info(("You cannot hide all of the tabs.\nJust hide the whole tabs panel, if needed."))
+        Return     
+      Endif
+    Endif
   
-  Try text_check = Leftsidetabs[0].text 
-  If text_check = "" Then 
-    Message.Info(("Cannot locate current tab,\nIf you disabled tab text, then enable it first to change tab visibility."))
-    Return
-  Endif
+  'check for missing text
+    Try text_check = Leftsidetabs[0].text 
+    If text_check = "" Then 
+      Message.Info(("Cannot locate current tab,\nIf you disabled tab text, then enable it first to change tab visibility."))
+      Return
+    Endif
    
   Last.checked = Not Last.checked
   For i = 0 To Leftsidetabs.count - 1
