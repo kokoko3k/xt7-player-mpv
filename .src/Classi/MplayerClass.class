@@ -22,6 +22,7 @@ Private Const play_initialized_str As String = "MPV_PLAY_IS_FULLY_INITIALIZED"
 Private stopping As Boolean = False
 Public pausing As Boolean = False
 Public return_value As Integer = 0 'playerprocess return value
+Public subsequent_failures As Integer = 0
 
 ' Private Takingscreenshot As Boolean = False
 'Private lastscreenshot As String = ""
@@ -502,6 +503,7 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
   global.myDebug("track-list/count=", getP("track-list/count"))
   If play_initialized Then
     setP("idle", Null)
+    subsequent_failures = 0
     Return True
   Endif
   setP("idle", Null)
@@ -1428,6 +1430,23 @@ Private columnpriv As Integer
 Private rowpriv As Integer
 Private gridpriv As Gridview
 
+Private Function play_success() As Boolean 
+  'since mpv exit with success status code (0) even in case of errors
+  '(Eg: he cannot identify a file), this tries to guess if something bad happened
+  'by examining the properties he got from the media.
+  If getP("play_initialized") = "yes" Then Return True
+  If getP("artist") <> "" Then Return True
+  If getP("author") <> "" Then Return True
+  If getP("album") <> "" Then Return True
+  If getP("genre") <> "" Then Return True
+  If getP("year") <> "" Then Return True
+  If getP("trackno") <> "" Then Return True
+  If getP("percent_pos") <> "" Then Return True
+  If getP("time-pos") <> "" Then Return True
+  If getP("duration") <> "" Then Return True
+  Return False
+End
+
 
 
 Public Sub savethumb(fullpath As String, newfilename As String, Optional width As Integer = 256, Optional seconds As Integer = 300, mygrid As Gridview, row As Integer, column As Integer) 
@@ -1457,20 +1476,28 @@ End
 
 Private restarting As Boolean = False
 Public Sub playerprocess_kill()
+  Dim bPlay_success As Boolean
+  bPlay_success = play_success()
+  If bPlay_success Then
+    subsequent_failures = 0
+      Else
+    subsequent_failures += 1
+  Endif
   return_value = playerprocess.value
+  
   If (Not restarting) Then 
     ClearMediaProperties()
     af_current = "."
     vf_current = "."
     Try event_loop.stop
-    Raise mykill(return_value)
+    Raise mykill(return_value, bPlay_success)
 
     'post cmd is supposed to be filled in the mykill() event handler.
     ExecutePostCmd()
   Endif
 End
 
-Event mykill(return_value As Integer)
+Event mykill(return_value As Integer, initialized_success As Boolean)
 Event ThumbAvailableFor(fullpath As String, g As Gridview, r As Integer, c As Integer)
 Event ThumbErrorFor(fullpath As String, g As Gridview, r As Integer, c As Integer)
 

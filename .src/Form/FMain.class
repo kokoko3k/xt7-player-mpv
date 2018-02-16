@@ -2698,33 +2698,10 @@ Public Sub file_options(fullpath As String) As Collection
 
 End
 
-Private skip_too_fast As Boolean = False
-Private play_times As New Float[] 
 
-Private Sub Update_check_play_times()
-  Dim p, c As Float
-  If play_times.count < 5 Then 
-    play_times.Add(Timer())
-    skip_too_fast = False
-    Return
-  Endif
-  
-  play_times.Add(Timer())
-  play_times.Delete(0, 1)
-  
-  p = -100
-  
-  For Each c In play_times
-    If (c - p) < 2 Then 
-      skip_too_fast = False
-      Return
-    Endif
-  Next
-  
-  fmain.togglepls.value = False
-  skip_too_fast = True
-  play_times.clear
-End
+
+
+
 
 Public Function mpv_exe_changed() As Boolean
   Dim fsize_current, fsize_prec As String
@@ -2963,8 +2940,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   'repeat at most 2 times, only if mplayer crashed,if it is not a youtube link (managed),only on network stream
   'Until (n = 2) Or (mplayer.return_value = 0) Or Youtube.IsYoutubeLink(fullpath) Or Not (global.IsNetworkURI(fullpath))
   Until (n = 2) Or (mplayer.return_value = 0) Or Youtube.is_supported(fullpath) Or Not (global.IsNetworkURI(fullpath))
-
-  Update_check_play_times()
 
   'if not forced, see if the current medium were left off and seek to that point
   If start_time = "0" Then
@@ -4087,9 +4062,9 @@ Public Sub Update_cache_percent(cachevalue As String)
   Endif
 End
 
+Private Const max_failures As Integer = 10
 
-
-Public Sub Mplayer_mykill(return_value As Integer)
+Public Sub Mplayer_mykill(return_value As Integer, play_success As Boolean)
   Dim playlistfinished As Boolean = False
   mplayer.Postcommand = generaloptions.NoParsePostCommand.text
   Fmain.caption = global.AppName
@@ -4116,7 +4091,9 @@ Public Sub Mplayer_mykill(return_value As Integer)
   videobox.cached = False
   'delete export file
   'Try Kill mymeters.exportfile 'mpv 0.11 removed af_export filter :(
-  If TogglePls.value And (Not mplayer.user_stopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) And (Not skip_too_fast) Then
+
+  
+  If TogglePls.value And (Not mplayer.user_stopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) And ((mplayer.subsequent_failures < max_failures)) Then
       global.myDebug("end of media reached, playing next video...")
 
       SelectNext(True, GetActivePlayQueue())
@@ -4130,10 +4107,13 @@ Public Sub Mplayer_mykill(return_value As Integer)
         global.myDebug("Not hitting PLay from here because ButtonNext did it first")
       Endif
     Else 'do not autoadvance condition
+      ' If (subsequent_failures >= max_failures) Then
+      '   ButtonStop_Click()
+      '   togglepls.value = False
+      ' Endif
       Playstarted = False
       'UserStopped = False
       FirstPlay = False
-      
       ' Qui fai partire un Timer, che se il player è ancora fermo dopo qualche secondo:
       ' 1 - disabilita il pannello audioconvert
       ' 2 - esce dal fullscreen
@@ -5850,7 +5830,7 @@ Public Sub SelectNext(Optional forcerunning As Boolean = False, Optional Current
   Dim mplayerwasrunning As Boolean 
   Dim togglepls_value As Boolean = TogglePls.value
   Try mplayerwasrunning = mplayer.ProcessRunningOvr() Or forcerunning
-
+  If mplayer.subsequent_failures > max_failures Then do_play = False
   TogglePls.value = False 'or else mykill will play the next
   
   Stopmthumbler()
@@ -11249,7 +11229,7 @@ Public Function SavePls() As Boolean
     Message.Error(("There was an error saving the playlist:\n") & PlaylistsCombo.text, ("Ok"))
     Return False
       Else
-    Message.Info(("Playlist saved as:") & "\n" & PlaylistsCombo.text, (" Ok "))
+    Try Message.Info(("Playlist saved as:") & "\n" & PlaylistsCombo.text, (" Ok "))
     If PlaylistsCombo.Find(PlaylistsCombo.text) = -1 Then PlaylistsCombo.Add(PlaylistsCombo.text)
   Endif
   Return True
