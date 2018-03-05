@@ -634,12 +634,12 @@ Public Sub updaterecentfiles()
     Endif
 
     If entry Like ("*" & sep & "*") Then
-      Try RecentFileEntry.caption = Split(entry, sep, "", True, "")[0]
+      Try RecentFileEntry.caption = Split(File.Name(entry), sep, "", True, "")[0]
       If Error Then Return
       Try RecentFileEntry.tag = Split(entry, sep, "", True, "")[0]
       If Error Then Return
     Else
-      RecentFileEntry.caption = entry
+      RecentFileEntry.caption = File.Name(entry)
       RecentFileEntry.tag = entry
     Endif
     RecentFileEntry.Picture = picture["icon:/medium/recent"]
