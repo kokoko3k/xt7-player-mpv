@@ -57,6 +57,7 @@ Public FormMaximized As Boolean = False
 Private SettingsFileName As String 
 Public DelayLoadStates As Timer 
 Public MaxHistory As Integer 'how many played files to remember
+Public Max_menu_History As Integer 'how many to show in the menu
 Public YPCacheFile As String 
 
 Public UserPlaylistsDir As String
@@ -127,7 +128,8 @@ Public Sub init()
   FormX = 0
   FormY = 0
   SettingsFileName = "default"
-  MaxHistory = 15
+  MaxHistory = 100
+  Max_menu_History = 15
   DelayLoadStates = New Timer As "DelayLoadStates"
   TmpDir = File.Dir(Temp())
   initdone = True

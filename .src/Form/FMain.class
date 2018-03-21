@@ -611,6 +611,7 @@ Public Sub updaterecentfiles()
   Dim sep As String = Chr(8)
   Dim HaveToSeek As String = ""
   Dim opts As New Collection
+  Dim i As Integer = 0
   historyarray = New String[]
   Try history = file.Load(global.Historyfile)
   If Error Then Return
@@ -620,6 +621,8 @@ Public Sub updaterecentfiles()
   historyarray.Reverse()
 
   For Each entry In historyarray
+    i = i + 1
+    If i > global.Max_menu_History Then Break
     RecentFileEntry = New Menu(MenuOpenRecent) As "RecentFileEntry"
     RecentFileEntry.name = Timer & Rnd(0, 10000)
     If entry Like "*" & sep & "*" & "leftoff" Then 
