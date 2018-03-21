@@ -9649,25 +9649,26 @@ End
 Public Sub FileView1_Icon(Path As String)
   Dim sep As String = Chr(8)
   Dim r As String
-  Dim iconsize As Integer = FileView1.Font.TextHeight("|èJj")
-  Dim played As Boolean = False
-  If IsDir(path) Then
-    FileView1.icon = stock[CStr(iconsize) & "/directory"]
-  Else
+  If fileview1.visible = False Then Return
+  Stop
+  If global.IsMediaFile(path) Then
     For Each r In historyarray
       r = Split(r, sep)[0]
       If path = r Then 
-          played = True
+          fileview1.icon = stock["16/ok"]
          Break
        Endif
     Next
-    If played Then
-      fileview1.icon = stock["16/ok"]
-        Else    
-      FileView1.icon = covermanager.DefaultLibraryIcon(path, iconsize, True)
-    Endif
   Endif
+End
 
+Public Sub OLD_FileView1_Icon(Path As String)
+  Dim iconsize As Integer = FileView1.Font.TextHeight("|èJj")
+  If IsDir(path) Then
+    FileView1.icon = stock[CStr(iconsize) & "/directory"]
+  Else
+    FileView1.icon = covermanager.DefaultLibraryIcon(path, fileview1.iconsize, True)
+  Endif
 End
 
 
