@@ -5589,7 +5589,7 @@ Public Sub HotKeyToMplayer(HotKey As String)
 End
 
 Public Sub fileview1Myreload()
-  'refresh fileview keeping the scroll position
+  'refresh fileview keeping the scroll position and selected item
   Dim achild As Object
   Dim sx, sy As Integer
   For Each achild In FileView1.Children
@@ -9630,6 +9630,7 @@ End
 Public Sub FileView1_Activate()
   Dim fullpathitem As String = Replace(FileView1.dir & "/" & FileView1.Current, "//", "/")
   ActivateFile(fullpathitem)
+  fileview1Myreload()
 End
 
 Public Sub Urlbox_KeyPress()
@@ -11630,7 +11631,6 @@ End
 
 
 Public Sub FileView1_KeyPress()
-
   If (Key.code = Key.enter) Or (Key.code = Key.return) Then
     If fileview1.Selection.count > 0 Then
       If IsDir(fileview1.dir & "/" & fileview1.selection[0]) Then
