@@ -9608,10 +9608,31 @@ Public Sub ButtonRefresh_Click()
 End
 
 Public Sub ButtonHidden_Click()
-  
-  FileView1.ShowHidden = Not FileView1.ShowHidden
-  
+  viewmenu.popup
 End
+
+Public Sub menu_show_only_media_click()
+  If menu_show_only_media.Checked Then
+    fileview1.filter = Split(global.ALLFilters, ";")
+      Else
+    fileview1.Filter = ["*"]
+  Endif
+  Wait
+  gridpanels_arrange()
+End
+
+Public Sub menu_show_hidden_files_click()
+  FileView1.ShowHidden = menu_show_hidden_files.Checked
+  Wait
+  gridpanels_arrange()
+End
+
+Public Sub menu_show_recent_click()
+  fileview1Myreload()
+  Wait
+  gridpanels_arrange()
+End
+
 
 Public Sub ActivateFile(fullpathitem As String)
   Dim selecteditem As String
@@ -9653,7 +9674,7 @@ Public Sub FileView1_Icon(Path As String)
   Dim sep As String = Chr(8)
   Dim r As String
   If fileview1.visible = False Then Return
-
+  If menu_show_recent.checked = False Then Return
   If global.IsMediaFile(path) Then
     For Each r In historyarray
       r = Split(r, sep)[0]

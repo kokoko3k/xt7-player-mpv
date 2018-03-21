@@ -6,6 +6,23 @@
   Icon = Picture["xt7-player-mpv.png"]
   Persistent = True
   Arrangement = Arrange.Vertical
+  { ViewMenu Menu
+    Text = ("View menu")
+    Visible = False
+    { menu_show_only_media Menu
+      Text = ("Show only media files")
+      Toggle = True
+    }
+    { menu_show_hidden_files Menu
+      Text = ("Show hidden files")
+      Toggle = True
+    }
+    { menu_show_recent Menu
+      Text = ("Show recent files")
+      Toggle = True
+      Checked = True
+    }
+  }
   { alloptionsmenu Menu
     Text = ("alloptionsmenu")
     Visible = False
@@ -1003,44 +1020,50 @@
           Text = ("Label3")
         }
         { HBox14 HBox
-          MoveScaled(1,5,33,4.5714)
+          MoveScaled(1,5,34,5)
           AutoResize = True
           Spacing = True
           Margin = True
           Padding = 1
           { Button_mounts Button
-            MoveScaled(0,0,4,4.5714)
+            MoveScaled(1,0,5,5)
             ToolTip = ("Mounted devices")
+            AutoResize = True
             Picture = Picture["icon:/small/computer"]
           }
           { Button_bookmarks Button
-            MoveScaled(5,0,4,4.5714)
+            MoveScaled(5,0,5,5)
             ToolTip = ("Bookmarks")
+            AutoResize = True
             Picture = Picture["icon:/small/bookmark"]
           }
           { ButtonUp Button
-            MoveScaled(10,0,4,4.5714)
+            MoveScaled(11,0,4,4.5714)
             ToolTip = ("Parent")
+            AutoResize = True
             Picture = Picture["icon:/small/up"]
           }
           { UrlBox ComboBox
-            MoveScaled(15,0,7,4.5714)
+            MoveScaled(16,0,7,4.5714)
             ToolTip = ("Enter a path to browse it")
             Expand = True
             Text = ("/")
           }
-          { Separator1 Separator
-            MoveScaled(23,0,2,4.5714)
-          }
           { ButtonRefresh Button
-            MoveScaled(24,0,4,4.5714)
+            MoveScaled(23,0,4,4.5714)
             ToolTip = ("Refresh")
+            AutoResize = True
             Picture = Picture["icon:/small/refresh"]
+          }
+          { Separator1 Separator
+            MoveScaled(27,0,2,4.5714)
           }
           { ButtonHidden Button
             MoveScaled(29,0,4,4.5714)
             ToolTip = ("Show/Hide hidden files")
-            Picture = Picture["icon:/small/watch"]
+            PopupMenu = "ViewMenu"
+            AutoResize = True
+            Picture = Picture["icon:/small/view-detail"]
           }
         }
         { Panel16 Panel gridpanels
