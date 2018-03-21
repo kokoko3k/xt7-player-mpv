@@ -403,7 +403,6 @@ Public Sub AllInit_Pre()
   'Try Mkdir global.confpath & "/.ExportFiles/" 'mpv 0.11 removed af_export filter :(
   ' ExportFilesPath = global.confpath & "/.ExportFiles/" 'mpv 0.11 removed af_export filter :(
   FileView1.visible = False
-  updaterecentfiles()
   If tagpanel.parent.name <> "zzzFake" Then tagpanel.Reparent(zzzfake)
   'mplayer.FillLog = TRUE
   InitPropertiesGrid()
@@ -416,6 +415,8 @@ Public Sub AllInit_Pre()
     ReallySaveAllSettings("Factory_Defaults", False) 'before loading user settings, make a profile with factory values.
   Endif
   Global.LoadEarlySettings(global.CurrentProfile) 'slow
+  updaterecentfiles()
+
   'the following has To be called after loadearlysettings because 
   'Is There where we load generaloptions form settings
   If generaloptions.ShowCoversInListChk.value Then
@@ -440,13 +441,11 @@ Public Sub AllInit_Pre()
     Stop
     Return
   Endif
-
 End
 
 Public Sub InitEarlyForms()
 
   global.myDebug("start at: " & Time)
-
   Try Last.mouse = mouse.wait
   fmain.mouse = mouse.wait
   global.initearlyformsdone = True
@@ -463,7 +462,6 @@ End
 Public Sub AllInit_Post()
   Dim cscreen As Screen  
   Dim savefileview1path As String
-
   If Not Panel2.visible Then Panel2.visible = True
   If MyLibraryProgressBar.visible Then MyLibraryProgressBar.visible = False
   
@@ -9650,7 +9648,7 @@ Public Sub FileView1_Icon(Path As String)
   Dim sep As String = Chr(8)
   Dim r As String
   If fileview1.visible = False Then Return
-  Stop
+
   If global.IsMediaFile(path) Then
     For Each r In historyarray
       r = Split(r, sep)[0]
