@@ -9,15 +9,18 @@
   { ViewMenu Menu
     Text = ("View menu")
     Visible = False
-    { menu_show_only_media Menu
+    { menu_show_only_media Menu view_menu_check_item
+      Name = "menu_show_only_media"
       Text = ("Show only media files")
       Toggle = True
     }
-    { menu_show_hidden_files Menu
+    { menu_show_hidden_files Menu view_menu_check_item
+      Name = "menu_show_hidden_files"
       Text = ("Show hidden files")
       Toggle = True
     }
-    { menu_show_recent Menu
+    { menu_show_recent Menu view_menu_check_item
+      Name = "menu_show_recent"
       Text = ("Mark recently played files")
       Toggle = True
       Checked = True
@@ -1058,7 +1061,7 @@
           { Separator1 Separator
             MoveScaled(27,0,2,4.5714)
           }
-          { ButtonHidden Button
+          { Buttonviewmenu Button
             MoveScaled(29,0,4,4.5714)
             ToolTip = ("Show/Hide hidden files")
             PopupMenu = "ViewMenu"

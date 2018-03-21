@@ -9609,34 +9609,29 @@ Public Sub ButtonRefresh_Click()
   fileview1Myreload()
 End
 
-Public Sub ButtonHidden_Click()
+Public Sub Buttonviewmenu_Click()
   viewmenu.popup
 End
 
-Public Sub menu_show_only_media_click()
+
+Public Sub view_menu_check_item_click()
+  apply_view_menu()
+  save_view_menu()
+End
+
+
+Private Sub apply_view_menu()
+  FileView1.ShowHidden = menu_show_hidden_files.Checked
   If menu_show_only_media.Checked Then
     fileview1.filter = Split(global.ALLFilters, ";")
       Else
     fileview1.Filter = ["*"]
   Endif
-  Wait
-  gridpanels_arrange()
-  save_view_menu()
-End
-
-Public Sub menu_show_hidden_files_click()
-  FileView1.ShowHidden = menu_show_hidden_files.Checked
-  Wait
-  gridpanels_arrange()
-  save_view_menu()
-End
-
-Public Sub menu_show_recent_click()
   fileview1Myreload()
   Wait
   gridpanels_arrange()
-  save_view_menu()
 End
+
 
 
 Private Sub save_view_menu()
