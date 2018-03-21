@@ -471,7 +471,11 @@ Public Sub AllInit_Post()
   savefileview1path = FileView1.dir
   FileView1.dir = "non/esistent/dir/i/am/very/sure/of/this/1234432100/don/t/you"
   Try load_view_menu()
-  If Error Then global.myDebug("Error loading view_menu")
+  If Error Then
+    global.myDebug("Error loading view_menu")
+      Else
+    apply_view_menu()
+  Endif
   FileView1.visible = True
   FileView1.dir = savefileview1path
   gridpanels_arrange()
