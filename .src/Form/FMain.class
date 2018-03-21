@@ -470,6 +470,8 @@ Public Sub AllInit_Post()
   Hsplit1ResizeDelayed.Enabled = False
   savefileview1path = FileView1.dir
   FileView1.dir = "non/esistent/dir/i/am/very/sure/of/this/1234432100/don/t/you"
+  Try load_view_menu()
+  If Error Then global.myDebug("Error loading view_menu")
   FileView1.visible = True
   FileView1.dir = savefileview1path
   gridpanels_arrange()
@@ -9619,18 +9621,53 @@ Public Sub menu_show_only_media_click()
   Endif
   Wait
   gridpanels_arrange()
+  save_view_menu()
 End
 
 Public Sub menu_show_hidden_files_click()
   FileView1.ShowHidden = menu_show_hidden_files.Checked
   Wait
   gridpanels_arrange()
+  save_view_menu()
 End
 
 Public Sub menu_show_recent_click()
   fileview1Myreload()
   Wait
   gridpanels_arrange()
+  save_view_menu()
+End
+
+
+Private Sub save_view_menu()
+  Dim sSettings As String
+  sSettings &= "showrecent=" & menu_show_recent.Checked & "\n"
+  sSettings &= "showhidden=" & menu_show_hidden_files.checked & "\n"
+  sSettings &= "showmedia=" & menu_show_only_media.checked & "\n"
+  File.Save(global.ViewMenufile, sSettings)
+End
+
+Private Sub load_view_menu()
+  Dim sSettings, l, s, p As String
+  Dim bP As Boolean
+  If Exist(global.ViewMenufile, True) Then
+    Try sSettings = File.Load(global.ViewMenufile)
+    If Error Then Return
+    For Each l In Split(sSettings, "\n", "", True)
+      s = Split(l, "=")[0]
+      p = Split(l, "=")[1]
+      bP = False
+      If p = "T" Then bP = True
+      Select Case s
+        Case "showrecent"
+           menu_show_recent.Checked = bP
+        Case "showhidden"
+          menu_show_hidden_files.checked = bP
+        Case "showmedia"
+           menu_show_only_media.checked = bP
+      End Select
+    Next 's
+  Endif
 End
 
 
@@ -12535,11 +12572,6 @@ Public Sub Button_bookmarks_Click()
   Dim bookmarks_data As String[]
   Dim bookmark As String
   menu_bookmark = New Menu(menu_bookmarks)
-
-
-
-
-
 
   If Exist(global.Bookmarksfile, True) Then
     Try bookmarks_data = Split(File.Load(global.Bookmarksfile), "\n", "", True)

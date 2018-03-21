@@ -49,6 +49,7 @@ Public ScreenshotFolder As String
 Public CurrentProfile As String 
 Public Historyfile As String
 Public Bookmarksfile As String
+Public ViewMenufile As String
 Public FormW As Integer 
 Public FormH As Integer 
 Public FormX As Integer 
@@ -120,6 +121,7 @@ Public Sub init()
   YPCacheFile = settings.defaultdir & "/" & Appname & "/" & ".ypcachefile"
   HistoryFile = settings.defaultdir & "/" & Appname & "/" & ".history.txt"
   BookmarksFile = settings.defaultdir & "/" & Appname & "/" & ".bookmarks.txt"
+  ViewMenuFile = settings.defaultdir & "/" & Appname & "/" & ".viewmenu.txt"
   mpv_size_file = settings.defaultdir & "/" & Appname & "/" & ".mpv.size.txt"
   mpv_allowed_options_file = settings.defaultdir & "/" & Appname & "/" & ".mpv.allowed_options.txt"
   CurrentProfile = ""
