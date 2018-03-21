@@ -672,6 +672,7 @@ Public Sub ClearRecentFiles_Click()
 
   Try Kill global.Historyfile
   historyarray.clear
+  Try fileview1Myreload()
   If Not Error Then 
     ClearRecentFilesSub()
   Else
