@@ -670,6 +670,7 @@ End
 Public Sub ClearRecentFiles_Click()
 
   Try Kill global.Historyfile
+  historyarray.clear
   If Not Error Then 
     ClearRecentFilesSub()
   Else
@@ -9646,26 +9647,26 @@ Public Sub Urlbox_KeyPress()
 End
 
 Public Sub FileView1_Icon(Path As String)
-  Dim sep As String = Chr(8)
-  Dim r As String
-  Dim iconsize As Integer = FileView1.Font.TextHeight("|èJj")
-  Dim played As Boolean = False
-  If IsDir(path) Then
-    FileView1.icon = stock[CStr(iconsize) & "/directory"]
-  Else
-    For Each r In historyarray
-      r = Split(r, sep)[0]
-      If path = r Then 
-          played = True
-         Break
-       Endif
-    Next
-    If played Then
-      fileview1.icon = stock["16/ok"]
-        Else    
-      FileView1.icon = covermanager.DefaultLibraryIcon(path, iconsize, True)
-    Endif
-  Endif
+  ' Dim sep As String = Chr(8)
+  ' Dim r As String
+  ' Dim iconsize As Integer = FileView1.Font.TextHeight("|èJj")
+  ' Dim played As Boolean = False
+  ' If IsDir(path) Then
+  '   FileView1.icon = stock[CStr(iconsize) & "/directory"]
+  ' Else
+  '   For Each r In historyarray
+  '     r = Split(r, sep)[0]
+  '     If path = r Then 
+  '         played = True
+  '        Break
+  '      Endif
+  '   Next
+  '   If played Then
+  '     fileview1.icon = stock["16/ok"]
+  '       Else    
+  '     FileView1.icon = covermanager.DefaultLibraryIcon(path, iconsize, True)
+  '   Endif
+  ' Endif
 
 End
 
