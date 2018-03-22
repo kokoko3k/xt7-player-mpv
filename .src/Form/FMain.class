@@ -9709,26 +9709,35 @@ End
 Public Sub FileView1_Icon(Path As String)
   Dim sep As String = Chr(8)
   Dim r As String
+  Dim iconsize As Integer = FileView1.Font.TextHeight("|èJj")
   If fileview1.visible = False Then Return
-  If menu_show_recent.checked = False Then Return
-  If global.IsMediaFile(path) Then
-    For Each r In historyarray
-      r = Split(r, sep)[0]
-      If path = r Then 
-          fileview1.icon = stock["16/ok"]
-         Break
-       Endif
-    Next
+  
+  
+  If IsDir(path) Then
+    FileView1.icon = stock[CStr(iconsize) & "/directory"]
+    Return
   Endif
+  
+  FileView1.icon = covermanager.DefaultLibraryIcon(path, iconsize, True)
+  
+  'mark recent files?
+  If menu_show_recent.checked Then
+    If global.IsMediaFile(path) Then
+      For Each r In historyarray
+        r = Split(r, sep)[0]
+        If path = r Then 
+            fileview1.icon = stock[iconsize & "/ok"]
+          Break
+        Endif
+      Next
+    Endif
+  Endif
+  
 End
 
 Public Sub OLD_FileView1_Icon(Path As String)
   Dim iconsize As Integer = FileView1.Font.TextHeight("|èJj")
-  If IsDir(path) Then
-    FileView1.icon = stock[CStr(iconsize) & "/directory"]
-  Else
-    FileView1.icon = covermanager.DefaultLibraryIcon(path, fileview1.iconsize, True)
-  Endif
+ 
 End
 
 
@@ -12620,4 +12629,3 @@ End
 Public Sub menu_edit_bookmarks_click()
   Try Desktop.Open(global.Bookmarksfile)
 End
-
