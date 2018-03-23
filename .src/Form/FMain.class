@@ -9691,7 +9691,7 @@ End
 Public Sub FileView1_Activate()
   Dim fullpathitem As String = Replace(FileView1.dir & "/" & FileView1.Current, "//", "/")
   ActivateFile(fullpathitem)
-  fileview1Myreload()
+  'fileview1Myreload() 'BUG
 End
 
 Public Sub Urlbox_KeyPress()
