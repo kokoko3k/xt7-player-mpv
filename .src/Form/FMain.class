@@ -1187,13 +1187,13 @@ Public Sub MainInit()
   AllInit_pre()
 
   If (global.arg_file <> "") Then
-
+  
     FirstPlay = True 'used to  avoid playing media at start when togglepls button is toggled
     Me.mouse = mouse.Wait
     FMain.LoadFormGeometry()
     fmain.Show
     Wait 
-
+  
     If (Not global.arg_append) And (global.arg_file <> "") Then 
       Media_Next_path = DConv(global.arg_file)
       PlayFromCommandline = True 
@@ -1209,11 +1209,11 @@ Public Sub MainInit()
     Endif
     Me.Mouse = mouse.Default
     havetoshowbrowsetab = True
-
+  
       Else
-
+  
     FMain.LoadFormGeometry()
-
+  
     If Not global.arg_start_tray Then fmain.Show
   Endif
 
@@ -5599,20 +5599,26 @@ Public Sub HotKeyToMplayer(HotKey As String)
 End
 
 Public Sub fileview1Myreload()
-  'refresh fileview keeping the scroll position and selected item
+  'refresh fileview keeping the scroll position and "current" item (full selection not possible in gambas)
   Dim achild As Object
   Dim sx, sy As Integer
+  Dim current As String
+  Try current = fileview1.current
   For Each achild In FileView1.Children
     If achild Is Columnview Then
       Try sx = achild.scrollx
       If Not Error Then
         Try sy = achild.scrolly
-        fileview1.Reload()
         Try achild.scrollx = sx
         If Not Error Then achild.scrolly = sy
       Endif
     Endif
   Next 'child
+  fileview1.Reload()
+  Wait 'important
+  FileView1.Current = current
+  Wait 0.1 '...just in case
+  FileView1.Current = current '...just in case
 End
 
 
@@ -9691,7 +9697,7 @@ End
 Public Sub FileView1_Activate()
   Dim fullpathitem As String = Replace(FileView1.dir & "/" & FileView1.Current, "//", "/")
   ActivateFile(fullpathitem)
-  'fileview1Myreload() 'BUG
+  fileview1Myreload()
 End
 
 Public Sub Urlbox_KeyPress()
@@ -12628,4 +12634,17 @@ End
 
 Public Sub menu_edit_bookmarks_click()
   Try Desktop.Open(global.Bookmarksfile)
+End
+
+Public Sub Button5_Click()
+
+  fileview1myreload()
+  Return
+  'Dim current As String = fileview1.current
+  fileview1.Reload()
+  Wait 
+  'Wait 0.001
+  'FileView1.Current = current ' "young.sheldon.101.hdtv-lol.mkv"
+  'FileView1.refresh
+  'Wait 0.001
 End

@@ -1041,19 +1041,19 @@
             Picture = Picture["icon:/small/bookmark"]
           }
           { ButtonUp Button
-            MoveScaled(11,0,4,4.5714)
+            MoveScaled(10,0,4,4.5714)
             ToolTip = ("Parent")
             AutoResize = True
             Picture = Picture["icon:/small/up"]
           }
           { UrlBox ComboBox
-            MoveScaled(16,0,7,4.5714)
+            MoveScaled(14,0,7,4.5714)
             ToolTip = ("Enter a path to browse it")
             Expand = True
             Text = ("/")
           }
           { ButtonRefresh Button
-            MoveScaled(23,0,4,4.5714)
+            MoveScaled(21,0,4,4.5714)
             ToolTip = ("Refresh")
             AutoResize = True
             Picture = Picture["icon:/small/refresh"]
@@ -1091,6 +1091,9 @@
             Picture = Picture["shadeup.png"]
             Stretch = True
           }
+        }
+        { Button5 Button
+          MoveScaled(4,49,16,4)
         }
         Index = 4
         Text = ("Chapters")
@@ -1439,7 +1442,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-53.2857,18,4.5714)
+              MoveScaled(9.4286,-54.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
