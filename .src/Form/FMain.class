@@ -12635,16 +12635,3 @@ End
 Public Sub menu_edit_bookmarks_click()
   Try Desktop.Open(global.Bookmarksfile)
 End
-
-Public Sub Button5_Click()
-
-  fileview1myreload()
-  Return
-  'Dim current As String = fileview1.current
-  fileview1.Reload()
-  Wait 
-  'Wait 0.001
-  'FileView1.Current = current ' "young.sheldon.101.hdtv-lol.mkv"
-  'FileView1.refresh
-  'Wait 0.001
-End
