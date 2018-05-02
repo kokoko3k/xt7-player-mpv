@@ -2623,6 +2623,7 @@ Public Function user_options(fullpath As String) As Collection
     opts[opt.name] = opt.data
   Next
   
+
   If global.IsAudioFile(fullpath) Then
     For Each opt In generaloptions.visualization_opts()
       opts[opt.name] = opt.data
@@ -9311,16 +9312,14 @@ End
 Public Sub PodCastMenuNew_Click()
   
   Dim NewUrl As String = ""
-  
   NewUrl = MyAskName.Ask(("Enter a new podcast url"))
   If Trim(NewUrl) <> "" Then
     Try mypodcast.add(NewUrl, PodcastTree)
+    podcasttree.mouse = Mouse.default
     If Error Then
       Message.Error(("Error adding new feed"))
-      PodcastTree.mouse = mouse.Default
     Endif
   Endif
-  
 End
 
 Public Sub PodcastMenuRefresh_Click()

@@ -1439,7 +1439,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-55.2857,18,4.5714)
+              MoveScaled(9.4286,-56.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1620,20 +1620,25 @@
           Tag = "podcasts"
           Text = ("Label3")
         }
-        { PodcastTree TreeView
-          MoveScaled(1,5,34,12)
-          Drop = True
+        { PodCastTreeParent Panel
+          MoveScaled(2,5,34,32)
           Expand = True
-          Mode = Select.Multiple
+          Arrangement = Arrange.Fill
+          { PodcastTree TreeView
+            MoveScaled(1,4,31,21)
+            Drop = True
+            Expand = True
+            Mode = Select.Multiple
+          }
         }
         { Button4 Button
-          MoveScaled(1,20,36,4.5714)
+          MoveScaled(0,39,36,4.5714)
           ToolTip = ("Refresh podcasts info")
           Text = ("Refresh All")
           Picture = Picture["icon:/16/refresh"]
         }
         { Button1 Button
-          MoveScaled(1,25,36,4.5714)
+          MoveScaled(0,47,36,4.5714)
           ToolTip = ("Manually enter a new podcast URL")
           Text = ("New feed")
           Picture = Picture["icon:/16/new"]

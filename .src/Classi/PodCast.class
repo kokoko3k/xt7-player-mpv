@@ -112,10 +112,9 @@ End
 
 Public Sub Add(PodCastUrl As String, PodcastTree As Treeview)
   Dim newitem, title, desc, podlink As String
-  Dim mousebefore As Integer = PodcastTree.mouse
+  Dim mousebefore As Integer = PodcastTree.parent.mouse
   
-
-  PodcastTree.mouse = mouse.wait
+  PodcastTree.parent.mouse = mouse.wait
   Try PodcastTree.Add(PodcastUrl, PodCastUrl, picture["rssbig.png"])
   
   'TRY PodcastTree.Add(PodCastUrl, Global.oneof(Channeltitle, PodCastUrl), ChannelCover)
@@ -130,7 +129,7 @@ Public Sub Add(PodCastUrl As String, PodcastTree As Treeview)
   Endif
   'set channel info (to do after fetch)
   SetchannelInfo(podcasturl, PodcastTree)
-  PodcastTree.mouse = MouseBefore
+  PodcastTree.parent.mouse = MouseBefore
 End
 
 
@@ -188,7 +187,7 @@ Public Sub RefreshAll(PodcastTree As Treeview)
     PodcastTree.MoveFirst
     Repeat
       Refresh(PodcastTree.Item.Key, PodcastTree)
-      Print PodcastTree.Item.Key
+      Try global.myDebug(PodcastTree.Item.Key)
     Until PodcastTree.movenext()
   Endif
   
@@ -196,8 +195,8 @@ End
 
 
 Public Sub Refresh(PodCastUrl As String, PodcastTree As Treeview)
-  Dim mousebefore As Integer = PodcastTree.mouse
-  PodcastTree.mouse = mouse.wait
+  Dim mousebefore As Integer = PodcastTree.parent.mouse
+  PodcastTree.parent.mouse = mouse.wait
   'remove all child items
   Repeat
     PodcastTree.MoveTo(PodCastUrl)
@@ -210,7 +209,7 @@ Public Sub Refresh(PodCastUrl As String, PodcastTree As Treeview)
   SetchannelInfo(PodCastUrl, PodcastTree)
   'restore the previous position
   PodcastTree.MoveTo(PodCastUrl)
-  PodcastTree.mouse = MouseBefore
+  PodcastTree.parent.mouse = MouseBefore
 End
 
 
