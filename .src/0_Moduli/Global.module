@@ -76,7 +76,7 @@ Public initdone As Boolean = False
 
 Public Sub init()
   'FixFormNames() 'needed with gambas 3.4.1; form names arent set by default!
-  UncommonVideoFilters = "Flash*;*.ts;*.m2v;*.m4v;*.mpeg;*.flv;*.gvi;*.iso;*.fli;*.flv;*.mpg;*.mpv;*.vob;*.viv;*.swf;*.rm;*.rmvb;*.dv;*.3gp;*.qt;*.divx;*.asx;*.ogm;*.ogv;*.oga;*.m4v;*.speex;*.spx;*.wavpack;*.wv;*.trueaudio;*.tta"
+  UncommonVideoFilters = "*.ts;*.m2v;*.m4v;*.mpeg;*.flv;*.gvi;*.iso;*.fli;*.flv;*.mpg;*.mpv;*.vob;*.viv;*.swf;*.rm;*.rmvb;*.dv;*.3gp;*.qt;*.divx;*.asx;*.ogm;*.ogv;*.oga;*.m4v;*.speex;*.spx;*.wavpack;*.wv;*.trueaudio;*.tta"
   Videofilter = "*.avi;*.mpg;*.mp4;*.mov;*.mkv;*.asf;*.ogm;*.ogv;*.wmv;"
   videofiltername = ("Common Video Files")
   UncommonAudiofilters = "*.wma;*.ram;*.ac3;*.wav;*.aiff;*.aiffc;*.aac;*.8svx;*.pls;*.dts;*.cue"
@@ -296,9 +296,8 @@ End
 
 
 Public Function IsMediaFile(filename As String) As Boolean
-'will return true if filename extension is in audiofilter or videofilter OR if the file begins with Flash*
+'will return true if filename extension is in audiofilter or videofilter
   Dim fileExt As String = "." & File.Ext(filename)
-  If (File.BaseName(filename) Like "Flash*") Then Return True
   If (fileext = ".") Then Return False
   If (InStr(Upper(ALLFilters), Upper(fileExt & ";")) > 0) Then
     Return True

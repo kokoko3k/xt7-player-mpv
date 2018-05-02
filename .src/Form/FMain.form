@@ -835,14 +835,14 @@
       Margin = True
       Padding = 4
       { Leftsidetabs TabStrip
-        MoveScaled(-1,-2,42,59)
+        MoveScaled(0,-1,42,59)
         Tag = "1"
         Expand = True
         Arrangement = Arrange.Vertical
         Spacing = True
         Margin = True
         Padding = 4
-        Count = 14
+        Count = 13
         Orientation = Align.Left
         Index = 0
         Text = ("Library")
@@ -1301,48 +1301,6 @@
           }
         }
         Index = 8
-        Text = ("Flash")
-        Picture = Picture["flashIcon16.png"]
-        { NOPARSETABFLASH Label
-          MoveScaled(2,1,8,3)
-          Visible = False
-          Tag = "flash"
-          Text = ("Label3")
-        }
-        { Panel5 Panel GridPanels
-          Name = "Panel5"
-          MoveScaled(2,10,30,15)
-          Expand = True
-          Arrangement = Arrange.Fill
-          Border = Border.Plain
-          { FlashGrid GridView
-            MoveScaled(3,1,22,13)
-            ToolTip = ("This list will be populated by temporary flash files\nwhen you play them into a web browser.")
-            Drop = True
-            Expand = True
-            Border = False
-            Mode = Select.Single
-            Grid = False
-            Header = GridView.Horizontal
-          }
-        }
-        { FlashCHK CheckBox
-          MoveScaled(0,26,37,4.5714)
-          ToolTip = ("Show flash videos in /tmp folder in the upper list, allowing you to play them.")
-          AutoResize = True
-          Text = ("Catch Flash videos in /tmp folder")
-        }
-        { FlashCHK2 CheckBox
-          MoveScaled(0,29,37,4.5714)
-          ToolTip = ("When a new flash video is detected, shows a PopUp window.\nIt may be necessary to disable focus stealing prevention in your window manager.")
-          AutoResize = True
-          Text = ("PopUp window to play new catched videos")
-        }
-        { TimerFlash #Timer
-          #MoveScaled(9,2)
-          Delay = 2000
-        }
-        Index = 9
         Text = ("YouTube")
         Picture = Picture["youtubeicon.png"]
         { NOPARSETABYOUTUBE Label
@@ -1439,7 +1397,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-56.2857,18,4.5714)
+              MoveScaled(9.4286,-57.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1502,7 +1460,7 @@
           #MoveScaled(30,31)
           Delay = 100
         }
-        Index = 10
+        Index = 9
         Text = ("Radio")
         Picture = Picture["iradio.png"]
         { NOPARSETABSHOUTCAST Label
@@ -1611,7 +1569,7 @@
             Picture = Picture["icon:/16/find"]
           }
         }
-        Index = 11
+        Index = 10
         Text = ("Podcasts")
         Picture = Picture["rss.png"]
         { NOPARSETABPODCAST Label
@@ -1643,7 +1601,7 @@
           Text = ("New feed")
           Picture = Picture["icon:/16/new"]
         }
-        Index = 12
+        Index = 11
         Text = ("Media Info")
         Picture = Picture["icon:/small/info"]
         { NOPARSETABMEDIAINFO Label
@@ -1670,7 +1628,7 @@
           #MoveScaled(13,40)
           Delay = 3000
         }
-        Index = 13
+        Index = 12
         Text = ("Profiles")
         Picture = Picture["icon:/small/properties"]
         { NOPARSETABPROFILES Label

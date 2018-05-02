@@ -73,12 +73,6 @@ Public Function TabSelectedPlaylist() As Boolean
 
 End
 
-Public Function TabSelectedFlash() As Boolean
-
-  Return IsTabChildren("NOPARSETABFLASH")
-
-End
-
 Public Function TabSelectedShoutcast() As Boolean
 
   Return IsTabChildren("NOPARSETABSHOUTCAST")
@@ -179,8 +173,6 @@ Public Youtube As Youtubeclass
 Public mplayer As New MplayerClass 
 
 
-Public MyFlash As FlashClass
-
 Public MyLibrary As New PlaylistClass
 Public MyPlaylist As New PlaylistClass
 Public MyDVBTList As New PlaylistClass
@@ -241,7 +233,6 @@ Public LastDvdID As String = ""            'used to manage dvd disk changes
 
 Public DVDTabID As Integer = "-1"  'as we hide the dvd tab, we loose the caption, so we must remember the id
 Public CDDATabID As Integer = "-1"
-Public FlashTabID As Integer = "-1"  'as we hide the Flash tab, we loose the caption, so we must remember the id
 
 Private DynaGuiTools As New DynaGuiClass
 
@@ -498,8 +489,6 @@ Public Sub AllInit_Post()
   Try ComboHistory.LoadHistory(Fmain.UrlBox, global.confpath & "/" & global.CurrentProfile)
   Try ComboHistory.LoadHistory(youSearchfield, global.confpath & "/" & global.CurrentProfile)
   Try ComboHistory.LoadHistory(SearchFieldDVB, global.confpath & "/" & global.CurrentProfile)
-  Myflash = New FlashClass As "MyFlash"
-  InitFlashGrid()
 
   Leftsidepanel.mouse = mouse.Default
   Try GeneralOptions.LoadWatchDir(global.confpath & "/" & global.CurrentProfile)
@@ -698,12 +687,6 @@ Public Sub ClearRecentFilesSub()
 
 End
 
-Public Sub InitFlashGrid()
-
-  MyFlash.Grid = Fmain.FlashGrid
-  MyFlash.init()
-
-End
 
 Public Sub MakeProfilePath()
 
@@ -1004,10 +987,6 @@ Public Sub SetStyle_early()
   PlayListGrid.Background = backcolor
   'Panel1.background = backcolor
   
-  FlashGrid.font = Userfont
-  FlashGrid.Foreground = forecolor
-  FlashGrid.Background = backcolor
-  'Panel5.background = backcolor
   
   ProfilesListBox.font = Userfont
   ProfilesListBox.foreground = forecolor
@@ -1567,9 +1546,6 @@ Public Sub Form_Close()
 
   'stop any epg scanning instance
   epgform.StopScan()
-  
-  'kill all recordings processes
-  Try MyFlash.StopAllRecordings()
   
   'this allow to close the Fake form.
   'Try Application.MainWindow.Close 'crashes!
@@ -3613,23 +3589,6 @@ Public Sub SetDvdTabVisibility(visibility As Boolean)
     Leftsidetabs[i].Visible = WasVisible
   Next 'i
   If visibility Then Leftsidetabs.index = DvdTabId
-  
-End
-
-Public Sub SetFLASHTabVisibility(visibility As Boolean)
-  
-  Dim i As Integer
-  
-  If FlashTabID = -1 Then
-    For i = 0 To Leftsidetabs.count - 1
-      If TabSelectedFlash() Then
-        FlashTabId = i
-        Break
-      Endif
-    Next 'i
-  Endif
-  If visibility Then Leftsidetabs.index = FlashTabId
-  Leftsidetabs[FlashTabId].visible = visibility
   
 End
 
@@ -6692,7 +6651,6 @@ Public Sub CleanVideoThumbs()
   Try Mkdir safeplace
   'get a list of video files:
   videofilter = global.videofilter & global.UncommonVideoFilters & Upper(global.videofilter) & Upper(global.UncommonVideoFilters)
-  videofilter = Replace(videofilter, "Flash*", "")
   videofilter = Replace(videofilter, "*", "")
   videofilter = Replace(videofilter, ";", ",")
   videofilter = Replace(videofilter, ",,", ",")
@@ -8249,101 +8207,8 @@ Public Function ObjectByName(Objectname As String) As Object
     Endif
   Next
   Return Null
-  
 End
 
-Public Sub FlashCHK_Click()
-  
-  If FlashCHK.value = True Then
-    timerflash.start
-    Flashgrid.enabled = True
-  Else
-    timerflash.stop
-    FlashGrid.enabled = False
-    FlashCHK2.value = False
-  Endif
-  
-End
-
-Public Sub TimerFlash_Timer()
-  
-  Try MyFlash.UpdateGrid()
-  
-End
-
-Public Sub FlashGrid_DblClick()
-  
-  Dim SelectedPath As String
-  
-  Try SelectedPath = Last[Last.row, 1].text
-  If (Not Error ) Then
-    If MouseInsideGrid(Last) Then
-      Try Play(SelectedPath)
-    Endif
-  Endif
-  
-End
-
-Public Sub FlashGrid_KeyPress()
-  
-  If (Key.code = Key.Return) Or (Key.code = Key.Enter) Then
-    FlashGrid_DblClick()
-  Endif
-  
-End
-
-Public Sub FlashGrid_Menu()
-  
-  FlashMenuStopRecording.enabled = False
-  Try FlashMenuStopRecording.enabled = MyFlash.IsRecording(Flashgrid[Flashgrid.row, 1].text)
-  FlashMenuRecordas.enabled = Flashgrid.row >= 0
-  FlashMenuDelete.enabled = Flashgrid.row >= 0
-  MenuFlash.Popup
-  
-End
-
-Public Sub FlashMenuRecordAs_Click()
-
-  Dialog.filter = ["*.flv", ("Flash video files"), "*", ("All files")]
-  Dialog.Title = ("Choose a destination file")
-  If Dialog.SaveFile() Then Return ' User pressed Cancel -
-  MyFlash.Record(Flashgrid[Flashgrid.row, 1].text, Dialog.path)
-  
-End
-
-Public Sub FlashMenuStopRecording_Click()
-  
-  MyFlash.StopRecord(Flashgrid[Flashgrid.row, 1].text)
-  
-End
-
-Public Sub FlashMenuDelete_Click()
-  
-  MyFlash.delete(Flashgrid[Flashgrid.row, 1].text)
-  
-End
-
-Public Sub FlashCHK2_Click()
-  
-  If FlashCHK2.value = True Then
-    FlashCHK.value = True
-    FlashCHK_Click()
-  Endif
-  
-End
-
-Public Sub MyFlash_NewVideo(lastvideopath As String) 'when a new flash video is found, this event is raised
-  
-  Dim Question As String = ("New Flash(tm) video detected: \n") & lastvideopath & ("\n  Would you like to play it now in Xt7-Player?")
-  
-  If FlashCHK2.value = True Then
-    If MyQuestion.Ask(Question, ("Play now"), ("Don't Play"), FlashCHK2.text, FlashCHK2) = 1 Then
-      Fmain.Play(lastvideopath)
-      Fmain.Show
-    Endif
-  Endif
-  
-End
 
 Public Sub LeftSideTabs_Menu()
   UpdateMenuTabVisibility() 
