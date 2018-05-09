@@ -146,7 +146,22 @@ Public Sub myDebug(Optional a As String = "", Optional b As String = "", Optiona
   'Print 
 End
 
+Public Function find_term() As String
+  Dim terms As String[] = ["konsole", "gnome-terminal", "xfce4-terminal", "lxterminal", "xterm"]
+  Dim term As String
+  For Each term In terms
+    myDebug("checking for " & term & "...")
+    If System.Exist(term) Then 
+      Debug "found."
+      Return System.Find(term)
+    Endif
+  Next
+  Return ""
+End
 
+Public Function terminal_cmdline(terminal_emulator As String, cmdline As String) As String
+  Return terminal_emulator & " -e " & "\"" & "sh -c ' " & cmdline & "; echo; echo  Press enter to exit ; read ' \""
+End
 
 
 Public Function proxyfromenv() As String

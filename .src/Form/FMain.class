@@ -10103,7 +10103,43 @@ Public Sub YoutubetreeTreeaddtoPlaylist_Click()
   Endif
 End
 
+Private last_yt_dir As String = ""
+
 Public Sub youtubetreeDownload_Click()
+  Dim CurrentUrl, StreamDownloadDir, cmd As String
+  Dim script As String = Temp()
+  Try CurrentUrl = youtubetree.Current.Key
+  
+  If Error Then
+    Message.Error(("Error: Cannot get current item"))
+    Return
+  Endif
+  If last_yt_dir <> "" Then 
+    Dialog.Path = last_yt_dir
+      Else
+    Dialog.path = User.Home
+  Endif
+  If Dialog.SelectDirectory() Then Return
+  last_yt_dir = Dialog.Path
+  StreamDownloadDir = last_yt_dir
+  cmd = "youtube-dl '" & CurrentUrl & "'"
+  cmd &= " -o '" & StreamDownloadDir & "/%(title)s.%(ext)s" & "'"
+  cmd &= " --format=" & youtube.ytdl_format_opt(Left(generaloptions.Youtubeformat.text, -1))  
+  Try File.Save(script, cmd)
+  If Error Then Goto return_file_error
+  Try Chmod script To "rwxr-x---"
+  If Error Then Goto return_file_error
+  cmd = global.terminal_cmdline(global.find_term(), script)
+  global.myDebug(cmd)
+  Stop
+  Shell cmd
+  return_file_error:
+  Debug "file_error"
+
+End
+
+
+Public Sub old_youtubetreeDownload_Click()
   
   Dim CurrentUrl, CurrentText As String
   Dim RealYTVideoUrl As String
@@ -10153,10 +10189,10 @@ Public Sub StreamDownload(url As String, Optional suggestname As String = "")
   commandline = Replace(commandline, "%destdir", destdir)
   commandline = Replace(commandline, "%destfile", destfile)
   
-  If url Like "*youtube*" Then
-    If commandline Like "*wget *" Then commandline = commandline & " --load-cookies " & Youtube.Cookiesfile
-    If commandline Like "*aria2c *" Then commandline = commandline & " --load-cookies=" & Youtube.Cookiesfile
-  Endif
+  ' If url Like "*youtube*" Then
+  '   If commandline Like "*wget *" Then commandline = commandline & " --load-cookies " & Youtube.Cookiesfile
+  '   If commandline Like "*aria2c *" Then commandline = commandline & " --load-cookies=" & Youtube.Cookiesfile
+  ' Endif
 
   global.myDebug(commandline)
   Shell commandline
