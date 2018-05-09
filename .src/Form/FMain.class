@@ -4336,7 +4336,6 @@ Public Sub SeekRestart(newpos As Integer)
   VEqHasBeenSet = False
   If mplayer.ProcessRunningOvr() Then
     ForcedAspectRT = "default"
-    If (Trim(Youtube.Cookiesfile) <> "") Then cookieopts = "-cookies -cookies-file " & Youtube.Cookiesfile & " "
     ' mplayer.do_restart(mplayer.getP("fullpath"), GetOptionsFromGui() & SetRightCache() & VmetersOptionsAndInitIfNeeded() & " " & cookieopts, False, False, newpos)
     audioform.BarBox.visible = False  'mpv 0.11 removed af_export filter :(
     mplayer.do_restart(mplayer.getP("fullpath"), GetOptionsFromGui() & SetRightCache() & " " & cookieopts, False, False, newpos)
@@ -10030,11 +10029,7 @@ Public Sub StreamDownload(url As String, Optional suggestname As String = "")
   commandline = Replace(GeneralOptions.DownloaderCombobox.text, "%url", url)
   commandline = Replace(commandline, "%destdir", destdir)
   commandline = Replace(commandline, "%destfile", destfile)
-  
-  ' If url Like "*youtube*" Then
-  '   If commandline Like "*wget *" Then commandline = commandline & " --load-cookies " & Youtube.Cookiesfile
-  '   If commandline Like "*aria2c *" Then commandline = commandline & " --load-cookies=" & Youtube.Cookiesfile
-  ' Endif
+
 
   global.myDebug(commandline)
   Shell commandline
