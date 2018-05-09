@@ -2631,7 +2631,7 @@ Public Sub file_options(fullpath As String) As Collection
   ' Dim export_opts As String = "" 'mpv 0.11 removed af_export filter :(
 
   If Youtube.IsYoutubeLink(fullpath) Then
-    opts["ytdl-format"] = "'[height<=" & Left(generaloptions.Youtubeformat.text, -1) & "]/best'"
+    opts["ytdl-format"] = " 'bestvideo[height<=" & Left(generaloptions.Youtubeformat.text, -1) & "]+bestaudio'"
     opts["ytdl"] = "yes"
       Else 'not youtube specific link
     If global.IsNetworkURI(fullpath) Then 'but network stream, is supported by youtube-dl?
@@ -2642,6 +2642,7 @@ Public Sub file_options(fullpath As String) As Collection
         opts["ytdl"] = "no"
       Endif
     Endif
+
   Endif
 
   Select Case Lower(fullpath)
