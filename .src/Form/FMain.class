@@ -3284,6 +3284,8 @@ Public Sub Fill_Playlist_from_mpv()
   'Is it a playlist?
   Try pCount = mplayer.get_property_mpv("=playlist-count")
   If pCount < 2 Then Return
+   
+  If MyQuestion.Ask(("This seems a playlist\n,do you want me to manage it?"), ("Manage"), ("Just play")) = 2 Then Return
   
   'save the previous playlist
   If playlistgrid.Rows.count > 0 Then 'save the previous playlist
@@ -11017,23 +11019,6 @@ Public Sub PlaylistGrid_MouseDown()
 End
 
 
-' Public Sub shadeuplow_Enter()
-'   Dim brother As Gridview
-'   For Each brother In Last.Parent.Children 
-'     If brother Is Gridview Then Break
-'   Next
-'   Try brothersproxies.Add(brother.proxy, brother.name)
-'   brother.proxy = Last
-' End
-' Public Sub shadeuplow_Leave()
-'   Dim brother As Gridview
-'   For Each brother In Last.Parent.Children 
-'     If brother Is Gridview Then Break
-'   Next
-'   Try brother.proxy = brothersproxies[brother.name]
-' End
-
-
 Public Sub ButtonSavePls_Click()
   SavePls()
 End
@@ -11059,7 +11044,7 @@ Public Function SavePls() As Boolean
     Message.Error(("There was an error saving the playlist:\n") & PlaylistsCombo.text, ("Ok"))
     Return False
       Else
-    Try Message.Info(("Playlist saved as:") & "\n" & PlaylistsCombo.text, (" Ok "))
+    Try Message.Info(("Current playlist saved as:") & "\n" & PlaylistsCombo.text, (" Ok "))
     If PlaylistsCombo.Find(PlaylistsCombo.text) = -1 Then PlaylistsCombo.Add(PlaylistsCombo.text)
   Endif
   Return True
@@ -11100,7 +11085,7 @@ Public Sub PlaylistsCombo_Click()
   Dim answer As Integer
 
   Dim playlistsfullpath As String = global.ConfPath & "/" & global.UserPlaylistsDir
-  answer = MyQuestion.Ask(("Loading the playlist:") & "\n" & PlaylistsCombo.current.text, ("Load/Replace"), ("Append"))
+  answer = MyQuestion.Ask(("Load the playlist:") & "\n" & PlaylistsCombo.current.text, ("Load/Replace"), ("Append"))
   'Message.question("Loading the playlist:" & "\n" & PlaylistsCombo.current.text, ("Load/Replace"), ("Append"), ("Never mind"))
   If answer = -1 Then Return
   MyPlaylist.LoadFile(playlistsfullpath & "/" & PlaylistsCombo.text & ".xpl", PlayListGrid, (answer = 2))
