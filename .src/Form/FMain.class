@@ -455,7 +455,8 @@ Public Sub AllInit_Post()
   Dim savefileview1path As String
   If Not Panel2.visible Then Panel2.visible = True
   If MyLibraryProgressBar.visible Then MyLibraryProgressBar.visible = False
-  
+  'workaround ?
+  youtubetree.Parent.visible = True
   Hsplit1ResizeDelayed = New Timer As "Hsplit1ResizeDelayed" 'used to delay the hsplit resize and better performance
   Hsplit1ResizeDelayed.delay = 300
   Hsplit1ResizeDelayed.Enabled = False
@@ -529,8 +530,7 @@ Public Sub AllInit_Post()
   Else If TabSelectedPlaylist() Then
     LibraryGrid_Select()
   Else If TabSelectedyoutube() Then
-    'workaround ?
-    youtubetree.Parent.visible = True
+    'Youtube_Select()
   Endif
   global.AddUserExtensions(GeneralOptions.KnownExtensions.text)
   VideoAreaGroup_keypress_timer = New Timer As "VideoAreaGroup_keypress_timer"
@@ -12500,4 +12500,3 @@ End
 Public Sub menu_edit_bookmarks_click()
   Try Desktop.Open(global.Bookmarksfile)
 End
-
