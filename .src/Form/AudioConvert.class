@@ -167,8 +167,8 @@ Public Sub ConvertandSaveAudio()
   Me.text = ("Updating Library/Playlist")
   Wait
   For Each finalitem In converteditems
-    If CheckLIB.Value Then FMain.MyPlaylist.AddFile(FMain.librarygrid, finalitem, False)
-    If CheckPLS.Value Then FMain.MyLibrary.AddFile(FMain.playlistgrid, finalitem, False)
+    If checkpls.value Then FMain.MyPlaylist.AddFile(FMain.playlistgrid, finalitem, False)
+    If Checklib.Value Then FMain.MyLibrary.AddFile(FMain.librarygrid, finalitem, False)
   Next 'finalitem
   Me.text = fcaption
   Me.mouse = Mouse.normal
