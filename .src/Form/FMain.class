@@ -529,7 +529,8 @@ Public Sub AllInit_Post()
   Else If TabSelectedPlaylist() Then
     LibraryGrid_Select()
   Else If TabSelectedyoutube() Then
-    'Youtube_Select()
+    'workaround ?
+    youtubetree.Parent.visible = True
   Endif
   global.AddUserExtensions(GeneralOptions.KnownExtensions.text)
   VideoAreaGroup_keypress_timer = New Timer As "VideoAreaGroup_keypress_timer"
@@ -12499,3 +12500,4 @@ End
 Public Sub menu_edit_bookmarks_click()
   Try Desktop.Open(global.Bookmarksfile)
 End
+

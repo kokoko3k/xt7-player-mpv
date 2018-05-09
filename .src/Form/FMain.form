@@ -549,7 +549,6 @@
     { MenuFlash Menu FlashMenuGroup
       Name = "MenuFlash"
       Text = ("FlashMenu")
-      Picture = Picture["flashIcon16.png"]
       Visible = False
       { FlashMenuRecordAs Menu
         Text = ("Record As") & "..."
@@ -1314,18 +1313,18 @@
           Expand = True
           PopupMenu = "YoutubeTreePopup"
           { youtubetree TreeView
-            MoveScaled(0,0,35,10)
+            MoveScaled(0,1,35,10)
             Expand = True
           }
           { scrollviewyt ScrollView
-            MoveScaled(0,10,35,13)
+            MoveScaled(0,15,35,13)
             Visible = False
             Background = &H000000&
             Foreground = &HFFFFFF&
             ToolTip = ("Click to open video page")
             Expand = True
             { YouVideoInfo TextLabel
-              MoveScaled(0,0,30,10)
+              MoveScaled(1,2,30,10)
               Visible = False
               Background = &H000000&
               Foreground = &HFFFFFF&
@@ -1397,7 +1396,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-57.2857,18,4.5714)
+              MoveScaled(9.4286,-58.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
