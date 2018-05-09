@@ -220,47 +220,6 @@ Dim w As Integer = Last.w
 End
 
 
-Public Sub OLD_AudioAreaGroup_Arrange()
-Dim w As Integer = Last.w
-  If Last = audiopanel Then
-    If GridDown[0, 1].text = "" Then 
-      GridDown.Rows[0].h = 0
-        Else
-      GridDown.Rows[0].h = Griddown.Rows.H
-    Endif
-  
-    pictureback.lower
-    If Left(GeneralOptions.NoParseVisType2.text) = 0 Then
-      picturebox1.Background = Color.Transparent
-      pictureback.Move(0, 0, audiopanel.w, AudioPanel.h)
-        Else
-      picturebox1.Background = Color.black
-      pictureback.Move(0, 0, audiopanel.w, AudioPanel.h - picturebox1.h)
-    Endif
-    Return
-  Endif
-  
-  If Last = gridup Then 
-    MakeGridShadow(audioform.gridupShadow, GridUp)
-    Return
-  Endif
-  If Last = griddown Then 
-    MakeGridShadow(audioform.griddownShadow, GridDown)
-    Return
-  Endif
-  
-
-End
-
-' Private Sub antiglitch(color_mean As Integer)
-'   FMain.outerbox.background = Color_mean
-'   audiopanel.background = Color_mean
-'   pictureback.Background = color_mean
-' End
-
-
-'Public Color_mean As Integer
-
 
 Public Sub AudioAreaGroup_MouseMove()
 '   Dim pw As Integer

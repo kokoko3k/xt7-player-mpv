@@ -1225,49 +1225,6 @@ Public Function parse_drivers(audio As Boolean) As MpvOption[]
 End
 
 
-Public Function old_parse_drivers(audio As Boolean) As String
-  Dim item_box As Hbox
-  Dim cBox As Checkbox 
-  Dim item_name As String
-  Dim drivers As String
-  Dim item_container As Object
-  Dim video_driver_overridden As String = ""
-
-  If audio Then 
-    item_container = drivers_audio_container
-      Else
-    item_container = drivers_video_container
-  Endif
-  
-  If Not audio Then 'search for any override in generaloptions (like hwdec macro)
-    Try video_driver_overridden = GeneralOptions.video_driver_overridden() 
-    If video_driver_overridden <> "" Then
-        drivers &= parse_video_driver(video_driver_overridden, item_container.tag) & ","
-        Goto returnlabel
-    Endif
-  Endif
-  
-  For Each item_box In item_container.children
-    item_name = item_box.name
-    cBox = Me.Controls[item_name & "_checkbox_" & item_container.name]  
-    If cBox.value = True Then
-      If audio Then 
-        drivers &= parse_audio_driver(item_name, item_container.tag) & ","
-          Else
-        drivers &= parse_video_Driver(item_name, item_container.tag) & ","
-      Endif
-    Endif
-  Next
-  
-  ReturnLabel:
-  If Right(drivers) = "," Then drivers = Left(drivers, "-1")
-  Return drivers
-  
-End
-
-
-
-
 Public Function parse_filters(audio As Boolean) As String[]
   Dim item_name As String
   Dim item_box As Hbox

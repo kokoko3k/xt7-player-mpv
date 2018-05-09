@@ -62,21 +62,6 @@ Public Sub Init(WithMplayer As Boolean)
   Columnindex["Added on"] = 21
 End
 
-' Private Sub CheckPlayerAlive()
-' 'will restart mplayer if it is crashed  
-' 
-' 
-'   Dim restart As Boolean = True
-'   If Not (MplayerTag.ProcessRunningOvr()) Then
-'     mplayertag = New Mplayerclass
-'     MplayerTag.do_play("", "-idle -ao null -vo null -channels 6", restart)
-'     global.myDebug("(Re)starting player")
-'     Wait 0.5
-'   Endif
-' End
-
-
-
 Private Function OneOf(one As String, two As String) As String
   If one <> "" Then
     Return one
@@ -85,29 +70,6 @@ Private Function OneOf(one As String, two As String) As String
   Endif
 End
 
-
-Public Sub OLD_Load(myplaylist As Gridview, profilename As String)
-  Dim filename As String = Profilename & "/" & myplaylist.name & ".txt"
-  Dim i As Integer
-  Dim Layout As String[]
-  Loading = True
-  Try PTable = Split(file.Load(filename), "\n")
-  PTable.Resize(PTable.count - 1)
-  
-  If ptable.Count > 0 Then
-    If Ptable[0] Like "Layout*" Then
-      'load column layout
-        Layout = Split(Ptable[0], ";", "", False)
-        ptable.Remove(0, 1)
-        For i = 1 To layout.count - 1
-          myplaylist.Columns[i - 1].w = layout[i]
-        Next 'i
-    Endif
-  Endif
-  myplaylist.Rows.count = myplaylist.Rows.count + PTable.count
-  InitSearchTable()
-  global.myDebug("Load()at: " & Time)
-End
 
 Public Sub Load(mygrid As Gridview, ConfDir As String)
   Dim pTableFile As String = ConfDir & "/" & mygrid.name & ".txt"
@@ -1010,47 +972,6 @@ Private Function BinarySearch(item As String) As Integer
     Endif
   Until first > Tlast
 End
-
-
-Private Function old_BinarySearch(item As String) As Integer
-  Dim first, Tlast, middle As Integer
-
-  Dim MiddleItem As String
-  first = 0
-  Tlast = SortTable.count - 1
-  If item Like "*La tavola da surf*" Then 
-     Print "break"
-     Stop
-   Endif
-  Repeat
-    middle = (first + tlast) / 2
-    MiddleItem = SortTable[middle]
-    If Trim(MiddleItem) = Trim(item) Then
-      Return middle
-    
-    ' 'gb.text is a case unsensitive comparision, 
-    ' 'we've to manage the sensitive comparision
-    ' 'via a gb.binary search
-    Else If Trim(Lower(middleitem)) = Trim(Lower(item)) Then
-      'If Comp(MiddleItem, item, gb.binary) < 0 Then
-      If Comp(MiddleItem, item, gb.ignorecase) < 0 Then
-        first = middle + 1
-          Else
-        tlast = middle - 1
-      Endif
-      
-    ' [GB2:TEXT] Else If Comp(MiddleItem, item, gb.text) < 0 Then  'ITEM > middle
-    Else If Comp(MiddleItem, item, gb.IgnoreCase) < 0 Then  'ITEM > middle
-        first = middle + 1
-    ' [GB2:TEXT] Else If Comp(MiddleItem, item, gb.text) > 0 Then  'ITEM < middle
-    Else If Comp(MiddleItem, item, gb.IgnoreCase) > 0 Then  'ITEM < middle
-        tlast = middle - 1
-    Endif
-  Until first > Tlast
-End
-
-
-
 
 Public Function IsDupe(item As String) As Boolean
 'binary search in sorttable for item

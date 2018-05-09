@@ -118,58 +118,6 @@ Public Function GetGenres(GenresTree As TreeView, Optional usecache As Boolean =
 End
 
 
-Public Function OLD_GetGenres(GenresTree As TreeView)
-  'Enum shoucast genres and fill a treeview in the format
-  Dim i As Integer
-  Dim buffer, GenreName, description, numstations, mylink As String
-
-
-  Dim lines As New String[]
-  'DIM AskUrl AS String = "http://yp.shoutcast.com/sbin/newxml.phtml?rss=1"
-  Dim AskUrl As String = "'http://api.shoutcast.com/legacy/genrelist?k=sh17tOUi_ezL61_A&rss=1'"
-  Dim tmpfile As String = Temp()
-  Dim wget As New Wgetclass
-  tmpfile = wget.DownloadAsync(AskUrl, True)
-
-  Shell "grep -i 'title\\|description\\|link' " & tmpfile & "| sed 's/<\\/[^>]*>/&\\n/g'" To buffer
-  buffer = Replace(buffer, "<item>", "<item>\n")
-  
-  
-  'SHELL "grep -i 'title\\|description\\|link' /tmp/xml.xml" TO buffer
-  Lines = Split(buffer, "\n", "", True) '<<-- non ci sono più i \n,
-                              'forse conviene aggiungerli a mano dopo qualsiasi tag del genere "</*>"
-                              'per esempio, t"</title>" diventa "</title>\n"
-                              'nel caso tornassero i "\n", se ne avrebbero allora due di seguito,
-                              'in quel caso basta ignorare i void tramite la funzione "split" di gambas
-  'find where to begin parsing stations (triple in order title,description,link)
-  i = 0
-  GenresTree.clear
-  Repeat
-  
-    For i = i To lines.Count - 3
-      If (lines[i] Like "*<title>*") And (lines[i + 1] Like "<description>*") And (lines[i + 2] Like "<link>*") Then
-        Break
-      Endif
-    Next 'i
-    If i + 2 = lines.count Then Break
-  'begin parsing
-    
-    Genrename = Split(lines[i], ">")[1]
-    Genrename = Split(GenreName, "<")[0]
-    'GenreName = Mid(lines[i], Len("<title>") + 1, Len(lines[i]) - (Len("<title>") + 1) * 2)
-    i = i + 1
-    'description = Mid(lines[i], Len("<description>") + 1, Len(lines[i]) - (Len("<description>") + 1) * 2)
-    Description = Split(lines[i], ">")[1]
-    Description = Split(Description, "<")[0]
-    numstations = Trim(Split(description, ":")[1])
-    i = i + 1
-    myLINK = Mid(lines[i], Len("<link>") + 1, Len(lines[i]) - (Len("<link>") + 1) * 2)
-    i = i + 1
-    'GenresTree.Add(MyLink, GenreName & ts & " - [" & numstations & "]", picture["shoutcast16.png"])
-    Try GenresTree.Add(MyLink, GenreName, stock["small/directory"]) 'picture["shoutcast16.png"])
-    Until (i + 3) >= lines.count
-End
-
 
 Public Function GetStationsFromSearch(SearchTerm As String, ShutResultGrid As Gridview) As Boolean
   Dim AskUrl As String

@@ -5271,48 +5271,6 @@ End
 
 
 
-Public Sub old_Apply(Optional force_restart As Boolean = False)
-  Dim temp_opts As New Collection
-  Dim new_opts As New Collection
-  Dim data As String
-  Dim fullpath As String = mplayer.getP("fullpath")
-  'fixmempv: questi due sotto servono ancora?
-    VEqHasBeenSet = False
-    subnotset = True
-  
-  'create a new set of options
-  If mplayer.ProcessRunningOvr() Then 
-    temp_opts = static_options()
-    For Each data In temp_opts
-      new_opts[temp_opts.key] = data
-    Next
-
-    temp_opts = file_options(fullpath)
-    For Each data In temp_opts
-      new_opts[temp_opts.key] = data
-    Next
-
-    temp_opts = user_options(fullpath)
-
-    For Each data In temp_opts
-      new_opts[temp_opts.key] = data
-    Next  
-
-    new_opts["volume"] = Initialvolume()
-    
-    'restore the old ytdl option
-    Try new_opts["ytdl"] = mplayer.mpvoptions["ytdl"]
-
-    mplayer.do_Apply(new_opts)
-
-    global.ResetApplyBtnColor()
-
-  Endif
-    
-End
-
-
-
 Public Sub SubTitlesMenu_Click()
   
   If (Not global.initearlyformsdone) Then InitEarlyForms()
@@ -7354,93 +7312,6 @@ Public Sub Gridviews_Data(MyGrid As GridView, MyLibrary As Playlistclass, Row As
   
 End
 
-Public Sub OLD_Gridviews_Data(MyGrid As GridView, MyLibrary As Playlistclass, Row As Integer, Column As Integer)
-
-  Dim fullpath As String
-  Dim artist, album As String
-  Dim rowheight As Integer
-  
-  Dim bigfactor As Integer = 1
-  Dim filefound As Boolean = True
-  Dim rowpadding As Integer = global.rowpadding
-  Dim prevscrollX As Integer
-  
-  If Not fmain.FullyLoaded Then Return
-  If Not fmain.visible Then Return
-  
-  If mygrid.name <> "DVBTGrid" Then
-    rowheight = CInt(generaloptions.IconWidthCombobox.text) '+ rowpadding 
-  Else
-    rowheight = dvbtgrid.Font.TextHeight("|")
-    rowheight *= 1.2
-    mygrid.Columns[0].Width = dvbtgrid.Font.TextWidth("0") * 120
-  Endif
-  
-  'If mygrid.Rows.H <> (rowheight + rowpadding) Then mygrid.Rows.H = rowheight + rowpadding
-  If (row = hirow) Then 
-    If row <> 0 Then bigfactor = BigFactorTable(generaloptions.IconWidthCombobox.text)
-    'rowpadding rowpa
-  Else If (mygrid.Rows[row].h <> rowheight) Then 
-    bigfactor = 1
-  Endif
-  
-  'mygrid.Rows[row].h = (rowheight * bigfactor) + rowpadding '* bigfactor
-  'If mygrid.Rows.h <> ((rowheight * bigfactor) + rowpadding) Then mygrid.Rows.h = ((rowheight * bigfactor) + rowpadding)
-  'If mygrid.Rows.h <> ((rowheight) + rowpadding) Then mygrid.Rows.h = ((rowheight * bigfactor) + rowpadding)
-  If mygrid.Rows.h <> ((rowheight) + rowpadding) Then mygrid.Rows.h = ((rowheight) + rowpadding)
-  If mygrid.Rows[row].h <> ((rowheight * bigfactor) + rowpadding) Then
-    mygrid.Rows[row].h = ((rowheight * bigfactor) + rowpadding)
-    prevscrollx = mygrid.Scrollx
-    mygrid[row, column].EnsureVisible
-    mygrid.scrollx = prevscrollx
-  Endif
-  
-  'draw an icon (or a cover) on the first column
-  If column = 0 Then
-    Try fullpath = Mylibrary.CellValue(MyGrid, Row, Myplaylist.Columnindex["Full Path"])
-    
-    If mygrid.name <> "DVBTGrid" Then
-      artist = mylibrary.CellValue(mygrid, row, mylibrary.ColumnIndex["Artist"])
-      album = mylibrary.CellValue(mygrid, row, mylibrary.ColumnIndex["Album"])
-      
-      If Not myplaylist.ISURI(fullpath) Then
-        If covermanager.filesnotfound.Find(fullpath) <> -1 Then
-          mygrid.Data.picture = picture["icon:/" & CStr((rowheight - rowpadding + covermanager.shadowoffset) * bigfactor) & "/error"]
-          filefound = False
-        Endif
-      Endif
-      '---
-      If filefound Or (Lower(fullpath) Like "*dvb*://*") Then
-        If GeneralOptions.ShowCoversInListChk.value Then  'the user want covers
-          If Not Exist(covermanager.Coverfile(artist, album, fullpath), True) Then 'se il coverfile non esiste
-            If covermanager.IsUncovered(fullpath) Then '...e non puòessere creato
-              MyGrid.Data.Picture = covermanager.coverpicture(covermanager.Coverfile(artist, album, fullpath), fullpath, (rowheight - rowpadding) * bigfactor) 'ritorna la coverdi Default
-            Else 'il coverfile non esiste, ma potrebbe essere creato
-              covermanager.QueueThumb(MyGrid, fullpath, artist, album, row, (rowheight - rowpadding) * bigfactor) 'prova a crearlo
-            Endif
-          Else 'il coverfile c'è
-            Try MyGrid.Data.Picture = covermanager.coverpicture(covermanager.Coverfile(artist, album, fullpath), fullpath, (rowheight - rowpadding) * bigfactor)
-          Endif
-        Else 'the user don't want any cover
-          MyGrid.Data.Picture = covermanager.DefaultLibraryIcon(fullpath, (rowheight - rowpadding) * bigfactor)
-        Endif 'user wanted covers
-      Endif 'filefound was true
-      
-    Else 'for dvbt
-      MyGrid.Data.Picture = covermanager.DefaultLibraryIcon(fullpath, (rowheight - rowpadding) * bigfactor)
-    Endif
-    
-  Endif 'column was 0
-  
-  If (row Mod 2) = 0 Then
-    Try MyGrid.data.background = MyGrid.Background
-  Else
-    Try MyGrid.data.background = Global.Alternatecolor
-  Endif
-  If row = hirow Then mygrid.Data.Font.bold = True
-  Try MyGrid.data.text = MyLibrary.CellValue(MyGrid, row, column)
-
-End
 
 Public Sub LibraryGrid_Data(Row As Integer, Column As Integer)
   Gridviews_Data(LibraryGrid, mylibrary, Row, Column)
@@ -9605,11 +9476,6 @@ Public Sub FileView1_Icon(Path As String)
     Endif
   Endif
   
-End
-
-Public Sub OLD_FileView1_Icon(Path As String)
-  Dim iconsize As Integer = FileView1.Font.TextHeight("|èJj")
- 
 End
 
 

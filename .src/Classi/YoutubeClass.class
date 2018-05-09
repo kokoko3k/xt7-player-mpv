@@ -292,43 +292,6 @@ Public Function ytdl_format_opt(max_height As String) As String
  Return "'bestvideo[height<=" & max_height & "]+bestaudio'"
 End
 
-
-Public Function realvideourl(sourceurl As String, max_height As String) As String
-
-  Dim ytdlprocess As Process
-  Dim Url As String
-  Dim cmd As String
-
-  If Not YoutubeDlInstalled() Then 
-    global.mydebug("Youtube-dl missing!")
-    Return
-  Endif
-  
-  Cookiesfile = Temp(Rnd(0, 1000) & "ytcookie")
-  global.myDebug("cookiesfile: " & cookiesfile)
-
-  cmd = "youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile 
-  cmd &= " --format=" & ytdl_format_opt(max_height)  
-  cmd &= " >" & ytdlout
-  global.myDebug(cmd)
-  ytdlprocess = Shell cmd
-  Repeat
-    Wait 0.02
-  Until ytdlprocess.State <> Process.Running
-
-  Try url = File.Load(ytdlout)
-
-  If Not Error Then 
-    Try Kill ytdlout
-      Else
-    Return
-  Endif
-  
-  Return Replace(url, "\n", "")
-  
-End
-  
-
 Public urlexists As Integer = -1
 
 

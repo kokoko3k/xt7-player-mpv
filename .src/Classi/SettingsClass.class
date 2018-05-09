@@ -21,26 +21,6 @@ Public Function ReadedConfFile(FileName As String) As String[]
 End
 
 
-Public Function OLD_ReadedConfFile(FileName As String) As String[]
-  
-  Dim ConfFile As File
-  Dim FileInMemory As String
-  Dim Splitted As New String[]
-  
-  If Exist(FileName, True) Then
-    ConfFile = Open FileName For Read
-    Read #ConfFile, FileInMemory, - Stat(FileName).size
-    Close #ConfFile
-    Splitted = Split(FileInMemory, "\n")
-    Return Splitted
-  Else
-    splitted.Add("")
-    Return splitted
-  Endif
-End
-
-
-
 
 
 Private Sub Reparent(TheObject As Object, TheParentName As String, TheForm As Object)
@@ -315,56 +295,6 @@ Public Sub Load(TheForm As Object, Filename As String)
   If Lower(TheForm.name) = "fmain" Then LoadLeftSideTabsVisibility(FileName)
 End
 
-
-Public Sub OLD_Load(TheForm As Object, Filename As String)
-  
-  Dim myobj As Object
-  Dim theSettings, SubSettings As String[]
-  
-  'Filename is the form setting file
-  '/home/user/.config/gambas/Xt7-Player/default.profile/FMain
-  FileName = Filename & ".profile/" & TheForm.name
-  
-  'Load it into an array, line by line, eg:
-  ' MainToolBar
-  ' .visible = T
-  ' ShowVolBtn2
-  ' .parent.name = MainToolBar
-  ' .text =
-  ' .visible = T
-  ' .Value =
-  theSettings = ReadedConfFile(Filename)
-  
-  For Each myobj In TheForm.controls
-    'If myobj.name = "CheckBox2gl" Then Stop
-     ' If Lower(myobj.name) Like "*fontstring2*" Then
-     '   Stop
-     ' Endif
-    'If we find the object definition in the settings file:
-    If theSettings.Find(myobj.name) <> -1 Then
-      'then we load it's properties:
-      'extract name and properties from Settings array and pass them to reconfigure sub
-      ' If myobj.name Like "*extrastereo*" Then
-      '   global.myDebug("")
-      ' Endif
-      Subsettings = NameAndProperties(myobj.name, thesettings)
-      Try Reconfigure(myobj, Subsettings, TheForm)
-    Endif 
-  Next
-  
-  'check if there is something that needs to be reparented
-  If TheForm.tag = "reparents" Then
-    global.myDebug("Timer = " & Timer)
-    ReparentAndSort(Theform, thesettings)
-    global.myDebug("Timer = " & Timer)
-  Endif
-  
-  If Upper(theform.name) <> "GENERALOPTIONS" Then
-    global.myDebug(theform.name)
-    Try TheForm.AlreadyLoaded = True
-  Endif
-  If Lower(TheForm.name) = "fmain" Then LoadLeftSideTabsVisibility(FileName)
-End
 
 Public Sub ReparentAndSort(TheForm As Object, settings As String[])
   Dim i, j As Integer

@@ -1854,42 +1854,6 @@ Public Function options_info() As Collection
 End
 
 
-
-Public Function old_get_property_mpv(name As String, Optional wait_answer As Boolean = True, Optional timeoutcentisecs As Integer = 100, try_cached As Boolean = False) As String
-  Dim dataout As String
-  Dim cachedP As Variant
-  If try_cached Then
-    Try cachedP = getP(name)
-     If cachedP <> Null Then Return cachedP
-  Endif
-
-  dataout = "print-text "
-  dataout &= "ANS_" & name & "|"
-  dataout &= "${"
-  dataout &= name
-  dataout &= ":"
-  dataout &= unavailable_str
-  dataout &= "}"
-  'clear previous answer
-   If wait_answer Then setP(name, Null)
-  'say mpv to answer 
-  send(dataout)
-  'Debug "asking ", dataout
-  If wait_answer Then
-    While (timeoutcentisecs >= 0) And ProcessRunningOvr()
-      Wait 0.1
-      'global.myDebug("got answer?")
-      If getP(name) <> Null Then Return getP(name)
-      timeoutcentisecs -= 10
-      global.myDebug("query has missing answer for property " & name & ", reasking...")
-      send(dataout)
-      ' global.myDebug( "asking ", dataout)
-    Wend
-    'global.myDebug( name & " --> " & getP(name))
-    Return getP(name)
-  Endif
-End
-
 Public Function get_property_mpv(name As String, Optional wait_answer As Boolean = True, Optional timeout_sec As Integer = 10, try_cached As Boolean = False) As String
   Dim cachedP As Variant
   Dim answer As String
@@ -1903,19 +1867,6 @@ Public Function get_property_mpv(name As String, Optional wait_answer As Boolean
   Try Return getP(name)
 End
 
-Private Function OLD_ask_for(name As String, not_retrived As String, clear_first As Boolean)
-  Dim dataout As String
-  dataout = "print-text "
-  dataout &= "ANS_" & name & "|"
-  dataout &= "${"
-  dataout &= name
-  dataout &= ":" & not_retrived
-  dataout &= "}"
-  'clear previous answer
-  If clear_first Then setP(name, Null)
-  'say mpv to answer 
-  send(dataout)
-End
 
 Private Function ask_for(name As String, not_retrived As String)
   Dim dataout As String
@@ -1927,87 +1878,6 @@ Private Function ask_for(name As String, not_retrived As String)
   dataout &= "}"
   send(dataout)
 End
-
-
-' Public Function old_get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeoutcs As Integer = 500)
-'   Dim name, dataout, p As String
-'   Dim got As Boolean
-'   For Each name In names
-'     dataout = "print-text "
-'     dataout &= "ANS_" & name & "|"
-'     dataout &= "${"
-'     dataout &= name
-'     dataout &= ":(unavailable)}"
-'     'clear previous answer
-'     If wait_answer Then setP(name, Null)
-'     'say mpv to answer 
-'     send(dataout)
-'   Next 'name
-'   
-'   If Not wait_answer Then Return
-'   'wait for all of the answers
-'   Repeat
-'     If (Not got) Then
-'       Wait 0.01
-'       timeoutcs -= 0.01
-'     Endif
-'     got = True
-'     For Each name In names
-'       p = getP(name) 
-'       If wait_unavailable Then 
-'         If (p <> Null) And (p <> "(unavailable)") Then names.Remove(names.Find(name))
-'           Else
-'         If (p <> Null) Then names.Remove(names.Find(name))
-'       Endif
-'       got = (got And (p <> Null))
-'       If Not got Then 
-'         global.myDebug("waiting", name)
-'       Endif
-'     Next
-'   Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
-' End
-
-Public Function OLD_old_get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeoutcs As Integer = 500)
-  Dim name, dataout, p As String
-  Dim unanswered As String = Chr(8) & "unanswered" & Chr(8) 'indica che mpv non ha risposto
-  Dim got As Boolean
-  For Each name In names
-    dataout = "print-text "
-    dataout &= "ANS_" & name & "|"
-    dataout &= "${"
-    dataout &= name
-    dataout &= ":(unavailable)}"
-    'clear previous answer
-    If wait_answer Then setP(name, Null)
-    'say mpv to answer 
-    send(dataout)
-  Next 'name
-  
-  If Not wait_answer Then Return
-  'wait for all of the answers
-  'setP(name, unanswered)
-  Repeat
-    If (Not got) Then
-      Wait 0.01
-      timeoutcs -= 0.01
-    Endif
-    got = True
-    For Each name In names
-'Stop
-      p = getP(name, unanswered) 
-      If wait_unavailable Then 
-        If (p <> unanswered) And (p <> "(unavailable)") Then names.Remove(names.Find(name))
-          Else
-        If (p <> unanswered) Then names.Remove(names.Find(name))
-      Endif
-      got = (got And (p <> unanswered))
-      If Not got Then 
-        global.myDebug("waiting", name)
-      Endif
-    Next
-  Until got Or (Not ProcessRunningOvr()) Or (timeoutcs <= 0)
-End
-
 
 Public Const unavailable_str As String = "(unavailable)"
 
@@ -2061,70 +1931,9 @@ End
 
 
 
-
-Public Function old_get_properties_mpv(names As String[], Optional wait_answer As Boolean = True, Optional wait_unavailable As Boolean = False, Optional timeout_sec As Integer = 5)
-  Dim name, dataout, p As String
-  Dim unanswered As String = Chr(8) & "unanswered" & Chr(8) 'indica che mpv non ha risposto
-  Dim got As Boolean
-  Dim time_zero As Float = Timer()
-  Dim time_waited As Float
-  Dim hammer_time As Float = 0.01
-  Dim hammer_time_max As Float = 0.5
-  For Each name In names
-    ask_for(name, unavailable_str, wait_answer)
-  Next 'name
-  If get_option("vd-lavc-skiploopfilter") = "all" Then
-    'Stop
-  Endif
-  If Not wait_answer Then Return
-  'wait for all of the answers
-  'setP(name, unanswered)
-  Repeat
-    If (Not got) Then
-      Wait hammer_time
-    Endif
-    got = True
-    For Each name In names
-'Stop
-      p = getP(name, unanswered) 
-      If wait_unavailable Then 
-        If (p <> unanswered) And (p <> unavailable_str) Then names.Remove(names.Find(name))
-          Else
-        If (p <> unanswered) Then names.Remove(names.Find(name))
-      Endif
-      got = (got And (p <> unanswered))
-      If Not got Then 
-        global.myDebug("waiting for", name, "reasking...")
-        'hammer_time += 0.01
-        hammer_time *= 2
-        If (hammer_time >= hammer_time_max) Then hammer_time = hammer_time_max
-        global.myDebug(CStr(timeout_sec - time_waited) & " to timeout.", "hammering every " & CStr(hammer_time) & " seconds.")
-        global.myDebug("Answer (p) is:", p)
-        ask_for(name, unavailable_str, wait_answer)
-      Endif
-    Next
-    time_waited = (Timer() - time_zero)
-    
-  Until got Or (Not ProcessRunningOvr()) Or (time_waited > timeout_sec)
-End
-
 Public Function paused(Optional cached As Boolean = False) As Boolean
   Return get_property_mpv("pause",,, cached) = "yes"
 End
-
-' Private Sub mpv_command(command As String[])
-'   Dim snip, sbuf As String
-' 
-'   sbuf = "{ \"command\": ["
-'     For Each snip In command
-'       sbuf &= "\"" & snip & "\", "
-'     Next
-'     sbuf = Left(sbuf, -2)
-'   sbuf &= "] }" & "\n" '<-serve l'accapo finale? il send già lo manda
-' 
-'   global.myDebug( sbuf)
-'   send(sbuf)
-' End
 
 Public Sub mpv_command(command As String[])
   Dim snip, sbuf As String
