@@ -288,11 +288,16 @@ Public Function GetTitle(sourceurl As String) As String
     Return Trim(title)
 End
 
+Public Function ytdl_format_opt(max_height As String) As String
+ Return "'bestvideo[height<=" & max_height & "]+bestaudio'"
+End
+
 
 Public Function realvideourl(sourceurl As String, max_height As String) As String
 
   Dim ytdlprocess As Process
   Dim Url As String
+  Dim cmd As String
 
   If Not YoutubeDlInstalled() Then 
     global.mydebug("Youtube-dl missing!")
@@ -302,14 +307,16 @@ Public Function realvideourl(sourceurl As String, max_height As String) As Strin
   Cookiesfile = Temp(Rnd(0, 1000) & "ytcookie")
   global.myDebug("cookiesfile: " & cookiesfile)
 
-
-  global.myDebug("youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & max_height & "]/best'" & " >" & ytdlout)
-  ytdlprocess = Shell "youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile & " --format='[height<=" & max_height & "]/best'" & " >" & ytdlout
+  cmd = "youtube-dl '" & sourceurl & "' --get-url --cookies " & Cookiesfile 
+  cmd &= " --format=" & ytdl_format_opt(max_height)  
+  cmd &= " >" & ytdlout
+  global.myDebug(cmd)
+  ytdlprocess = Shell cmd
   Repeat
     Wait 0.02
   Until ytdlprocess.State <> Process.Running
 
-   url = File.Load(ytdlout)
+  Try url = File.Load(ytdlout)
 
   If Not Error Then 
     Try Kill ytdlout
