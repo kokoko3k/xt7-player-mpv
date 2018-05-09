@@ -239,8 +239,6 @@ Public Function getvideoid(url As String) As String
   Return videoid
 End
 
-Public Cookiesfile As String = ""
-
 Public Function YoutubeDlInstalled() As Boolean
   Dim ytdlinstalled As String = ""
   If Not GeneralOptions.InitDone Then GeneralOptions.Init()
