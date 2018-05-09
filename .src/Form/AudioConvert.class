@@ -30,7 +30,7 @@ Public Sub ConvertandSaveAudio()
   Dim tmpout As String
   Dim outstr As String
   Dim audiotempfolder As String = global.confpath & "/audiotemp/"
-  Dim kbps As String
+  Dim kbps As String  
   Dim finalfile As String
   Dim yttitle As String
   Dim MySettings As New SettingsClass
@@ -90,11 +90,11 @@ Public Sub ConvertandSaveAudio()
       Try yttitle = Youtube.GetTitle(currentstream)
       TextArea1.text &= ("Title") & ":\n" & yttitle & "\n"
 
-      Try currentstream = Youtube.realvideourl(currentstream, Left(GeneralOptions.Youtubeformat.text, -1))
-      If Error Then
-        Message.error(("Unable to get the real stream url"))
-        Goto nextlabel 'skip item
-      Endif
+      'Try currentstream = Youtube.realvideourl(currentstream, Left(GeneralOptions.Youtubeformat.text, -1))
+      'If Error Then
+      '  Message.error(("Unable to get the real stream url"))
+      '  Goto nextlabel 'skip item
+      'Endif
     Endif
     
       If yttitle = "" Then 
@@ -106,10 +106,11 @@ Public Sub ConvertandSaveAudio()
 
     kbps = combobox2.text
     mymplayer.clear_options()
+    mymplayer.set_option("ytdl-format", "bestaudio")
     mymplayer.set_option("oacopts=ab", kbps)
     mymplayer.set_option("o", Shell(finalfile))
     mymplayer.set_option("no-video", Chr(8))
-    mymplayer.set_option("ytdl", "no")
+    'mymplayer.set_option("ytdl", "no")
     Select combobox1.text
       Case Like "*mp3*"
         mymplayer.set_option("of", "mp3")

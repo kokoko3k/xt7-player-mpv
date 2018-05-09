@@ -10135,32 +10135,8 @@ Public Sub youtubetreeDownload_Click()
   Shell cmd
   return_file_error:
   Debug "file_error"
-
 End
 
-
-Public Sub old_youtubetreeDownload_Click()
-  
-  Dim CurrentUrl, CurrentText As String
-  Dim RealYTVideoUrl As String
-
-  fmain.mouse = mouse.wait
-  Try CurrentUrl = youtubetree.Current.Key
-  If Error Then
-    Message.Error(("Error: Cannot get current item"))
-    Return
-  Endif
-
-  CurrentText = Replace(youtubetree.Current.text, "\n", " ")
-   RealYTVideoUrl = Youtube.realvideourl(CurrentUrl, Left(GeneralOptions.Youtubeformat.Text, -1))
-  If Error Then
-    Message.error(("Unable to get the real stream url"))
-    Return
-  Endif
-  fmain.mouse = mouse.default
-  StreamDownload(RealYTVideoUrl, CurrentText & ".mp4")
-  
-End
 
 Public StreamDownloadDir As String = ""
 
