@@ -89,7 +89,6 @@ Private Sub Reconfigure(theObject As Object, TheSettings As String[], TheForm As
         
       Else If MyProperty = ".visible" Then
         If Not theobject Is Form Then
-          Stop
           If (theobject.visible <> MyValue) Then
             If Not (theobject Is Fileview) Then Try TheObject.visible = MyValue
           Endif

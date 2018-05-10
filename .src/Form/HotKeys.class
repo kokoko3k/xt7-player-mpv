@@ -312,16 +312,18 @@ Private Function GlobalGrab() As String
 End
 
 
-
+Public initialized As Boolean = False
 
 Public Sub init()
-  FillGridHeaders()
+  Try FillGridHeaders()
+  If Not Error Then initialized = True
 End
 
 Public Sub FirstLoadIfNeeded()
-    If Not AlreadyLoaded Then 
-     Alreadyloaded = True
-     MenuLoadDefault_Click()
+Stop
+  If Not initialized Then init()
+  If Not AlreadyLoaded Then 
+      MenuLoadDefault_Click()
   Endif
 End
 
@@ -528,6 +530,7 @@ Public Sub LoadHotKeys(ProfileName As String)
   Dim local_data As String
   Dim sRow, t As String
   Dim aRow As String[]
+  Dim need_defaults As Boolean = True
  
   Dim c, r, w1, w2 As Integer
 
@@ -553,6 +556,7 @@ Public Sub LoadHotKeys(ProfileName As String)
 
   'Local Hotkeys, try to load new format, first.
   If Exist(filename_v2, True) Then
+    need_defaults = False
     For Each sRow In Split(File.Load(filename_v2), "\n", "", True, False)
       Try aRow = Split(sRow, ",", "", False)
       If aRow.count > 2 Then 
@@ -568,6 +572,7 @@ Public Sub LoadHotKeys(ProfileName As String)
     Next
       Else
     If Exist(filename, True) Then 
+      need_defaults = False
       If Stat(filename, True).size > 0 Then
           HotFile = Open filename For Read
           For c = 1 To HotKeysGrid.Columns.Count - 1
@@ -587,6 +592,8 @@ Public Sub LoadHotKeys(ProfileName As String)
     Endif
   Endif
   
+  
+  If need_defaults Then DefaultFill()
   
   'Global Hotkeys grid:
    If Exist(filename, True) Then 
@@ -681,7 +688,7 @@ End
 
 Public Sub MenuLoadDefault_Click()
   Try HotKeys.LoadHotKeys(global.confpath & "/" & Global.CurrentProfile)
-  Alreadyloaded = True
+  If Not Error Then Alreadyloaded = True
 End
 
 Public Sub Button1_Click()
