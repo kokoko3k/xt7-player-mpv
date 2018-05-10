@@ -286,8 +286,16 @@ Public Function GetTitle(sourceurl As String) As String
     Return Trim(title)
 End
 
-Public Function ytdl_format_opt(max_height As String) As String
- Return "'bestvideo[height<=" & max_height & "]+bestaudio'"
+Public Function ytdl_format_opt(max_height As String, Optional request_avc1 As Boolean = True) As String
+  Dim out As String = ""
+  out &= "'" 
+  out &= "bestvideo[height<=" & max_height & "]"
+  If request_avc1 Then
+    out &= "[vcodec^=avc1]"
+  Endif
+  out &= "+bestaudio"  
+  out &= "'" 
+  Return out
 End
 
 Public urlexists As Integer = -1

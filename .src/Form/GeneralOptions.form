@@ -40,7 +40,7 @@
       }
     }
     { Tabstrip1 TabStrip
-      MoveScaled(27,0,64,67)
+      MoveScaled(27,1,65,67)
       Tag = "User options"
       Expand = True
       Arrangement = Arrange.Vertical
@@ -1143,7 +1143,7 @@
       Index = 7
       Text = ("Network")
       { ScrollView4 ScrollView
-        MoveScaled(4,-2,58,60)
+        MoveScaled(4,1,58,60)
         Tag = "network"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -1163,52 +1163,84 @@
           }
         }
         { NOPARSESEP7 Separator
-          MoveScaled(2,18,45,2)
+          MoveScaled(2,9,45,2)
         }
         { NoParse52 HBox
-          MoveScaled(1,21,50,4.5714)
+          MoveScaled(1,11,53,5)
           ToolTip = ("Temporary recording folder")
           Spacing = True
+          Indent = True
           { UseMyApiKeyCheckbox CheckBox
             MoveScaled(0,0,26,4.5714)
             ToolTip = ("Since Youtube API v3, searching youtube contents requires an API KEY \nthat google limits to a number of requests per day.\n\nxt7 provides a shared API KEY, used by everybody, but you may\nspecify your own here.")
             Expand = True
+            AutoResize = True
             Text = ("Use this Youtube API KEY (need restart)")
           }
           { API_KEY_USER_textbox TextBox
-            MoveScaled(29,0,19,3)
+            MoveScaled(27,1,19,3)
             ToolTip = ("Select your femon executable.\nJust write 'femon' for default.")
             Expand = True
           }
-        }
-        { NoParse33 HBox
-          MoveScaled(1,26,50,4.5714)
-          ToolTip = ("When playing youtube videos, \nprefer this format if available.")
-          AutoResize = True
-          Spacing = True
-          { Label10 Label labelcheck
-            Name = "Label10"
-            MoveScaled(1,1,22,3)
-            AutoResize = True
-            Text = ("Preferred youtube resolution")
-          }
-          { Youtubeformat ComboBox
-            MoveScaled(24,0,13,4.5714)
-            #Translate = False
-            ReadOnly = True
-            List = ["360p", "480p", "720p", "1080p", "1440p", "2160p"]
-            Text = "720p"
-          }
-          { PictureBox1 PictureBox
-            MoveScaled(44,0,5,4.5714)
-            Expand = True
+          { PictureBox2 PictureBox
+            MoveScaled(47,1,5,4.5714)
             Picture = Picture["youtubeicon.png"]
             AutoResize = True
             Alignment = Align.Right
           }
         }
+        { NoParse2 HBox
+          MoveScaled(1,17,53,5)
+          ToolTip = ("Temporary recording folder")
+          Spacing = True
+          Indent = True
+          { RequestAVC1Checkbox CheckBox
+            MoveScaled(0,0,44,5)
+            ToolTip = ("AVC1 codec  may be preferred due to performance reasons, because decoding\nit may be hardware accelerated, where VP9 is not.\nAs of today (2018-05), AVC1 is not available on 4K videos (2160p).\n")
+            Expand = True
+            AutoResize = True
+            Text = ("Request AVC1 video codec")
+            Value = CheckBox.True
+          }
+          { PictureBox4 PictureBox
+            MoveScaled(47,1,5,4.5714)
+            Picture = Picture["youtubeicon.png"]
+            AutoResize = True
+            Alignment = Align.Right
+          }
+        }
+        { NoParse15 HBox
+          MoveScaled(2,24,53,5)
+          ToolTip = ("Temporary recording folder")
+          Spacing = True
+          Indent = True
+          { Label10 Label labelcheck
+            Name = "Label10"
+            MoveScaled(0,0,22,3)
+            Expand = True
+            AutoResize = True
+            Text = ("Maximum youtube video height")
+          }
+          { Youtubeformat ComboBox
+            MoveScaled(24,0,13,4.5714)
+            #Translate = False
+            Expand = True
+            ReadOnly = True
+            List = ["360p", "480p", "720p", "1080p", "1440p", "2160p"]
+            Text = "720p"
+          }
+          { PictureBox5 PictureBox
+            MoveScaled(47,1,5,4.5714)
+            Picture = Picture["youtubeicon.png"]
+            AutoResize = True
+            Alignment = Align.Right
+          }
+        }
+        { NOPARSESEP6 Separator
+          MoveScaled(4,31,45,2)
+        }
         { NoParse35 HBox
-          MoveScaled(2,39,50,4.5714)
+          MoveScaled(2,33,50,4.5714)
           ToolTip = ("Choose how to download network streams\nsuch as youtube video and podcasts.\nkde4 - choose kioclient ; \nkde3 - choose kfmclient ; \nIf you wish to write your own downloader, \nremember that\n%url is the stream to download\n%destdir is the destination directory\n%destfile is the destination file (without the path)\n\nNote then kioclient and kfmclient do not work with youtubeì streams.")
           AutoResize = True
           Spacing = True
