@@ -94,7 +94,7 @@
         }
         { NoParseBox123 Panel
           MoveScaled(2,16,47,4.5714)
-          ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"*-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
+          ToolTip = ("Hardware decoding may not work with all video output drivers (usually works with \"gpu\" video output driver).\nHardware decoding fails to use any video filtering.\nTo use video filtering and any output driver you can still use the ...-copy variants.\n\nauto: tries to automatically enable hardware decoding using the first available method.\nauto-copy: does the same preverring the ...-copy variant.\n")
           Arrangement = Arrange.Horizontal
           Spacing = True
           Indent = True
@@ -108,7 +108,7 @@
             ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
             Expand = True
             ReadOnly = True
-            List = [("no (allows all video filters and drivers)"), ("auto (selects the best hw decoder)"), ("vdpau (no filters and limited video output driver support)"), ("vaapi (no filters and limited video output driver support)"), ("cuda  (no filters and limited video output driver support)"), ("vdpau-copy"), ("vaapi-copy"), ("cuda-copy")]
+            List = [("no"), ("auto (no filters and limited video output driver support)"), ("auto-copy"), ("vdpau (no filters and limited video output driver support)"), ("vdpau-copy"), ("vaapi (no filters and limited video output driver support)"), ("vaapi-copy"), ("cuda  (no filters and limited video output driver support)"), ("cuda-copy"), ("nvdec (no filters and limited video output driver support)"), ("nvdec-copy")]
             Text = ("no (allows all video filters and drivers)")
           }
         }
