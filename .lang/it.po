@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xt7-player-mpv 3.10.0\n"
-"PO-Revision-Date: 2018-05-14 12:23 UTC\n"
+"PO-Revision-Date: 2018-05-14 12:28 UTC\n"
 "Last-Translator: kokoko3k <kokoko3k@gmail.com>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -2475,7 +2475,7 @@ msgstr "auto (filtri non supportati e supporto limitato ai driver di uscita)"
 
 #: GeneralOptions.form:613
 msgid "auto-copy"
-msgstr ""
+msgstr "-"
 
 #: GeneralOptions.form:613
 msgid "cuda  (no filters and limited video output driver support)"
@@ -2487,11 +2487,11 @@ msgstr "-"
 
 #: GeneralOptions.form:613
 msgid "nvdec (no filters and limited video output driver support)"
-msgstr ""
+msgstr "nvdec (filtri non supportati e supporto limitato ai driver di uscita)"
 
 #: GeneralOptions.form:613
 msgid "nvdec-copy"
-msgstr ""
+msgstr "-"
 
 #: GeneralOptions.form:613
 msgid "vaapi (no filters and limited video output driver support)"
@@ -2499,7 +2499,7 @@ msgstr "vaapi (filtri non supportati e supporto limitato ai driver di uscita)"
 
 #: GeneralOptions.form:613
 msgid "vaapi-copy"
-msgstr ""
+msgstr "-"
 
 #: GeneralOptions.form:613
 msgid "vdpau (no filters and limited video output driver support)"
@@ -2875,7 +2875,7 @@ msgstr "Richiedi il codec video AVC1"
 
 #: GeneralOptions.form:1904
 msgid "Maximum youtube video height"
-msgstr ""
+msgstr "Altezza massima dei video youtube"
 
 #: GeneralOptions.form:1929
 msgid "Choose how to download network streams\nsuch as youtube video and podcasts.\nkde4 - choose kioclient ; \nkde3 - choose kfmclient ; \nIf you wish to write your own downloader, \nremember that\n%url is the stream to download\n%destdir is the destination directory\n%destfile is the destination file (without the path)\n\nNote then kioclient and kfmclient do not work with youtubeì streams."
@@ -3339,7 +3339,7 @@ msgstr "-"
 
 #: GeneralOptions.form:2266
 msgid "Preferred video languages:"
-msgstr ""
+msgstr "Lingue del video preferite:"
 
 #: GeneralOptions.form:2304
 msgid "Misc"
@@ -4219,7 +4219,7 @@ msgstr "Applica la scalatura di alta qualità VDPAU (serve hardware capace)"
 
 #: NewChains.class:726
 msgid "This filter only works with vdpau and gpu(opengl?) video outputs"
-msgstr ""
+msgstr "Questo filtro funziona solo con vdpau e driver video di uscita gpu(opengl?)"
 
 #: NewChains.class:730
 msgid "- VAAPI video postprocessing - "
@@ -4231,7 +4231,7 @@ msgstr "Seleziona l'algoritmo di deinterlacciamento"
 
 #: NewChains.class:733
 msgid "This filter only works with vaapi and gpu(opengl?) video outputs"
-msgstr ""
+msgstr "Questo filtro funziona solo con vaapi e driver video di uscita gpu(opengl?)"
 
 #: NewChains.class:738
 msgid "- Converts betweed stereoscopic image formats - "
@@ -4487,7 +4487,7 @@ msgstr "-"
 
 #: NewChains.form:1326
 msgid "gpu"
-msgstr ""
+msgstr "-"
 
 #: NewChains.form:1367
 msgid "Apply HQ profile"
@@ -4495,11 +4495,11 @@ msgstr "Applica il profilo HQ"
 
 #: NewChains.form:1515
 msgid "Opengl Options"
-msgstr ""
+msgstr "Opzioni Opengl"
 
 #: NewChains.form:1586
 msgid "Vulkan options"
-msgstr ""
+msgstr "Opzioni vulkan"
 
 #: NewChains.form:1591
 msgid "Controls the presentation mode of the vulkan swapchain. This is similar to the --opengl-swapinterval option.\n              auto   Use the preferred swapchain mode for the vulkan context. (Default)\n              fifo   Non-tearing, vsync blocked. Similar to \"VSync on\".\n              fifo-relaxed\n                     Tearing, vsync blocked. Late frames will tear instead of stuttering.\n              mailbox\n                     Non-tearing, not vsync blocked. Similar to \"triple buffering\".\n              immediate\n                     Tearing, not vsync blocked. Similar to \"VSync off\".\n"
