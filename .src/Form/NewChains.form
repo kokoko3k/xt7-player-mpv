@@ -863,7 +863,7 @@
       }
     }
     { ConfigureTabs_video TabStrip
-      MoveScaled(30,2,62,47)
+      MoveScaled(30,2,62,52)
       Expand = True
       Arrangement = Arrange.Vertical
       Margin = True
@@ -900,37 +900,37 @@
         }
       }
       Index = 1
-      Text = ("opengl")
+      Text = ("gpu")
       { GLScrollView ScrollView
-        MoveScaled(2,3,58,44)
+        MoveScaled(2,4,58,44)
         Expand = True
         Arrangement = Arrange.Vertical
         Spacing = True
         Padding = 4
         Border = False
-        { openglParseMeHBox6 HBox
-          MoveScaled(1,-1,45,6)
+        { gpulParseMeHBox6 HBox
+          MoveScaled(0,-1,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox3gl5 CheckBox
             MoveScaled(1,1,17,4.5714)
             #Translate = False
-            Tag = "opengl-backend"
-            Text = "backend"
+            Tag = "gpu-api"
+            Text = "gpu api"
             Value = CheckBox.True
           }
-          { ComboBox1gl4 ComboBox
+          { ComboBox1gpu ComboBox
             MoveScaled(19,1,24,4.5714)
             #Translate = False
             Expand = True
-            List = ["auto", "x11", "x11egl", "vdpauglx"]
-            Text = "x11"
+            List = ["auto", "opengl", "vulkan"]
+            Text = "auto"
           }
         }
         { Separator2 Separator
           MoveScaled(0,6,51,1)
         }
-        { openglParseMeHBox2 HBox
+        { NOTParseMeHBox2 HBox
           MoveScaled(0,8,45,6)
           AutoResize = True
           Padding = 8
@@ -939,7 +939,7 @@
             Text = ("Apply HQ profile")
           }
         }
-        { openglParseMeHBox10 HBox
+        { gpuParseMeHBox10 HBox
           MoveScaled(0,14,45,6)
           AutoResize = True
           Padding = 8
@@ -957,7 +957,7 @@
             Text = "bilinear"
           }
         }
-        { openglParseMeHBox5 HBox
+        { gpuopenglParseMeHBox5 HBox
           MoveScaled(0,20,45,6)
           AutoResize = True
           Padding = 8
@@ -975,7 +975,7 @@
             Text = "bilinear"
           }
         }
-        { openglParseMeHBox9 HBox
+        { gpuopenglParseMeHBox9 HBox
           MoveScaled(0,26,45,6)
           AutoResize = True
           Padding = 8
@@ -993,7 +993,7 @@
             Text = "bilinear"
           }
         }
-        { openglParseMeHBox1 HBox
+        { gpuopenglParseMeHBox1 HBox
           MoveScaled(0,32,45,6)
           AutoResize = True
           Padding = 8
@@ -1012,7 +1012,7 @@
             Text = "auto"
           }
         }
-        { openglParseMeHBox7 HBox
+        { gpuopenglParseMeHBox7 HBox
           MoveScaled(0,38,45,6)
           AutoResize = True
           Padding = 8
@@ -1031,7 +1031,7 @@
             Text = "yes"
           }
         }
-        { openglParseMeHBox8 HBox
+        { gpuopenglParseMeHBox8 HBox
           MoveScaled(0,43,45,6)
           AutoResize = True
           Padding = 8
@@ -1050,7 +1050,7 @@
             Text = "yes"
           }
         }
-        { openglParseMeHBox12 HBox
+        { gpuopenglParseMeHBox12 HBox
           MoveScaled(0,48,45,6)
           AutoResize = True
           Padding = 8
@@ -1068,11 +1068,17 @@
             Text = "yes"
           }
         }
-        { Separator1 Separator
-          MoveScaled(1,55,54,1)
+        { NOPARSESeparator1 Separator
+          MoveScaled(0,55,54,1)
         }
-        { openglParseMeHBox13 HBox
-          MoveScaled(0,55,45,6)
+        { Label40 Label
+          MoveScaled(1,56,32,3)
+          Font = Font["Bold"]
+          AutoResize = True
+          Text = ("Opengl Options")
+        }
+        { gpuopenglParseMeHBox13 HBox
+          MoveScaled(1,61,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox6gl3 CheckBox
@@ -1090,8 +1096,8 @@
             Text = "yes"
           }
         }
-        { openglParseMeHBox3 HBox
-          MoveScaled(0,62,45,6)
+        { gpuopenglParseMeHBox3 HBox
+          MoveScaled(1,68,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox6gl CheckBox
@@ -1108,8 +1114,8 @@
             Text = "yes"
           }
         }
-        { openglParseMeHBox11 HBox
-          MoveScaled(0,68,45,6)
+        { gpuopenglParseMeHBox11 HBox
+          MoveScaled(1,74,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox4gl CheckBox
@@ -1128,8 +1134,59 @@
             Text = "yes"
           }
         }
+        { NOPARSESeparator2 Separator
+          MoveScaled(2,82,48,1)
+        }
+        { Label41 Label
+          MoveScaled(1,84,39,3)
+          Font = Font["Bold"]
+          AutoResize = True
+          Text = ("Vulkan options")
+        }
+        { gpuopenglParseMeHBox14 HBox
+          MoveScaled(0,88,45,6)
+          ToolTip = ("Controls the presentation mode of the vulkan swapchain. This is similar to the --opengl-swapinterval option.\n              auto   Use the preferred swapchain mode for the vulkan context. (Default)\n              fifo   Non-tearing, vsync blocked. Similar to \"VSync on\".\n              fifo-relaxed\n                     Tearing, vsync blocked. Late frames will tear instead of stuttering.\n              mailbox\n                     Non-tearing, not vsync blocked. Similar to \"triple buffering\".\n              immediate\n                     Tearing, not vsync blocked. Similar to \"VSync off\".\n")
+          AutoResize = True
+          Padding = 8
+          { CheckBox6vk4 CheckBox
+            MoveScaled(1,0,24,5)
+            #Translate = False
+            Tag = "vulkan-swap-mode"
+            Text = "vulkan-swap-mode"
+          }
+          { ComboBox10 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["auto", "fifo", "fifo-relaxed", "mailbox", "immediate"]
+            Text = "auto"
+          }
+        }
+        { gpuopenglParseMeHBox15 HBox
+          MoveScaled(0,95,45,6)
+          ToolTip = ("Controls which compiler  is  used  to  translate  GLSL  to  SPIR-V.  This  is  (currently)  only  relevant  for\n              --gpu-api=vulkan. The possible choices are:\n              auto   Use the first available compiler. (Default)\n              shaderc\n                     Use  libshaderc, which is an API wrapper around glslang. This is generally the most preferred, if avail‐\n                     able.\n              nvidia Use nvidia's built-in compiler. Only works for nvidia GPUs. Can be buggy, but also  supports  some  fea‐\n                     tures glslang does not. Only works with vulkan.\n")
+          AutoResize = True
+          Padding = 8
+          { CheckBox4vk4 CheckBox
+            MoveScaled(1,0,24,5)
+            #Translate = False
+            Tag = "spirv-compiler"
+            AutoResize = True
+            Text = "spirv-compiler"
+          }
+          { ComboBox11 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["auto", "shaderc", "nvidia"]
+            Text = "auto"
+          }
+        }
+        { NOPARSESeparator3 Separator
+          MoveScaled(1,103,48,1)
+        }
         { openglParseMeHBox4 HBox
-          MoveScaled(-2,70,57,6)
+          MoveScaled(-6,209,57,6)
           Visible = False
           Enabled = False
           AutoResize = True

@@ -106,7 +106,7 @@ End
 Private Sub Init_drivers_video()
   Dim drivers_video_list As New String[]
   Dim driver As String
-  drivers_video_list = ["opengl", "xv", "vdpau", "vaapi", "x11", "null"]
+  drivers_video_list = ["gpu", "xv", "vdpau", "vaapi", "x11", "null"]
   For Each driver In drivers_video_list
     draw_list_item(drivers_video_container, driver)
   Next
@@ -744,14 +744,14 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["ROCHOOSE", "pullup=", "no", "yes", "vdpaupp6", ("Try to apply inverse telecine, needs motion adaptive temporal deinterlacing.")])
   AllParams.Add(["ROCHOOSE", "interlaced-only=", "yes", "no", "vdpaupp7", ("If yes (default), only deinterlace frames marked as interlaced.")])
   AllParams.Add(["ROCHOOSE", "hqscaling=", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "vdpaupp8", ("Apply high quality VDPAU scaling (needs capable hardware).")])
-  AllParams.Add(["TIP", ("This filter only works with vdpau and opengl video outputs"), "vdpaupp9", ""])
+  AllParams.Add(["TIP", ("This filter only works with vdpau and gpu(opengl?) video outputs"), "vdpaupp9", ""])
   Global.DrawGui(AllParams, "vdpaupp", aTabstrip, Switchable,,, "", Me)
   AllParams.Clear
 
   AllParams.Add(["TITLE", ("- VAAPI video postprocessing - "), "vavpp0", ""])
   AllParams.Add(["ROCHOOSE", "deint=", "bob", "first-field", "weave", "motion-adaptive", "motion-compensated", "vvavpp1", ("Select the deinterlacing algorithm.")])
   AllParams.Add(["ROCHOOSE", "interlaced-only=", "yes", "no", "vavpp2", ("If yes (default), only deinterlace frames marked as interlaced.")])
-  AllParams.Add(["TIP", ("This filter only works with vaapi and opengl video outputs"), "vavpp3", ""])
+  AllParams.Add(["TIP", ("This filter only works with vaapi and gpu(opengl?) video outputs"), "vavpp3", ""])
   Global.DrawGui(AllParams, "vavpp", aTabstrip, Switchable,,, "", Me)
   AllParams.Clear
   

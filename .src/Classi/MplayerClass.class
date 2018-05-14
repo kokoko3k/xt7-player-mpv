@@ -447,7 +447,7 @@ Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As
       Endif
         Else If return_opts.Key = "interpolation" Then
           If data = "yes" Then
-            Print "It seems that user requested opengl temporal interpolation; setting --video-sync=display-vdrop" 
+            Print "It seems that user requested gpu temporal interpolation; setting --video-sync=display-vdrop" 
             set_option("video-sync", "display-vdrop",, return_opts)
           Endif
     Endif
