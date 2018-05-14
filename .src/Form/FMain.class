@@ -2619,6 +2619,9 @@ Public Function user_options(fullpath As String) As Collection
   
   opt.data = GeneralOptions.SubLangList.text
   If Trim(opt.data) <> "" Then opts["slang"] = opt.data
+
+  opt.data = GeneralOptions.VideoLangList.text
+  If Trim(opt.data) <> "" Then opts["vlang"] = opt.data
   
   Return opts
 End

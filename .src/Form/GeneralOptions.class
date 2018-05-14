@@ -714,12 +714,20 @@ Public Sub Button2_Click()
   'SlangComboBox.visible = True
   SlangComboBox.Popup
 End
+Public Sub Button3_Click()
+  'Button2.visible = False
+  'SlangComboBox.visible = True
+  VlangComboBox.Popup
+End
 
 Public Sub ToolButton1_Click()
   AudioLangList.clear
 End
 Public Sub ToolButton2_Click()
   SubLangList.clear
+End
+Public Sub ToolButton3_Click()
+  VideoLangList.clear
 End
 
 
@@ -737,6 +745,14 @@ Public Sub SlangComboBox_Click()
   SubLangList.text = SubLangList.text & Trim(Split(SlangComboBox.Text, "(", "", True)[0])
   SLangComboBox.visible = False
   Button2.visible = True
+End
+
+Public Sub VlangComboBox_Click()
+  VideoLangList.text = Trim(VideoLangList.text)
+  If VideoLangList.text <> "" Then VideoLangList.text = VideoLangList.text & ","
+  VideoLangList.text = VideoLangList.text & Trim(Split(VlangComboBox.Text, "(", "", True)[0])
+  VLangComboBox.visible = False
+  Button3.visible = True
 End
 
 

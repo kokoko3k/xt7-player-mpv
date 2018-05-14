@@ -1458,7 +1458,7 @@
         Margin = True
         Padding = 6
         { NoParseLabel03 Label
-          MoveScaled(1,1,25,3)
+          MoveScaled(1,0,25,3)
           Text = ("Preferred Audio languages:")
         }
         { NoParse16 HBox
@@ -1518,6 +1518,39 @@
           }
           { SubLangList TextBox notifyobj
             Name = "SubLangList"
+            MoveScaled(39,0,8,4.5714)
+            Expand = True
+            Text = ("en,eng")
+          }
+        }
+        { NoParseLabel1 Label
+          MoveScaled(1,19,25,3)
+          Text = ("Preferred video languages:")
+        }
+        { NoParse18 HBox
+          MoveScaled(0,23,48,4.5714)
+          ToolTip = ("Add the selected language to the list of preferred languages.\nmpv Option:\n--slang \"language list\"\n\nThis option also allows you to search for online subtitles at Opensubtitles.org")
+          Spacing = True
+          Indent = True
+          { vlangComboBox ComboBox
+            MoveScaled(0,0,24,4.5714)
+            Visible = False
+            Expand = True
+            ReadOnly = True
+            List = [("alb,sq,(Albanian)"), ("ara,ar,(Arabic)"), ("arm,hy,(Armenian)"), ("baq,eu,(Basque)"), ("ben,bn,(Bengali)"), ("bos,bs,(Bosnian)"), ("bre,br,(Breton)"), ("bul,bg,(Bulgarian)"), ("cat,ca,(Catalan)"), ("cze,cs,(Czech)"), ("dan,da,(Danish)"), ("ger,deu,de (german)"), ("ell,el,(Greek)"), ("eng,en (english)"), ("epo,eo,(Esperanto)"), ("spa,esp (spanish)"), ("est,et,(Estonian)"), ("fin,fi (finnish)"), ("fre,fr (french)"), ("geo,ka,(Georgian)"), ("glg,gl,(Galician)"), ("heb,he,(Hebrew)"), ("hin,hi,(Hindi)"), ("hrv,hr,(Croatian)"), ("hun,hu,(Hungarian)"), ("ice,is,(Icelandic)"), ("ind,id,(Indonesian)"), ("ita,it (italian)"), ("jpn,ja (japanese)"), ("kaz,kk,(Kazakh)"), ("kor,ko,(Korean)"), ("lav,lv,(Latvian)")].Insert([("lit,lt,(Lithuanian)"), ("ltz,lb,(Luxembourgish)"), ("mac,mk,(Macedonian)"), ("may,ms,(Malay)"), ("dut,nld,nl (dutch,flemish)"), ("nor,no (norwegian)"), ("oci,oc,(Occitan)"), ("per,fa,(Farsi)"), ("pob,pb,(Portuguese-BR)"), ("pol,pl,(Polish)"), ("por,pt (portuguese)"), ("rus,ru (russian)"), ("rum,ro,(Romanian)"), ("scc,sr,(Serbian)"), ("sin,si,(Sinhalese)"), ("slo,sk,(Slovak)"), ("slv,sl,(Slovenian)"), ("swe,sv (swedish)"), ("syr,sy,(Syriac)"), ("tgl,tl,(Tagalog)"), ("tha,th,(Thai)"), ("tur,tr,(Turkish)"), ("ukr,uk,(Ukrainian)"), ("urd,ur,(Urdu)"), ("vie,vi,(Vietnamese)"), ("chi,zh,zho (chinese)")])
+            Text = ("iso-8859-1")
+          }
+          { Button3 Button
+            MoveScaled(24,0,13,4.5714)
+            Text = ("Add")
+            Picture = Picture["icon:/16/add"]
+          }
+          { ToolButton3 ToolButton
+            MoveScaled(35,0,4,4.5714)
+            Picture = Picture["icon:/16/clear"]
+          }
+          { VideoLangList TextBox notifyobj
+            Name = "VideoLangList"
             MoveScaled(39,0,8,4.5714)
             Expand = True
             Text = ("en,eng")
