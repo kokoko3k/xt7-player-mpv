@@ -1188,33 +1188,6 @@ Public Sub OptionsList_Select()
   ItemSelection()
 End
 
-Public Sub ScrollView1_MouseDown()
-
-  
-
-End
-
-Public Sub NOPARSE_HwdecCombobox_Click()
-  EnableDisable_video_drivers_panels()
-End
-
-
-Public Function Video_driver_overridden() As String
-  If InStr(NOPARSE_HwdecCombobox.text, " + ") <= 0 Then Return ""
-  'else
-  Return Split((Split(NOPARSE_HwdecCombobox.text, "+")[1]), " ", "", True)[0]
-End
-
-
-Public Sub EnableDisable_video_drivers_panels()
-  Dim vo As String
-  'if the user overrides video drivers through hwdec combobox,
-  'reflect that in the gui
-  If Not fmain.fullyloaded Then Return
-  vo = Video_driver_overridden()
-  NewChains.firstloadifneeded()
-  NewChains.override_video_driver(vo)
-End
 
 Private Aligned As Boolean = False
 Private Sub AlignObjects()

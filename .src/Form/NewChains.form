@@ -861,18 +861,6 @@
         Expand = True
         Arrangement = Arrange.Vertical
       }
-      { NOSAVELabel1 TextLabel
-        MoveScaled(3,47,24,7)
-        Visible = False
-        Background = Color.TooltipForeground
-        Foreground = Color.TooltipBackground
-        Mouse = Mouse.Pointing
-        ToolTip = ("Gpu decoding settings forced this video driver,\nso any other driver will be ignored, but you can\nstill configure the options for the overridden driver.\n\nClick to open the gpu decoding settings window.\n")
-        Padding = 6
-        AutoResize = True
-        Alignment = Align.Center
-        Border = Border.Plain
-      }
     }
     { ConfigureTabs_video TabStrip
       MoveScaled(30,2,62,47)

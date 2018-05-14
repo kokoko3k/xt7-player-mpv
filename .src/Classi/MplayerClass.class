@@ -678,7 +678,6 @@ Public Function do_play(filename As String, Optional string_options As String = 
   vf_current = "."
   return_value = 0
   If string_options Like "*-idle *" Then 
-    Stop
     Return 'fixmempv
   Endif
   

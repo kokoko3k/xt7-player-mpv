@@ -1168,23 +1168,12 @@ Public Function parse_drivers(audio As Boolean) As MpvOption[]
   Dim drivers, drivers_list As String
   Dim driver_opts As New MpvOption[]
   Dim item_container As Object
-  Dim video_driver_overridden As String = ""
   Dim return_opts As New MpvOption[]
 
   If audio Then 
     item_container = drivers_audio_container
       Else
     item_container = drivers_video_container
-  Endif
-  
-  If Not audio Then 'search for any override in generaloptions (like hwdec macro)
-    Try video_driver_overridden = GeneralOptions.video_driver_overridden() 
-    If video_driver_overridden <> "" Then
-        drivers_list = video_driver_overridden
-        'drivers &= parse_video_driver(video_driver_overridden, item_container.tag) & ","
-        driver_opts.Insert(parse_audio_driver(video_driver_overridden, item_container.tag))
-        Goto returnlabel
-    Endif
   Endif
   
   For Each item_box In item_container.children
@@ -1366,30 +1355,6 @@ End
 '--End Save and load functions-----------------------------------
 'Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "drivers_audio"] '<
 
-
-
-Public Sub override_video_driver(vo As String)
-  If vo = "" Then 
-    ConfigureTabs_video.tag = vo
-    NewChains.drivers_video_container.enabled = True
-    nosavelabel1.text = ""
-    nosavelabel1.Visible = False
-    Return
-      Else
-    ConfigureTabs_video.tag = vo
-    Select_tabstrip_item(vo, ConfigureTabs_video)
-    NewChains.drivers_video_container.enabled = False
-    nosavelabel1.text = vo & " " & ("is overridden")
-    nosavelabel1.Visible = True
-  Endif
-End
-
-
-
-
-
-
-
 Public Sub show_audio_drivers()
   Me.Show
   tabstrip1.index = tabs.Find("drivers_audio")
@@ -1446,7 +1411,6 @@ End
 Public Sub Form_Show()
   If Not FMain.fullyloaded Then Return
   Form_Open()
-  GeneralOptions.EnableDisable_video_drivers_panels()
 End
 
 
@@ -1492,14 +1456,6 @@ Public Sub HelpBox_hide()
 End
   
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-Public Sub NOSAVELabel1_MouseUp()
-  GeneralOptions.Show
-  GeneralOptions.TabStrip1.index = Global.TabIndexByName(("Video"), GeneralOptions.TabStrip1)
-End
-
-
-
 
 Private Sub AlignObjects()
   Dim containers As New Object[]
@@ -1742,26 +1698,6 @@ Public Sub Button2_Click()
     Next
   Next
   Application.busy = 0
-End
-
-Public Sub ConfigureTabs_video_Click()
-  Dim ovr As String = ""
-  Dim i As Integer 
-  Try ovr = GeneralOptions.video_driver_overridden()
-  If ovr <> "" Then
-    Object.Lock(Last)
-    For i = 0 To Last.count - 1
-      Last.index = i
-      If Lower(Last.caption) = ovr Then 
-        Last.index = i
-        Goto returnlabel
-      Endif
-    Next
-  Endif
-  ReturnLabel:
-  Object.unLock(Last)
-  Return
-  
 End
 
 

@@ -213,6 +213,7 @@ End
 
 Private Sub DefaultFill()
   Dim r, c As Integer
+  Stop
   'clear grid
     For r = 0 To HotKeysGrid.Rows.count - 1
       For c = 1 To HotKeysGrid.Columns.count - 1
@@ -320,7 +321,6 @@ Public Sub init()
 End
 
 Public Sub FirstLoadIfNeeded()
-Stop
   If Not initialized Then init()
   If Not AlreadyLoaded Then 
       MenuLoadDefault_Click()
