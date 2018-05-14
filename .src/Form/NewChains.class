@@ -593,16 +593,7 @@ Private Sub draw_filters_video_cfg()
   Global.DrawGui(AllParams, "unsharp", aTabstrip, NotSwitchable, "",, "lavfi", Me)
   AllParams.Clear
   
-  'pad
-  ' AllParams.Add(["TITLE", ("- Expands (not scales) video resolution -"), "Expand0", ""])
-  ' AllParams.add(["RANGE", ("Width"), "-2048", "0", "2048", "Expand1", ("0 to Disable; Negative as offset to original value")])
-  ' AllParams.add(["RANGE", ("Height"), "-2048", "0", "2048", "Expand2", ("0 to Disable; Negative as offset to original value")])
-  ' AllParams.add(["RANGE", ("X Position"), "-1", "-1", "2048", "Expand3", ("Original image position; -1 to center")])
-  ' AllParams.add(["RANGE", ("Y Position"), "-1", "-1", "2048", "Expand4", ("Original image position; -1 to center")])
-  ' AllParams.add(["CHOOSE", ("Fit an aspect instead of a resolution"), "", "4/3", "3/2", "16/9", "16/10", "1.85/1", "2.35/1", "2.39/1", "Expand6", ""])
-  ' AllParams.add(["RANGE", ("Make Width and Height divisible by"), "1", "1", "64", "Expand7", ""])
-  ' Global.DrawGui(AllParams, "expand", aTabstrip, NotSwitchable,,,, Me)
-  ' AllParams.Clear
+
   AllParams.Add(["TITLE", ("- Add paddings to the input image -"), "pad0", ""])
   AllParams.add(["RANGE", ("width="), "0", "0", "8192", "pad1", ("0 to Disable; Width of the output image with the paddings added.")])
   AllParams.add(["RANGE", ("height="), "0", "0", "8192", "pad2", ("0 to Disable; height of the output image with the paddings added.")])
@@ -622,19 +613,7 @@ Private Sub draw_filters_video_cfg()
   AllParams.Add(["RANGE", ("Temporal chroma strength"), "0", "4", "200", "HqDn3D4", ""])
   Global.DrawGui(AllParams, "hqdn3d", aTabstrip, notswitchable,,, "lavfi", Me)
   AllParams.Clear
-  
-  ' 'scale[=w:h[:ilaced[:chr_drop[:par[:par2[:presize[:noup[:arnd]]]]]]]]
-  ' AllParams.Add(["TITLE", ("- Software scaler -"), "Scale0", ""])
-  ' AllParams.Add(["RANGE", ("width="), "-1", "1280", "4096", "Scale_W", ("0 disables width scaling, -1 calculates width from height")])
-  ' AllParams.Add(["RANGE", ("height="), "-1", "-1", "4096", "Scale_H", ("0 disables height scaling, -1 calculates heigth from width")])
-  ' AllParams.add(["ROCHOOSE", ("interl="), ("0 - Do not apply interlaced scaling"), ("1 - Force interlaced aware scaling"), ("-1 - Automatic"), "scale_I", ("Set the interlacing mode.")])
-  ' AllParams.add(["ROCHOOSE", ("force_original_aspect_ratio="), ("disable"), ("decrease"), ("increase"), "scale_A", ("Enable decreasing or increasing output video width or height if necessary to keep the original aspect ratio.")])
-  ' AllParams.add(["ROCHOOSE", ("Up/Downscaling"), ("0 - Allow both"), ("1 - Allow upscaling only"), ("2 - Allow Downscaling only"), "noparse_scaleUD", ("Choose if you want to allow upscaling and downscaling")])
-  ' Global.DrawGui(AllParams, "scale", aTabstrip, switchable,,, "lavfi", Me)
-  ' Try Object.SetProperty(Me.controls["Scale11.CheckBox"], "value", CheckBox.true)
-  ' Try Object.SetProperty(Me.controls["Scale12.CheckBox"], "value", CheckBox.true)
-  ' AllParams.Clear
-  ' 
+
   
   'vflip
   AllParams.Add(["TITLE", ("- Vertical flip -"), "vflip0", ""])
