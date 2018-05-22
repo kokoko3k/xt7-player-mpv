@@ -70,6 +70,9 @@ Geometry=[52,0,224,280]
 [DebugWindow/Me.Controls["volume000max.CheckBox"]]
 Geometry=[52,0,224,280]
 
+[DebugWindow/Me.Controls[item_name & "_checkbox_" & item_container.name]]
+Geometry=[52,0,285,513]
+
 [DebugWindow/Me["ad000lavc000ac3drc.CheckBox"]]
 Geometry=[52,0,224,280]
 
@@ -175,6 +178,9 @@ Geometry=[52,0,285,334]
 [DebugWindow/command]
 Geometry=[52,0,224,280]
 
+[DebugWindow/container_obj.children]
+Geometry=[52,0,269,523]
+
 [DebugWindow/data]
 Geometry=[1280,0,224,280]
 
@@ -186,6 +192,9 @@ Geometry=[1280,0,224,280]
 
 [DebugWindow/driver_opts[0]]
 Geometry=[1280,312,224,280]
+
+[DebugWindow/drivers_video_container]
+Geometry=[52,0,224,280]
 
 [DebugWindow/fileview1]
 Geometry=[582,255,456,658]
@@ -231,6 +240,9 @@ Geometry=[1280,0,224,280]
 
 [DebugWindow/img_graph]
 Geometry=[209,477,224,280]
+
+[DebugWindow/item_container.tag]
+Geometry=[52,0,224,280]
 
 [DebugWindow/jdec]
 Geometry=[596,177,265,356]
@@ -426,18 +438,18 @@ Path="/home/koko/tmp/xt7-player-mpv.gambas"
 
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:62.197"
-File[2]=".src/Classi/MplayerClass.class:0.680"
-Active=16
-File[3]=".src/Form/NewChains.class:0.1225"
-Count=62
+File[2]=".src/Classi/MplayerClass.class:52.449"
+Active=5
+File[3]=".src/Form/NewChains.class:3.58"
+Count=61
 File[4]=".src/Form/FMain.form"
-File[5]=".src/Form/FMain.class:25.1156"
+File[5]=".src/Form/FMain.class:37.12367"
 File[6]=".src/Form/NewChains.form"
-File[7]=".src/Form/GeneralOptions.class:37.329"
-File[8]=".src/0_Moduli/Global.module:7.461"
+File[7]=".src/Form/GeneralOptions.class:32.744"
+File[8]=".src/0_Moduli/Global.module:3.321"
 File[9]=".src/Form/GeneralOptions.form"
 File[10]=".src/Classi/FloatSpinBox.class:12.180"
-File[11]="AA_ToDo:0.44"
+File[11]="AA_ToDo:22.658"
 File[12]=".src/Classi/randr.class:9.157"
 File[13]=".src/Classi/SettingsClass.class:30.545"
 File[14]=".src/Form/ChooseAspect.class:17.21"
@@ -454,8 +466,8 @@ File[24]=".src/Form/AudioForm.form"
 File[25]=".src/Form/AudioForm.class:0.221"
 File[26]=".src/Form/MyQuestion.form"
 File[27]=".src/Classi/YoutubeClass.class:12.297"
-File[28]=".src/Classi/MplayerClass_old.class:0.948"
-File[29]=".src/Form/SubAndOsd.class:4.324"
+File[28]=".src/Classi/MplayerClass_old.class:82.703"
+File[29]=".src/Form/SubAndOsd.class:37.226"
 File[30]="_mpvstats.lua:27.427"
 File[31]=".src/Form/SubAndOsd.form"
 File[32]=".src/Form/CoverManager.form"
@@ -480,7 +492,7 @@ File[50]=".src/Form/BugReport.form"
 File[51]=".src/Form/ChooseAspect.form"
 File[52]=".src/Form/OverlayTrayTip.form"
 File[53]=".src/Form/OpenSubtitesForm.form"
-File[54]=".src/Form/OpenSubtitesForm.class:0.169"
+File[54]=".src/Form/OpenSubtitesForm.class:55.19"
 File[55]=".src/Form/BugReport.class:49.36"
 File[56]=".src/Classi/MyResetButton.class:32.18"
 File[57]=".src/Form/EpgForm.class:55.28"
@@ -488,7 +500,6 @@ File[58]=".src/Classi/PodCast.class:21.211"
 File[59]=".src/Form/CountDown.form"
 File[60]=".src/Form/MyAskName.form"
 File[61]=".src/Form/MyQuestion.class:0.39"
-File[62]="/tmp/gambas.1012/21840/1.console:48.462"
 
 [Watches]
 Count=0

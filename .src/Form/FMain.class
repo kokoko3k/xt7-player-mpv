@@ -12362,3 +12362,9 @@ End
 Public Sub menu_edit_bookmarks_click()
   Try Desktop.Open(global.Bookmarksfile)
 End
+
+Public Sub Button5_Click()
+
+ mplayer.set_property_mpv("ao", "null")
+
+End
