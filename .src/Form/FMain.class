@@ -423,6 +423,7 @@ Public Sub AllInit_Pre()
   SetChaptersTabVisibility(False)
   SetStyle_early()
   If GeneralOptions.ToolTipsCHKDBUS.value Then 
+    DBus.debug = True
     Try ExportDbusProperties()
   Endif
   'Copy stats lua script to temporary dir

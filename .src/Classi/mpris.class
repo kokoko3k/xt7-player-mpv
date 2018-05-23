@@ -222,15 +222,15 @@ Function org_mpris_MediaPlayer2_Player_CanControl_Read() As Boolean
 End
 
 Public Function delay_timer_timer()
-  'this SuperHack is necessary because of stupid kde mediaplayer plasmoid does not wait 'enough' for an answer
-  'after calling a method, and the stupid gambas dbus component try indefinitely to send the answer back
+  'this SuperHack is necessary because the stupid kde mediaplayer plasmoid does not wait 'enough' for an answer
+  'after calling a method, and the stupid gambas dbus component tries indefinitely to send the answer back.
   'so if the method call takes too long, xt7 hangs.
   'so we exit immediately from the calling method function and delay the real execution with this timer.
  Select Case Lower(delay_timer_method)
     Case "next"
        FMain.SelectNext(False, FMain.GetActivePlayQueue())
     Case "prev"
-      FMain.ButtonPrev_click()
+        FMain.ButtonPrev_click()
     Case Else
       Print "Questo è impossibile!"
   End Select
@@ -275,13 +275,14 @@ Public Function org_mpris_MediaPlayer2_Player_Play()
 End
 
 Public Function org_mpris_MediaPlayer2_Player_Seek(p As Long)
-global.myDebug("DBUS")
+  global.myDebug("DBUS")
   FMain.mplayer.do_seek_by(p Div 1000000, FsForm.fullscreen)
 End
 
-Public Function org_mpris_MediaPlayer2_Player_SetPosition(o As Long, p As Long)
-global.myDebug("DBUS")
-  global.myDebug("Uninmplemented")
+Public Function org_mpris_MediaPlayer2_Player_SetPosition(o As String, us As String)
+  'ignore o by now...
+  Dim seconds As Integer = (CInt(us) Div 1000000)
+  Try FMain.mplayer.do_seek_to(seconds, False, False)
 End
 
 Public Function org_mpris_MediaPlayer2_Player_OpenUri(p As String)
