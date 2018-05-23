@@ -2456,6 +2456,7 @@ Public Sub ExportDbusProperties()
       Return
     Endif
   Endif
+  Object.Attach(mpris.delay_timer, mpris, "delay_timer")
   DbusAlreadyRegistered = True
   ' DbusProperties.clear()
   ' DbusProperties.FullPath = mplayer.Media_FullPath
@@ -12348,7 +12349,6 @@ Public Sub menu_add_bookmark_click()
   Try bookmarks = Split(File.Load(global.Bookmarksfile), "\n", "", True)
   If bookmarks.Find(fileview1.dir) = -1 Then bookmarks.add(fileview1.Dir)
   Try File.Save(global.Bookmarksfile, bookmarks.Join("\n"))
-
 End
 
 

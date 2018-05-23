@@ -1,7 +1,5 @@
 ' Gambas class file
 
-' 
-
 Inherits DBusObject
 
 
@@ -24,6 +22,9 @@ Public Sub emit_propertychanged()
 
 End
 
+Public delay_timer As New Timer
+Private delay_timer_method As String
+Private delay_timer_param As String
 
 ''ORG.MPRIS.MEDIAPLAYER2-----------------------------------------------------------------------------------------------------------------
 Property Read org_mpris_MediaPlayer2_CanQuit As Boolean
@@ -220,16 +221,30 @@ Function org_mpris_MediaPlayer2_Player_CanControl_Read() As Boolean
   Return True
 End
 
+Public Function delay_timer_timer()
+  'this SuperHack is necessary because of stupid kde mediaplayer plasmoid does not wait 'enough' for an answer
+  'after calling a method, and the stupid gambas dbus component try indefinitely to send the answer back
+  'so if the method call takes too long, xt7 hangs.
+  'so we exit immediately from the calling method function and delay the real execution with this timer.
+ Select Case Lower(delay_timer_method)
+    Case "next"
+       FMain.SelectNext(False, FMain.GetActivePlayQueue())
+    Case "prev"
+      FMain.ButtonPrev_click()
+    Case Else
+      Print "Questo è impossibile!"
+  End Select
+End
 
 
 Public Function org_mpris_MediaPlayer2_Player_Next()
-'debug "Dbus"
-  FMain.SelectNext(False, FMain.GetActivePlayQueue())
+  delay_timer_method = "next"
+  delay_timer.trigger
 End
 
 Public Function org_mpris_MediaPlayer2_Player_Previous()
-'debug "Dbus"
-  FMain.ButtonPrev_click()
+  delay_timer_method = "prev"
+  delay_timer.trigger
 End
 
 Public Function org_mpris_MediaPlayer2_Player_Pause()
