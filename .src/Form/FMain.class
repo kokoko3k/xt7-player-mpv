@@ -9225,6 +9225,10 @@ Public Sub MenuLibrarySetCover_click()
 
   Dim artist, album, filepath As String
   With librarygrid
+    If .row < 0 Then 
+      Message.Error(("Nothing selected!"))
+      Return
+    Endif
     Artist = librarygrid[.row, MyLibrary.ColumnIndex["Artist"]].text
     Album = librarygrid[.row, MyLibrary.ColumnIndex["Album"]].text
     filepath = librarygrid[.row, MyLibrary.ColumnIndex["Full Path"]].text
@@ -9247,6 +9251,10 @@ Public Sub MenuPlsSetCover_click()
 
   Dim artist, album, filepath As String
   With playlistgrid
+    If .row < 0 Then 
+      Message.Error(("Nothing selected!"))
+      Return
+    Endif
     Artist = playlistgrid[.row, Myplaylist.ColumnIndex["Artist"]].text
     Album = playlistgrid[.row, Myplaylist.ColumnIndex["Album"]].text
     filepath = playlistgrid[.row, Myplaylist.ColumnIndex["Full Path"]].text

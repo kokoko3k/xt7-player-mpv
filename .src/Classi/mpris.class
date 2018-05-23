@@ -9,16 +9,16 @@ Create Static
 
 Public Sub emit_propertychanged()
 ' Dim args As New Collection[]
-' Dim prova As New String[]
+Dim prova As New String[]
 ' 
 ' 
-' 'prova.add(org_mpris_MediaPlayer2_Player_Metadata_Read())
+'prova.add(org_mpris_MediaPlayer2_Player_Metadata_Read())
 ' prova.Add("a")
 ' Debug "a"
 ' Debug prova[0] 
 ' Debug "a"
 ' 'type mismatch?
-'   DBus["/org/mpris/MediaPlayer2"].Raise(mpris, "org.freedesktop.DBus.Properties.PropertiesChanged", prova)
+  ' DBus["/org/mpris/MediaPlayer2"].Raise(mpris, "org.freedesktop.DBus.Properties.PropertiesChanged", prova)
 
 End
 
@@ -104,6 +104,7 @@ Property Read org_mpris_MediaPlayer2_Player_CanControl As Boolean
 Function org_mpris_MediaPlayer2_Player_PlayBackStatus_Read() As String
   Dim processrunning As Boolean = False
   'debug "Dbus"
+  Return "Playing"
   Try processrunning = FMain.mplayer.ProcessRunningOvr() 
   If Not processrunning Then Return "Stopped"
   If FMain.mplayer.paused(True) Then Return "Paused"
@@ -286,7 +287,7 @@ Public Function org_mpris_MediaPlayer2_Player_SetPosition(o As String, us As Str
 End
 
 Public Function org_mpris_MediaPlayer2_Player_OpenUri(p As String)
-global.myDebug("DBUS")
+  global.myDebug("DBUS")
   FMain.Play(p)
 End
 
