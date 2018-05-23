@@ -630,6 +630,11 @@ Event seeking()
 '   Return out_list
 ' End
 
+Private Function internal_options_overridable() As Collection
+  Dim out As New Collection
+  out["cache-secs"] = "1"
+  Return out
+End
 
 Private Function internal_options() As Collection
   Dim out As New Collection
@@ -643,6 +648,7 @@ Private Function internal_options() As Collection
   out["term-status-msg"] = play_initialized_str
   out["force-seekable"] = "yes" 'this will allow seeks within the cache
   out["script"] = killer_script_filename()
+
   'out["script"] = lua_list() 'killer_script_filename()
 
   'this array will be needed by do_apply().
@@ -674,6 +680,7 @@ Public Function do_play(filename As String, Optional string_options As String = 
   'Dim killer_script As String = Temp()
   Dim data As String
   Dim internal_opts As New Collection
+  Dim internal_opts_overridable As New Collection
   af_current = "."
   vf_current = "."
   return_value = 0
@@ -686,9 +693,16 @@ Public Function do_play(filename As String, Optional string_options As String = 
   Endif
   user_stopped = False 'take this right after the call to do_stop()
   
+
   internal_opts = internal_options()
   For Each data In internal_opts
-    mpvOptions[internal_opts.key] = data
+      mpvOptions[internal_opts.key] = data
+  Next
+  internal_opts_overridable = internal_options_overridable()
+  For Each data In internal_opts_overridable
+      If Not (mpvoptions.Exist(internal_opts_overridable.key)) Then 
+        mpvOptions[internal_opts_overridable.key] = data
+      Endif
   Next
   
   If global.IsImgFile(filename) Then
