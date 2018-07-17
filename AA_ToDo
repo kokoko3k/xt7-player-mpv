@@ -755,10 +755,17 @@ JUNK
 /JUNK
 --------------------------------------------------------------------------
 
+Cambiare modo di cache e usare queste due proprietà:
+Cache limits:
+Max cache in seconds	--demuxer-readahead-secs=3600
+Max cache in Megabytes  --demuxer-max-bytes=10240   
+Aggiurnare la barra della cache quando cambia la proprietà: demuxer-cache-time
+Non calcoliamo più la percentuale, ma andiamo direttamente in secondi.
 
 
+Le funzioni che aggiornano le informazioni sulla cache sono:
+	Update_cache_percent(percentuale)
+		che chiama SetProgressCache
+		che setta una posizione tra 0 e 1 che rappresenta
+		il limite superiore della barra.
 
-
-Cambiamenti nel prossimo mpv:
---------------------------------------------------------------------------
-  modifiche a softvol, pare on sarà più implementato o forse deprecato ma con funzionalità diverse.

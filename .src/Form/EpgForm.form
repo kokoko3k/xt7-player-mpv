@@ -49,7 +49,7 @@
         MoveScaled(38,1,48,5.7143)
         AutoResize = True
         { ClockLabel2 TextLabel
-          MoveScaled(-8.2857,0.2857,54,5.7143)
+          MoveScaled(-9.2857,0.2857,54,5.7143)
           Font = Font["Bold,18"]
           Foreground = &H000000&
           AutoResize = True
@@ -106,6 +106,41 @@
           Background = &H6992AE&
         }
       }
+      { InfoPanelShadow PictureBox
+        MoveScaled(24,7,38,35)
+        Visible = False
+        Ignore = True
+        Picture = Picture["shadowframe.png"]
+        Stretch = True
+      }
+      { pictureshadelow PictureBox Pictureshade
+        Name = "pictureshadelow"
+        MoveScaled(22,35,54,9)
+        Ignore = True
+        Picture = Picture["shadelowEPG.png"]
+        Stretch = True
+      }
+      { pictureshadeleft PictureBox Pictureshade
+        Name = "pictureshadeleft"
+        MoveScaled(22,-4,7,48)
+        Ignore = True
+        Picture = Picture["shadeleft.png"]
+        Stretch = True
+      }
+      { pictureshaderight PictureBox Pictureshade
+        Name = "pictureshaderight"
+        MoveScaled(69,-4,7,48)
+        Ignore = True
+        Picture = Picture["shaderight.png"]
+        Stretch = True
+      }
+      { pictureshadeup PictureBox Pictureshade
+        Name = "pictureshadeup"
+        MoveScaled(22,1,54,9)
+        Ignore = True
+        Picture = Picture["shadeupEPG.png"]
+        Stretch = True
+      }
       { InfoPanel Panel MyInfoPanel
         Name = "InfoPanel"
         MoveScaled(16,1,49,43)
@@ -157,41 +192,6 @@
           Alignment = Align.Center
           Transparent = True
         }
-      }
-      { pictureshadeup PictureBox Pictureshade
-        Name = "pictureshadeup"
-        MoveScaled(22,1,54,9)
-        Ignore = True
-        Picture = Picture["shadeupEPG.png"]
-        Stretch = True
-      }
-      { pictureshaderight PictureBox Pictureshade
-        Name = "pictureshaderight"
-        MoveScaled(69,-4,7,48)
-        Ignore = True
-        Picture = Picture["shaderight.png"]
-        Stretch = True
-      }
-      { pictureshadeleft PictureBox Pictureshade
-        Name = "pictureshadeleft"
-        MoveScaled(22,-4,7,48)
-        Ignore = True
-        Picture = Picture["shadeleft.png"]
-        Stretch = True
-      }
-      { pictureshadelow PictureBox Pictureshade
-        Name = "pictureshadelow"
-        MoveScaled(22,35,54,9)
-        Ignore = True
-        Picture = Picture["shadelowEPG.png"]
-        Stretch = True
-      }
-      { InfoPanelShadow PictureBox
-        MoveScaled(24,7,38,35)
-        Visible = False
-        Ignore = True
-        Picture = Picture["shadowframe.png"]
-        Stretch = True
       }
     }
     { HBox4 HBox

@@ -423,7 +423,7 @@ Public Sub AllInit_Pre()
   SetChaptersTabVisibility(False)
   SetStyle_early()
   If GeneralOptions.ToolTipsCHKDBUS.value Then 
-    DBus.debug = True
+    dbus.debug = True
     Try ExportDbusProperties()
   Endif
   'Copy stats lua script to temporary dir
@@ -1583,7 +1583,7 @@ Public Sub Form_Close()
   ' Try XConfigureVideoDriver.close
   Try Xt7Egg.close
   Try realtimeform.close
-  Try DBus.Session.Unregister(mpris)
+  Try dbus.Session.Unregister(mpris)
   Try epgform.close
  'Try ButtonMenu.close
   Try fsform.close
@@ -2444,14 +2444,16 @@ Private DbusAlreadyRegistered As Boolean = False
 
 Public Sub ExportDbusProperties()
   If Not DbusAlreadyRegistered Then
-    Try DBus.Name = "org.mpris.MediaPlayer2.xt7"
+    Try dbus.Name = "org.mpris.MediaPlayer2.xt7"
     If Error Then 
      global.myDebug("Error setting up dbus")
       Return
     Endif
+    
+    
     'Try DBus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player", "org.mpris.MediaPlayer2.TrackList", "org.mpris.MediaPlayer2.Playlists" ,"org.freedesktop.Dbus.Properties", "org.freedesktop.Dbus.Introspectable"])
-    'Try DBus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player", "org.freedesktop.Dbus.Properties", "org.freedesktop.Dbus.Introspectable"])
-    Try DBus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player"])
+     dbus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player"])
+    'Try DBus.Session.Register(mpris, "/org/mpris/MediaPlayer2", ["org.mpris.MediaPlayer2", "org.mpris.MediaPlayer2.Player", "org.freedesktop.DBus.Properties"])
     If Error Then 
       global.myDebug("Error setting up dbus")
       Return
@@ -9988,7 +9990,13 @@ Private last_yt_dir As String = ""
 Public Sub youtubetreeDownload_Click()
   Dim CurrentUrl, StreamDownloadDir, cmd As String
   Dim script As String = Temp()
-  Try CurrentUrl = youtubetree.Current.Key
+  
+  Try CurrentUrl = youtubetree.tag[youtubeTree.current.key].playurl
+  If Error Then
+    Stop
+    Try CurrentUrl = youtubetree.Current.Key
+  Endif
+ 
   
   If Error Then
     Message.Error(("Error: Cannot get current item"))
@@ -10006,6 +10014,7 @@ Public Sub youtubetreeDownload_Click()
   cmd &= " -o '" & StreamDownloadDir & "/%(title)s.%(ext)s" & "'"
   cmd &= " --format=" & youtube.ytdl_format_opt(Left(generaloptions.Youtubeformat.text, -1), (generaloptions.RequestAVC1Checkbox.value = CheckBox.true))  
   Try File.Save(script, cmd)
+  
   If Error Then Goto return_file_error
   Try Chmod script To "rwxr-x---"
   If Error Then Goto return_file_error
@@ -11689,7 +11698,7 @@ Public Sub SetProgressCache(newset As Float)
   Dim border As Integer = 0 '2
   Dim bor As Integer = 0 '1
   Dim newpos As Integer = CInt(ProgressFrame.clientw * newset - ProgressFrame.padding)
-  
+  Debug 
   If newpos < border Then newpos = border
   progress.Raise
   progresscache.Move(progressframe.clientx + bor, progressframe.clienty + bor, newpos - border, progressframe.clienth - border)

@@ -267,6 +267,7 @@ Public Function GetTitle(sourceurl As String) As String
     videoid = sourceurl
     cmd = "youtube-dl '" & videoid & "' -e &>" & outfile
     global.myDebug(cmd)
+    Stop
     'Shell cmd
     Exec ["sh", "-c", cmd]
     

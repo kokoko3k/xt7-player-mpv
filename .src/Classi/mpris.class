@@ -7,24 +7,36 @@ Create Static
 ' Event org_freedesktop_DBus_Properties_PropertiesChanged(args As String[])
 
 
-Public Sub emit_propertychanged()
-' Dim args As New Collection[]
-Dim prova As New String[]
-' 
-' 
-'prova.add(org_mpris_MediaPlayer2_Player_Metadata_Read())
-' prova.Add("a")
-' Debug "a"
-' Debug prova[0] 
-' Debug "a"
-' 'type mismatch?
-  ' DBus["/org/mpris/MediaPlayer2"].Raise(mpris, "org.freedesktop.DBus.Properties.PropertiesChanged", prova)
+Public prevplay As String = "Playing"
 
+Public Sub emit_propertychanged()
+  Dim properties_changed As New Collection
+  Dim metadata As Collection
+  Dim emptyc As New Collection
+  metadata = org_mpris_MediaPlayer2_Player_Metadata_Read()
+  'properties_changed.Add(metadata, "metadata")
+  If prevplay = "Playing" Then
+    prevplay = "Paused"
+      Else
+     prevplay = "Playing"
+    Endif
+  properties_changed.Add(prevplay, "PlaybackStatus")
+
+  DBus["/org/mpris/MediaPlayer2"].Raise(mpris, "org.freedesktop.DBus.Properties.PropertiesChanged", ["org.mpris.MediaPlayer2.Player", properties_changed, emptyc])
+  
+  DBus["/org/mpris/MediaPlayer2"].Raise(mpris, "org.mpris.MediaPlayer2.Player.Seeked", [CInt(Timer)])
+  
+  
 End
 
 Public delay_timer As New Timer
 Private delay_timer_method As String
 Private delay_timer_param As String
+
+'The name of the event must be the normalized name of the interface, followed by an underscore and the normalized name of the signal.
+Event org_freedesktop_DBus_Properties_PropertiesChanged(out1 As String, out2 As Collection, out3 As Collection)
+Event org_mpris_MediaPlayer2_Player_Seeked(position As Integer)
+
 
 ''ORG.MPRIS.MEDIAPLAYER2-----------------------------------------------------------------------------------------------------------------
 Property Read org_mpris_MediaPlayer2_CanQuit As Boolean
