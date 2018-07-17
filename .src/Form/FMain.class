@@ -10020,7 +10020,6 @@ Public Sub youtubetreeDownload_Click()
   If Error Then Goto return_file_error
   cmd = global.terminal_cmdline(global.find_term(), script)
   global.myDebug(cmd)
-  Stop
   Shell cmd
   return_file_error:
   Debug "file_error"
