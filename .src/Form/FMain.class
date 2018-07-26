@@ -1221,12 +1221,12 @@ End
 
 
 
-Public Sub ShowBrowseTabTo(fullpath As String)
+Public Sub ShowBrowseTabTo(fullpath As String, Optional init As Boolean = True)
 
   Dim path As String
   Dim tabid As Integer
 
-  If global.IsNetworkURI(fullpath) Then Return
+  If Not Exist(fullpath, True) Then Return
   Try path = file.Dir(fullpath)
   If Error Then 
     global.myDebug("Error, please report ")
@@ -1240,14 +1240,16 @@ Public Sub ShowBrowseTabTo(fullpath As String)
   Try UrlBox.text = path
   Try FileView1.dir = path
   Wait
-  gridpanels_arrange()
-  FileView1.ShowDetailed = True
+  If init Then
+    gridpanels_arrange()
+    FileView1.ShowDetailed = True
+    Leftsidetabs.Index = Tabid
+    Wait 0.001
+  Endif
+    FileView1.Current = file.name(fullpath)
+    FileView1.refresh
+    Wait 0.001
   
-  Leftsidetabs.Index = Tabid
-  Wait 0.001
-  FileView1.Current = file.name(fullpath)
-  FileView1.refresh
-  Wait 0.001
 
 End
 
@@ -9429,6 +9431,15 @@ Private Sub load_view_menu()
 End
 
 
+Public Sub find_play_Click()
+  Dim fp As String
+  If mplayer.ProcessRunningOvr() Then
+    fp = mplayer.getP("fullpath")
+    ShowBrowseTabTo(fp, False)
+  Endif  
+End
+
+
 Public Sub ActivateFile(fullpathitem As String)
   Dim selecteditem As String
   Try selecteditem = FileView1.Selection[0]
@@ -9470,7 +9481,7 @@ Public Sub FileView1_Icon(Path As String)
   Dim r As String
   Dim iconsize As Integer = FileView1.Font.TextHeight("|èJj")
   If fileview1.visible = False Then Return
-  
+
   
   If IsDir(path) Then
     FileView1.icon = stock[CStr(iconsize) & "/directory"]
@@ -9490,8 +9501,7 @@ Public Sub FileView1_Icon(Path As String)
         Endif
       Next
     Endif
-  Endif
-  
+  Endif  
 End
 
 

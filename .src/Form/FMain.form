@@ -25,6 +25,10 @@
       Toggle = True
       Checked = True
     }
+    { find_play Menu
+      Text = ("Find playing file")
+      Picture = Picture["icon:/small/find"]
+    }
   }
   { alloptionsmenu Menu
     Text = ("alloptionsmenu")
@@ -1074,7 +1078,7 @@
           Expand = True
           Arrangement = Arrange.Fill
           { FileView1 FileView
-            MoveScaled(1,7,32,17)
+            MoveScaled(1,7,32,25)
             Background = Color.TextBackground
             Expand = True
             Mode = Select.Multiple
@@ -1396,7 +1400,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-61.2857,18,4.5714)
+              MoveScaled(9.4286,-62.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
