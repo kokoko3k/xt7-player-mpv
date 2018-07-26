@@ -9383,7 +9383,7 @@ Public Sub view_menu_check_item_click()
 End
 
 
-Private Sub apply_view_menu()
+Public Sub apply_view_menu()
   FileView1.ShowHidden = menu_show_hidden_files.Checked
   If menu_show_only_media.Checked Then
     fileview1.filter = Split(global.ALLFilters, ";")

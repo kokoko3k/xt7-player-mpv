@@ -303,6 +303,7 @@ Public Sub AddUserExtensions(exts As String)
     If Trim(curext) <> "" Then returnexts = returnexts & "*." & Trim(curext) & ";"
   Next 'curext
   If Trim(returnexts) <> "" Then
+    If Right(ALLFILTERS) <> ";" Then ALLFILTERS &= ";"
     ALLFilters = ALLFilters & returnexts
   Endif
   global.myDebug(allfilters)

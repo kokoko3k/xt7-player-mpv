@@ -947,8 +947,9 @@ Dim profilename, profilenamesplitted As String
   Endif
 End
 
-Public Sub KnownExtensions_LostFocus()
+Public Sub KnownExtensions_change()
   global.AddUserExtensions(KnownExtensions.text)
+  Try fmain.apply_view_menu()
 End
 
 
@@ -1548,8 +1549,3 @@ End
 ' '---------------- /HACKY WORKAROUND TO STOP SCROLLVIEWS SCROLLING WHEN OBJECTS ARE FOCUSED
 
 
-Public Sub ScrollView7_MouseDown()
-
-  
-
-End
