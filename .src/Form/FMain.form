@@ -36,10 +36,12 @@
     { GeneralOptionsmenupopup Menu
       Text = ("General Options")
       Picture = Picture["icon:/medium/tools"]
+      Shortcut = "Ctrl+G"
     }
     { ChainsMenuPopup Menu
       Text = ("Chains")
       Picture = Picture["icon:/medium/connect"]
+      Shortcut = "Ctrl+C"
     }
     { VideoFiltersMenuPopup Menu
       Text = ("Video Filters")
@@ -77,6 +79,7 @@
         Name = "MenuOpen"
         Text = ("Open local file")
         Picture = Picture["icon:/16/open"]
+        Shortcut = "Ctrl+O"
       }
       { MenuOpenRecent Menu
         Text = ("Open recent file")
@@ -454,11 +457,6 @@
         Enabled = False
         Checked = True
         Visible = False
-      }
-      { ShowHideMenuBarMenu Menu
-        Text = ("Show/Hide Menubar")
-        Picture = Picture["icon:/medium/menu"]
-        Shortcut = "Ctrl+M"
       }
     }
     { AspectMenu Menu
@@ -1400,7 +1398,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-62.2857,18,4.5714)
+              MoveScaled(9.4286,-63.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True

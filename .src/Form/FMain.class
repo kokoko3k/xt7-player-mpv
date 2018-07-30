@@ -1737,7 +1737,6 @@ End
 Public Sub ButtonOpen_Click()
   If Not fullyloaded Then Return
   With Global
-    Stop
     If MyDialog.path = "" Then myDialog.Path = .StartFolder
     myDialog.filter = [.Multimediafilter, .Multimediafiltername, .videofilter, .videofiltername, .audiofilter, .audiofiltername]
   End With
@@ -12390,3 +12389,9 @@ Public Sub menu_edit_bookmarks_click()
   Try Desktop.Open(global.Bookmarksfile)
 End
 
+
+Public Sub bp_MouseDown()
+
+  
+
+End
