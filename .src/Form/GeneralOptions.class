@@ -1341,7 +1341,7 @@ Public Sub ShowCacheGaugeCHK_Click()
   If Last.value = False Then 
     fmain.SetProgressCache(0)
       Else
-   If fmain.mplayer.ProcessRunningOvr() Then fmain.Update_cache_percent(fmain.mplayer.get_property_mpv("cache-percent", True, 1, True))
+   If fmain.mplayer.ProcessRunningOvr() Then fmain.Update_cache_percent(fmain.mplayer.get_property_mpv("demuxer-cache-duration", True, 1, True))
   Endif
 End
 

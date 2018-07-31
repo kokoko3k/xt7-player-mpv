@@ -420,71 +420,58 @@ Public Function GetLastProfile(confpath As String) As String
 
 End
 
-Public Sub SaveCachefile(mytype As String, cachesize As String, mincache As String, seekcache As String)
+Public Sub SaveCachefile(mytype As String, cacheMB As String, cacheSec As String)
   Dim cachesizefile As String = global.confpath & "/" & global.CurrentProfile & ".profile/" & "cachesize."
   Dim cachetextfile As String = ""
     
-  If (cachesize = "0") Then 
-    cachetextfile = " -nocache "
-      Else
-    If (cachesize <> "") Then cachetextfile = " -cache " & cachesize & " "
-  Endif
-    
-    If mincache <> "" Then cachetextfile = cachetextfile & " -cache-min " & mincache & " "
-    If seekcache <> "" Then cachetextfile = cachetextfile & " -cache-seek-min " & seekcache & " "
-    Try file.Save(cachesizefile & mytype, cachetextfile)
+  If cacheMB <> "" Then cachetextfile = " --demuxer-max-bytes " & cacheMB & " "
+  If cacheSec <> "" Then cachetextfile &= " --cache-secs " & cacheSec & " "   
+  Try file.Save(cachesizefile & mytype, cachetextfile)
 End    
 
 Public Sub SaveCachefiles()
   'save cache size in text files to retrieve it fast on 'boot'
-  Dim cachesize, mincache, seekcache As String
+  Dim cachesizeMB, cachesizeSEC As String
   
 
   With GeneralOptions
     
   'file
-    cachesize = ""
-    mincache = ""
-    seekcache = ""
-    If .CacheCheckbox.value Then cachesize = .CacheSpinBox.value
-    SaveCachefile("file", cachesize, mincache, seekcache)
+    cachesizeMB = ""
+    cachesizeSEC = ""
+    If .MaxCacheMB_Local_Checkbox.value Then cachesizeMB = .MaxCacheMB_Local_SpinBox.value  
+    If .MaxCacheSEC_Local_Checkbox.value Then cachesizeSEC = .MaxCacheSEC_Local_Spinbox.value  
+    SaveCachefile("file", cachesizeMB, cachesizeSec)
 
   'network
-    cachesize = ""
-    mincache = ""
-    seekcache = ""
-      If .NetCacheCheckbox.value Then cachesize = .NetCacheSpinBox.value
-      If .NetminCacheCheckbox.value Then mincache = GeneralOptions.cacheminspinbox.value
-      If .NetseekCacheCheckbox.value Then seekcache = GeneralOptions.cacheseekspinbox.value
-    SaveCachefile("network", cachesize, mincache, seekcache)
+    cachesizeMB = ""
+    cachesizeSEC = ""
+      If .MaxCacheMB_Net_Checkbox.value Then cachesizeMB = .MaxCacheMB_NET_SpinBox.value  
+      If .MaxCacheSEC_Net_Checkbox.value Then cachesizeSEC = .MaxCacheSEC_NET_Spinbox.value  
+    SaveCachefile("network", cachesizeMB, cachesizeSec)
   'dvb
-    cachesize = ""
-    mincache = ""
-    seekcache = ""
-      If .dvbtCacheCheckbox.value Then cachesize = .dvbtCacheSpinBox.value
-      If .dvbtminCacheCheckbox.value Then mincache = GeneralOptions.dvbtcacheminspinbox.value
-    SaveCachefile("dvb", cachesize, mincache, seekcache)
+    cachesizeMB = ""
+    cachesizeSEC = ""
+      If .MaxCacheMB_DVB_Checkbox.value Then cachesizeMB = .MaxCacheMB_DVB_SpinBox.value  
+      If .MaxCacheSEC_DVB_Checkbox.value Then cachesizeSEC = .MaxCacheSEC_DVB_Spinbox.value  
+    SaveCachefile("dvb", cachesizeMB, cachesizeSec)
   'dvd
-    cachesize = ""
-    mincache = ""
-    seekcache = ""
-    If .DvdCacheCheckbox.Value Then cachesize = .DVDCacheSpinBox.value
-    SaveCachefile("dvd", cachesize, mincache, seekcache)
-  'dvdnav
-    cachesize = ""
-    mincache = ""
-    seekcache = ""
-    If .DvdCacheCheckbox.Value Then cachesize = "0" 'dvdnav wont work with a cache
-    SaveCachefile("dvdnav", cachesize, mincache, seekcache)
+    cachesizeMB = ""
+    cachesizeSEC = ""
+    If .MaxCacheMB_DVD_Checkbox.value Then 
+	    cachesizeMB = .MaxCacheMB_DVD_SpinBox.value  
+	    cachesizeSEC = 9999
+    Endif
+    SaveCachefile("dvd", cachesizeMB, cachesizeSec)
+    SaveCachefile("dvdnav", cachesizeMB, cachesizeSec)
   'cdda
-    cachesize = ""
-    mincache = ""
-    seekcache = ""
-     If .CDDACacheCheckbox.Value Then 
-      cachesize = .CDDACacheSpinBox.Value
-      mincache = "0"
-     Endif
-    SaveCachefile("cdda", cachesize, mincache, seekcache)
+    cachesizeMB = ""
+    cachesizeSEC = ""
+    If .MaxCacheSEC_CDDA_Checkbox.value Then 
+      cachesizeSEC = .MaxCacheSEC_CDDA_Spinbox.value  
+      cachesizeMB = 99999
+    Endif
+    SaveCachefile("cdda", cachesizeMB, cachesizeSec)
   End With
 End
 

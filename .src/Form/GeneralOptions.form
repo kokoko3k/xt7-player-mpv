@@ -661,26 +661,19 @@
           MoveScaled(2,12,48,4.5714)
           Spacing = True
           Indent = True
-          { CacheCheckbox CheckBox notifyobj
-            Name = "CacheCheckbox"
+          { MaxCacheMB_Local_Checkbox CheckBox notifyobj
+            Name = "MaxCacheMB_Local_Checkbox"
             MoveScaled(2,0,26,4.5714)
             AutoResize = True
-            Text = ("Local file cache size (KB)")
+            Text = ("Max Megabytes to cache")
             Value = CheckBox.True
           }
-          { CacheSpinBox SpinBox notifyobj
-            Name = "CacheSpinBox"
+          { MaxCacheMB_Local_SpinBox SpinBox notifyobj
+            Name = "MaxCacheMB_Local_SpinBox"
             MoveScaled(29,0,11,4.5714)
             Expand = True
-            MinValue = 100
-            MaxValue = 1048576
-            Value = 10240
-          }
-          { Label11 Label labelcheck
-            Name = "Label11"
-            MoveScaled(40,0,6,4.5714)
-            AutoResize = True
-            Text = ("KBytes")
+            MaxValue = 9999
+            Value = 25
           }
         }
         { NoParse44 HBox
@@ -688,24 +681,19 @@
           ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           Indent = True
-          { CacheMinCheckbox CheckBox notifyobj
-            Name = "CacheMinCheckbox"
-            MoveScaled(1,0,21,4.5714)
+          { MaxCacheSEC_Local_Checkbox CheckBox notifyobj
+            Name = "MaxCacheSEC_Local_Checkbox"
+            MoveScaled(1,0,24,5)
             AutoResize = True
-            Text = ("Start playback after filling")
+            Text = ("Max seconds to cache")
             Value = CheckBox.True
           }
-          { CacheMinSpinboxFile SpinBox notifyobj
-            Name = "CacheMinSpinboxFile"
+          { MaxCacheSEC_Local_Spinbox SpinBox notifyobj
+            Name = "MaxCacheSEC_Local_Spinbox"
             MoveScaled(29,0,11,4.5714)
             Expand = True
             MaxValue = 100000
-          }
-          { Label19 Label labelcheck
-            Name = "Label19"
-            MoveScaled(40,0,6,4.5714)
-            AutoResize = True
-            Text = ("KBytes")
+            Value = 3600
           }
         }
         { NoParseTitleLabel2 Panel
@@ -725,26 +713,19 @@
           MoveScaled(2,23,48,4.5714)
           Spacing = True
           Indent = True
-          { CDDACacheCheckbox CheckBox notifyobj
-            Name = "CDDACacheCheckbox"
+          { MaxCacheSEC_CDDA_Checkbox CheckBox notifyobj
+            Name = "MaxCacheSEC_CDDA_Checkbox"
             MoveScaled(1,0,24,4.5714)
             AutoResize = True
-            Text = ("CD Cache size (KB)")
+            Text = ("Max seconds (CD)")
             Value = CheckBox.True
           }
-          { CDDACacheSpinBox SpinBox notifyobj
-            Name = "CDDACacheSpinBox"
-            MoveScaled(26,0,11,4.5714)
+          { MaxCacheSEC_CDDA_Spinbox SpinBox notifyobj
+            Name = "MaxCacheSEC_CDDA_Spinbox"
+            MoveScaled(29,0,11,4.5714)
             Expand = True
-            MinValue = 100
-            MaxValue = 1048576
-            Value = 10240
-          }
-          { Label15 Label labelcheck
-            Name = "Label15"
-            MoveScaled(39,0,6,4.5714)
-            AutoResize = True
-            Text = ("KBytes")
+            MaxValue = 120
+            Value = 10
           }
         }
         { NoParse24 HBox
@@ -752,29 +733,22 @@
           ToolTip = ("Set the cache for DVD playback.\nNote that enabling it may lead to problems.")
           Spacing = True
           Indent = True
-          { DvdCacheCheckbox CheckBox notifyobj
-            Name = "DvdCacheCheckbox"
+          { MaxCacheMB_DVD_Checkbox CheckBox notifyobj
+            Name = "MaxCacheMB_DVD_Checkbox"
             MoveScaled(1,0,23,4.5714)
             AutoResize = True
-            Text = ("Dvd Cache size (KB)")
+            Text = ("Max Megabytes (DVD)")
           }
-          { DVDCacheSpinBox SpinBox notifyobj
-            Name = "DVDCacheSpinBox"
-            MoveScaled(24,1,11,4.5714)
+          { MaxCacheMB_DVD_SpinBox SpinBox notifyobj
+            Name = "MaxCacheMB_DVD_SpinBox"
+            MoveScaled(29,0,11,4.5714)
             Expand = True
-            MinValue = 100
-            MaxValue = 1048576
-            Value = 1024
-          }
-          { Label17 Label labelcheck
-            Name = "Label17"
-            MoveScaled(38,0,6,4.5714)
-            AutoResize = True
-            Text = ("KBytes")
+            MaxValue = 9999
+            Value = 25
           }
         }
         { NoParseTitleLabel3 Panel
-          MoveScaled(2,31,54,3)
+          MoveScaled(2,38,54,3)
           Arrangement = Arrange.Vertical
           { Label14 Label
             MoveScaled(0,0,24,3)
@@ -787,84 +761,47 @@
           }
         }
         { NoParse26 HBox
-          MoveScaled(2,34,48,4.5714)
+          MoveScaled(2,41,48,4.5714)
           ToolTip = ("Maximum cache size.\nmpv option: --cache ")
           Spacing = True
           Indent = True
-          { NetCacheCheckbox CheckBox notifyobj
-            Name = "NetCacheCheckbox"
+          { MaxCacheMB_Net_Checkbox CheckBox notifyobj
+            Name = "MaxCacheMB_Net_Checkbox"
             MoveScaled(1,0,22,4.5714)
             AutoResize = True
-            Text = ("Net Cache size (KB)")
+            Text = ("Max Megabytes to cache")
             Value = CheckBox.True
           }
-          { NetCacheSpinBox SpinBox notifyobj
-            Name = "NetCacheSpinBox"
-            MoveScaled(28,0,11,4.5714)
+          { MaxCacheMB_NET_SpinBox SpinBox notifyobj
+            Name = "MaxCacheMB_NET_SpinBox"
+            MoveScaled(29,0,11,4.5714)
             Expand = True
-            MinValue = 100
-            MaxValue = 1048576
-            Value = 1024
-          }
-          { Label18 Label labelcheck
-            Name = "Label18"
-            MoveScaled(41,0,6,4.5714)
-            AutoResize = True
-            Text = ("KBytes")
+            MaxValue = 9999
+            Value = 25
           }
         }
         { NoParse32 HBox
-          MoveScaled(2,38,50,4.5714)
+          MoveScaled(2,45,50,4.5714)
           ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           Indent = True
-          { NetminCacheCheckbox CheckBox notifyobj
-            Name = "NetminCacheCheckbox"
+          { MaxCacheSEC_Net_Checkbox CheckBox notifyobj
+            Name = "MaxCacheSEC_Net_Checkbox"
             MoveScaled(1,0,22,4.5714)
             AutoResize = True
-            Text = ("Start playback after filling")
+            Text = ("Max seconds to cache")
             Value = CheckBox.True
           }
-          { cacheminspinbox SpinBox notifyobj
-            Name = "cacheminspinbox"
-            MoveScaled(25,0,11,4.5714)
+          { MaxCacheSEC_NET_Spinbox SpinBox notifyobj
+            Name = "MaxCacheSEC_NET_Spinbox"
+            MoveScaled(29,1,11,4.5714)
             Expand = True
             MaxValue = 100000
-          }
-          { Label9 Label labelcheck
-            Name = "Label9"
-            MoveScaled(40,0,8,4.5714)
-            AutoResize = True
-            Text = ("KBytes")
-          }
-        }
-        { NoParse34 HBox
-          MoveScaled(1,42,53,4.5714)
-          ToolTip = ("HINT: For youtube, enable this option and set 0.\n--\n If a seek is to be made to a position within <percentage> of the cache size from the current position, \nmpv will wait  for  the cache to be filled to this position rather than performing a stream seek (default: 50).\nmpv option: --cache-seek-min")
-          Spacing = True
-          Indent = True
-          { NetseekCacheCheckbox CheckBox notifyobj
-            Name = "NetseekCacheCheckbox"
-            MoveScaled(1,0,23,4.5714)
-            AutoResize = True
-            Text = ("Minimum seek cache size")
-            Value = CheckBox.True
-          }
-          { cacheseekspinbox SpinBox notifyobj
-            Name = "cacheseekspinbox"
-            MoveScaled(25,1,11,4.5714)
-            Expand = True
-            MaxValue = 100000
-          }
-          { Label12 Label labelcheck
-            Name = "Label12"
-            MoveScaled(40,1,9,4.5714)
-            AutoResize = True
-            Text = ("KBytes")
+            Value = 3600
           }
         }
         { NoParseTitleLabel4 Panel
-          MoveScaled(2,47,54,3)
+          MoveScaled(2,50,54,3)
           Arrangement = Arrange.Vertical
           { noparseILabel15 Label
             MoveScaled(0,0,24,3)
@@ -877,55 +814,43 @@
           }
         }
         { NoParse38 HBox
-          MoveScaled(2,50,50,4.5714)
+          MoveScaled(2,53,50,4.5714)
           ToolTip = ("Maximum cache size.\nmpv option: --cache ")
           Spacing = True
           Indent = True
-          { dvbtCacheCheckbox CheckBox notifyobj
-            Name = "dvbtCacheCheckbox"
+          { MaxCacheMB_DVB_Checkbox CheckBox notifyobj
+            Name = "MaxCacheMB_DVB_Checkbox"
             MoveScaled(1,0,28,4.5714)
             AutoResize = True
-            Text = ("DVB-T Cache size (KB)")
+            Text = ("Max Megabytes to cache")
             Value = CheckBox.True
           }
-          { dvbtCacheSpinBox SpinBox notifyobj
-            Name = "dvbtCacheSpinBox"
-            MoveScaled(30,0,11,4.5714)
+          { MaxCacheMB_DVB_SpinBox SpinBox notifyobj
+            Name = "MaxCacheMB_DVB_SpinBox"
+            MoveScaled(29,-1,11,4.5714)
             Expand = True
-            MinValue = 100
-            MaxValue = 1048576
-            Value = 10240
-          }
-          { Label20 Label labelcheck
-            Name = "Label20"
-            MoveScaled(43,0,6,4.5714)
-            AutoResize = True
-            Text = ("KBytes")
+            MaxValue = 9999
+            Value = 25
           }
         }
         { NoParse39 HBox
-          MoveScaled(2,54,50,4.5714)
+          MoveScaled(2,57,50,4.5714)
           ToolTip = ("The playback will start as soon as the cache has been filled enough.\nmpv option: --cache-initial")
           Spacing = True
           Indent = True
-          { dvbtminCacheCheckbox CheckBox notifyobj
-            Name = "dvbtminCacheCheckbox"
+          { MaxCacheSEC_DVB_Checkbox CheckBox notifyobj
+            Name = "MaxCacheSEC_DVB_Checkbox"
             MoveScaled(1,0,23,4.5714)
             AutoResize = True
-            Text = ("Start playback after filling")
+            Text = ("Max seconds to cache")
             Value = CheckBox.True
           }
-          { dvbtcacheminspinbox SpinBox notifyobj
-            Name = "dvbtcacheminspinbox"
-            MoveScaled(24,1,8,4.5714)
+          { MaxCacheSEC_DVB_Spinbox SpinBox notifyobj
+            Name = "MaxCacheSEC_DVB_Spinbox"
+            MoveScaled(30,0,11,4.5714)
             Expand = True
-            MaxValue = 99
-          }
-          { Label16 Label labelcheck
-            Name = "Label16"
-            MoveScaled(33,0,14,4.5714)
-            AutoResize = True
-            Text = ("KBytes")
+            MaxValue = 100000
+            Value = 3600
           }
         }
       }

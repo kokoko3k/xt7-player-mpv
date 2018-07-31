@@ -455,7 +455,6 @@ Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As
 
   'Return only allowed options
   return_opts = only_allowed_options(return_opts)
-  
   Return return_opts
 End
 
@@ -631,10 +630,10 @@ Event seeking()
 ' End
 
 Private Function internal_options_overridable() As Collection
-  Dim out As New Collection
-  out["cache-secs"] = "1"
-  ignore_opts.Insert(["cache-secs"])
-  Return out
+  ' Dim out As New Collection
+  ' out["cache-secs"] = "1"
+  ' ignore_opts.Insert(["cache-secs"])
+  ' Return out
 End
 
 Private Function internal_options() As Collection
@@ -701,18 +700,20 @@ Public Function do_play(filename As String, Optional string_options As String = 
       mpvOptions[internal_opts.key] = data
   Next
   internal_opts_overridable = internal_options_overridable()
-  For Each data In internal_opts_overridable
-      If Not (mpvoptions.Exist(internal_opts_overridable.key)) Then 
-        mpvOptions[internal_opts_overridable.key] = data
-      Endif
-  Next
+  If internal_opts_overridable <> Null Then
+    For Each data In internal_opts_overridable
+        If Not (mpvoptions.Exist(internal_opts_overridable.key)) Then 
+          mpvOptions[internal_opts_overridable.key] = data
+        Endif
+    Next
+  Endif
   
   If global.IsImgFile(filename) Then
     mpvOptions["fps"] = "0.1"
   Endif
 
   mpvoptions = fix_options(mpvoptions)
-  
+
   commandline = executable() & set_options() & string_options
   
   If (global.IsAudioFile(filename)) Then
@@ -962,26 +963,6 @@ Public Function get_mediainfo(Optional cddb As Boolean = True, Optional force_au
   If getP("=duration") = "" Then setP("duration", "0")
   Return True
 End
-
-
-Public maxcache As String = "0"
-
-Private Function parsecacheparam(commandline As String) As String
-Dim start As Integer
-Dim tmp As String
-  If commandline Like "* -cache *" Then
-    start = InStr(commandline, "-cache")
-    tmp = Mid(commandline, start, Len(commandline))
-    tmp = Trim(tmp)
-    tmp = Split(tmp, " ", "", True, False)[1]
-    tmp = Trim(tmp)
-    Return tmp
-      Else
-    Return "0"
-  Endif
-End
-
-
 
 
 
