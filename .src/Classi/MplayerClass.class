@@ -2106,7 +2106,7 @@ Public Sub do_apply(new_opts As Collection)
     If realtime_opts.Find(name) = -1 Then
       If ignore_opts.find(name) = -1 Then
         global.myDebug("option changed/removed/added: " & name, "requires restart")
-        do_apply_restart(new_opts)
+        do_apply_restart(new_opts, getP("audioonly"))
         Return
       Endif
     Endif
@@ -2171,14 +2171,15 @@ Next
   If af_new = "|(removed)|" Then af_new = ""
   If vf_new = "|(removed)|" Then vf_new = ""
 
+  If getP("Audioonly") <> True Then 'we don't want effects to be applied to video visualization:
+    'only apply New Filters In realtime If something changed
+      get_properties_mpv(["vf", "af"], True, False, 1)
+      If vf_current <> vf_new Then 
+        set_property_mpv("vf", vf_new, True)
+        vf_current = vf_new
+      Endif
+  Endif
 
-  'only apply New Filters In realtime If something changed
-    get_properties_mpv(["vf", "af"], True, False, 1)
-    
-    If vf_current <> vf_new Then 
-      set_property_mpv("vf", vf_new, True)
-      vf_current = vf_new
-    Endif
     
     If af_current <> af_new Then 
       af_new = fix_for_anequalizer(af_new)
@@ -2253,7 +2254,7 @@ Public Function want_vdpau() As Boolean
 End
 
 
-Public Sub do_apply_restart(new_opts As Collection)
+Public Sub do_apply_restart(new_opts As Collection, Optional audioonly As Boolean = False)
   Dim name, data, newdata As String
   Dim timepos As String = "0"
   Dim fullpath As String
@@ -2277,9 +2278,11 @@ Public Sub do_apply_restart(new_opts As Collection)
     For Each data In new_opts
       set_option(new_opts.key, data)
     Next
+
     fullpath = getP("fullpath")
     timepos = get_property_mpv("=time-pos")
     set_option("start", timepos)
+
     do_play(fullpath,, restart = True)
   Endif
 
