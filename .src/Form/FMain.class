@@ -7419,7 +7419,7 @@ Public Sub MenuLibraryZapSelected_Click()
       Try LibraryGrid.Current.EnsureVisible()
     Endif
   Endif
-
+  librarygrid.enabled = True
 End
 
 Public Sub MenuCodecs_Click()

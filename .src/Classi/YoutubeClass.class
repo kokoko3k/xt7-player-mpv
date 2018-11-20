@@ -49,7 +49,6 @@ Private NO_WEB_KEY As Boolean = False
 Private Sub APIKEY() As String
   Dim ykey As String
   Dim lkey_file As String = global.ConfPath & "/.ak.txt"
-
   'Just do this 'till a working key is found
   If global.YT_APIKEY <> "" Then Return global.YT_APIKEY
   'try the user spcified API KEY
