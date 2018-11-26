@@ -62,7 +62,7 @@ End
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "alimiter", "dynaudnorm", "volume"]
+  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "rubberband", "alimiter", "dynaudnorm", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -455,10 +455,28 @@ Private Sub draw_filters_audio_cfg()
     AllParams.add(["RANGE", "stride=", "5", "60", "500", "scaletempo2", ""])
     AllParams.add(["RANGEFLOAT", "overlap=", "0.10", "0.20", "1", "scaletempo3", ""])
     AllParams.add(["RANGE", "search=", "1", "14", "100", "scaletempo4", ""])
+    AllParams.Add(["TIP", ("If rubberband and scaletempo are enabled, only rubberband will be used."), "scaletempo5", ""])
     Global.DrawGui(AllParams, "scaletempo", aTabstrip, switchable,,,, Me)
     AllParams.Clear
     
-
+    
+  'rubberband[=option1:option2:...]
+  'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+    'AllParams.Add(["TITLE", ("- Scales audio tempo preserving pitch -"), "scaletempo0", ""])
+    AllParams.Add(["TITLE", ("- Alter audio pitch -"), "rubberband0", ""])
+    AllParams.Add(["CHOOSE", ("pitch-scale="), "0.5 #-12", "0.529731547179648 #-11", "0.561231024154687 #-10", "0.594603557501361 #-9", "0.629960524947437 #-8", "0.667419927085017 #-7", "0.707106781186548 #-6", "0.749153538438341 #-5", "0.7937005259841 #-4", "0.840896415253715 #3-", "0.890898718140339 #-2", "0.943874312681693 #-1", "1 #0", "1.05946309435295 #+1", "1.12246204829593 #+2", "1.18920711498136 #+3", "1.2599210498647 #+4", "1.33483985413008 #+5", "1.4142135623223 #+6", "1.4983070768139 #+7", "1.58740105189218 #+8", "1.68179283041682 #+9", "1.78179743617402#+10", "1.88774862523908 #+11", "2 #+12", "rubberband9", ("Set playback tempo/pitch")])
+    AllParams.add(["CHOOSE", ("transients="), "mixed", "crisp", "smooth", "rubberband1", ("")])
+    AllParams.add(["CHOOSE", ("detector="), "compound", "percussive", "soft", "rubberband2", ("")])
+    AllParams.add(["CHOOSE", ("phase="), "laminar", "independent", "rubberband3", ("")])
+    AllParams.add(["CHOOSE", ("window="), "standard", "short", "long", "rubberband4", ("")])
+    AllParams.add(["CHOOSE", ("smoothing="), "off", "on", "rubberband5", ("")])
+    AllParams.add(["CHOOSE", ("formant="), "preserved", "shifted", "rubberband6", ("")])
+    AllParams.add(["CHOOSE", ("pitch="), "consistency", "quality", "speed", "rubberband7", ("")])
+    AllParams.add(["CHOOSE", ("channels="), "together", "apart", "rubberband8", ("")])
+    AllParams.Add(["TIP", ("If rubberband and scaletempo are enabled, only rubberband will be used."), "rubberband9", ""])
+    Global.DrawGui(AllParams, "rubberband", aTabstrip, switchable,,,, Me)
+    AllParams.Clear
+    
   'extrastereo lavfi
   AllParams.Add(["TITLE", ("- Adds live effect to playback"), "ExtraStereo0", ""])
   AllParams.add(["RANGEFLOAT", ("Amount"), "0", "2.25", "10", "ExtraStereo1", ""])
