@@ -165,8 +165,16 @@ Private Sub DrawFiltersGui()
     
   '-speed <0.01-100>
     AllParams.Add(["CHOOSE", ("Initial speed"), "0.5 #-12", "0.529731547179648 #-11", "0.561231024154687 #-10", "0.594603557501361 #-9", "0.629960524947437 #-8", "0.667419927085017 #-7", "0.707106781186548 #-6", "0.749153538438341 #-5", "0.7937005259841 #-4", "0.840896415253715 #3-", "0.890898718140339 #-2", "0.943874312681693 #-1", "1 #0", "1.05946309435295 #+1", "1.12246204829593 #+2", "1.18920711498136 #+3", "1.2599210498647 #+4", "1.33483985413008 #+5", "1.4142135623223 #+6", "1.4983070768139 #+7", "1.58740105189218 #+8", "1.68179283041682 #+9", "1.78179743617402#+10", "1.88774862523908 #+11", "2 #+12", "speed", ("Set initial playback tempo/pitch")])
-    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("#-12..#+12 are semitones.\n See also 'speed' under 'scaletempo' filter in chains window.\n mpv option: speed"),,, Me)
+    'Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("#-12..#+12 are semitones.\n See also 'speed' under 'scaletempo' filter in chains window.\n mpv option: speed"),,, Me)
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("#-12..#+12 are semitones.\nmpv option: speed"),,, Me)
     AllParams.Clear
+
+    '-cookies
+    AllParams.add(["ROCHOOSE", ("Preserve pitch"), "yes", "no", "audio000pitch000correction", ("Keep pitch when changing speed")])
+    Global.DrawGui(AllParams, ("Audio"), Tabstrip1, Switchable, ("Mantain audio pitch when video speed is changed\nAvoid chipmunks voices."),,, Me)
+    Try Object.SetProperty(Me["audio000pitch000correction.CheckBox"], "value", True)
+    AllParams.Clear
+
 
   ' '-delay < sec >
   '   AllParams.add(["RANGEFLOAT", ("Audio Delay"), "-600", "0", "600", "delay", ("Seconds")])

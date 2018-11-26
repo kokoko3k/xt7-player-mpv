@@ -1,8 +1,8 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: xt7-player-mpv 3.11.3\n"
-"PO-Revision-Date: 2018-08-02 07:48 UTC\n"
+"Project-Id-Version: xt7-player-mpv 3.11.4\n"
+"PO-Revision-Date: 2018-11-26 09:10 UTC\n"
 "Last-Translator: kokoko3k <kokoko3k@gmail.com>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -389,7 +389,7 @@ msgstr "Test"
 msgid "ShutDown CountDown"
 msgstr "Conto alla rovescia per lo spegnimento"
 
-#: CountDown.form:17 NewChains.class:559
+#: CountDown.form:17 NewChains.class:560
 msgid "Abort"
 msgstr "Annulla"
 
@@ -869,7 +869,7 @@ msgstr "Il profilo di default è stato reimpostato ai valori predefiniti.E' nece
 msgid "Are you sure you want to delete:"
 msgstr "Vuoi davvero cancellare:"
 
-#: FMain.class:5430 GeneralOptions.class:544 ProfileManager.class:38
+#: FMain.class:5430 GeneralOptions.class:552 ProfileManager.class:38
 msgid "Don't delete"
 msgstr "Non cancellare"
 
@@ -937,7 +937,7 @@ msgstr "Vuoi davvero cancellare la selezione dal disco?"
 msgid "Don't Delete"
 msgstr "Non cancellare"
 
-#: FMain.class:7402 GeneralOptions.class:544 ProfileManager.class:38
+#: FMain.class:7402 GeneralOptions.class:552 ProfileManager.class:38
 msgid "Yes, Delete"
 msgstr "Sì, Cancella"
 
@@ -1789,7 +1789,7 @@ msgstr "-"
 msgid "YoutubeTreePopup"
 msgstr "-"
 
-#: FMain.form:1227 YoutubeClass.class:442
+#: FMain.form:1227 YoutubeClass.class:441
 msgid "See more results"
 msgstr "Più risultati"
 
@@ -2317,115 +2317,127 @@ msgstr "Velocità iniziale"
 msgid "Set initial playback tempo/pitch"
 msgstr "Imposta la velocità, il tempo o il tono iniziali."
 
-#: GeneralOptions.class:168
-msgid "#-12..#+12 are semitones.\n See also 'speed' under 'scaletempo' filter in chains window.\n mpv option: speed"
-msgstr "#-12..#+12 sono semitoni.\n Vedi anche il paramtero 'speed' del filtro audio 'scaletempo' nella finestra catene.\n opzione mpv: speed"
+#: GeneralOptions.class:169
+msgid "#-12..#+12 are semitones.\nmpv option: speed"
+msgstr "#-1..#+12 sono semitoni.\nopzione mpv: speed"
 
-#: GeneralOptions.class:187
+#: GeneralOptions.class:173
+msgid "Keep pitch when changing speed"
+msgstr "Mantiene l'intonazione al cambio di velocità"
+
+#: GeneralOptions.class:173
+msgid "Preserve pitch"
+msgstr ""
+
+#: GeneralOptions.class:174
+msgid "Mantain audio pitch when video speed is changed\nAvoid chipmunks voices."
+msgstr "Mantiene l'intonazione audio quando la velocità del video è cambiata.\nUtile per evitare voci alla chipmunks."
+
+#: GeneralOptions.class:195
 msgid "Turns off xscreensaver at startup"
 msgstr "Disattiva xscreensaver all'avvio"
 
-#: GeneralOptions.class:188
+#: GeneralOptions.class:196
 msgid "Turns off screensaver at startup and turns it on again on exit.\nUses XSS and XResetScreenSaver API.\nmpv option: -stop-xscreensaver"
 msgstr "Disabilita il salvaschermo all'avvio e riattivalo all'uscita.\nUsa le api XSS e XResetScreenSaver.\nOpzione mpv: -stop-screensaver"
 
-#: GeneralOptions.class:206
+#: GeneralOptions.class:214
 msgid "Only valid for http:// Uries"
 msgstr "Valido solo per indirizzi http://"
 
-#: GeneralOptions.class:206
+#: GeneralOptions.class:214
 msgid "Send cookies"
 msgstr "Manda i cookie"
 
-#: GeneralOptions.class:207
+#: GeneralOptions.class:215
 msgid "Send cookies to websites when playing http:// Uries,\n Cookie file must be in Netscape format.\n mpv option: cookies"
 msgstr "Manda i cookies ai siti web quando riproduci indirizzi web.\nIl file dei cookie deve essere in formato Netscape.\nOpzione mpv: cookies"
 
-#: GeneralOptions.class:211
+#: GeneralOptions.class:219
 msgid "location"
 msgstr "posizione"
 
-#: GeneralOptions.class:212
+#: GeneralOptions.class:220
 msgid "Specify cookies.txt location\n mpv option: cookies-file"
 msgstr "Specifica la posizione del file cookies.txt\nOpzione mpv: cookies-file"
 
-#: GeneralOptions.class:222
+#: GeneralOptions.class:230
 msgid "Gradually adjusts the A/V sync based on audio delay measurements."
 msgstr "Compensa la desincronizzazione Audio/Video misurando il ritardo audio."
 
-#: GeneralOptions.class:223
+#: GeneralOptions.class:231
 msgid "Try  -autosync 30 to smooth out problems with sound drivers which do not implement a perfect audio delay measurement.\n [..] mpv option: autosync"
 msgstr "Prova -autosync 30 per ammorbidire problemi con i driver audio che non implementano\nuna perfetta misurazione del ritardo.\nOpzione mpv: autosync"
 
-#: GeneralOptions.class:227
+#: GeneralOptions.class:235
 msgid "maximum A-V sync correction per frame (in seconds)"
 msgstr "Massima correzione di sincronia Audio/Video per fotogramma (in secondi)"
 
-#: GeneralOptions.class:228
+#: GeneralOptions.class:236
 msgid "maximum A-V sync correction per frame (in seconds)\n mpv options: -mc"
 msgstr "Massima correzione di sincronia Audio/Video per fotogramma\nOpzione mpv: -mc"
 
-#: GeneralOptions.class:232
+#: GeneralOptions.class:240
 msgid "(MPEG-1/2 and H.264 only)"
 msgstr "(Solo MPEG-1/2 and H.264)"
 
-#: GeneralOptions.class:233
+#: GeneralOptions.class:241
 msgid "Number of threads to use for decoding.\n0 means autodetect\nmpv option: vd-lavc-threads "
 msgstr "Numero di threads usati per la decodifica.\n0 significa autorilevazione.\nOpzione mpv: vd-lavc-threads"
 
-#: GeneralOptions.class:243
+#: GeneralOptions.class:251
 msgid "(MPEG-2, MPEG-4, and H.264 only)"
 msgstr "(Soo MPEG-2, MPEG-4 e H.264)"
 
-#: GeneralOptions.class:244
+#: GeneralOptions.class:252
 msgid "Enable optimizations which do not comply to the specification\nand might potentially cause problems, like simpler dequantization,\nsimpler motion compensation, assuming use of the  default\nquantization  matrix, assuming YUV 4:2:0 and skipping\na few checks to detect damaged bitstreams.\n mpv option: vd-lavc-fast"
 msgstr "Usa ottimizzazioni che non rispettano le  specifiche\ne  potrebbero  potenzialmente  causare  problemi\nOpzioni mpv: vd-lavc-fast"
 
-#: GeneralOptions.class:248
+#: GeneralOptions.class:256
 msgid "(H.264 only)"
 msgstr "(Solo H.264)"
 
-#: GeneralOptions.class:249
+#: GeneralOptions.class:257
 msgid "Skips the loop filter (AKA deblocking) during H.264 decoding.\nthis has a worse effect on quality\nBut at least for high bitrate HDTV this provides a big speedup\nwith  no visible quality loss.\n mpv option: vd-lavc-skiploopfilter"
 msgstr "Salta il \"loop filter\" (deblocking) durante la riproduzione di H.264.\nCiò riduce la qualità,\nma almeno per filmati ad alto bitrate permette un incremento di velocità\nsenza un apprezzabile calo di qualità.\nOpzione mpv: vd-lavc-skiploopfilter"
 
-#: GeneralOptions.class:268
+#: GeneralOptions.class:276
 msgid "Skip frames to maintain A/V sync"
 msgstr "Salta i frame per mantenere la sincronizzazione A/V"
 
-#: GeneralOptions.class:269
+#: GeneralOptions.class:277
 msgid "Skip displaying some frames to maintain A/V sync,\n or playing high framerate video on video output that have a lower upper framerate limit\nmpv option: -framedrop"
 msgstr "Salta la visualizzazione di alcuni frame per mantenere la sincronizzazione A/V,\noppure per visualizzare video ad altro framerate su display con un basso refresh.\nOpzione mpv: -framedrop"
 
-#: GeneralOptions.class:284
+#: GeneralOptions.class:292
 msgid "Hi-res MP3 seeking"
 msgstr "Spostamenti precisi per flussi mp3"
 
-#: GeneralOptions.class:284
+#: GeneralOptions.class:292
 msgid "High resolution seek"
 msgstr "Spostamenti ad alta risoluzione"
 
-#: GeneralOptions.class:285
+#: GeneralOptions.class:293
 msgid "Select when to use precise seeks that are not limited to keyframes. \nMay be slower\nmpv option: hr-seek"
 msgstr "Seleziona quando usare gli spostamenti precisi (non limitati ai keyframes).\nE' più lento.\nOpzione mpv: hr-seek"
 
-#: GeneralOptions.class:544
+#: GeneralOptions.class:552
 msgid "Are you sure you want to delete selected items?"
 msgstr "Sei sicuro di voler cancellare gli oggetti selezionati?"
 
-#: GeneralOptions.class:938 HotKeys.class:675 NewChains.class:1318 SubAndOsd.class:355 VideoEqualizer.class:47
+#: GeneralOptions.class:946 HotKeys.class:675 NewChains.class:1319 SubAndOsd.class:355 VideoEqualizer.class:47
 msgid "Don't"
 msgstr "Non farlo"
 
-#: GeneralOptions.class:938 HotKeys.class:675 NewChains.class:1318 SubAndOsd.class:355 VideoEqualizer.class:47
+#: GeneralOptions.class:946 HotKeys.class:675 NewChains.class:1319 SubAndOsd.class:355 VideoEqualizer.class:47
 msgid "Proceed"
 msgstr "Procedi"
 
-#: GeneralOptions.class:938 HotKeys.class:675 NewChains.class:1318 SubAndOsd.class:355 VideoEqualizer.class:47
+#: GeneralOptions.class:946 HotKeys.class:675 NewChains.class:1319 SubAndOsd.class:355 VideoEqualizer.class:47
 msgid "This will save this window settings\n to all profiles found but the 'Factory_defaults' one"
 msgstr "Salverò le impostazioni di questa finestra\n a tutti i profili trovati eccetto 'Factory_defaults'"
 
-#: GeneralOptions.class:1154
+#: GeneralOptions.class:1162
 msgid "Couldn't load the picture"
 msgstr "Impossibile caricare l'immagine"
 
@@ -3797,531 +3809,527 @@ msgstr "Guadagno in ingresso in dB"
 msgid "Input gain multiplier"
 msgstr "Moltiplicatore del guadagno d'ingresso"
 
-#: NewChains.class:451
+#: NewChains.class:452
 msgid "- Scales audio tempo preserving pitch -"
 msgstr "- Scala il tempo preservando l'intonazione -"
 
-#: NewChains.class:452
-msgid "Runtime response to speed change"
-msgstr "Modo di riproduzione alla variazione di velocità"
-
-#: NewChains.class:462
+#: NewChains.class:463
 msgid "- Adds live effect to playback"
 msgstr "- Aggiunge un effetto live alla riproduzione"
 
-#: NewChains.class:463
+#: NewChains.class:464
 msgid "Amount"
 msgstr "Quantità"
 
-#: NewChains.class:469
+#: NewChains.class:470
 msgid "Keep input signal under a desired threshold"
 msgstr "Mantieni il segnale in ingresso sotto una soglia"
 
-#: NewChains.class:475
+#: NewChains.class:476
 msgid "Keep asc =1 active to avoid distortions on systems with more than 2 speakers"
 msgstr "Mantieni asc=1 per impedire distorsioni su sistemi con più di 2 casse."
 
-#: NewChains.class:477
+#: NewChains.class:478
 msgid "This filter is a good volume normalizer"
 msgstr "Questo filtro è un buon normalizzatore di volume"
 
-#: NewChains.class:482
+#: NewChains.class:483
 msgid "Audio resampler: set the default audio resampler quality"
 msgstr "Ricampionatore audio: imposta la qualità predefinita del ricampionatore."
 
-#: NewChains.class:485
+#: NewChains.class:486
 msgid "Put this filter at the end of the chain, but before lavcac3enc (if enabled)"
 msgstr "Metti questo filtro alla fine della catena, ma prima di lavcac3enc (se attivo)"
 
-#: NewChains.class:492
+#: NewChains.class:493
 msgid "- Dynamic Audio Normalizer -"
 msgstr "- Normalizzatore audio dinamico -"
 
-#: NewChains.class:506
+#: NewChains.class:507
 msgid "- Custom audio filters - "
 msgstr "- Filtri audio personalizzati -"
 
-#: NewChains.class:507
+#: NewChains.class:508
 msgid "Custom audio filter(s):"
 msgstr "Filtri audio custom:"
 
-#: NewChains.class:507
+#: NewChains.class:508
 msgid "E.g.:resample=44100:1:2,hrtf=s"
 msgstr "Es.: resample=44100:1:2,hrtf=s"
 
-#: NewChains.class:559
+#: NewChains.class:560
 msgid "Continue anyway"
 msgstr "Continua comunque"
 
-#: NewChains.class:559
+#: NewChains.class:560
 msgid "Even if your ffmpeg has ladspa support compiled in,\nyou seem to miss the ladspa package.\nbecause 'analyseplugin' executable is not found"
 msgstr "Benchè il tuo ffmpeg abbia il supporto ladspa,\nsembra che il pacchetto ladspa non sia installato.\nperchè non trovo l'eseguibile 'analyseplugin' "
 
-#: NewChains.class:587
+#: NewChains.class:588
 msgid "- Sharpen or blur the input video -"
 msgstr "- Definisce o sfoca il video in ingresso -"
 
-#: NewChains.class:588
+#: NewChains.class:589
 msgid "Luminance Matrix"
 msgstr "Matrice di luminanza"
 
-#: NewChains.class:588
+#: NewChains.class:589
 msgid "The higher, the slower"
 msgstr "Più alto è, più sarà lento"
 
-#: NewChains.class:589
+#: NewChains.class:590
 msgid "Luma amount"
 msgstr "Quantità di luma"
 
-#: NewChains.class:589
+#: NewChains.class:590
 msgid "Negative means blur"
 msgstr "Valori negativi producono sfocatura"
 
-#: NewChains.class:590
+#: NewChains.class:591
 msgid "Chrominance Matrix"
 msgstr "Matrice di crominanza"
 
-#: NewChains.class:591
+#: NewChains.class:592
 msgid "Chroma amount"
 msgstr "Quantità chroma"
 
-#: NewChains.class:592
+#: NewChains.class:593
 msgid "Needs ffmpeg compiled with opencl support"
 msgstr "Serve ffmpeg compilato con il supporto opencl"
 
-#: NewChains.class:597
+#: NewChains.class:598
 msgid "- Add paddings to the input image -"
 msgstr "- Aggiunge spazio vuoto all'immagine di ingresso -"
 
-#: NewChains.class:598
+#: NewChains.class:599
 msgid "0 to Disable; Width of the output image with the paddings added."
 msgstr "0 per disabilitare; Larghezza dell'immagine di uscita comprensiva del contorno aggiunto."
 
-#: NewChains.class:598
+#: NewChains.class:599
 msgid "width="
 msgstr ""
 
-#: NewChains.class:599
+#: NewChains.class:600
 msgid "0 to Disable; height of the output image with the paddings added."
 msgstr "0 per disabilitare; Altezza dell'immagine di uscita comprensiva del contorno aggiunto."
 
-#: NewChains.class:599
+#: NewChains.class:600
 msgid "height="
 msgstr ""
 
-#: NewChains.class:600
+#: NewChains.class:601
 msgid "Original image position; -1 to center"
 msgstr "Posizione dell' immagine originale; -1 per centro"
 
-#: NewChains.class:600
+#: NewChains.class:601
 msgid "x="
 msgstr ""
 
-#: NewChains.class:601
+#: NewChains.class:602
 msgid "y="
 msgstr ""
 
-#: NewChains.class:602
+#: NewChains.class:603
 msgid "Use named colors or #rrggbb notation"
 msgstr "Usa la notazione ##rrggbb o i nomi dei colori"
 
-#: NewChains.class:602
+#: NewChains.class:603
 msgid "color="
 msgstr ""
 
-#: NewChains.class:603
+#: NewChains.class:604
 msgid "Pad to aspect instead to a resolution. "
 msgstr "Aggiungi un contorno vuoto"
 
-#: NewChains.class:603
+#: NewChains.class:604
 msgid "aspect="
 msgstr ""
 
-#: NewChains.class:609
+#: NewChains.class:610
 msgid "- High Quality 3D Denoiser -"
 msgstr "- Riduttore del rumore di alta qualità -"
 
-#: NewChains.class:610
+#: NewChains.class:611
 msgid "Spatial luma strength"
 msgstr "Intensità spaziale della luminanza"
 
-#: NewChains.class:611
+#: NewChains.class:612
 msgid "Spatial chroma strength"
 msgstr "Intensità spaziale della crominanza"
 
-#: NewChains.class:612
+#: NewChains.class:613
 msgid "Temporal luma strength"
 msgstr "Intensità temporale della luminanza"
 
-#: NewChains.class:613
+#: NewChains.class:614
 msgid "Temporal chroma strength"
 msgstr "Intensità temporale della crominanza"
 
-#: NewChains.class:619
+#: NewChains.class:620
 msgid "- Vertical flip -"
 msgstr "- Inversione verticale -"
 
-#: NewChains.class:624
+#: NewChains.class:625
 msgid "- Horizontal flip -"
 msgstr "- Inversione orizzontale -"
 
-#: NewChains.class:629
+#: NewChains.class:630
 msgid "- Rotate video -"
 msgstr "- Ruota il video -"
 
-#: NewChains.class:630
+#: NewChains.class:631
 msgid "Angle"
 msgstr "Angolo"
 
-#: NewChains.class:630
+#: NewChains.class:631
 msgid "lower=slower"
 msgstr "Basso=lento"
 
-#: NewChains.class:635
+#: NewChains.class:636
 msgid "- Remove logo from input video -"
 msgstr "- Rimuove loghi dal video in ingresso -"
 
-#: NewChains.class:636
+#: NewChains.class:637
 msgid "TopLeft Corner"
 msgstr " Angolo superiore sinistro"
 
-#: NewChains.class:640
+#: NewChains.class:641
 msgid "Tickness"
 msgstr "Spessore"
 
-#: NewChains.class:641
+#: NewChains.class:642
 msgid "Draw rectangle borders"
 msgstr "Mostra i bordi del rettangolo"
 
-#: NewChains.class:646
+#: NewChains.class:647
 msgid "- Simple postprocessing filter -"
 msgstr "- Semplice filtro di postprocesso -"
 
-#: NewChains.class:647
+#: NewChains.class:648
 msgid "Set quality. This option defines the number of levels for averaging"
 msgstr "Imposta la qualità. Questa opzione definisce il numero di livelli per la media"
 
-#: NewChains.class:648
+#: NewChains.class:649
 msgid "Force a constant quantization parameter."
 msgstr "Forza un parametro di quantizzazione costante."
 
-#: NewChains.class:649
+#: NewChains.class:650
 msgid "Thresholding mode,soft is blurrer but derings better"
 msgstr "Modo soglia; \"soft\" è più sfocato ma produce un miglior \"dering\""
 
-#: NewChains.class:654
+#: NewChains.class:655
 msgid "- Ultra slow/simple postprocessing filter -"
 msgstr "- Ultra lento/semplice filtro di postprocesso -"
 
-#: NewChains.class:660
+#: NewChains.class:661
 msgid "- Custom video filters - "
 msgstr "- Filtri video personalizzati -"
 
-#: NewChains.class:661
+#: NewChains.class:662
 msgid "Custom video filter(s):"
 msgstr "Filtri video custom:"
 
-#: NewChains.class:661
+#: NewChains.class:662
 msgid "E.g.:mirror,smartblur=0.4:0.5:10"
 msgstr "Es: mirror,smartblur=0.4:0.5:10"
 
-#: NewChains.class:688
+#: NewChains.class:689
 msgid "- Software equalizer -"
 msgstr "- Equalizzatore software -"
 
-#: NewChains.class:689
+#: NewChains.class:690
 msgid "Initial contrast (-x = negative image)"
 msgstr "Contrasto iniziale (-x = immagine negativa)"
 
-#: NewChains.class:689
+#: NewChains.class:690
 msgid "contrast="
 msgstr "contrasto="
 
-#: NewChains.class:690
+#: NewChains.class:691
 msgid "Initial brightness (default: 0.0)"
 msgstr "Luminanza iniziale (predefinito: 0.0)"
 
-#: NewChains.class:690
+#: NewChains.class:691
 msgid "brightness="
 msgstr "luminosità="
 
-#: NewChains.class:691
+#: NewChains.class:692
 msgid "Initial Saturation (default: 0.0)"
 msgstr "Saturazione iniziale (predefinito: 0.0)"
 
-#: NewChains.class:691
+#: NewChains.class:692
 msgid "saturation="
 msgstr "saturazione="
 
-#: NewChains.class:692
+#: NewChains.class:693
 msgid "Initial gamma value(default: 1.0)"
 msgstr "Gamma iniziale (Predefinito: 1.0)"
 
-#: NewChains.class:692
+#: NewChains.class:693
 msgid "gamma="
 msgstr "-"
 
-#: NewChains.class:694
+#: NewChains.class:695
 msgid "gamma for the red component (default: 1.0)"
 msgstr "Gamma per la componente rossa (predefinito: 1.0)"
 
-#: NewChains.class:694
+#: NewChains.class:695
 msgid "gamma_r="
 msgstr "-"
 
-#: NewChains.class:695
+#: NewChains.class:696
 msgid "gamma for the green component (default: 1.0)"
 msgstr "Gamma per la componente verde (predefinito: 1.0)"
 
-#: NewChains.class:695
+#: NewChains.class:696
 msgid "gamma_g="
 msgstr "-"
 
-#: NewChains.class:696
+#: NewChains.class:697
 msgid "gamma for the blue component (default: 1.0)"
 msgstr "Gamma per la componente blu (predefinito: 1.0)"
 
-#: NewChains.class:696
+#: NewChains.class:697
 msgid "gamma_b="
 msgstr "-"
 
-#: NewChains.class:697
+#: NewChains.class:698
 msgid "Reduce effect of gamma correction"
 msgstr "Riduce l'effetto della correzione gamma"
 
-#: NewChains.class:697
+#: NewChains.class:698
 msgid "gamma_weight"
 msgstr "-"
 
-#: NewChains.class:703
+#: NewChains.class:704
 msgid "- Debands video quickly using gradients. -"
 msgstr "- Rimuove il \"banding\" velocemente usando gradienti -"
 
-#: NewChains.class:704
+#: NewChains.class:705
 msgid "Maximum amount by which the filter will change any one pixel.  Also the threshold for detecting nearly flat regions (default: 1.2)."
 msgstr "Massima variazione che il filtro applicherà su ogni pixel. \nE' anche la soglia per determinare le regioni quasi piane (predefinito: 1.2)."
 
-#: NewChains.class:704
+#: NewChains.class:705
 msgid "Strength"
 msgstr "Intensità"
 
-#: NewChains.class:705
+#: NewChains.class:706
 msgid "Neighborhood to fit the gradient to.  Larger radius makes for smoother gradients, but also prevents the filter from modifying pixels near detailed regions (default: 16)."
 msgstr "Raggio della zona circostante a cui adattare  il  gradiente. (predefinito: 16)."
 
-#: NewChains.class:705
+#: NewChains.class:706
 msgid "Radius"
 msgstr "Raggio"
 
-#: NewChains.class:710
+#: NewChains.class:711
 msgid "- Yet Another Deinterlace Filter. -"
 msgstr "- Un altro filtro deinterlacciatore -"
 
-#: NewChains.class:711
+#: NewChains.class:712
 msgid "0 - Output 1 frame for each frame."
 msgstr "0 - Produci un fotogramma per ogni fotogramma"
 
-#: NewChains.class:711
+#: NewChains.class:712
 msgid "1 - Output 1 frame for each field."
 msgstr "1 - Produci un fotogramma per ogni campo"
 
-#: NewChains.class:711
+#: NewChains.class:712
 msgid "2 - Like 0 but skips spatial interlacing check."
 msgstr "2 - Come 0, ma salta il controllo dell'interlacciatura spaziale"
 
-#: NewChains.class:711
+#: NewChains.class:712
 msgid "3 - Like 1 but skips spatial interlacing check"
 msgstr "3 - Come 1, ma salta il controllo dell'interlacciatura spaziale"
 
-#: NewChains.class:711
+#: NewChains.class:712
 msgid "mode="
 msgstr "-"
 
-#: NewChains.class:712
+#: NewChains.class:713
 msgid "-1 - auto"
 msgstr "-1 - auto"
 
-#: NewChains.class:712
+#: NewChains.class:713
 msgid "0 - top field first"
 msgstr "0 - prima il campo sovrastante"
 
-#: NewChains.class:712
+#: NewChains.class:713
 msgid "1 - bottom field first"
 msgstr "1 -Prima il campo sottostante"
 
-#: NewChains.class:712
+#: NewChains.class:713
 msgid "Picture field parity to assume"
 msgstr "Assumi la seguente parità per i campi dell'immagine"
 
-#: NewChains.class:712
+#: NewChains.class:713
 msgid "parity="
 msgstr "-"
 
-#: NewChains.class:713
+#: NewChains.class:714
 msgid "0 - deinterlace all frames"
 msgstr "0 - Deinterlaccia tutti i fotogrammi"
 
-#: NewChains.class:713
+#: NewChains.class:714
 msgid "1 - only deinterlace frames marked as interlaced"
 msgstr "1 - Deinterlaccia solo i frame marcati come interlacciati"
 
-#: NewChains.class:713
+#: NewChains.class:714
 msgid "deint="
 msgstr "-"
 
-#: NewChains.class:717
+#: NewChains.class:718
 msgid "- VDPAU video postprocessing - "
 msgstr "- Postprocesso video VDPAU -"
 
-#: NewChains.class:718
+#: NewChains.class:719
 msgid "Sharpen filter, negative values will blur the picture"
 msgstr "Filtro di affilatura, valori negativi sfocano l'immagine."
 
-#: NewChains.class:719
+#: NewChains.class:720
 msgid "Denoise filter"
 msgstr "Filtro anti-rumore"
 
-#: NewChains.class:720
+#: NewChains.class:721
 msgid "Wheater deinterlacing is enabled"
 msgstr "Deinterlacciamento abilitato o meno"
 
-#: NewChains.class:721
+#: NewChains.class:722
 msgid "Deinterlacing mode"
 msgstr "Modo di deinterlacciamento"
 
-#: NewChains.class:722
+#: NewChains.class:723
 msgid "Set to no if having performance issue with deinterlacing"
 msgstr "Seleziona \"no\" se hai problemi di prestazioni con il deinterlacciamento"
 
-#: NewChains.class:723
+#: NewChains.class:724
 msgid "Try to apply inverse telecine, needs motion adaptive temporal deinterlacing."
 msgstr "Prova ad applicare il telecine inverso, necessita di deinterlacciamento temporale adattivo al movimento."
 
-#: NewChains.class:724
+#: NewChains.class:725
 msgid "If yes (default), only deinterlace frames marked as interlaced."
 msgstr "Se yes (predefinito), deinterlaccia solo i fotogrammi marcati come 'interlacciati'."
 
-#: NewChains.class:725
+#: NewChains.class:726
 msgid "Apply high quality VDPAU scaling (needs capable hardware)."
 msgstr "Applica la scalatura di alta qualità VDPAU (serve hardware capace)"
 
-#: NewChains.class:726
+#: NewChains.class:727
 msgid "This filter only works with vdpau and gpu(opengl?) video outputs"
 msgstr "Questo filtro funziona solo con vdpau e driver video di uscita gpu(opengl?)"
 
-#: NewChains.class:730
+#: NewChains.class:731
 msgid "- VAAPI video postprocessing - "
 msgstr "- Postprocesso video VAAPI -"
 
-#: NewChains.class:731
+#: NewChains.class:732
 msgid "Select the deinterlacing algorithm."
 msgstr "Seleziona l'algoritmo di deinterlacciamento"
 
-#: NewChains.class:733
+#: NewChains.class:734
 msgid "This filter only works with vaapi and gpu(opengl?) video outputs"
 msgstr "Questo filtro funziona solo con vaapi e driver video di uscita gpu(opengl?)"
 
-#: NewChains.class:738
+#: NewChains.class:739
 msgid "- Converts betweed stereoscopic image formats - "
 msgstr "- Converte formati stereoscopici -"
 
-#: NewChains.class:739
+#: NewChains.class:740
 msgid "Input format"
 msgstr "Formato d'ingresso"
 
-#: NewChains.class:739
+#: NewChains.class:740
 msgid "ab2l - above-below with half height resolution (left eye above, right eye below)"
 msgstr "ab2l - sopra-sotto a mezza risoluzione (occhio sinistro sopra)"
 
-#: NewChains.class:739
+#: NewChains.class:740
 msgid "ab2r - above-below with half height resolution (right eye above, left eye below)"
 msgstr "ab2r - sopra-sotto a mezza risoluzione (occhio destro sopra)"
 
-#: NewChains.class:739
+#: NewChains.class:740
 msgid "abl - above-below (left eye above, right eye below)"
 msgstr "abl - sopra-sotto (occhio sinistro sopra)"
 
-#: NewChains.class:739
+#: NewChains.class:740
 msgid "abr - above-below (right eye above, left eye below)"
 msgstr "abr - sopra-sotto (occhio destro sopra)"
 
-#: NewChains.class:739
+#: NewChains.class:740
 msgid "sbsl - side by side parallel (left eye left, right eye right)"
 msgstr "sbsl - fianco-fianco parallela (occhio sinistro a sinistra, destro a destra)"
 
-#: NewChains.class:739
+#: NewChains.class:740
 msgid "sbsr - side by side crosseye (right eye left, left eye right)"
 msgstr "sbsr - fianco-fianco incrociata (occhio sinistro a destra, destro a sinistra)"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "Output format"
 msgstr "Formato d'uscita"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "agmc - anaglyph green/magenta colored (green filter on left eye, magenta filter on right eye)"
 msgstr "agmc - anaglifico colorato: occhio sinistro verde, occhio destro magenta"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "agmg - anaglyph green/magenta gray (green filter on left eye, magenta filter on right eye)"
 msgstr "agmg - anaglifico bianco e nero: occhio sinistro verde, occhio destro magenta"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "agmh - anaglyph green/magenta half colored (green filter on left eye, magenta filter on right eye)"
 msgstr "agmh - anaglifico poco colorato: occhio sinistro verde, occhio destro magenta"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "al - alternating mode, left first"
 msgstr "al - modelità alternata, prima il sinistro."
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "ar - alternating mode, right first"
 msgstr "ar - modalità alternata, prima il destro"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "arcc - anaglyph red/cyan color (red filter on left eye, cyan filter on right eye)"
 msgstr "arcc - anaglifico colorato: occhio sinistro rosso, occhio destro ciano"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "arcd - anaglyph red/cyan color optimized with the least squares projection of dubois (red filter on left eye, cyan filter on right eye)"
 msgstr "arcd - anaglifico colorato ottimizzato: occhio sinistro rosso, destro ciano"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "arcg - anaglyph red/cyan gray (red filter on left eye, cyan filter on right eye)"
 msgstr "arcd - anaglifico in bianco e nero: occhio sinistro rosso, destro ciano"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "arch - anaglyph red/cyan half colored (red filter on left eye, cyan filter on right eye)"
 msgstr "arch - anaglifico poco colorato: occhio sinistro rosso, destro ciano"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "aybc - anaglyph yellow/blue colored (yellow filter on left eye, blue filter on right eye)"
 msgstr "aybc - anaglifico colorato: occhio sinistro giallo, destro blu"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "aybg - anaglyph yellow/blue gray (yellow filter on left eye, blue filter on right eye)"
 msgstr "aybg - anaglifico in bianco e nero: occhio sinistro giallo, destro blu"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "aybh - anaglyph yellow/blue half colored (yellow filter on left eye, blue filter on right eye)"
 msgstr "aybh - anaglifico poco colorato: occhio sinistro giallo, destro blu"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "irl - Interleaved rows (left eye has top row, right eye starts on next row)"
 msgstr "irl - Linee interlacciate (l'occhio sinistro ha la riga superiore)"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "irr - Interleaved rows (right eye has top row, left eye starts on next row)"
 msgstr "irl - Linee interlacciate (l'occhio destro ha la riga superiore)"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "ml - mono output (left eye only)"
 msgstr "ml - uscita mono (solo occhio sinistro)"
 
-#: NewChains.class:740
+#: NewChains.class:741
 msgid "mr - mono output (right eye only)"
 msgstr "ml - uscita mono (solo occhio destro)"
 
-#: NewChains.class:1641
+#: NewChains.class:1642
 msgid "Adaptors list:\n---------------------------------\n"
 msgstr "Lista degli adattatori:\n-----------------------------------\n"
 
@@ -5041,35 +5049,35 @@ msgstr "Soglia"
 msgid "Gamma exponent"
 msgstr "Esponente gamma"
 
-#: YoutubeClass.class:60
+#: YoutubeClass.class:59
 msgid "Trying shared and cached keys..."
 msgstr "Provo chiavi condivise ed in cache"
 
-#: YoutubeClass.class:60
+#: YoutubeClass.class:59
 msgid "User provided api key does not seem to work."
 msgstr "L' API  KEY fornita dall'utente non sembra funzionare."
 
-#: YoutubeClass.class:96
+#: YoutubeClass.class:95
 msgid "Invalid or missing API KEY"
 msgstr "API KEY mancante o non valida"
 
-#: YoutubeClass.class:96
+#: YoutubeClass.class:95
 msgid "You could try again later."
 msgstr "Potresti provare più tardi."
 
-#: YoutubeClass.class:104
+#: YoutubeClass.class:103
 msgid "Custom search results"
 msgstr "Risultati della ricerca personalizzata"
 
-#: YoutubeClass.class:151
+#: YoutubeClass.class:150
 msgid "More Related to: "
 msgstr "Altri correlati a: "
 
-#: YoutubeClass.class:178
+#: YoutubeClass.class:177
 msgid "PT*"
 msgstr "-"
 
-#: YoutubeClass.class:248
+#: YoutubeClass.class:247
 msgid "youtube-dl seems to be missing. \nInstall it to watch youtube videos."
 msgstr "youtube-dl sembra mancare. \nInstallalo per riprodurre i video youtube."
 

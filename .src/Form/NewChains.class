@@ -448,9 +448,10 @@ Private Sub draw_filters_audio_cfg()
     
   'scaletempo[=option1:option2:...]
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+    'AllParams.Add(["TITLE", ("- Scales audio tempo preserving pitch -"), "scaletempo0", ""])
     AllParams.Add(["TITLE", ("- Scales audio tempo preserving pitch -"), "scaletempo0", ""])
-    AllParams.add(["ROCHOOSE", "speed=", "both", "tempo", "pitch", "none", "scaletempo1", ("Runtime response to speed change")])
-    AllParams.add(["RANGEFLOAT", "scale=", "0.1", "1", "4", "scaletempo5", ""])
+    'AllParams.add(["ROCHOOSE", "speed=", "both", "tempo", "pitch", "none", "scaletempo1", ("Runtime response to speed change")])
+    'AllParams.add(["RANGEFLOAT", "scale=", "0.1", "1", "4", "scaletempo5", ""])
     AllParams.add(["RANGE", "stride=", "5", "60", "500", "scaletempo2", ""])
     AllParams.add(["RANGEFLOAT", "overlap=", "0.10", "0.20", "1", "scaletempo3", ""])
     AllParams.add(["RANGE", "search=", "1", "14", "100", "scaletempo4", ""])
