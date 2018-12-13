@@ -10900,6 +10900,7 @@ Public Sub AlbumGridView_Activate()
       If Error Then message.Error(("Something went wrong; does the file exists?"))
       Leftsidetabs.index = Global.TabIndexByName("playlist", Leftsidetabs)
       Leftsidetabs.Refresh
+      SetActivePlayQueue("playlistgrid")
         Else
       playlistgrid.Rows[selectedrow].selected = True
     Endif
@@ -12324,3 +12325,5 @@ Public Sub bp_MouseDown()
   
 
 End
+
+
