@@ -6566,7 +6566,6 @@ Public Sub CleanVideoThumbs()
   Shell "mv " & safeplace & "/* " & global.confpath & "/covers/ " Wait
   'clean up
   Shell "rm -R " & safeplace
-
 End
 
 Public Sub MenuLibraryUpdate_popup_Click()

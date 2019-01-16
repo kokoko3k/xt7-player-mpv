@@ -355,12 +355,16 @@ End
 Public Sub Save(mygrid As Gridview, ConfDir As String)
   Dim pTableFile As String = ConfDir & "/" & mygrid.name & ".txt"
   Dim sTableFile As String = ConfDir & "/" & mygrid.name & ".sTable.txt"
+  global.myDebug("check")
   Randomize
   If Rnd(0, 11) > 10 Then CheckAndFixBloat() 'do this one out of 10 times
+  global.myDebug("check")
   If ptable.count = searchtable.count Then
+    global.myDebug("check")
     SaveTable(searchtable, pTableFile, mygrid)
     Try Kill sTableFile
       Else
+    global.myDebug("check")
     SaveTable(searchtable, sTableFile, mygrid)
     SaveTable(ptable, pTableFile, mygrid)
   Endif
@@ -370,12 +374,12 @@ Public Sub SaveTable(table As String[], filename As String, mygrid As Gridview)
   Dim i, r As Integer
   Dim layout As String = "Layout"
   Dim MyFile As File
-
+  global.myDebug("check")
   'backup grid
   If Not Exist(filename & ".bak", True) Then 
     Try Copy filename To filename & ".bak"
   Endif
-  
+  global.myDebug("check")
   If Exist(filename & ".bak", True) Then
     If Exist(filename, True) Then
       If Stat(filename).size > Stat(filename & ".bak").size Then
@@ -384,19 +388,21 @@ Public Sub SaveTable(table As String[], filename As String, mygrid As Gridview)
       Endif
     Endif
   Endif
-  
+  global.myDebug("check")
   
   Myfile = Open filename For Write Create
+  global.myDebug("check")
   'write table layout
   For i = 0 To mygrid.Columns.Count - 1
     Layout = Layout & ";" & mygrid.Columns[i].w
   Next 'i
+  global.myDebug("check")
   Print #Myfile, Layout
   For r = 0 To Table.Count - 1
     Print #Myfile, Table[r]
   Next 'c
   Close #MyFile
-  
+  global.myDebug("check")
   
   
 End
