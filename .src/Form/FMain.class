@@ -6229,15 +6229,20 @@ Public Sub UpdateSearchResults(MyLibrary As PlaylistClass, LibraryGrid As Gridvi
   If (Not fmain.fullyloaded) Then
     If Not (librarygrid.tag = "FORCEUPDATE") Then Return
   Endif
+  global.myDebug("check")
   LibraryGrid.clear
   MyLibrary.Search(LibraryGrid, Searchterm)
+  global.myDebug("check")
   If autosize Then
     MyLibrary.AutoSizeColumns(LibraryGrid)
     ' [GB2:FNTH] LibraryGrid.Rows.h = LibraryGrid.Font.Textheight("^_") + global.rowpadding
     'LibraryGrid.Rows.h = LibraryGrid.Font.TextHeight("^_") + global.rowpadding
   Endif
+  global.myDebug("check")
   If fmain.fullyloaded Then 
+    global.myDebug("check")
     ShowGrid(LibraryGrid)
+    global.myDebug("check")
     'Wait
     If mplayer.ProcessRunningOvr() Then
       'Wait
@@ -6248,11 +6253,14 @@ Public Sub UpdateSearchResults(MyLibrary As PlaylistClass, LibraryGrid As Gridvi
         librarygrid[crow, 0].EnsureVisible()
       Endif
     Endif
+    global.myDebug("check")
     Select Case Lower(librarygrid.name)
       Case "librarygrid"
         LibrarySelInfo.visible = False
+        global.myDebug("check")
       Case "playlistgrid"
         CalcTotalLengthInfoOn(myplaylist, playlistgrid, PlayListSelInfo)
+        global.myDebug("check")
     End Select
   Endif
 
