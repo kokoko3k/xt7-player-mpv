@@ -6234,6 +6234,7 @@ Public Sub UpdateSearchResults(MyLibrary As PlaylistClass, LibraryGrid As Gridvi
   MyLibrary.Search(LibraryGrid, Searchterm)
   global.myDebug("check")
   If autosize Then
+    global.myDebug("check")
     MyLibrary.AutoSizeColumns(LibraryGrid)
     ' [GB2:FNTH] LibraryGrid.Rows.h = LibraryGrid.Font.Textheight("^_") + global.rowpadding
     'LibraryGrid.Rows.h = LibraryGrid.Font.TextHeight("^_") + global.rowpadding

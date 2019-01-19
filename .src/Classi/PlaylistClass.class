@@ -1491,60 +1491,93 @@ Public Sub AutoSizeColumns(MyGrid As GridView)
     Dim RStep As Integer
     Dim MaxW, MaxGbW As Integer
     If MyGrid.Rows.count <= 0 Then Return
-
+    global.myDebug("check")
     'find the maximum Gambas column width
     For TextW = 3000 DownTo 0 Step 4
+      global.myDebug("check")
       Try MyGrid.Columns[0].w = TextW
-      If Error Then Return
-      If MyGrid.Columns[0].w = TextW Then Break
+      global.myDebug("check")
+      If Error Then 
+        global.myDebug("check")
+        Return
+      Endif
+      If MyGrid.Columns[0].w = TextW Then 
+        global.myDebug("check")
+        Break
+      Endif
+      global.myDebug("check")
     Next
     maxgbw = TextW
-
+  global.myDebug("check")
     FirstR = global.MyRowAt(MyGrid, MyGrid.y)
+    global.myDebug("check")
     LastR = global.MyRowAt(MyGrid, MyGrid.h)
-
+global.myDebug("check")
     If LastR = -1 Then LastR = Mygrid.rows.count - 1
+    global.myDebug("check")
     If firstR = -1 Then firstR = 0
-
+global.myDebug("check")
     For c = firstC To LastC 'visible rows are always correct
+      global.myDebug("check")
       MaxW = CInt((Len(MyGrid.Columns[c].text) + 6) * CharW)
+      global.myDebug("check")
       ccaption = MyGrid.Columns[c].text
+      global.myDebug("check")
       For r = firstR To lastR Step rstep
+        global.myDebug("check")
         Textw = (Len(GetValue(Searchtable[r], ccaption)) + 6) * CharW
+        global.myDebug("check")
         If MaxW < TextW Then MaxW = textW
+        global.myDebug("check")
         If MaxW >= MaxGbW Then 
+          global.myDebug("check")
           MaxW = MaxGbw
           Break
         Endif
       Next 'r
+      global.myDebug("check")
       Mygrid.Columns[c].w = CInt(MaxW) + 100
+      global.myDebug("check")
     Next 'c
-
+global.myDebug("check")
     FirstC = 0
     LastC = MyGrid.Columns.max
     FirstR = 0
+    global.myDebug("check")
     LastR = Mygrid.Rows.max
+    global.myDebug("check")
     CharW = MyGrid.Font.TextWidth("_")
+    global.myDebug("check")
     charw = CInt(charw * 1.1)
+    global.myDebug("check")
     Rstep = (LastR Div 100) 'get 100 samples
     If rstep = 0 Then rstep = 1
+    global.myDebug("check")
     For c = firstC To LastC
+      global.myDebug("check")
       MaxW = CInt((Len(MyGrid.Columns[c].text) + 6) * CharW)
       ccaption = MyGrid.Columns[c].text
+      global.myDebug("check")
       For r = firstR To lastR Step rstep
+        global.myDebug("check")
         Textw = (Len(GetValue(Searchtable[r], ccaption)) + 10) * CharW
+        global.myDebug("check")
         If MaxW < TextW Then MaxW = textW
+        global.myDebug("check")
         If MaxW >= MaxGbW Then 
+          global.myDebug("check")
           MaxW = MaxGbw
           Break
         Endif
       Next 'r
+      global.myDebug("check")
       Mygrid.Columns[c].w = CInt(MaxW)
+      global.myDebug("check")
     Next 'c
 
-    
+    global.myDebug("check")
     Try MyGrid.Columns[0].w = MyGrid.Columns[0].w + Mygrid[0, 0].Picture.W
-
+global.myDebug("check")
     t1 = Timer()
     global.myDebug("AutosizeColumns, total time: " & CStr((t1 - t0)))
 End
