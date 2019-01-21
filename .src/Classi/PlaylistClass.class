@@ -1512,6 +1512,7 @@ Public Sub AutoSizeColumns(MyGrid As GridView)
     FirstR = global.MyRowAt(MyGrid, MyGrid.y)
     global.myDebug("check")
     LastR = global.MyRowAt(MyGrid, MyGrid.h)
+
 global.myDebug("check")
     If LastR = -1 Then LastR = Mygrid.rows.count - 1
     global.myDebug("check")
@@ -1523,25 +1524,27 @@ global.myDebug("check")
       global.myDebug("check")
       ccaption = MyGrid.Columns[c].text
       global.myDebug("check")
-      For r = firstR To lastR Step rstep
-        global.myDebug("Rstep=" & rstep)
-        global.myDebug("R=" & firstr)
-        global.myDebug("FIRSTR=" & firstr)
-        global.myDebug("LASTR=" & lastr)
-        global.myDebug("check27")
-        Textw = (Len(GetValue(Searchtable[r], ccaption)) + 6) * CharW
-        global.myDebug("textw=" & textw)
-        global.myDebug("check29")
-        If MaxW < TextW Then MaxW = textW
-        global.myDebug("maxw=" & maxw)
-        global.myDebug("check31")
-        global.myDebug("maxgbw=" & maxgbw)
-        If MaxW >= MaxGbW Then 
-          global.myDebug("check MaxW >= MaxGbW ")
-          MaxW = MaxGbw
-          Break
-        Endif
-      Next 'r
+      If lastR <> 0 Then 'see https://github.com/kokoko3k/xt7-player-mpv/issues/23
+        For r = firstR To lastR Step rstep
+          global.myDebug("Rstep=" & rstep)
+          global.myDebug("R=" & firstr)
+          global.myDebug("FIRSTR=" & firstr)
+          global.myDebug("LASTR=" & lastr)
+          global.myDebug("check27")
+          Textw = (Len(GetValue(Searchtable[r], ccaption)) + 6) * CharW
+          global.myDebug("textw=" & textw)
+          global.myDebug("check29")
+          If MaxW < TextW Then MaxW = textW
+          global.myDebug("maxw=" & maxw)
+          global.myDebug("check31")
+          global.myDebug("maxgbw=" & maxgbw)
+          If MaxW >= MaxGbW Then 
+            global.myDebug("check MaxW >= MaxGbW ")
+            MaxW = MaxGbw
+            Break
+          Endif
+        Next 'r
+      Endif
       global.myDebug("check")
       Mygrid.Columns[c].w = CInt(MaxW) + 100
       global.myDebug("check")
