@@ -359,9 +359,7 @@ Public Sub InitLibrary(MyLibrary As PlaylistClass, LibraryGrid As Gridview, With
 End
 
 Public Sub HideGrid(Librarygrid As Gridview)
-  global.myDebug("check")
   librarygrid.visible = False
-
 End
 
 Public Sub ShowGrid(LibraryGrid As Gridview)
@@ -5044,19 +5042,14 @@ Public Sub LibraryGrid_Drop()
   MyLibrary.FilesToProcess = 0
   MyLibrary.FilesProcessed = 0
   MyLibraryProgressBar.value = 0
-  global.myDebug("check")
   UpdateSearchResults(mylibrary, librarygrid, True, Searchfield.text)
-  global.myDebug("check")
   ScrollLeft()
-  global.myDebug("check")
   fmain.MyLibrary.Save(fmain.LibraryGrid, global.confpath)
-  global.myDebug("check")
 End
 
 Public timerscroll As Timer
 
 Public Sub ScrollLeft()
-  global.myDebug("check")
   timerscroll = New Timer As "timerscroll"
   timerscroll.delay = 1
   timerscroll.enabled = True
@@ -5064,11 +5057,9 @@ Public Sub ScrollLeft()
 End
 
 Public Sub timerscroll_timer()
-  global.myDebug("check")
   Try librarygrid.MoveTo(0, 0)
   Try playlistgrid.MoveTo(0, 0)
   timerscroll.enabled = False
-  global.myDebug("check")
 End
 
 Public Sub MenuVideoAudioChains_Click()
@@ -6223,27 +6214,19 @@ Public Sub UpdateSearchResults(MyLibrary As PlaylistClass, LibraryGrid As Gridvi
   'some gtk component problem here
 
   Dim crow As Integer
-  global.myDebug("check")
   HideGrid(LibraryGrid)
-  global.myDebug("check")
   If (Not fmain.fullyloaded) Then
     If Not (librarygrid.tag = "FORCEUPDATE") Then Return
   Endif
-  global.myDebug("check")
   LibraryGrid.clear
   MyLibrary.Search(LibraryGrid, Searchterm)
-  global.myDebug("check")
   If autosize Then
-    global.myDebug("check")
     MyLibrary.AutoSizeColumns(LibraryGrid)
     ' [GB2:FNTH] LibraryGrid.Rows.h = LibraryGrid.Font.Textheight("^_") + global.rowpadding
     'LibraryGrid.Rows.h = LibraryGrid.Font.TextHeight("^_") + global.rowpadding
   Endif
-  global.myDebug("check")
-  If fmain.fullyloaded Then 
-    global.myDebug("check")
+   If fmain.fullyloaded Then 
     ShowGrid(LibraryGrid)
-    global.myDebug("check")
     'Wait
     If mplayer.ProcessRunningOvr() Then
       'Wait
@@ -6254,14 +6237,11 @@ Public Sub UpdateSearchResults(MyLibrary As PlaylistClass, LibraryGrid As Gridvi
         librarygrid[crow, 0].EnsureVisible()
       Endif
     Endif
-    global.myDebug("check")
     Select Case Lower(librarygrid.name)
       Case "librarygrid"
         LibrarySelInfo.visible = False
-        global.myDebug("check")
       Case "playlistgrid"
         CalcTotalLengthInfoOn(myplaylist, playlistgrid, PlayListSelInfo)
-        global.myDebug("check")
     End Select
   Endif
 
