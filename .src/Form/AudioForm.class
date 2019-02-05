@@ -235,7 +235,7 @@ Public Sub AudioAreaGroup_MouseMove()
   FMain.VideoAreaGroup_MouseMove()
 End
 
-Public Sub ShowBackground(Optional i As Image = Null)
+Public Sub ShowBackground(Optional i As Image = Null, Optional blursize As Integer = 6)
   Dim blurred As Image
   Dim gradient As Image
   Dim t As Image
@@ -244,6 +244,33 @@ Public Sub ShowBackground(Optional i As Image = Null)
   Dim max_light_down As Integer = 75 'normalize bright images to this value
   Dim mean As Integer
   Dim backcolorimg As Image
+  Dim bluriterations, c As Integer
+
+  Select Case blursize
+    Case 7
+      blursize = 3
+      bluriterations = 3
+    Case 6
+      blursize = 5
+      bluriterations = 4
+    Case 5
+      blursize = 10
+      bluriterations = 6
+    Case 4
+      blursize = 20
+      bluriterations = 8
+    Case 3
+      blursize = 40
+      bluriterations = 16
+    Case 2
+      blursize = 80
+      bluriterations = 16
+    Case 1
+      blursize = 160
+      bluriterations = 8
+  End Select
+
+  
   
   pictureback.lower
   pictureback.background = Color.black
@@ -259,16 +286,12 @@ Public Sub ShowBackground(Optional i As Image = Null)
   
   'get a good blur effect without using gb.image.effects by resizing the image multiple times.
   'it works!
-  blurred = blurred.Stretch(10, 10)
-  blurred = blurred.Stretch(5, 5)
-  blurred = blurred.Stretch(10, 10)
-  blurred = blurred.Stretch(5, 5)
-  blurred = blurred.Stretch(10, 10)
-  blurred = blurred.Stretch(5, 5)                                           
-  blurred = blurred.Stretch(gradient.w, gradient.h)
-  blurred = blurred.Stretch(gradient.w, gradient.h)
-
+  For c = 1 To bluriterations
+   blurred = blurred.Stretch(blursize * 2, blursize * 2)
+   blurred = blurred.Stretch(blursize, blursize)     
+  Next
   
+
   'normalize brightness
   mean = c_mean(blurred)
   If mean > max_light Then
@@ -276,26 +299,13 @@ Public Sub ShowBackground(Optional i As Image = Null)
   Endif
   
   'compose the alpha mask gradient over the blurred image  
-   blurred.PaintImage(gradient, 0, 0)
-   'blurred.PaintImage(gradient, 0, 0)
+  blurred = blurred.Stretch(blurred.w, gradient.H)
+  gradient = gradient.Stretch(blurred.w, blurred.h)
+  blurred.PaintImage(gradient, 0, 0)
 
-
-  'antiglitch(Color.SetAlpha(blurred.Stretch(1, 3)[0, 1], 0)) 'will be used to draw the background so that glitches will be less visible.
 
   pictureback.picture = blurred.picture
   pictureback.show
-
-
-'   If mean > max_light_down Then
-'     picturebox1.Background = Color.black
-'     picturebox1.picture = pictureback.Picture.Image.Stretch(2, 32).Mirror(False, True).Brightness(- (1 - (max_light_down / mean))).picture
-'       Else
-'     picturebox1.picture = pictureback.Picture.Image.Stretch(2, 32).Mirror(False, True).picture
-'   Endif
-'   ' t = pictureback.Picture.Image.Stretch(1, 1).Stretch(16, 256)
-'   ' picturebox1.Picture.Image.PaintImage(t, 0, 0)
-' 'pictureback.Picture.Image.Stretch(1, 1).picture
-
 
 End
 

@@ -3396,7 +3396,7 @@ Public Function SetRightCache(fullpath As String) As MpvOption[]
 End
 
 
-Private PreviousCoverFile As String = "NOPE"
+Public PreviousCoverFile As String = "NOPE"
 
 Public Sub CoverRefresh(Optional force As Boolean = False)
   
@@ -3451,7 +3451,7 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
       errore:
       If Error Then audioform.CoverBox.picture = covermanager.DefaultLibraryIcon(mplayer.getP("fullpath"), AudioForm.coversize)
 
-      Audioform.ShowBackground(forbackground)
+      Audioform.ShowBackground(forbackground, generaloptions.sliderblur.value)
     Endif
     audioform.PictureBack.show
     ShowAudioPanel(True, Samecover)

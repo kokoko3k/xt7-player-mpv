@@ -1557,3 +1557,9 @@ End
 ' '---------------- /HACKY WORKAROUND TO STOP SCROLLVIEWS SCROLLING WHEN OBJECTS ARE FOCUSED
 
 
+
+Public Sub sliderblur_Change()
+
+  fmain.PreviousCoverFile = Null
+
+End

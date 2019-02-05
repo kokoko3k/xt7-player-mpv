@@ -2519,6 +2519,21 @@
             Picture = Picture["icon:/16/color"]
           }
         }
+        { NoParseStyle11 HBox
+          MoveScaled(3,81,50,4.5714)
+          Spacing = True
+          { FontLabel9 Label
+            MoveScaled(1,1,17,3)
+            AutoResize = True
+            Text = ("Audio cover blur amount")
+          }
+          { sliderblur SliderBox
+            MoveScaled(16,0,32,4)
+            MinValue = 1
+            MaxValue = 7
+            Value = 6
+          }
+        }
       }
       Index = 0
     }
