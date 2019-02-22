@@ -259,7 +259,8 @@ Public Sub Load(TheForm As Object, Filename As String)
   Dim myobj As Object
   Dim theSettings, SubSettings As String[]
   Dim i, j As Integer = 0
-  Dim obj_name As String
+  Dim obj_name, FirstChar As String
+  'If Lower(theform.name) = "fmain" Then Stop
   'Filename is the form setting file
   '/home/user/.config/gambas/Xt7-Player/default.profile/FMain
   FileName = Filename & ".profile/" & TheForm.name
@@ -267,7 +268,10 @@ Public Sub Load(TheForm As Object, Filename As String)
   theSettings = ReadedConfFile(Filename)
   
   For i = 0 To thesettings.Max
-    If Left(thesettings[i]) <> "." Then 'if it is not a property, but an object name
+    FirstChar = Left(thesettings[i]) 
+    'Objects beginning with "." are properties
+    'Objects beginning With "#" are internal gambas sub - objects
+    If (FirstChar <> "." And FirstChar <> "#") Then 
       obj_name = thesettings[i]
       myobj = theform[obj_name]
       If myobj <> Null Then 'if we found that object in the form controls
@@ -486,6 +490,7 @@ Public Sub Save(TheForm As Object, FileName As String)
   Dim i As Integer
   Dim layout As String
   Dim objvalid As Boolean = False
+  Dim objname As String = ""
   Dim TheFormIsAlreadyLoaded As Boolean = True
 
   'FMain.cachedopts = "" 'fixmempv se vuoi reimplementare le cachedopts
@@ -518,8 +523,9 @@ Public Sub Save(TheForm As Object, FileName As String)
   For Each TheObject In TheForm.controls
     
     'If theobject.name Like "#*" Then Stop
+    Try objname = theobject.name
+    Try objvalid = ((objname <> "") And (Left(objname) <> "#"))
     
-    Try objvalid = (theobject.name <> "")
     If Error Then Goto returnlabel
     If (Not (Object.Type(TheObject) = "Menu")) And (Not Match(TheObject.name, ExcludedValues)) And (Not (theobject Is Separator)) Then
       'Don't descend in floatspinbox,Vslider and StringFileReq classes
