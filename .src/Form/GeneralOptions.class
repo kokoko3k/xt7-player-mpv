@@ -1360,8 +1360,9 @@ Public Sub uservalue_mousedown()
 End
 
 Public Sub ComboOption_gotfocus()
-  Dim OverWrite As Boolean = True
+  Dim OverWrite As Boolean = False
   If Last.next.next Is Combobox Then
+    If (Trim(Object.GetProperty(Last.next.next, "text")) = "") Then overwrite = True
     SyncUserOptions(Last.next.next, overwrite)
   Endif
 End
