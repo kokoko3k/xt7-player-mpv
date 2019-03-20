@@ -641,15 +641,14 @@ Private Function internal_options() As Collection
 
   'Returstop
   'out["quiet"] = "yes"
+
   out["input-file"] = SetUpInputPipe()
   out["msg-color"] = "no"
   out["msg-level"] = "all=v,cplayer=status,dvdnav=no,disc=no"
   out["input-default-bindings"] = "no"
   out["term-status-msg"] = play_initialized_str
   out["force-seekable"] = "yes" 'this will allow seeks within the cache
-  out["script"] = killer_script_filename()
-
-  'out["script"] = lua_list() 'killer_script_filename()
+  set_option("script", killer_script_filename(), True)
 
   'this array will be needed by do_apply().
   'because it decides if a restart is needed by comparing the changed user options
