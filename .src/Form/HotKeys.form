@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,87.5714,60)
+  MoveScaled(0,0,115,95)
   ToolTip = ("Double click on a cell to enter a new hotkey.\nSelect a cell and hit \"del\" to delete one.")
   Text = ("Hotkeys")
   Icon = Picture["icon:/small/shortcut"]
@@ -25,11 +25,11 @@
     }
   }
   { TabStrip1 TabStrip
-    MoveScaled(1,0,63,55)
+    MoveScaled(1,0,113,89)
     Tracking = True
     Expand = True
     Arrangement = Arrange.Vertical
-    Count = 2
+    Count = 3
     Index = 0
     Text = ("Local Hotkeys")
     { Panel1 Panel
@@ -44,6 +44,7 @@
         Expand = True
         Border = False
         Mode = Select.Single
+        ShowCursor = True
         Header = GridView.Both
       }
     }
@@ -96,6 +97,36 @@
       }
     }
     Index = 1
+    Text = ("xt7 -> mpv translation")
+    { VBox3 VBox
+      MoveScaled(1,2,109,79)
+      Margin = True
+      { Label1 Label
+        MoveScaled(1,0,105,6)
+        Font = Font["Bold,+1"]
+        AutoResize = True
+        Text = ("Translate Xt7 hotkeys to mpv hotkeys")
+      }
+      { Label2 Label
+        MoveScaled(1,6,103,7)
+        Font = Font["Italic,-1"]
+        Padding = 12
+        AutoResize = True
+        Text = ("Since xt7 handles input key events, mpv scripts can't know if a key has been pressed or not.\nHere you can associate an hotkey handled by xt7 to an hotkey handled by mpv (and so by mpv scripts).\nThis is even a convenient way to change an mpv script input hotkeys to your likings.")
+      }
+      { Button5 Button
+        MoveScaled(95,10,16,4)
+      }
+      { gridtranslate GridView
+        MoveScaled(3,14,102,59)
+        Tracking = True
+        Expand = True
+        Mode = Select.Single
+        ShowCursor = True
+        Header = GridView.Both
+      }
+    }
+    Index = 2
     Text = ("Global Hotkeys")
     { CheckBoxEnableGlobalHotkeys CheckBox
       MoveScaled(2,2,57,4.5714)

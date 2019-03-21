@@ -1,0 +1,108 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,64,35)
+  Persistent = True
+  Resizable = False
+  Arrangement = Arrange.Vertical
+  Spacing = True
+  Margin = True
+  { VPanel1 HBox
+    MoveScaled(5,1,60,5)
+    Spacing = True
+    { ToggleButton1 ToggleButton change_mpv_hotkey_group
+      Name = "ToggleButton1"
+      MoveScaled(26,0,16,4)
+      #Translate = False
+      Tag = "SHIFT"
+      Expand = True
+      Text = "Shift"
+    }
+    { ToggleButton2 ToggleButton change_mpv_hotkey_group
+      Name = "ToggleButton2"
+      MoveScaled(43,0,16,4)
+      #Translate = False
+      Tag = "CTRL"
+      Expand = True
+      Text = "Control"
+    }
+  }
+  { VPanel2 HBox
+    MoveScaled(1,7,60,5)
+    Spacing = True
+    { ToggleButton3 ToggleButton change_mpv_hotkey_group
+      Name = "ToggleButton3"
+      MoveScaled(26,0,16,4)
+      #Translate = False
+      Tag = "ALT"
+      Expand = True
+      Text = "Alt"
+    }
+    { ToggleButton4 ToggleButton
+      MoveScaled(43,0,16,4)
+      #Translate = False
+      Tag = "META"
+      Expand = True
+      Action = "change_mpv_hotkey_group"
+      Text = "Meta"
+    }
+  }
+  { VPanel3 HBox
+    MoveScaled(1,14,60,5)
+    Spacing = True
+    { Label1 Label
+      MoveScaled(1,0,24,4)
+      AutoResize = True
+      Text = ("Key:")
+    }
+    { ComboBox1 ComboBox change_mpv_hotkey_group
+      Name = "ComboBox1"
+      MoveScaled(34,0,24,4)
+      #Translate = False
+      Expand = True
+    }
+  }
+  { HBox2 HBox
+    MoveScaled(6,20,48,1)
+    Expand = True
+  }
+  { Separator1 Separator
+    MoveScaled(1,22,61,1)
+  }
+  { VPanel4 HBox
+    MoveScaled(1,22,60,5)
+    Spacing = True
+    { Label2 Label
+      MoveScaled(3,0,10,4)
+      AutoResize = True
+      Text = ("mpv hotkey:")
+    }
+    { TextBox1 TextBox
+      MoveScaled(24,0,35,5)
+      Expand = True
+    }
+  }
+  { HBox1 HBox
+    MoveScaled(1,29,62,5)
+    Spacing = True
+    { Panel1 Panel
+      MoveScaled(4,0,4,4)
+      Expand = True
+    }
+    { btnOK Button
+      MoveScaled(45,1,16,4)
+      Text = ("OK")
+      Picture = Picture["icon:/small/ok"]
+      Default = True
+    }
+  }
+}
+
+# Gambas Action File 3.0
+
+{ Actions
+  { Action change_mpv_hotkey_group
+    Text = "Meta"
+    Picture = "$ToggleButton"
+  }
+}

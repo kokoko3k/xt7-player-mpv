@@ -43,9 +43,9 @@ End
 
 Private already_filled As Boolean = False
 
-Private Sub FillGridHeaders()
+Private Sub FillGridHeaders(Optional force As Boolean = False)
   Dim r, c As Integer
-  If already_filled Then Return
+  If (already_filled And (Not force)) Then Return
   already_filled = True
   'fixmempv
   'Local Hotkeys#####################################
@@ -208,6 +208,19 @@ Private Sub FillGridHeaders()
     Endif
   Next 'r
   
+
+  ' gambas to mpv translation grid **********************
+  
+  
+
+  gridtranslate.columns.count = 3
+  gridtranslate.rows.count = 100
+  gridtranslate.Header = GridView.horizontal
+  gridtranslate.Columns[0].text = ("xt7 hotkey")
+  gridtranslate.Columns[1].text = ("mpv hotkey")
+  gridtranslate.Columns[2].text = ("Comment")
+  gridtranslate.Columns[0].w = gridtranslate.Font.TextWidth("12345678901234567890123456789")
+  gridtranslate.Columns[1].w = gridtranslate.Font.TextWidth("12345678901234567890123456789")
   
 End
 
@@ -281,6 +294,14 @@ Private Sub DefaultFill()
 
 End
 
+Private Function Grab_mpv() As String
+  HotKeyGrabmpv.show
+  'ME.hide
+  Repeat
+    Wait 0.1
+  Until HotKeyGrabmpv.visible = False
+  Return HotKeyGrabmpv.hotkey_out
+End
 
 
 Private Function Grab() As String
@@ -330,7 +351,7 @@ End
 Public Sub Form_Open()
   FirstLoadIfNeeded()
   Global.Center(Fmain, Me)
-  FillGridHeaders()
+  Try FillGridHeaders()
 End
 
 Private Function CheckDuplicate(Hotkey As String, RowSrc As Integer, ColSrc As Integer, MyGrid As Gridview) As Boolean
@@ -349,7 +370,7 @@ Private Function CheckDuplicate(Hotkey As String, RowSrc As Integer, ColSrc As I
     Next 'r
     If FoundDupe Then Break
   Next 'c
-  
+
   If FoundDupe And (Not ((R = RowSrc) And (C = ColSrc))) Then
     If MyGrid.header = GridView.both Then 
       DupedFunction = MyGrid.rows[r].Text
@@ -385,55 +406,107 @@ Private Function MouseInsideGrid(Librarygrid As Gridview) As Boolean
 End
 
 Public Sub HotKeysGrid_DblClick()
-  Dim PointedRow As Integer = HotKeysGrid.row
-  Dim PointedCol As Integer = HotKeysGrid.Column
+  handle_new_xt7_hotkey(hotkeysgrid)
+End
+
+Public Sub gridtranslate_DblClick()
+  If Last.column = 0 Then handle_new_xt7_hotkey(gridtranslate)
+  If Last.column = 1 Then handle_new_mpv_hotkey(gridtranslate)
+  If Last.column = 2 Then Last[Last.row, Last.column].text = MyAskName.Ask(("Type a comment"), "", True)
+End
+
+
+Public Sub handle_new_mpv_hotkey(g As Gridview)
+
+  Dim PointedRow As Integer = g.row
+  Dim PointedCol As Integer = g.Column
   Dim GrabbedData As String
   Dim w1, w2 As Integer = 0
 
   If pointedcol = -1 Then Return
   If pointedrow = -1 Then Return
-  If pointedcol = 0 Then 
+
+
+  If MouseInsideGrid(g) Then
+    GrabbedData = Grab_mpv()
+    'Insert Grabbed Data into a cell, discard if no Data is received (eg: shift pressed)
+        g[pointedrow, PointedCol].Text = GrabbedData
+    
+    'Expand the column
+    w1 = g.Columns[PointedCol].width
+    ' [GB2:FNTW] w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[pointedrow, PointedCol].Text)
+    w2 = g.Font.TextWidth(g[pointedrow, PointedCol].Text)
+    If w1 < w2 Then
+      g.Columns[PointedCol].width = w2 + 8
+    Endif
+  Endif
+  
+End
+
+
+
+
+Public Sub handle_new_xt7_hotkey(g As Gridview)
+
+  Dim PointedRow As Integer = g.row
+  Dim PointedCol As Integer = g.Column
+  Dim GrabbedData As String
+  Dim w1, w2 As Integer = 0
+
+  If pointedcol = -1 Then Return
+  If pointedrow = -1 Then Return
+  If (pointedcol = 0) And g <> gridtranslate Then 
     action_click(pointedrow)
     Return
   Endif
 
-  If MouseInsideGrid(HotKeysGrid) Then
+  If MouseInsideGrid(g) Then
     GrabbedData = Grab()
     'Insert Grabbed Data into a cell, discard if no Data is received (eg: shift pressed)
     If Not (GrabbedData = "Mouse=0 Wheel=NONE Key= **") Then
-      If CheckDuplicate(GrabbedData, HotKeysGrid.row, HotKeysGrid.Column, HotKeysGrid) Then
-        HotKeysGrid[pointedrow, PointedCol].Text = GrabbedData
+      If CheckDuplicate(GrabbedData, g.row, g.Column, g) Then
+        g[pointedrow, PointedCol].Text = GrabbedData
       Endif
     Endif
     
     'Expand the column
-    w1 = HotKeysGrid.Columns[PointedCol].width
+    w1 = g.Columns[PointedCol].width
     ' [GB2:FNTW] w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[pointedrow, PointedCol].Text)
-    w2 = HotKeysGrid.Font.TextWidth(HotKeysGrid[pointedrow, PointedCol].Text)
+    w2 = g.Font.TextWidth(g[pointedrow, PointedCol].Text)
     If w1 < w2 Then
-      HotKeysGrid.Columns[PointedCol].width = w2 + 8
+      g.Columns[PointedCol].width = w2 + 8
     Endif
   Endif
   
 End
 
-Public Sub HotKeysGrid_KeyPress()
-  Dim PointedRow As Integer = HotKeysGrid.row
-  Dim PointedCol As Integer = HotKeysGrid.Column
+
+Public Sub handle_grid_keypress(g As Gridview)
+  Dim PointedRow As Integer = g.row
+  Dim PointedCol As Integer = g.Column  
   
   If Key.code = Key.delete Then
-    If (pointedcol > 0) Then
-      HotKeysGrid[pointedrow, PointedCol].text = ""
+    If (pointedcol > 0) Or (g = gridtranslate) Then
+      g[pointedrow, PointedCol].text = ""
         Else 
-      If pointedrow >= (predefined_hotkeys_number) Then
-        HotKeysGrid[pointedrow, PointedCol].text = customize_me_msg
+      If g = hotkeysgrid Then
+        If pointedrow >= (predefined_hotkeys_number) Then
+          g[pointedrow, PointedCol].text = customize_me_msg
+        Endif
       Endif
     Endif
-
-  Endif
-
-  
+  Endif 
 End
+
+
+Public Sub HotKeysGrid_KeyPress()
+  handle_grid_keypress(hotkeysgrid)
+End
+
+Public Sub gridtranslate_KeyPress()
+  handle_grid_keypress(gridtranslate)
+End
+
 
 Public Sub SaveHotKeys(ProfileName As String)
   'DIM filename AS String = ProfileName & "." & "HotKeys.txt"
@@ -441,6 +514,7 @@ Public Sub SaveHotKeys(ProfileName As String)
   Dim filename_v2 As String = ProfileName & ".profile/" & "HotKeys_v2.txt"
   Dim filename_fs As String = ProfileName & ".profile/" & "HotKeys_fs.txt"
   Dim filename_global_hk As String = ProfileName & ".profile/" & "HotKeys_global_enabled.txt"
+  Dim filename_translation As String = ProfileName & ".profile/" & "HotKeyTranslation.txt"
   Dim globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
   Dim xbindkeysfilename As String = ProfileName & ".profile/" & "xbindkeysrc"
   Dim HotFile As File
@@ -479,10 +553,18 @@ Public Sub SaveHotKeys(ProfileName As String)
 
   For r = 0 To HotKeysGrid.Rows.count - 1
     For c = 0 To HotKeysGrid.Columns.Count - 1
-      local_data &= "\n" & r & "," & c & "," & HotKeysGrid[r, c].text  
+      local_data &= "\n" & r & Chr(8) & c & Chr(8) & HotKeysGrid[r, c].text  
     Next
   Next
   File.Save(filename_v2, local_data)
+
+  local_data = ""
+  For r = 0 To gridtranslate.Rows.count - 1
+    For c = 0 To gridtranslate.Columns.Count - 1
+      local_data &= "\n" & r & Chr(8) & c & Chr(8) & gridtranslate[r, c].text  
+    Next
+  Next
+  File.Save(filename_translation, local_data)
   
   
   'global hotkeys
@@ -522,6 +604,7 @@ Public Sub LoadHotKeys(ProfileName As String)
   Dim filename_v2 As String = ProfileName & ".profile/" & "HotKeys_v2.txt"
   Dim filename_fs As String = ProfileName & ".profile/" & "HotKeys_fs.txt"
   Dim filename_global_hk As String = ProfileName & ".profile/" & "HotKeys_global_enabled.txt"
+  Dim filename_translation As String = ProfileName & ".profile/" & "HotKeyTranslation.txt"
   Dim Globalfilename As String = ProfileName & ".profile/" & "GlobalHotKeys.txt"
   Dim xbindkeysfilename As String = ProfileName & ".profile/" & "xbindkeysrc"
   Dim HotFile As File
@@ -557,7 +640,7 @@ Public Sub LoadHotKeys(ProfileName As String)
   If Exist(filename_v2, True) Then
     need_defaults = False
     For Each sRow In Split(File.Load(filename_v2), "\n", "", True, False)
-      Try aRow = Split(sRow, ",", "", False)
+      Try aRow = Split(sRow, "," & Chr(8), "", False)
       If aRow.count > 2 Then 
         c = aRow[1]
         r = aRow[0]
@@ -590,6 +673,17 @@ Public Sub LoadHotKeys(ProfileName As String)
       Endif
     Endif
   Endif
+  
+  'load xt7 to mpv translation hotkeys
+    For Each sRow In Split(File.Load(filename_translation), "\n", "", True, False)
+      Try aRow = Split(sRow, "," & Chr(8), "", False)
+      If aRow.count > 2 Then 
+        r = aRow[0]
+        c = aRow[1]
+        t = aRow[2]
+        gridtranslate[r, c].text = t
+      Endif
+    Next
   
   
   If need_defaults Then DefaultFill()
@@ -860,4 +954,11 @@ Public Sub action_click(Row As Integer)
     HotKeysGrid[r, 0].text = newvalue
   Endif
   HotKeysGrid.Refresh
+End
+
+
+Public Sub Button5_Click()
+
+  FillGridHeaders(True)  
+
 End

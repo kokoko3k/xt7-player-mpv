@@ -1590,6 +1590,7 @@ Public Sub Form_Close()
   Try ladspahelper.close
   Try FormLyrics.close
   Try AudioConvert.close 
+  Try HotKeyGrabMpv.close
   
   'Deduplicate covers every now ant then...
   If (Rnd(0, 10) > 9) Then 
@@ -5488,7 +5489,29 @@ Public Sub HotKeyToMplayer(HotKey As String)
       mplayer.Send(Action)
   End Select
   
+  
+  Translate_to_mpv_hotkey(Hotkey)  
 End
+
+
+Public Sub Translate_to_mpv_hotkey(hotkey As String)
+  'look into translation grid, if something matches
+  'send the correspondent shortcut to mpv
+  Dim g As Gridview = hotkeys.gridtranslate
+  Dim c, r As Integer
+  
+  c = 0
+  For r = 0 To g.rows.Count - 1
+    If g[r, c].text = hotkey Then      
+      mplayer.mpv_command(["keypress", g[r, 1].text])
+      global.myDebug("translated " & hotkey & " to " & g[r, 1].text & ", sending it to mpv")
+    Endif
+  Next
+  
+  
+  
+End
+
 
 Public Sub fileview1Myreload()
   'refresh fileview keeping the scroll position and "current" item (full selection not possible in gambas)
