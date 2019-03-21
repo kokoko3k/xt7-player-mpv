@@ -89,7 +89,8 @@ Public Sub Init()
   Try Optionslist.Add("DVB-T", ("DVB-T"), Picture["GeneralDVBT.png"])
   Try Optionslist.Add("Language", ("Language"), Stock["large/language"])
   Try Optionslist.Add("Misc", ("Misc"), Stock["large/options"])
-  Try Optionslist.Add("User options", ("User options"), Stock["large/terminal"])
+  Try Optionslist.Add("User scripts", ("User scripts"), Stock["large/terminal"])
+  Try Optionslist.Add("User options", ("User options"), Stock["large/script"])
   Try Optionslist.Add("Style", ("Style"), Stock["large/color"])
   DrawFiltersGui()
   
@@ -99,8 +100,6 @@ Public Sub Init()
   NoParseVisType2.Add("3 - Spectrum")
   NoParseVisType2.Add("4 - Frequencies")
   NoParseVisType2.Add("5 - Vectorscope")
-  
-  
   
   InitDone = True
 End
@@ -520,6 +519,33 @@ Public Sub SaveExcludeDir(ProfileName As String)
   Close #outfile
 End
 
+
+Public Sub LoadUserScriptsList(ProfileName As String)
+  Dim filename As String = ProfileName & ".profile/" & "userscripts.txt"
+  Dim sList As New String[]
+  ListEditorUserScripts.list = Split(file.Load(filename), "\n", "", True)
+End
+
+Public Sub SaveUserScriptsList(ProfileName As String)
+  Dim filename As String = ProfileName & ".profile/" & "userscripts.txt"
+  Dim outfile As File
+  Dim i As Integer = 0
+  If Not Exist(file.Dir(filename), True) Then
+    Try Mkdir File.dir(File.Dir(File.dir(File.Dir(File.Dir(filename)))))
+    Try Mkdir File.Dir(File.dir(File.Dir(File.Dir(filename))))
+    Try Mkdir File.dir(File.Dir(File.Dir(filename)))
+    Try Mkdir File.Dir(File.Dir(filename))
+    Try Mkdir File.Dir(filename)
+  Endif
+  outfile = Open filename For Write Create
+  For i = 0 To ListEditorUserScripts.list.count - 1
+    Print #outfile, ListEditorUserScripts.list[i]
+  Next 'i
+  Close #outfile
+End
+
+
+
 Public Sub AddBtn_Click()
   If LastDirectory = "" Then LastDirectory = Global.StartFolder
   myDialog.path = LastDirectory
@@ -604,6 +630,7 @@ Public Sub LoadDefault()
   Dim MySettings As New SettingsClass
   MySettings.Load(Me, global.confpath & "/" & global.CurrentProfile)
   LoadWatchDir(global.confpath & "/" & global.CurrentProfile)
+  Try LoadUserScriptsList(global.confpath & "/" & global.CurrentProfile)
   Try LoadExcludeDir(global.confpath & "/" & global.CurrentProfile)
   Alreadyloaded = True
   TimesLoaded += 1
@@ -935,6 +962,7 @@ Public Sub SaveCurrentTo(profile As String)
   MySettings.Save(Me, global.confpath & "/" & Profile)
   SaveWatchDir(global.confpath & "/" & Profile)
   SaveExcludeDir(global.confpath & "/" & Profile)
+  Try SaveUserScriptsList(global.confpath & "/" & Profile)
 End
 
 Public Sub MenuSaveDefault_Click()
@@ -1564,4 +1592,12 @@ Public Sub sliderblur_Change()
 
   fmain.PreviousCoverFile = Null
 
+End
+
+Public Sub AddBtn5_Click()
+  If Dialog.path = "" Then Dialog.path = Desktop.ConfigDir & "/mpv/"
+  Dialog.ShowHidden = True
+  If Not Dialog.OpenFile() Then
+    ListEditorUserScripts.List = ListEditorUserScripts.List.Insert([Dialog.path])
+  Endif
 End

@@ -41,10 +41,10 @@
     }
     { Tabstrip1 TabStrip
       MoveScaled(27,1,65,67)
-      Tag = "User options"
+      Tag = "user scripts"
       Expand = True
       Arrangement = Arrange.Vertical
-      Count = 13
+      Count = 14
       Index = 0
       Text = ("Video")
       { ScrollView1 ScrollView
@@ -100,8 +100,8 @@
           Indent = True
           { PictureBox3 PictureBox
             MoveScaled(1,1,4.5714,4.5714)
-            Picture = Picture["icon:/large/hardware"]
             AutoResize = True
+            Picture = Picture["icon:/large/hardware"]
           }
           { NOPARSE_HwdecCombobox ComboBox
             MoveScaled(20,0,27,4.5714)
@@ -531,7 +531,7 @@
           MoveScaled(1,5,52,2)
         }
         { NOPARSEVBox2 VBox
-          MoveScaled(1,8,51,23)
+          MoveScaled(2,6,51,23)
           ToolTip = ("Directories specified here are recursively added to the playlist\nwhen you commit a playlist update.\nUse add/delete button or drag 'n drop.")
           Spacing = True
           { NoParseWatchedLabel Label
@@ -934,7 +934,7 @@
       Index = 6
       Text = ("CD/DVD")
       { ScrollView10 ScrollView
-        MoveScaled(3,2,58,52)
+        MoveScaled(4,2,58,52)
         Tag = "Audio CD"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -1095,8 +1095,8 @@
           }
           { PictureBox2 PictureBox
             MoveScaled(47,1,5,4.5714)
-            Picture = Picture["youtubeicon.png"]
             AutoResize = True
+            Picture = Picture["youtubeicon.png"]
             Alignment = Align.Right
           }
         }
@@ -1115,8 +1115,8 @@
           }
           { PictureBox4 PictureBox
             MoveScaled(47,1,5,4.5714)
-            Picture = Picture["youtubeicon.png"]
             AutoResize = True
+            Picture = Picture["youtubeicon.png"]
             Alignment = Align.Right
           }
         }
@@ -1142,8 +1142,8 @@
           }
           { PictureBox5 PictureBox
             MoveScaled(47,1,5,4.5714)
-            Picture = Picture["youtubeicon.png"]
             AutoResize = True
+            Picture = Picture["youtubeicon.png"]
             Alignment = Align.Right
           }
         }
@@ -1295,6 +1295,7 @@
             MoveScaled(9,0,8,4.5714)
             MinValue = 1
             MaxValue = 4
+            Value = 1
           }
         }
         { NOPARSEHbox4 HBox
@@ -1651,6 +1652,38 @@
         }
       }
       Index = 11
+      Text = ("User scripts")
+      { ScrollView13 ScrollView
+        MoveScaled(3,5,58,52)
+        Tag = "Audio CD"
+        Expand = True
+        Arrangement = Arrange.Vertical
+        Spacing = True
+        Margin = True
+        Padding = 6
+        { NoParseWatchedLabel2 Label
+          MoveScaled(1,1,38,3)
+          Font = Font["Bold"]
+          AutoResize = True
+          Text = ("Load the following mpv user scripts")
+          Alignment = Align.Left
+        }
+        { NOPARSEVBox3 VBox
+          MoveScaled(1,6,51,45)
+          Spacing = True
+          { ListEditorUserScripts ListEditor
+            MoveScaled(2,3,47,26)
+            Drop = True
+            Expand = True
+          }
+          { AddBtn5 Button
+            MoveScaled(2,30,26,5)
+            Text = ("Add from file")
+            Picture = Picture["icon:/16/find"]
+          }
+        }
+      }
+      Index = 12
       Text = ("User Options")
       { ScrollViewUserOptions ScrollView
         MoveScaled(-1,0,64,62)
@@ -2193,7 +2226,7 @@
           }
         }
       }
-      Index = 12
+      Index = 13
       Text = ("Style")
       { ScrollView9 ScrollView Scrollviews
         Name = "ScrollView9"
