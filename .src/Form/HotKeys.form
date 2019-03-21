@@ -105,14 +105,14 @@
         MoveScaled(1,0,105,6)
         Font = Font["Bold,+1"]
         AutoResize = True
-        Text = ("Translate Xt7 hotkeys to mpv hotkeys")
+        Text = ("Translate Xt7 hotkeys into mpv hotkeys")
       }
       { Label2 Label
         MoveScaled(1,6,103,7)
         Font = Font["Italic,-1"]
         Padding = 12
         AutoResize = True
-        Text = ("Since xt7 handles input key events, mpv scripts can't know if a key has been pressed or not.\nHere you can associate an hotkey handled by xt7 to an hotkey handled by mpv (and so by mpv scripts).\nThis is even a convenient way to change an mpv script input hotkeys to your likings.")
+        Text = ("Since xt7 handles input key events, mpv scripts can't know if a key has been pressed or not.\nHere you can associate and send an hotkey handled by xt7 to an hotkey handled by mpv (and so by mpv scripts).\nThis is also a convenient way to change an mpv script input hotkeys to your likings.")
       }
       { gridtranslate GridView
         MoveScaled(3,14,102,59)

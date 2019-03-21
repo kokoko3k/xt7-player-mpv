@@ -44,6 +44,8 @@
       Tag = "user scripts"
       Expand = True
       Arrangement = Arrange.Vertical
+      Spacing = True
+      Margin = True
       Count = 14
       Index = 0
       Text = ("Video")
@@ -1653,34 +1655,29 @@
       }
       Index = 11
       Text = ("User scripts")
-      { ScrollView13 ScrollView
-        MoveScaled(3,5,58,52)
-        Tag = "Audio CD"
+      { Panel6 Panel
+        MoveScaled(2,2,59,56)
         Expand = True
         Arrangement = Arrange.Vertical
         Spacing = True
         Margin = True
-        Padding = 6
+        Border = Border.Plain
         { NoParseWatchedLabel2 Label
-          MoveScaled(1,1,38,3)
+          MoveScaled(1,0,38,3)
           Font = Font["Bold"]
           AutoResize = True
           Text = ("Load the following mpv user scripts")
           Alignment = Align.Left
         }
-        { NOPARSEVBox3 VBox
-          MoveScaled(1,6,51,45)
-          Spacing = True
-          { ListEditorUserScripts ListEditor
-            MoveScaled(2,3,47,26)
-            Drop = True
-            Expand = True
-          }
-          { AddBtn5 Button
-            MoveScaled(2,30,26,5)
-            Text = ("Add from file")
-            Picture = Picture["icon:/16/find"]
-          }
+        { ListEditorUserScripts ListEditor
+          MoveScaled(2,10,47,26)
+          Drop = True
+          Expand = True
+        }
+        { AddBtn5 Button
+          MoveScaled(2,37,26,5)
+          Text = ("Add from file")
+          Picture = Picture["icon:/16/find"]
         }
       }
       Index = 12
