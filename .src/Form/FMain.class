@@ -5340,6 +5340,44 @@ Public Sub volume_set(value As String)
   If VolumeFocused Then UpdateVolumeTooltip()
 End
 
+Public Sub keys_to_mpv(gb_Hotkey As String)
+  Dim mpv_hotkey As String = ""
+  Dim k As String = ""
+  Dim i As Integer
+  gb_Hotkey = Lower(gb_Hotkey)
+
+  'translate modifiers:
+    If gb_Hotkey Like "*shift*" Then mpv_hotkey = "Shift+"
+    If gb_Hotkey Like "*ctrl*" Then mpv_hotkey &= "Ctrl+"
+    If gb_Hotkey Like "*alt*" Then mpv_hotkey &= "alt+"
+    If gb_Hotkey Like "*meta*" Then mpv_hotkey &= "Meta+"
+  'extract key
+    i = InStr(gb_hotkey, "key=") + 3
+    k = Right(gb_Hotkey, - i)
+    'translate key:
+    Select Case Lower(k)
+      Case "backspace"
+        k = "BS"
+      Case "pageup"
+        k = "PGUP"
+      Case "pagedown"
+        k = "PGDWN"
+      Case "enter"
+        k = "KP_ENTER"
+    End Select
+    
+    mpv_hotkey &= k
+  
+  
+  global.mydebug(gb_Hotkey & " - gb hotkey Translated to mpv hotkey->> " & mpv_hotkey)
+  mplayer.mpv_command(["keypress", mpv_hotkey])
+  
+  
+End
+
+
+
+
 Public Sub HotKeyToMplayer(HotKey As String)
 
   'will send the action to the running mplayer
@@ -5353,6 +5391,7 @@ Public Sub HotKeyToMplayer(HotKey As String)
   Action = HotKeys.ActionRelatedTo(Hotkey)
   
   global.myDebug(Action)
+  If Lower(action) = "nope" Then keys_to_mpv(Hotkey)
   
   If Action Like "seek*" Then
     If global.IsImgFile(mplayer.getP("fullpath")) Then

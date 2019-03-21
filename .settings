@@ -2,7 +2,8 @@
 Count=0
 
 [DebugWindow]
-Count=0
+Count=1
+DebugWindow[1]="opts"
 
 [DebugWindow/(Dir(Directory, "*"))]
 Geometry=[1280,0,224,280]
@@ -368,10 +369,16 @@ Geometry=[1340,343,224,280]
 Geometry=[1294,14,224,280]
 
 [DebugWindow/opts]
-Geometry=[52,0,816,565]
+Geometry=[2070,380,816,565]
 
 [DebugWindow/opts["vo"]]
 Geometry=[1280,0,224,280]
+
+[DebugWindow/opts[0]]
+Geometry=[645,425,816,565]
+
+[DebugWindow/opts[1]]
+Geometry=[66,14,816,565]
 
 [DebugWindow/out]
 Geometry=[1280,0,224,280]
@@ -471,14 +478,14 @@ LastCommit="Use complete video url when downloading streams.\nAvoids problems wi
 
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:62.197"
-File[2]=".src/Classi/MplayerClass.class:12.596"
+File[2]=".src/Classi/MplayerClass.class:0.652"
 Active=7
 File[3]=".src/Form/NewChains.class:0.484"
 Count=65
 File[4]=".src/Form/FMain.form"
-File[5]=".src/Form/FMain.class:0.2917"
+File[5]=".src/Form/FMain.class:26.2873"
 File[6]=".src/Form/NewChains.form"
-File[7]=".src/Form/GeneralOptions.class:0.1368"
+File[7]=".src/Form/GeneralOptions.class:28.116"
 File[8]=".src/0_Moduli/Global.module:42.894"
 File[9]=".src/Form/GeneralOptions.form"
 File[10]=".src/Classi/FloatSpinBox.class:12.180"
