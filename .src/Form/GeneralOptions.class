@@ -321,35 +321,39 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Dim hwdec_choice As String
   Dim myopts As New MpvOption[]
   Dim optnextvalue As String
+  Dim test As Variant
   Dim pt As String
   Previndex = Tabstrip1.index
   For i = 0 To TabStrip1.count - 1
     'TabStrip1.index = i
     For Each TheScrollview In Tabstrip1[i].children
       For Each TheBox In TheScrollview.children
-        If Not (Upper(TheBox.name) Like "NOPARSE*") Then
-          For Each Option In TheBox.children
-            If (Option Is Checkbox) Then
-              If Option.value = True Then 'if checkbox is checked
-                If Option.next Is Label Then 'if the checkbox is alone then read just it
-                  myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), "yes"))
-                    Else 'or else, if checkbox is not alone,parse the value of the next control
-                  If Option.next Is ComboBox Then 'combobox does not have value, but text
-                    myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), Split(Option.next.text, " ")[0]))
-                    Else If Option.next Is StringFileReqClass Then 'file/dir Name, insert double quotes around
-                      myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), "\"" & Option.next.value & "\""))
-                      AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & "\"" & Option.next.value & "\""
-                        Else If Option.next Is Spinbar Then 'Convert float to string
-                          Try myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), Replace(CString(option.next.value), ",", ".")))
-                          Try AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & Replace(CString(option.next.value), ",", ".")
-                      Else
-                    Try myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), option.next.value))
-                    Try AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & option.next.value
+        If Not (Upper(TheBox.name) Like "NOPARSE*") 
+          Try test = TheBox.children.count
+          If Not Error Then
+            For Each Option In TheBox.children
+              If (Option Is Checkbox) Then
+                If Option.value = True Then 'if checkbox is checked
+                  If Option.next Is Label Then 'if the checkbox is alone then read just it
+                    myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), "yes"))
+                      Else 'or else, if checkbox is not alone,parse the value of the next control
+                    If Option.next Is ComboBox Then 'combobox does not have value, but text
+                      myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), Split(Option.next.text, " ")[0]))
+                      Else If Option.next Is StringFileReqClass Then 'file/dir Name, insert double quotes around
+                        myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), "\"" & Option.next.value & "\""))
+                        AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & "\"" & Option.next.value & "\""
+                          Else If Option.next Is Spinbar Then 'Convert float to string
+                            Try myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), Replace(CString(option.next.value), ",", ".")))
+                            Try AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & Replace(CString(option.next.value), ",", ".")
+                        Else
+                      Try myopts.Add(newopt(Replace(Split(Option.name, ".")[0], "000", "-"), option.next.value))
+                      Try AllOptions = AllOptions & " -" & Replace(Split(Option.name, ".")[0], "000", "-") & " " & option.next.value
+                    Endif
                   Endif
                 Endif
               Endif
-            Endif
-          Next
+            Next
+          Endif
         Endif
       Next
     Next
