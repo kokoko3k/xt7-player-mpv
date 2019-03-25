@@ -318,7 +318,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Dim Thescrollview As Object
   Dim TheBox As Object
   Dim AllOptions As String = ""
-  Dim hwdec_choice As String
+  Dim hwdec_choice, sScript As String
   Dim myopts As New MpvOption[]
   Dim optnextvalue As String
   Dim test As Variant
@@ -392,6 +392,11 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   'If pt <> "" Then myopts.Add(newopt("ad", pt))
   If pt <> "" Then myopts.Add(newopt("audio-spdif", pt))
 
+  
+  For Each sScript In ListEditorUserScripts.List
+    myopts.Add(newopt("script", sScript))
+  Next
+  
   Return myopts.Insert(parse_custom_options())
 
 End
