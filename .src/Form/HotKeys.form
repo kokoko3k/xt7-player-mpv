@@ -100,6 +100,7 @@
     Text = ("xt7 -> mpv translation")
     { VBox3 VBox
       MoveScaled(1,2,109,79)
+      Expand = True
       Margin = True
       { Label1 Label
         MoveScaled(1,0,105,6)
@@ -115,7 +116,7 @@
         Text = ("Since xt7 handles input key events, mpv scripts can't know if a key has been pressed or not.\nHere you can associate and send an hotkey handled by xt7 to an hotkey handled by mpv (and so by mpv scripts).\nThis is also a convenient way to change an mpv script input hotkeys to your likings.")
       }
       { gridtranslate GridView
-        MoveScaled(3,14,102,59)
+        MoveScaled(3,15,102,59)
         Tracking = True
         Expand = True
         Mode = Select.Single
@@ -136,7 +137,7 @@
       Arrangement = Arrange.Fill
       Border = Border.Plain
       { GlobalHotKeysGrid GridView
-        MoveScaled(1,2,44,27)
+        MoveScaled(-2,1,44,27)
         Expand = True
         Border = False
         Mode = Select.Single
