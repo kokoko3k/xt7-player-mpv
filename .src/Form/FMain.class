@@ -5681,6 +5681,9 @@ End
 Public Sub VideoAreaGroup_MouseWheel()
   
   Dim HotKey As String
+
+  If Not (Last = outerbox) Then Return
+
   If Not mplayer.ProcessRunningOvr() Then Return
   'HotKey = HotKeyGrab.GetMouse(True)
   HotKeysHelper.MouseWheel()
@@ -12374,11 +12377,5 @@ Public Sub menu_edit_bookmarks_click()
   Try Desktop.Open(global.Bookmarksfile)
 End
 
-
-Public Sub bp_MouseDown()
-
-  
-
-End
 
 
