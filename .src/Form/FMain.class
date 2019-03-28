@@ -5678,12 +5678,22 @@ Public Sub VideoAreaGroup_MouseUp()
   
 End
 
+Private last_wheel As Float = 0
+Private last_name As String = ""
+
 Public Sub VideoAreaGroup_MouseWheel()
-  
   Dim HotKey As String
-
-  If Not (Last = outerbox) Then Return
-
+  Dim tNow As Float
+  
+  'Hacky workaround for a bug in gambas that sends multiple mousewheel events
+  'when there are multiple objects in a group.
+        tNow = Timer
+        If ((tNow - last_wheel) < 1) Then 
+          If last_name <> Last.name Then Return
+        Endif
+        last_wheel = tnow
+        last_name = Last.name
+  
   If Not mplayer.ProcessRunningOvr() Then Return
   'HotKey = HotKeyGrab.GetMouse(True)
   HotKeysHelper.MouseWheel()
