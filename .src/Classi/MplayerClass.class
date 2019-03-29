@@ -310,9 +310,8 @@ End
 
 Public Function SupportsLadspa() As Boolean
   Dim out As String
-  Exec ["sh", "-c", "ffmpeg -filters | grep ladspa"] To out
+  Shell "ffmpeg -filters 2>&1|grep -i ladspa|grep -vi \\\\-ladspa" To out
   Return Trim(out) <> ""
-  
 End
 
 
