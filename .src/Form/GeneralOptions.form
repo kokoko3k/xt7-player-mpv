@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,114.2857,86)
+  MoveScaled(0,0,95,86)
   Tag = "12"
   Text = ("General options")
   Icon = Picture["icon:/16/options"]
@@ -25,7 +25,7 @@
     }
   }
   { GENERALOPTIONSFRAME Frame
-    MoveScaled(0,0,96,69)
+    MoveScaled(0,0,92,69)
     Expand = True
     { VBox1 VBox
       MoveScaled(1,1,22,67)
@@ -40,7 +40,7 @@
       }
     }
     { Tabstrip1 TabStrip
-      MoveScaled(27,1,65,67)
+      MoveScaled(27,1,63,67)
       Tag = "user scripts"
       Expand = True
       Arrangement = Arrange.Vertical
@@ -1482,7 +1482,7 @@
         Margin = True
         Padding = 6
         { NoParse49 HBox
-          MoveScaled(1,0,50,4.5714)
+          MoveScaled(1,1,50,4.5714)
           ToolTip = ("Select your mpv executable.\nJust write 'mpv' for default.")
           Spacing = True
           { NoParseLabel21 Label
@@ -1578,7 +1578,7 @@
           MoveScaled(1,31,46,1)
         }
         { NoParse47 HBox
-          MoveScaled(1,32,44,4.5714)
+          MoveScaled(1,31,44,4.5714)
           ToolTip = ("Enable/Disbale Tooltips")
           Spacing = True
           { RestorePlayCHK CheckBox
@@ -1588,16 +1588,20 @@
             Text = ("Start were you left")
           }
         }
-        { NoParse8 HBox
-          MoveScaled(0,36,44,4.5714)
-          ToolTip = ("Enable/Disbale Tooltips")
+        { NoParse55ab2 HBox
+          MoveScaled(0,36,50,4.5714)
           Spacing = True
-          { RememberPlayTimeCHK CheckBox
-            MoveScaled(2,0,41,4.5714)
-            ToolTip = ("This will cause xt7 to restore the playback\ntime position of any recently played file.")
-            Expand = True
+          Indent = True
+          { Label9 Label
+            MoveScaled(1,0,18,4.5714)
             Text = ("Restore playback time position")
-            Value = CheckBox.True
+          }
+          { RestorePlaybackcombobox ComboBox
+            MoveScaled(22,0,26,4.5714)
+            Expand = True
+            ReadOnly = True
+            List = [("1 - Yes"), ("2 - No"), ("3 - Ask"), ("4 - Yes, but only for video files"), ("5 - Ask, but only for Video files")]
+            Text = ("0 - Yes")
           }
         }
         { NoParse6 HBox
