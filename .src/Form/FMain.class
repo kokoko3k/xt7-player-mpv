@@ -404,7 +404,6 @@ Public Sub AllInit_Pre()
     ReallySaveAllSettings("Factory_Defaults", False) 'before loading user settings, make a profile with factory values.
   Endif
   Global.LoadEarlySettings(global.CurrentProfile) 'slow
-  updaterecentfiles()
 
   'the following has To be called after loadearlysettings because 
   'Is There where we load generaloptions form settings
@@ -420,6 +419,7 @@ Public Sub AllInit_Pre()
   SetCDDATabVisibility(False)
   SetChaptersTabVisibility(False)
   SetStyle_early()
+    
   If GeneralOptions.ToolTipsCHKDBUS.value Then 
     dbus.debug = True
     Try ExportDbusProperties()
@@ -429,7 +429,6 @@ Public Sub AllInit_Pre()
   If Error Then 
     global.mydebug("Cannot copy _mpvstats.lua to " & global.tmpdir)
     Stop
-    Return
   Endif
 End
 
@@ -533,7 +532,7 @@ Public Sub AllInit_Post()
   Endif
   global.AddUserExtensions(GeneralOptions.KnownExtensions.text)
   VideoAreaGroup_keypress_timer = New Timer As "VideoAreaGroup_keypress_timer"
-
+    updaterecentfiles()
   FullyLoaded = True
    shadeup.visible = True
   ShowGrid(librarygrid)
@@ -614,30 +613,31 @@ Public Sub updaterecentfiles()
   ClearRecentFilesSub()
   historyarray = Split(history, "\n", "", True)
   historyarray.Reverse()
-
   For Each entry In historyarray
     i = i + 1
     If i > global.Max_menu_History Then Break
     RecentFileEntry = New Menu(MenuOpenRecent) As "RecentFileEntry"
     RecentFileEntry.name = Timer & Rnd(0, 10000)
-    If entry Like "*" & sep & "*" & "leftoff" Then 
+    If entry Like "*" & sep & "*" & "leftoff" & "*" Then 
       If HaveToPlay = "" Then
         Try HaveToPlay = Split(entry, sep, "", True, "")[0]
         If Not Error Then 
           Try HaveToSeek = Split(entry, sep, "", True, "")[1]
-          entry = HaveToPlay
         Endif
       Endif
     Endif
-
-    If entry Like ("*" & sep & "*") Then
-      Try RecentFileEntry.caption = Split(File.Name(entry), sep, "", True, "")[0]
+    If entry Like ("*" & sep & "*" & sep & "*" & sep & "*") Then 'percent information present
+      Try RecentFileEntry.caption = Split(File.Name(entry), sep, "", False, "")[0] & " (" & Split(File.Name(entry), sep, "", True, "")[3] & "%)"
       If Error Then Return
       Try RecentFileEntry.tag = Split(entry, sep, "", True, "")[0]
-      If Error Then Return
-    Else
-      RecentFileEntry.caption = File.Name(entry)
-      RecentFileEntry.tag = entry
+      Else If entry Like ("*" & sep & "*") Then
+        Try RecentFileEntry.caption = Split(File.Name(entry), sep, "", True, "")[0]
+        If Error Then Return
+        Try RecentFileEntry.tag = Split(entry, sep, "", True, "")[0]
+        If Error Then Return
+          Else
+        RecentFileEntry.caption = File.Name(entry)
+        RecentFileEntry.tag = entry
     Endif
     RecentFileEntry.Picture = picture["icon:/medium/recent"]
   Next 'entry
@@ -1412,13 +1412,12 @@ Public Sub FillPropertiesGrid()
 End
 
 
-Public Sub mplayer_user_stopping(fullpath As String, timepos As String)
-Stop
+Public Sub mplayer_user_stopping(fullpath As String, timepos As String, percent As String)
   If Not (global.IsNetworkURI(mplayer.getP("fullpath"))) Then
-    Try addhistory(fullpath, Split(timepos, ".,")[0])
+    Try addhistory(fullpath, Split(timepos, ".,")[0], "userstopped", percent)
     If Error Then 
       global.myDebug("could not add timepos to " & fullpath)
-      addhistory(fullpath)
+      addhistory(fullpath, -1, "userstopped", percent)
     Endif
   Endif
 End
@@ -1427,10 +1426,10 @@ Public Sub Form_Close()
   Dim MySettings As New SettingsClass
   Dim t0 As Float = Timer()
   Dim wasrunning As Boolean = False
-  Dim fullpath, currenttime As String
+  Dim fullpath, currenttime, percent As String
 
   Closing = True
-
+  percent = mplayer.get_property_mpv("=percent-pos", True, 1, True)
   Try wasrunning = mplayer.ProcessRunningOvr()
   Object.Detach(mplayer)
 
@@ -1439,7 +1438,7 @@ Public Sub Form_Close()
     currenttime = mplayer.CurrentTime()
     ButtonStop_Click() 'this one has to come after the previous two assignments
     If Not (global.IsNetworkURI(fullpath)) Then
-      AddHistory(fullpath, CurrentTime, True) 
+      AddHistory(fullpath, CurrentTime, True, percent) 
     Endif
   Endif
 
@@ -3005,11 +3004,12 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   ButtonPlay.enabled = True
   MenumediaExplorer.Enabled = True
-  addhistory(FullPath)
+  addhistory(FullPath, "-1", False, "?")
 
   PlayStarted = True
   EndOfMediaReached = False
   VEqHasBeenSet = False
+
 
 
   If Trim(theradiolabel) <> "" Then
@@ -3024,6 +3024,8 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   Wait 
 
   FillPropertiesGrid()  
+
+
  
   videobox.cached = True 
 
@@ -3082,11 +3084,12 @@ End
 
 
 
-Public Sub addhistory(fullpath As String, Optional Savetime As String = "0", Optional leftoff As Boolean = False)
+Public Sub addhistory(fullpath As String, Optional Savetime As String = "0", Optional leftoff As Boolean = False, Optional percent As String = "0")
 
   Dim history, entry As String
   Dim historyarray As New String[]
   Dim sep As String = Chr(8)
+  Dim iSavetime As Integer = 0
 
   If Not (Exist(fullpath)) Then Return
   If Not global.IsNetworkURI(fullpath) Then
@@ -3096,18 +3099,21 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0", Opt
       global.myDebug("Error: could not access " & global.historyfile & "")
       Return
     Endif
+
     For Each entry In Split(history, "\n", "", True)
-      ' If entry Like "*" & sep & "*" Then 
-      '   If savetime = "0" Then Try entry = Split(entry, sep, "", True)[0]
-      ' Endif
       If Split(entry, sep)[0] <> fullpath Then historyarray.Add(entry) 'no dupes and last on top
     Next
 
-    If Savetime <> "0" Then 
+      Try iSavetime = CInt(Savetime)
+      If iSavetime < 2 Then Return 'do not save files that has been played for less than 2 seconds...
+
+      Try percent = Split(percent, ",.", "", True, False)[0]
+      Try percent = CString(CInt(percent))
+      If Error Then percent = "0"
       If leftoff Then 
-        historyarray.Add(fullpath & sep & Savetime & sep & "leftoff")
+        historyarray.Add(fullpath & sep & Savetime & sep & "leftoff" & sep & percent)
           Else
-        historyarray.Add(fullpath & sep & Savetime)
+        historyarray.Add(fullpath & sep & Savetime & sep & "userstopped" & sep & percent)
       Endif
     Else
       historyarray.Add(fullpath)
@@ -3122,7 +3128,7 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0", Opt
       history = history & entry & "\n"
     Next
     file.Save(global.Historyfile, history)
-  Endif
+
   If Not closing Then updaterecentfiles()
 
 End
