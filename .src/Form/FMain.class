@@ -1419,7 +1419,7 @@ Public Sub mplayer_user_stopping(fullpath As String, timepos As String, percent 
     Try addhistory(fullpath, Split(timepos, ".,")[0], "userstopped", percent)
     If Error Then 
       global.myDebug("could not add timepos to " & fullpath)
-      addhistory(fullpath, -1, "userstopped", percent)
+      addhistory(fullpath, -1, False, percent)
     Endif
   Endif
 End
@@ -1431,7 +1431,7 @@ Public Sub Form_Close()
   Dim fullpath, currenttime, percent As String
 
   Closing = True
-  percent = mplayer.get_property_mpv("=percent-pos", True, 1, True)
+  percent = mplayer.get_property_mpv("percent-pos", True, 1, True)
   Try wasrunning = mplayer.ProcessRunningOvr()
   Object.Detach(mplayer)
 
@@ -3106,7 +3106,7 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0", Opt
   Dim history, entry As String
   Dim historyarray As New String[]
   Dim sep As String = Chr(8)
-  Dim iSavetime As Integer = 0
+
 
   If Not (Exist(fullpath)) Then Return
   If Not global.IsNetworkURI(fullpath) Then
@@ -3120,9 +3120,6 @@ Public Sub addhistory(fullpath As String, Optional Savetime As String = "0", Opt
     For Each entry In Split(history, "\n", "", True)
       If Split(entry, sep)[0] <> fullpath Then historyarray.Add(entry) 'no dupes and last on top
     Next
-
-      Try iSavetime = CInt(Savetime)
-      If iSavetime < 2 Then Return 'do not save files that has been played for less than 2 seconds...
 
       Try percent = Split(percent, ",.", "", True, False)[0]
       Try percent = CString(CInt(percent))
@@ -3999,7 +3996,7 @@ End
 
 Private Const max_failures As Integer = 10
 
-Public Sub Mplayer_mykill(return_value As Integer, play_success As Boolean)
+Public Sub Mplayer_mykill(return_value As Integer, play_success As Boolean, Optional fullpath As String, Optional percent As String)
   Dim playlistfinished As Boolean = False
   mplayer.Postcommand = generaloptions.NoParsePostCommand.text
   Fmain.caption = global.AppName
@@ -4027,7 +4024,7 @@ Public Sub Mplayer_mykill(return_value As Integer, play_success As Boolean)
   'delete export file
   'Try Kill mymeters.exportfile 'mpv 0.11 removed af_export filter :(
 
-  
+  addhistory(fullpath, "0", False, percent)
   If TogglePls.value And (Not mplayer.user_stopped) And (Not FirstPlay) And (Not (mplayer.getP("fullpath") Like "dvb://*")) And ((mplayer.subsequent_failures < max_failures)) Then
       global.myDebug("end of media reached, playing next video...")
 

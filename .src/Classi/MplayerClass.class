@@ -1473,6 +1473,12 @@ End
 Private restarting As Boolean = False
 Public Sub playerprocess_kill()
   Dim bPlay_success As Boolean
+  Dim fullpath As String
+  Dim percent As String
+
+  fullpath = get_property_mpv("fullpath", True, 1, True)
+  percent = get_property_mpv("percent-pos", True, 1, True)
+  If percent = "99" Then percent = "100" '<-i'm 99% sure of this :P
   bPlay_success = play_success()
   If bPlay_success Then
     subsequent_failures = 0
@@ -1486,14 +1492,14 @@ Public Sub playerprocess_kill()
     af_current = "."
     vf_current = "."
     Try event_loop.stop
-    Raise mykill(return_value, bPlay_success)
+    Raise mykill(return_value, bPlay_success, fullpath, percent)
 
     'post cmd is supposed to be filled in the mykill() event handler.
     ExecutePostCmd()
   Endif
 End
 
-Event mykill(return_value As Integer, initialized_success As Boolean)
+Event mykill(return_value As Integer, initialized_success As Boolean, fullpath As String, percent As String)
 Event ThumbAvailableFor(fullpath As String, g As Gridview, r As Integer, c As Integer)
 Event ThumbErrorFor(fullpath As String, g As Gridview, r As Integer, c As Integer)
 
