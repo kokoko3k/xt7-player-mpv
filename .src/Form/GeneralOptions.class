@@ -101,7 +101,7 @@ Public Sub Init()
   NoParseVisType2.Add("4 - Frequencies")
   NoParseVisType2.Add("5 - Vectorscope")
   
-  If RestorePlaybackcombobox.text = "" Then RestorePlaybackcombobox.text = ("1 - Yes")
+  If RestorePlaybackcombobox.text = "" Then RestorePlaybackcombobox.text = ("4 - Yes, but only for video files")
   
   InitDone = True
 End
