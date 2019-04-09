@@ -477,9 +477,8 @@ Public Sub AllInit_Post()
   If TabSelectedAlbums() Then 
     Albums_Select()
   Endif  
-  
   Try mypodcast.LoadPods(global.confpath & "/mypods.txt", PodcastTree)
-  
+        updaterecentfiles()
   'some gtk component problem here
   Try ComboHistory.LoadHistory(Searchfield, global.confpath & "/" & global.CurrentProfile)
   Try ComboHistory.LoadHistory(SearchfieldPLS, global.confpath & "/" & global.CurrentProfile)
@@ -510,6 +509,8 @@ Public Sub AllInit_Post()
   InitGenresTag()
   Wait 0.1
   SetStyle_later()
+
+
   HotKeys.init()
   Try HotKeys.LoadHotKeys(global.confpath & "/" & global.CurrentProfile)
   Try UpdateProfilesTabList()
@@ -532,7 +533,8 @@ Public Sub AllInit_Post()
   Endif
   global.AddUserExtensions(GeneralOptions.KnownExtensions.text)
   VideoAreaGroup_keypress_timer = New Timer As "VideoAreaGroup_keypress_timer"
-    updaterecentfiles()
+  updaterecentfiles()
+  fmain.fileview1Myreload()
   FullyLoaded = True
    shadeup.visible = True
   ShowGrid(librarygrid)
