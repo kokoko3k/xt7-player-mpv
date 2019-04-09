@@ -2949,12 +2949,12 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
         Case 1 ' always
           start_time = get_history_leftoff_time(fullpath)
         Case 3 
-          If MyQuestion.Ask(("Do you want to start from were you left?"), ("yes"), ("no")) = 1 Then start_time = get_history_leftoff_time(fullpath)
+          If MyQuestion.Ask(("Do you want to start from were you left?"), ("Yes"), ("No")) = 1 Then start_time = get_history_leftoff_time(fullpath)
         Case 4
           If global.IsVideoFile(fullpath) Then start_time = get_history_leftoff_time(fullpath)
         Case 5
           If global.IsVideoFile(fullpath) Then
-            If MyQuestion.Ask(("Do you want to start from were you left?"), ("yes"), ("no")) = 1 Then start_time = get_history_leftoff_time(fullpath)
+            If MyQuestion.Ask(("Do you want to start from were you left?"), ("Yes"), ("No")) = 1 Then start_time = get_history_leftoff_time(fullpath)
           Endif
       End Select
     Endif
