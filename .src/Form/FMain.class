@@ -9914,7 +9914,7 @@ Private Function youtube_query_opts() As String
 
   'https://developers.google.com/youtube/v3/docs/search/list#try-it
 
-  query = YouSearchfield.Text
+  query = global.urlencode(YouSearchfield.Text)
   MaxResults = SpinBoxmaxresults.value
   SortBy = ComboBoxOrderBy.text
   date_start = "" 'fixme

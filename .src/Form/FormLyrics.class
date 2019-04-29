@@ -183,6 +183,7 @@ Private Sub GetAndShow(artist As String, song As String)
       Endif
     Next
   Next
+  combourls.clear
   For i = 0 To urls.Max
     combourls.Add(urls[i])
   Next

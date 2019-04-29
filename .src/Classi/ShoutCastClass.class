@@ -7,20 +7,7 @@ Public items As New String[]
 Public Alternate As Boolean = False
 Public MAXRESULTS As Integer = 1000
 
-Private Function urlencode(strin As String) As String
-        Dim strout As String
-        Dim i As Integer
-        Dim a As Integer
-        For i = 1 To Len(strin)
-                a = Asc(Mid(strin, i, 1))
-                If a < 33 Or a > 126 Then
-                   strout = strout & "%" & Hex$(a, 2)
-                Else
-                   strout = strout & Mid(strin, i, 1)
-                Endif
-        Next
-        Return strout
-End
+
 
 Public Sub Alternatecolor(myplaylist As GridView)
  Dim r, c As Integer
@@ -123,7 +110,7 @@ Public Function GetStationsFromSearch(SearchTerm As String, ShutResultGrid As Gr
   Dim AskUrl As String
   Dim i As Integer
   Dim MyError As Boolean
-  SearchTerm = urlencode(searchterm)
+  SearchTerm = Global.urlencode(searchterm)
   'AskUrl = "http://yp.shoutcast.com/sbin/newxml.phtml?search='" & SearchTerm & "'" & "&limit=" & MAXRESULTS
   AskUrl = "'http://api.shoutcast.com/legacy/stationsearch?k=sh17tOUi_ezL61_A&search=" & SearchTerm & "&limit=" & MAXRESULTS & "'"
   'http://api.shoutcast.com/legacy/stationsearch?k=[Your Dev ID]&search=ambient+beats

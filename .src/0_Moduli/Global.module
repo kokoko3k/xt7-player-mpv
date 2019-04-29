@@ -137,6 +137,22 @@ Public Sub init()
   initdone = True
 End
 
+Public Function urlencode(strin As String) As String
+        Dim strout As String
+        Dim i As Integer
+        Dim a As Integer
+        Dim c As String
+        For i = 1 To Len(strin)
+                c = Lower(Mid(strin, i, 1))
+                If Not ((c Like "[1-10]") Or (c Like "[a-z]")) Then
+                   a = Asc(c)
+                   strout = strout & "%" & Hex$(a, 2)
+                Else
+                   strout = strout & Mid(strin, i, 1)
+                Endif
+        Next
+        Return strout
+End
 
 Public Sub myDebug(Optional a As String = "", Optional b As String = "", Optional c As String = "", Optional d As String = "", Optional e As String = "", Optional f As String = "", Optional g As String = "", Optional h As String = "", Optional i As String = "", Optional j As String = "")
   Dim Caller As String = "Unknown caller"
