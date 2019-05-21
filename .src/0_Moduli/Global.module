@@ -1371,8 +1371,8 @@ Public Function EqualFiles(snew As String, sold As String) As String
     file1 = Open snew For Read
     file2 = Open sold For Read
     Do
-      Read #file1, s1, - blocksize
-      Read #file2, s2, - blocksize
+      Read #file1, s1, -blocksize
+      Read #file2, s2, -blocksize
       If s1 <> s2 Then
         res = "False"
         Break

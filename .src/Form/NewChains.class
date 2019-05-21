@@ -952,7 +952,7 @@ Private Function Parse_video_filter(Filtername As String) As String[]
     Next
 
     If (Right(tmpstring) = ":") Then
-      TmpString = Left(Tmpstring, - 1)
+      TmpString = Left(Tmpstring, -1)
     Endif
 
     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
@@ -1047,7 +1047,7 @@ Private Function Parse_audio_filter(Filtername As String) As String[]
     
 
     If (Right(tmpstring) = ":") Then
-      TmpString = Left(Tmpstring, - 1)
+      TmpString = Left(Tmpstring, -1)
     Endif
 
     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
@@ -1143,7 +1143,7 @@ Private Function Parse_audio_filter_old(Filtername As String) As String
     
 
     If (Right(tmpstring) = ":") Then
-      TmpString = Left(Tmpstring, - 1)
+      TmpString = Left(Tmpstring, -1)
     Endif
 
     If tmpstring <> "" Then parsedfilter = ParsedFilter & "=" & TmpString
@@ -1823,7 +1823,7 @@ Public Sub DrawGraph_part2()
     img = New Image(picturebox1.w, picturebox1.h, back_color)
     Paint.Begin(img)
       'light
-      Paint.brush = Paint.RadialGradient(img.w Div 2, - (img.w Div 2), img.w, img.w Div 2, 0, [Light_color, Color.transparent], [0, 1], 1000)
+      Paint.brush = Paint.RadialGradient(img.w Div 2, -(img.w Div 2), img.w, img.w Div 2, 0, [Light_color, Color.transparent], [0, 1], 1000)
       Paint.Rectangle(0, 0, img.w, img.h)
       Paint.fill
       shadowsize = Min(img.h, img.w) Div 80
@@ -1911,7 +1911,7 @@ Private Sub paint_dB_line(dB As Integer, c As Image, col As Integer)
     Paint.LineTo(c.w, y)
     Paint.stroke
     Paint.brush = Paint.color(Col)
-    db = - db
+    db = -db
     th = Paint.TextSize(db & "dB").H
     tw = Paint.TextSize(db & "dB").w
     Paint.DrawText(dB & "dB", c.w - tw - 10, y - 5)
@@ -2136,7 +2136,7 @@ Public Sub update_acompressor()
 
   If Button_acompressor_autovalues.value = True Then
     Makeupdb = makeupgainspinbox2.text
-    thresholdspinbox.value = - (Makeupdb + 3) '(+3 is to anticlip)
+    thresholdspinbox.value = -(Makeupdb + 3) '(+3 is to anticlip)
     ratiospinbox.value = 20
     attackspinbox.value = 0
     releasespinbox.value = CInt(Min(90, (makeupdb * 2)))

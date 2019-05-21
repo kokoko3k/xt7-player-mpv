@@ -267,7 +267,7 @@ Public Sub Form_Open()
   SetFlexSpaceVisibility(False)
   'init dynagui toolbar objects
   DynaGuiTools.AllowedContainers = ["MainToolbar"] ', "SliderBox"]
-  DynaGuiTools.YOffset = - Me.Font.TextHeight("Ij") - 8
+  DynaGuiTools.YOffset = -Me.Font.TextHeight("Ij") - 8
   ShowAudioPanel(False) 'Hide the coverbox
   'Popup translation needed dialog:
   If global.TranslationNeeded Then
@@ -1545,7 +1545,8 @@ Public Sub Form_Close()
         global.myDebug("wrote last profile", global.currentprofile)
   Endif
 
-
+  get_and_save_allowed_options(global.mpv_allowed_options_file)
+  global.myDebug("wrote mpv allowed options file")
 
 
   'stop any epg scanning instance
@@ -2723,7 +2724,7 @@ Public Function mpv_exe_changed() As Boolean
     Endif
 End
 
-Public Function get_allowed_options() As String[]
+Public Function get_allowed_options(Optional save_forced As Boolean = False) As String[]
   Dim sAllowed_options, sAllowed_option, sOpt As String
   Dim aAllowed_options As New String[]
   
@@ -2732,9 +2733,7 @@ Public Function get_allowed_options() As String[]
     sAllowed_options = File.Load(global.mpv_allowed_options_file)
       Else
     global.myDebug("Cannot find a previously saved " & global.mpv_allowed_options_file & ", this is expected if mpv executable has changed, generating a new one.")
-    Shell GeneralOptions.MplayerExeText.Text & " --list-options |cut -d ' ' -f 2" To sAllowed_options
-    Try File.Save(global.mpv_allowed_options_file, sAllowed_options)
-    If Error Then global.myDebug("Cannot save " & global.mpv_allowed_options_file)
+    sAllowed_options = get_and_save_allowed_options(global.mpv_allowed_options_file)
   Endif
 
 
@@ -2755,6 +2754,15 @@ Public Function get_allowed_options() As String[]
 
   Return aAllowed_options
 End
+
+Public Function get_and_save_allowed_options(dest As String) As String
+  Dim sAllowed_options As String
+  Shell GeneralOptions.MplayerExeText.Text & " --list-options|grep '\\-\\-'|cut -d '-' -f 3-|cut -d ' ' -f 1" To sAllowed_options
+  Try File.Save(global.mpv_allowed_options_file, sAllowed_options)
+  If Error Then global.myDebug("Cannot save " & global.mpv_allowed_options_file)
+  Return sAllowed_options
+End
+
 
 
 
@@ -5375,7 +5383,7 @@ Public Sub keys_to_mpv(gb_Hotkey As String)
     If gb_Hotkey Like "*meta*" Then mpv_hotkey &= "Meta+"
   'extract key
     i = InStr(gb_hotkey, "key=") + 3
-    k = Right(gb_Hotkey, - i)
+    k = Right(gb_Hotkey, -i)
     'translate key:
     Select Case Lower(k)
       Case "backspace"
@@ -5641,7 +5649,7 @@ Public Sub PanelNowNextArrange(Optional Exdended As Boolean = False)
     If .LabelNowInfo.visible Then .PanelNowNext.h += .LabelNowInfo.h + .LabelNextInfo.h
     .PanelNowNext.w = CInt(outerbox.w * 0.8)
     .PanelNowNext.x = (outerbox.w / 2) - (.PanelNowNext.w / 2)
-    .PanelNowNext.y = - .PanelNowNext.padding
+    .PanelNowNext.y = -.PanelNowNext.padding
   End With
 
 End
@@ -9744,7 +9752,7 @@ Public Sub youtubeTree_Activate()
   'if is a moreresult link, search for more results
   If InStr(youtubetree.Current.key, "__MORERESULTS__") Then
     'more_text = InStr(youtubetree.Current.key,&q)
-    Try query = Right(Split(Right(youtubetree.Current.key, - InStr(youtubetree.Current.key, "&q=")), "&")[0], -2)
+    Try query = Right(Split(Right(youtubetree.Current.key, -InStr(youtubetree.Current.key, "&q=")), "&")[0], -2)
     If Error Then 
       global.myDebug("error")
       Goto returnlabel

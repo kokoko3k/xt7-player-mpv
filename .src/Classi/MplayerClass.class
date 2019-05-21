@@ -830,9 +830,9 @@ Private Function get_main_cue_property(cuetext As String, tag As String) As Stri
     Wend
 
     If InStr(aLine, tag) = 1 Then
-      Return Trim(Right(aLine, - Len(tag)))
+      Return Trim(Right(aLine, -Len(tag)))
         Else If InStr(aLine, "REM " & tag) = 1 Then 
-          Return Trim(Right(aLine, - Len("REM " & tag)))
+          Return Trim(Right(aLine, -Len("REM " & tag)))
     Endif
   Next
 End
@@ -1351,7 +1351,7 @@ Public Function DeMuxerslist() As String[]
         mpline = Right(mpline, -1)
         spaces_before &= " "
       Wend
-      MPWord = MPWord & spaces_before & Right(mpline, - Len(mpword))
+      MPWord = MPWord & spaces_before & Right(mpline, -Len(mpword))
       FuncOUT.Add((MPWord))
     Endif
   Next
@@ -1818,32 +1818,32 @@ Public Function options_info() As Collection
 
       Try options_infos[option_info.name] = option_info
       option_info = New MpvOptionInfo
-      option_info.name = Right(sLine, - InStr(sLine, "="))
+      option_info.name = Right(sLine, -InStr(sLine, "="))
       Continue
     Endif
     If sLine Begins "type=" Then
-      option_info.type = Right(sLine, - InStr(sLine, "="))
+      option_info.type = Right(sLine, -InStr(sLine, "="))
       Continue
     Endif    
 
     If sLine Begins "default-value=" Then
-      option_info.default_value = Right(sLine, - InStr(sLine, "="))
+      option_info.default_value = Right(sLine, -InStr(sLine, "="))
       Continue
     Endif        
     
     If sLine Begins "min=" Then
-      option_info.min = Right(sLine, - InStr(sLine, "="))
+      option_info.min = Right(sLine, -InStr(sLine, "="))
       Continue
     Endif    
     
     If sLine Begins "max=" Then
-      option_info.max = Right(sLine, - InStr(sLine, "="))
+      option_info.max = Right(sLine, -InStr(sLine, "="))
       Continue
     Endif    
     
     If sLine Begins "choices=" Then
       option_info.choices = New String[]
-      option_info.choices = Split(Right(sLine, - InStr(sLine, "=")), ",", "", True)
+      option_info.choices = Split(Right(sLine, -InStr(sLine, "=")), ",", "", True)
       Continue
     Endif    
 
@@ -2061,7 +2061,8 @@ Private Function what_changes(oldc As Collection, newc As Collection) As Collect
   'built from changed key values, removed keys,added keys
   
   For Each data In newc
-    k = Trim(newc.key)
+    'k = Trim(newc.key)
+    k = newc.key
     If cFuzzy_exist(k, oldc) Then
       If deQuote(oldc[k]) <> deQuote(newc[k]) Then 
         global.myDebug("old option changed", k, oldc[k], newc[k])
@@ -2104,9 +2105,10 @@ Public Sub do_apply(new_opts As Collection)
   'see if we need a restart
   'make a list of changed options
   changed_opts = what_changes(mpvoptions, new_opts)
+  mpvoptions = new_opts 'for future checks
   If changed_opts.count = 0 Then Return '(unlikely to happen)
   For Each changed_opts
-    name = changed_opts.Key
+    name = Trim(changed_opts.Key)
     data = changed_opts[changed_opts.Key]
     global.myDebug("changed/added/removed option:", name, data)
     If realtime_opts.Find(name) = -1 Then
@@ -2212,7 +2214,7 @@ Private Function fix_for_compand(af As String) As String
 
   iend = InStr(af, "]\"", istart)
   If iend = 0 Then Return af 'something wrong...
-  sOut = Left(af, istart - 1) & Mid(af, istart + 1, iend - Len(af)) & Right(af, - iend - 1)
+  sOut = Left(af, istart - 1) & Mid(af, istart + 1, iend - Len(af)) & Right(af, -iend - 1)
 
   Return sout
 End
@@ -2230,7 +2232,7 @@ Private Function fix_for_anequalizer(af As String) As String
 
   iend = InStr(af, "]\"", istart)
   If iend = 0 Then Return af 'something wrong...
-  sOut = Left(af, istart - 1) & Mid(af, istart + 1, iend - Len(af)) & Right(af, - iend - 1)
+  sOut = Left(af, istart - 1) & Mid(af, istart + 1, iend - Len(af)) & Right(af, -iend - 1)
 
   Return sout
 End
@@ -2340,7 +2342,7 @@ Public Function search_man(search_for As String, Optional lavfi As Boolean = Fal
     Endif
     For Each st In search_term(search_for, lavfi)
       s_pos = InStr(man_page_lavfi, st) 
-      If s_pos > 0 Then Return Left(Right(man_page_lavfi, - s_pos), 80 * 300)
+      If s_pos > 0 Then Return Left(Right(man_page_lavfi, -s_pos), 80 * 300)
       Wait
     Next
       Else 'mpv man
@@ -2351,7 +2353,7 @@ Public Function search_man(search_for As String, Optional lavfi As Boolean = Fal
     Endif
     For Each st In search_term(search_for)
       s_pos = InStr(man_page, st) 
-      If s_pos > 0 Then Return Left(Right(man_page, - s_pos), 80 * 100)
+      If s_pos > 0 Then Return Left(Right(man_page, -s_pos), 80 * 100)
       Wait
     Next
   Endif

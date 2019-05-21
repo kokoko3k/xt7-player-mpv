@@ -1363,7 +1363,7 @@ Public Function Shadowed(src As Picture) As Image
   Dim h As Integer = src.h
   ShadowOffset = ((h - global.rowpadding) Div 8) 
   ShadowOffsetPaint = (ShadowOffset Div 2)
-  offset = - (w Div 90) 
+  offset = -(w Div 90) 
   If (((w + shadowoffset) <> shadowimg.w) Or ((h + shadowoffset) <> shadowimg.h)) Then 
     ResizeShadowTemplate(w, h)
   Endif

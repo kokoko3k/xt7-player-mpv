@@ -295,7 +295,7 @@ Public Sub ShowBackground(Optional i As Image = Null, Optional blursize As Integ
   'normalize brightness
   mean = c_mean(blurred)
   If mean > max_light Then
-    blurred = blurred.Brightness(- (1 - (max_light / mean)))
+    blurred = blurred.Brightness(-(1 - (max_light / mean)))
   Endif
   
   'compose the alpha mask gradient over the blurred image  

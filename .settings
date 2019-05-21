@@ -1,9 +1,10 @@
 [Breakpoints]
-Count=0
+Count=2
+Breakpoint[1]="Global.144"
+Breakpoint[2]="Global.153"
 
 [DebugWindow]
-Count=1
-DebugWindow[1]="prop"
+Count=0
 
 [DebugWindow/(Dir(Directory, "*"))]
 Geometry=[1280,0,224,280]
@@ -45,7 +46,7 @@ Geometry=[1280,0,224,280]
 Geometry=[1280,0,224,280]
 
 [DebugWindow/ImagesURL]
-Geometry=[52,0,646,607]
+Geometry=[52,0,1494,607]
 
 [DebugWindow/Last]
 Geometry=[719,445,561,513]
@@ -107,6 +108,9 @@ Geometry=[1280,0,224,280]
 [DebugWindow/Split(gresults, "<", "", True)]
 Geometry=[52,0,224,280]
 
+[DebugWindow/Split(myline, "\"")]
+Geometry=[1920,0,224,280]
+
 [DebugWindow/Split(out, "\n", "", True)]
 Geometry=[1280,0,224,280]
 
@@ -114,7 +118,7 @@ Geometry=[1280,0,224,280]
 Geometry=[1280,0,224,280]
 
 [DebugWindow/Splitted]
-Geometry=[1280,192,1199,766]
+Geometry=[721,192,1199,766]
 
 [DebugWindow/String]
 Geometry=[1920,0,224,280]
@@ -497,14 +501,14 @@ LastCommit="Use complete video url when downloading streams.\nAvoids problems wi
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:62.197"
 File[2]=".src/Classi/MplayerClass.class:60.233"
-Active=19
+Active=8
 File[3]=".src/Form/NewChains.class:119.1793"
 Count=71
 File[4]=".src/Form/FMain.form"
-File[5]=".src/Form/FMain.class:38.1433"
+File[5]=".src/Form/FMain.class:16.1502"
 File[6]=".src/Form/NewChains.form"
 File[7]=".src/Form/GeneralOptions.class:3.114"
-File[8]=".src/0_Moduli/Global.module:17.136"
+File[8]=".src/0_Moduli/Global.module:0.153"
 File[9]=".src/Form/GeneralOptions.form"
 File[10]=".src/Classi/FloatSpinBox.class:12.180"
 File[11]="AA_ToDo:0.684"
@@ -515,15 +519,15 @@ File[15]=".src/Classi/PlaylistClass.class:32.1583"
 File[16]=".src/Form/HotKeys.class:3.409"
 File[17]=".src/Form/zzzFake.form"
 File[18]=".src/Classi/StartClass.class:0.43"
-File[19]=".src/Form/zzzFake.class:0.1"
+File[19]=".src/Form/zzzFake.class:79.24"
 File[20]=".src/Classi/mpris.class:0.23"
 File[21]=".src/Classi/DbusProperties.class:12.270"
-File[22]=".src/Form/CoverManager.class:24.381"
+File[22]=".src/Form/CoverManager.class:0.40"
 File[23]=".src/Classi/TagLib.class:69.100"
 File[24]=".src/Form/AudioForm.form"
 File[25]=".src/Form/AudioForm.class:0.412"
 File[26]=".src/Form/MyQuestion.form"
-File[27]=".src/Classi/YoutubeClass.class:17.61"
+File[27]=".src/Classi/YoutubeClass.class:12.150"
 File[28]=".src/Classi/MplayerClass_old.class:43.1650"
 File[29]=".src/Form/SubAndOsd.class:30.407"
 File[30]="_mpvstats.lua:27.427"
@@ -533,11 +537,11 @@ File[33]=".src/Classi/OpenSubtitlesAPI.class:31.308"
 File[34]=".src/Classi/WgetClass.class:21.28"
 File[35]=".src/Form/HotKeys.form"
 File[36]=".src/Form/FormLyrics.form"
-File[37]=".src/Form/FormLyrics.class:0.70"
+File[37]=".src/Form/FormLyrics.class:0.193"
 File[38]=".src/Classi/AlbumView.class:0.330"
 File[39]=".src/Classi/CDDB.class:14.91"
 File[40]=".src/Form/CountDown.class:17.3"
-File[41]=".src/Classi/ShoutCastClass.class:0.119"
+File[41]=".src/Classi/ShoutCastClass.class:15.112"
 File[42]=".src/Form/AudioConvert.class:71.132"
 File[43]=".src/Form/LogWindow.class:39.52"
 File[44]=".src/Form/ladspahelper.form"
@@ -570,5 +574,6 @@ File[70]=".src/Form/HotKeyGrabMpv.class:19.178"
 File[71]=".src/0_Moduli/ComboHistory.module:21.6"
 
 [Watches]
-Count=0
+Count=1
+Watch[1]="ImagesURL[14]"
 
