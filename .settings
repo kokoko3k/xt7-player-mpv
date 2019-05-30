@@ -4,7 +4,10 @@ Breakpoint[1]="Global.144"
 Breakpoint[2]="Global.153"
 
 [DebugWindow]
-Count=0
+Count=3
+DebugWindow[1]="changed_opts"
+DebugWindow[2]="new_opts"
+DebugWindow[3]="mpvoptions"
 
 [DebugWindow/(Dir(Directory, "*"))]
 Geometry=[1280,0,224,280]
@@ -201,6 +204,12 @@ Geometry=[52,0,224,280]
 [DebugWindow/blurred.Stretch(blursize * 2, blursize * 2)]
 Geometry=[52,0,224,280]
 
+[DebugWindow/broken_opts]
+Geometry=[1920,0,224,280]
+
+[DebugWindow/c]
+Geometry=[988,191,696,744]
+
 [DebugWindow/changed_opts]
 Geometry=[52,0,285,334]
 
@@ -309,8 +318,11 @@ Geometry=[1294,14,224,280]
 [DebugWindow/lua_scripts]
 Geometry=[52,0,224,280]
 
+[DebugWindow/mplayer.allowed_options]
+Geometry=[1207,367,224,580]
+
 [DebugWindow/mpvoptions]
-Geometry=[629,110,429,777]
+Geometry=[209,271,1686,777]
 
 [DebugWindow/mymp.get_options_info()]
 Geometry=[1280,0,224,280]
@@ -328,10 +340,10 @@ Geometry=[52,0,224,280]
 Geometry=[1280,0,224,280]
 
 [DebugWindow/new_opts]
-Geometry=[147,265,818,650]
+Geometry=[216,56,1349,650]
 
 [DebugWindow/newc]
-Geometry=[1542,33,612,925]
+Geometry=[902,0,612,925]
 
 [DebugWindow/o]
 Geometry=[52,0,378,804]
@@ -352,7 +364,7 @@ Geometry=[66,14,224,280]
 Geometry=[66,14,224,280]
 
 [DebugWindow/oldc]
-Geometry=[1657,0,406,933]
+Geometry=[1514,0,406,933]
 
 [DebugWindow/opt]
 Geometry=[1280,0,224,280]
@@ -439,13 +451,13 @@ Geometry=[1294,14,224,280]
 Geometry=[52,0,1121,910]
 
 [DebugWindow/return_opts]
-Geometry=[1280,0,224,280]
+Geometry=[1042,0,462,1004]
 
 [DebugWindow/return_opts[0]]
 Geometry=[1280,312,224,280]
 
 [DebugWindow/source_opts]
-Geometry=[52,0,301,812]
+Geometry=[1258,110,301,812]
 
 [DebugWindow/subobj]
 Geometry=[1461,143,224,280]
@@ -460,7 +472,7 @@ Geometry=[2029,116,242,351]
 Geometry=[52,0,224,280]
 
 [DebugWindow/temp_opts]
-Geometry=[1280,0,224,280]
+Geometry=[371,0,1133,982]
 
 [DebugWindow/theform[obj_name]]
 Geometry=[48,0,475,846]
@@ -500,15 +512,15 @@ LastCommit="Use complete video url when downloading streams.\nAvoids problems wi
 
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:62.197"
-File[2]=".src/Classi/MplayerClass.class:60.233"
-Active=8
-File[3]=".src/Form/NewChains.class:119.1793"
+File[2]=".src/Classi/MplayerClass.class:0.400"
+Active=2
+File[3]=".src/Form/NewChains.class:3.2038"
 Count=71
 File[4]=".src/Form/FMain.form"
-File[5]=".src/Form/FMain.class:16.1502"
+File[5]=".src/Form/FMain.class:7.1545"
 File[6]=".src/Form/NewChains.form"
 File[7]=".src/Form/GeneralOptions.class:3.114"
-File[8]=".src/0_Moduli/Global.module:0.153"
+File[8]=".src/0_Moduli/Global.module:24.157"
 File[9]=".src/Form/GeneralOptions.form"
 File[10]=".src/Classi/FloatSpinBox.class:12.180"
 File[11]="AA_ToDo:0.684"
@@ -529,7 +541,7 @@ File[25]=".src/Form/AudioForm.class:0.412"
 File[26]=".src/Form/MyQuestion.form"
 File[27]=".src/Classi/YoutubeClass.class:12.150"
 File[28]=".src/Classi/MplayerClass_old.class:43.1650"
-File[29]=".src/Form/SubAndOsd.class:30.407"
+File[29]=".src/Form/SubAndOsd.class:13.276"
 File[30]="_mpvstats.lua:27.427"
 File[31]=".src/Form/SubAndOsd.form"
 File[32]=".src/Form/CoverManager.form"
