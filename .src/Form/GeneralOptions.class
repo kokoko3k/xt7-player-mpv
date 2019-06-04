@@ -378,7 +378,7 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
   Endif
   
   'audio-device
-  myopts.Add(newopt("audio-device", Split(nopParseaudiodevicecombo.text, "~")[0]))
+  If (audio000device.value = CheckBox.True) Then myopts.Add(newopt("audio-device", Split(nopParseaudiodevicecombo.text, "~")[0]))
                                           
   'audio passthrough
   For Each option In noparsevboxpt.Children
