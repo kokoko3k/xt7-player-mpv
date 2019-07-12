@@ -2612,7 +2612,6 @@ Public Function user_options(fullpath As String) As Collection
     For Each opt In generaloptions.visualization_opts()
       opts[opt.name] = opt.data
       opts["wid"] = audioform.Picturebox1.Handle
-      
     Next
   Endif
 
