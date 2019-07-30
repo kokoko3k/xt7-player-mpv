@@ -12092,7 +12092,7 @@ Public Sub Make_modes_menu()
       If generaloptions.Switchres_height_CheckBox.value Then 
         min_h = Left(generaloptions.Switchres_height_Combobox.text, -1)
       Endif
-    
+        
     'minimum size dependant on the video?
       If generaloptions.Switchres_W_H_CheckBox2.value = True Then
         Try s_h = CFloat(mplayer.getP("height"))
@@ -12112,7 +12112,10 @@ Public Sub Make_modes_menu()
     menu_mode.Enabled = False
     'just produce a list of all modes:
     fps = 30
-    min_h = 0
+    'fixed minimum height?
+      If generaloptions.Switchres_height_CheckBox.value Then 
+        min_h = Left(generaloptions.Switchres_height_Combobox.text, -1)
+      Endif
     HZ_ERROR_MAX = 99999
   Endif
   menu_mode = New Menu(menu_modes) 
