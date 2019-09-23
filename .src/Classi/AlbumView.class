@@ -67,6 +67,7 @@ Public Function Init(playlist As Playlistclass, theview As Gridview, Optional fi
   Dim artist As String
   Dim filter As String
   Dim matchfilter As Boolean = False
+  Dim numtracks As Integer = 1
   
   view = theview
   view.clear
@@ -86,9 +87,9 @@ Public Function Init(playlist As Playlistclass, theview As Gridview, Optional fi
 
   'remove duplicates album
   DoSortTable("Album")
-  
   i = localtable.count - 1
   If localtable.count > 1 Then
+    numtracks = 1
     Repeat 'remove duplicate albums
       album = Trim(localplaylist.GetValue(localtable[i], "Album"))
       If album = "" Then album = ("Unknown")
@@ -96,6 +97,13 @@ Public Function Init(playlist As Playlistclass, theview As Gridview, Optional fi
       If nextalbum = "" Then nextalbum = ("Unknown")
       If Lower(Trim(album)) = Lower(Trim(nextalbum)) Then 
         localtable.Remove(i - 1) ' + 1)
+        numtracks += 1
+          Else
+        If numtracks = 1 Then 
+          Global.myDebug(album, " has just one track", " removing it from the albumview list")
+          localtable.Remove(i)
+        Endif
+        numtracks = 1
       Endif
       i = i - 1
     Until (i <= 1)
@@ -115,6 +123,9 @@ Public Function Init(playlist As Playlistclass, theview As Gridview, Optional fi
       Endif
     Next 'i
   Endif
+
+
+
 
 
 
