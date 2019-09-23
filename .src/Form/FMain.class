@@ -3401,6 +3401,14 @@ Public Function SetRightCache(fullpath As String) As MpvOption[]
     Endif
   End With
   
+  If cacheSEC & cacheMB <> "" Then 
+    opt = New MpvOption
+    opt.name = "cache"
+    opt.data = "yes"
+    opts.Add(opt)    
+  Endif
+  
+  
   If cacheSEC <> "" Then
     opt = New MpvOption
     opt.name = "cache-secs"
@@ -3414,10 +3422,10 @@ Public Function SetRightCache(fullpath As String) As MpvOption[]
     opt.data = CacheMB * 1024 * 1024
     opts.Add(opt)
     
-    opt = New MpvOption
-    opt.name = "cache"
-    opt.data = CacheMB * 1024
-    opts.Add(opt)
+    'opt = New MpvOption
+    'opt.name = "cache"
+    'opt.data = CacheMB * 1024
+    'opts.Add(opt)
     
   Endif
 
