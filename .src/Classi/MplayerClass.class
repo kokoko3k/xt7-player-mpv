@@ -425,7 +425,7 @@ Private Function only_allowed_options(source_opts As Collection) As Collection
     sKey = Trim(source_opts.key)
     If allowed_options.Find(skey) = -1 Then
       source_opts.Remove(sKey)
-      global.myDebug("Removing " & skey & " option as it doesn't seem to be supported by the used mpv executable")
+      Debug "Removing " & skey & " option as it doesn't seem to be supported by the used mpv executable"
     Endif
   Next
   Return source_opts
@@ -436,6 +436,7 @@ End
 Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As Collection
   Dim return_opts As Collection = broken_opts.Copy()
   Dim data As String
+  Stop
   'handle corner cases where an option could conflict with another
   For Each data In return_opts
     If data Like "*lavcac3enc*" Then 'unset audio-channels when encoding ac3 streams

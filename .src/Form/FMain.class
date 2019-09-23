@@ -2737,6 +2737,7 @@ Public Function get_allowed_options(Optional save_forced As Boolean = False) As 
 
 
   For Each sAllowed_option In Split(sAllowed_options, "\n", "", True)
+    sAllowed_option = Trim(sAllowed_option)
     If sAllowed_option Begins "--" Then 
       sOpt = Right(sAllowed_option, -2)
       aAllowed_options.Add(sOpt)
@@ -2756,7 +2757,8 @@ End
 
 Public Function get_and_save_allowed_options(dest As String) As String
   Dim sAllowed_options As String
-  Shell GeneralOptions.MplayerExeText.Text & " --list-options|grep '\\-\\-'|cut -d '-' -f 3-|cut -d ' ' -f 1" To sAllowed_options
+  'Shell GeneralOptions.MplayerExeText.Text & " --list-options|grep '\\-\\-'|cut -d '-' -f 3-|cut -d ' ' -f 1" To sAllowed_options
+  Shell GeneralOptions.MplayerExeText.Text & " --list-options|grep '\\-\\-'|awk '{print $1}'" To sAllowed_options
   Try File.Save(global.mpv_allowed_options_file, sAllowed_options)
   If Error Then global.myDebug("Cannot save " & global.mpv_allowed_options_file)
   Return sAllowed_options
