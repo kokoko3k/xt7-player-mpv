@@ -436,7 +436,7 @@ End
 Private Function fix_options(Optional broken_opts As Collection = mpvoptions) As Collection
   Dim return_opts As Collection = broken_opts.Copy()
   Dim data As String
-  Stop
+  
   'handle corner cases where an option could conflict with another
   For Each data In return_opts
     If data Like "*lavcac3enc*" Then 'unset audio-channels when encoding ac3 streams

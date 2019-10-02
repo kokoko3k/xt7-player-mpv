@@ -3,7 +3,7 @@
 Private CURRENTURLIDX As Integer = 0
 Private PREVLINK As String = ""
 Private SEARCHING As Boolean = True
-Private blackdomains As String = "lyrics007.com;cityguideny.com;youtube.com;google.com;bing.com;yahoo.com;google.com;twitter.com;facebook.com;amazon.com"
+Private blackdomains As String = "wikipedia.org;cduniverse.com;last.fm;lyrics007.com;cityguideny.com;youtube.com;google.com;bing.com;yahoo.com;google.com;twitter.com;facebook.com;amazon.com"
 Private baddomains As String = "sweetslyrics.com;lyricsfreak.com;lyricsondemand.com;lyricsbox.com;lyricsreg.com;lyricsty.com;lyrics007.com;mp3lyrics.org;lyrster.com;nl.visit-it.com;supermusic.cz;songmeanings.net;loglar.com;lyyyrics.blogas.lt;lyrics007.com"
 
 
@@ -72,9 +72,13 @@ Private Sub GetAndShow(artist As String, song As String)
   Dim blackfound As Boolean = False
   Dim blackdomain As String
 
-
   Dim i, j As Integer
   Dim urls As New String[]
+  
+  Dim namepath, titleword As String
+  
+  Dim wordmatch As Boolean = True
+  
 
   'Debug strip("<td width=\"311px\" bgcolor=\"#C9EAFF\"><a href=\" title=\"Lyrics\"><img src=\"ilogo.jpg\" border=\"0\" width=\"311\" height=\"108\" alt=\"Lyrics\"></a></td>", "<a href", "</a>")
   'Return
@@ -85,7 +89,6 @@ Private Sub GetAndShow(artist As String, song As String)
   
   artist = CGI.Encode(artist)
   song = CGI.Encode(song)
-  
   Me.show
   Wait
   Me.mouse = Mouse.wait
@@ -183,10 +186,31 @@ Private Sub GetAndShow(artist As String, song As String)
       Endif
     Next
   Next
+
+  'move best urls on top; by now a best url is one that have the song title as last entry in URL path.
+  For i = 0 To urls.max
+    namepath = Lower(File.Name(urls[i]))
+    wordmatch = True
+    For Each titleword In Split(song, " .-,;_")
+      If InStr(namepath, Lower(titleword)) = 0 Then 
+        wordmatch = False
+        Break
+      Endif
+    Next
+    If wordmatch Then
+      urls.add(urls.Extract(i)[0], 0)
+    Endif
+  Next
+  
+  
+  
   combourls.clear
   For i = 0 To urls.Max
     combourls.Add(urls[i])
   Next
+
+  
+  
   SEARCHING = False
   NextBTN_MouseDown()
 End
