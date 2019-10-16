@@ -80,7 +80,7 @@ Public Sub init()
   Videofilter = "*.avi;*.mpg;*.mp4;*.mov;*.mkv;*.asf;*.ogm;*.ogv;*.wmv;"
   videofiltername = ("Common Video Files")
   UncommonAudiofilters = "*.wma;*.ram;*.ac3;*.wav;*.aiff;*.aiffc;*.aac;*.8svx;*.pls;*.dts;*.url"
-  Audiofilter = "*.mp3;*.ogg;*.aac;*.flac;*.mpc;*.ac3;*.m4a;" ' terminate with ";"
+  Audiofilter = "*.mp3;*.ogg;*.aac;*.flac;*.mpc;*.ac3;*.m4a;*.opus;" ' terminate with ";"
   audiofiltername = ("Common Audio Files")
   Multimediafilter = Videofilter & UncommonVideoFilters & Audiofilter & UncommonAudiofilters
   Multimediafiltername = ("Multimedia files")
