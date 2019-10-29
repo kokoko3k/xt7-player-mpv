@@ -110,7 +110,7 @@
             ToolTip = ("Select the preferred hardware decoding method.\n(decode api + video output driver)\n\nCaveats that applies to anything but \"no\" and \"vaapi-copy\"\n- Any video driver in the chains window is overriden\n- Use of video filters will disable hardware decoding")
             Expand = True
             ReadOnly = True
-            List = [("no"), ("auto (no filters and limited video output driver support)"), ("auto-copy"), ("vdpau (no filters and limited video output driver support)"), ("vdpau-copy"), ("vaapi (no filters and limited video output driver support)"), ("vaapi-copy"), ("cuda  (no filters and limited video output driver support)"), ("cuda-copy"), ("nvdec (no filters and limited video output driver support)"), ("nvdec-copy")]
+            List = [("no"), ("auto (no filters and limited video output driver support)"), ("auto-copy"), ("vdpau (no filters and limited video output driver support)"), ("vdpau-copy"), ("vaapi (no filters and limited video output driver support)"), ("vaapi-copy"), ("cuda  (no filters and limited video output driver support)"), ("cuda-copy"), ("nvdec (no filters and limited video output driver support)"), ("nvdec-copy"), ("v4l2m2m-copy")]
             Text = ("no (allows all video filters and drivers)")
           }
         }
