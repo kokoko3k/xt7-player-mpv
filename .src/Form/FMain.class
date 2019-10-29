@@ -5556,6 +5556,7 @@ Public Sub fileview1Myreload()
   Dim achild As Object
   Dim sx, sy As Integer
   Dim current As String
+
   Try current = fileview1.current
   For Each achild In FileView1.Children
     If achild Is Columnview Then
@@ -5568,10 +5569,11 @@ Public Sub fileview1Myreload()
     Endif
   Next 'child
   fileview1.Reload()
-  Wait 'important
+      If fmain.fullyloaded Then Wait 'important ...but gambas crashes exactly here with null object, why?
   FileView1.Current = current
-  Wait 0.1 '...just in case
-  FileView1.Current = current '...just in case
+      If fmain.fullyloaded Then Wait 0.1 '...just in case ...but gambas crashes exactly here with null object, why?
+      FileView1.Current = current '...just in case
+
 End
 
 
