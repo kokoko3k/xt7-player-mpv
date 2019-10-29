@@ -3322,7 +3322,7 @@ Public Sub Fill_Playlist_from_mpv()
   'Is it a playlist?
   Try pCount = mplayer.get_property_mpv("=playlist-count")
   If pCount < 2 Then Return
-   
+  Wait
   If MyQuestion.Ask(("This seems a playlist,\ndo you want me to manage it?"), ("Manage"), ("Just play")) = 2 Then Return
   
   'save the previous playlist
