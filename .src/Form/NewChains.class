@@ -652,13 +652,14 @@ Private Sub draw_filters_video_cfg()
   
   'delogo[=x:y:w:h:t]
   AllParams.Add(["TITLE", ("- Remove logo from input video -"), "Delogo0", ""])
-  AllParams.Add(["RANGE", "X", "1", "1", "2048", "Delogo1", ("TopLeft Corner")])
-  AllParams.Add(["RANGE", "Y", "1", "1", "2048", "Delogo2", ("TopLeft Corner")])
-  AllParams.Add(["RANGE", ("Width"), "0", "50", "2048", "Delogo3", ""])
-  AllParams.Add(["RANGE", ("Height"), "0", "50", "2048", "Delogo4", ""])
-  AllParams.Add(["RANGE", ("Tickness"), "1", "4", "2048", "Delogo5", ""])
-  AllParams.add(["ROCHOOSE", "Show borders", "0 - disable", "1 - enable", "Delogo5", ("Draw rectangle borders")])
-  Global.DrawGui(AllParams, "delogo", aTabstrip, NotSwitchable,,, "lavfi", Me)
+  AllParams.Add(["TIP", ("Make sure you specify and enable at least x,y,w and h"), "Delogo999149", ""])
+  AllParams.Add(["RANGE", "x=", "1", "1", "2048", "Delogo1", ("TopLeft Corner")])
+  AllParams.Add(["RANGE", "y=", "1", "1", "2048", "Delogo2", ("TopLeft Corner")])
+  AllParams.Add(["RANGE", "w=", "0", "50", "2048", "Delogo3", ("Box width")])
+  AllParams.Add(["RANGE", "h=", "0", "50", "2048", "Delogo4", ("Box height")])
+  AllParams.Add(["RANGE", "band=", "1", "4", "2048", "Delogo5", ("Thickness of the fuzzy edge")])
+  AllParams.add(["ROCHOOSE", "show=", "0 - disable", "1 - enable", "Delogo5", ("Draw box borders")])
+  Global.DrawGui(AllParams, "delogo", aTabstrip, Switchable,,, "lavfi", Me)
   AllParams.Clear
 
   'spp[
