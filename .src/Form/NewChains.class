@@ -722,7 +722,7 @@ Private Sub draw_filters_video_cfg()
  'gradfun[=strength[:radius]]
   AllParams.Add(["TITLE", ("- Debands video quickly using gradients. -"), "gradfun0", ""])
   AllParams.Add(["RANGEFLOAT", ("Strength"), "0.51", "1.5", "64", "gradfun1", ("Maximum amount by which the filter will change any one pixel.  Also the threshold for detecting nearly flat regions (default: 1.2).")])
-  AllParams.Add(["RANGE", ("Radius"), "0", "16", "32", "gradfun2", ("Neighborhood to fit the gradient to.  Larger radius makes for smoother gradients, but also prevents the filter from modifying pixels near detailed regions (default: 16).")])
+  AllParams.Add(["RANGE", ("Radius"), "4", "16", "32", "gradfun2", ("Neighborhood to fit the gradient to.  Larger radius makes for smoother gradients, but also prevents the filter from modifying pixels near detailed regions (default: 16).")])
   Global.DrawGui(AllParams, "gradfun", aTabstrip, NotSwitchable,,, "lavfi", Me)
   AllParams.Clear
   
