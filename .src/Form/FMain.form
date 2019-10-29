@@ -393,10 +393,6 @@
         Text = ("SubTitles and Osd") & "..."
         Picture = Picture["icon:/16/font"]
       }
-      { MenuCodecs Menu
-        Text = ("Codecs and demuxers")
-        Picture = Picture["icon:/16/wizard"]
-      }
       { MenuShowDVBT Menu
         Text = ("Simple Dvb-T Tuner")
         Picture = Picture["video-television.png"]
@@ -1398,7 +1394,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-65.2857,18,4.5714)
+              MoveScaled(9.4286,-66.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
