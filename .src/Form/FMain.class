@@ -2952,8 +2952,9 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   'if not forced, see if the current medium were left off and seek to that point
   If start_time = "0" Then
     Try restorechoice = Split(generaloptions.RestorePlaybackcombobox.Current.Text, " ", "")[0]
-    If Not Error Then 
+    If Error Then 
       Debug "ERROR ! could not read restore time choice!"
+        Else
       Select restorechoice '1=yes,2=no,3=ask,4=yes for vids,5=ask for vids
         Case 1 ' always
           start_time = get_history_leftoff_time(fullpath)
