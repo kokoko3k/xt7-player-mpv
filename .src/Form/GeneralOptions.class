@@ -411,23 +411,26 @@ Public Function Visualization_opts() As MpvOption[]
   t1 = global.tmpdir & "/pic.tmp" 
   Try Kill t1
   Select Case Left(NoParseVisType2.text)
+    'warning, the overlay before [vo] must be: overlay=repeatlast=0
+    '         showwaves needs To be set To 25 fps Or 34 fps max, Or sometimes playback Is Stuck at the End Of the stream
+    '--lavfi-complex="[aid1]asplit=3[azero][auno][ao];[azero]showspectrum[spectrum];[auno]showwaves=s=512x512:r=25[waves];[spectrum][waves]overlay=repeatlast=0[vo]"
     Case "1"
       Copy "shade_alpha.png" To t1
-      visstring = "'[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=35,crop=h=(ih/2):y=(0),crop=h=(ih/2):y=ih,colorlevels=romax=0.5:bomin=1:gomin=1[waves];movie=" & t1 & ",scale=h=(128):w=512[pic];[spectrum][pic]overlay[overlay1];[overlay1][waves]overlay[vo]'"
+      visstring = "'[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=30,crop=h=(ih/2):y=(0),crop=h=(ih/2):y=ih,colorlevels=romax=0.5:bomin=1:gomin=1[waves];movie=" & t1 & ",scale=h=(128):w=512[pic];[spectrum][pic]overlay[overlay1];[overlay1][waves]overlay=repeatlast=0[vo]'"
       'visstring = "'[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=20,crop=h=(ih/2):y=(0),crop=h=(ih/2):y=ih,colorlevels=romax=0.5:bomin=1:gomin=1[waves];[spectrum][waves]overlay[vo]'"
     Case "2"
       Copy "shade_alpha.png" To t1
-      visstring = "'[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=35,crop=h=(in_h):y=(in_h/2),colorkey=0x000000:0.1:0.5,colorlevels=romax=0.5:bomin=1:gomin=1[waves];movie=" & t1 & ",scale=h=(128):w=512[pic];[spectrum][pic]overlay[overlay1];[overlay1][waves]overlay[vo]'"
+      visstring = "'[aid1]asplit=3 [azero][auno][ao];[azero]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x512:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h,scale=h=512:w=512:force_original_aspect_ratio=disable[spectrum];[auno]showwaves=s=512x512:mode=line:r=30,crop=h=(in_h):y=(in_h/2),colorkey=0x000000:0.1:0.5,colorlevels=romax=0.5:bomin=1:gomin=1[waves];movie=" & t1 & ",scale=h=(128):w=512[pic];[spectrum][pic]overlay[overlay1];[overlay1][waves]overlay=repeatlast=0[vo]'"
     Case "3"
       Copy "shade_alpha.png" To t1
-      visstring = "'[aid1]asplit [a][ao];[a]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x256:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h[spectrum];movie=" & t1 & ",scale=h=(in_h/1.5)[pic];[spectrum][pic]overlay[vo]'"
+      visstring = "'[aid1]asplit [a][ao];[a]showspectrum=mode=separate:color=intensity:slide=scroll:s=4x256:color=intensity:win_func=blackman:mode=combined:saturation=1,crop=h=(in_h/1.5):y=in_h[spectrum];movie=" & t1 & ",scale=h=(in_h/1.5)[pic];[spectrum][pic]overlay=repeatlast=0[vo]'"
     Case "4"
       Copy "black.png" To t1
-      visstring = "'[aid1]asplit=3[ao][a1][a2];[a1]showfreqs=s=512x256:mode=bar:colors=#eeeeee|#4d4d4d:averaging=0.6[freqs];movie=" & t1 & ",scale=512x256[pic];[a2]adrawgraph=bg=#00000000:size=512x256[blank];[blank][pic]overlay[back];[back][freqs]overlay[vo]'"
+      visstring = "'[aid1]asplit=3[ao][a1][a2];[a1]showfreqs=s=512x256:mode=bar:colors=#eeeeee|#4d4d4d:averaging=0.6[freqs];movie=" & t1 & ",scale=512x256[pic];[a2]adrawgraph=bg=#00000000:size=512x256[blank];[blank][pic]overlay[back];[back][freqs]overlay=repeatlast=0[vo]'"
       'visstring = "'[aid1]asplit=3[ao][a1][a2];[a1]showfreqs=s=512x256:mode=bar:colors=#00bbff|#0088ff:averaging=0.6[freqs];movie=" & t1 & ",scale=512x256[pic];[a2]adrawgraph=bg=#00000000:size=512x256[blank];[blank][pic]overlay[back];[back][freqs]overlay[vo]'"
     Case "5"
       Copy "black.png" To t1
-      visstring = "'[aid1]asplit=3[a1][a2][ao]; [a2]adrawgraph=bg=#00000000:size=256x256[blank];movie=" & t1 & ",scale=256x256[pic];[blank][pic]overlay[back];[a1]avectorscope=size=256x256[sp];[back][sp]overlay[vo]'"
+      visstring = "'[aid1]asplit=3[a1][a2][ao]; [a2]adrawgraph=bg=#00000000:size=256x256[blank];movie=" & t1 & ",scale=256x256[pic];[blank][pic]overlay[back];[a1]avectorscope=size=256x256[sp];[back][sp]overlay=repeatlast=0[vo]'"
   End Select
   If visstring <> "" Then
     myopts.Add(newopt("keepaspect", "no"))
