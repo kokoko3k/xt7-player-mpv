@@ -693,19 +693,18 @@ Public Sub DeleteSelected(MyPlaylist As GridView, Optional DeleteURIes As Boolea
     Endif
     r = r - 1
   Wend
-'  rowheight = MyPlaylist.Rows.h
+
   SyncGrid(MyPlaylist, SearchTable, rowtoselect, ColToSelect)
-'  MyPlaylist.Rows.h = rowheight
-   ' [GB2:FNTH] MyPlaylist.Rows.h = MyPlaylist.Font.Textheight("^_") + global.rowpadding '<<--
-   'MyPlaylist.Rows.h = MyPlaylist.Font.TextHeight("^_") + global.rowpadding '<<--
+
   Try MyPlaylist.scrollx = PrevScrollX
   Try MyPlaylist.scrollY = PrevScrollY
   
-  If myplaylist.name = "LibraryGrid" Then
-    For Each thumbtodelete In thumbstodelete
-      DeleteThumbsOf(thumbtodelete)
-    Next
-  Endif
+  ' Blindly delete covers is not right, since they may be referenced by another item
+  'If myplaylist.name = "LibraryGrid" Then
+  '  For Each thumbtodelete In thumbstodelete
+  '    DeleteThumbsOf(thumbtodelete, True)
+  '  Next
+  'Endif
   
   Try myplaylist.Window.mouse = mouse.default
 End
@@ -730,8 +729,8 @@ End
 
 Public Sub DeleteThumbsOf(myrow As String)
   Dim album, artist As String
-
   Dim p As String
+
   Try p = GetValue(myrow, "Full Path")
   If Error Then global.myDebug("couldn't delete thumbnails")
   
