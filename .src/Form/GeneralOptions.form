@@ -2255,10 +2255,17 @@
           MoveScaled(1,7,50,4.5714)
           Spacing = True
           { ShowCoversInListChk CheckBox
-            MoveScaled(1,0,47,4.5714)
+            MoveScaled(1,0,30,5)
             ToolTip = ("Display cover thumbnails in side lists")
             Expand = True
             Text = ("Show covers in listviews")
+          }
+          { Button_clean_covers Button
+            MoveScaled(31,0,19,4)
+            ToolTip = ("Remove unused cover files")
+            AutoResize = True
+            Text = ("Remove unneeded")
+            Picture = Picture["icon:/16/delete"]
           }
         }
         { NoParse41 HBox

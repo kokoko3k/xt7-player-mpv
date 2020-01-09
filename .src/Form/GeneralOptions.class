@@ -1608,3 +1608,11 @@ Public Sub AddBtn5_Click()
 End
 
 
+
+Public Sub Button_clean_covers_Click()
+  If MyQuestion.Ask(("Delete cover files that are not needed by any library item?"), ("Delete"), ("Keep")) = 2 Then
+    Return
+      Else
+    covermanager.covers_remove_unreferenced()
+  Endif
+End

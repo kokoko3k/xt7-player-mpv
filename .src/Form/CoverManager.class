@@ -1385,5 +1385,34 @@ Public Sub Button1_Click()
   Try Search()
 End
 
-
+Public Sub covers_remove_unreferenced()
+  Dim i As Integer
+  Dim coverfile, f As String
+  Dim artist, album, path As String
+  Dim covers_referenced As New String[]
+  Dim coverdir As String = global.confpath & "/covers/"
+  Dim l As Playlistclass = Fmain.mylibrary
+  'per ogni oggetto nella libreria
+	'se ha cover - > metti nell 'elenco delle cover protette
+  'Per ogni file di cover
+	'  se non c 'è nell'elenco dei protetti, cancellalo.
+  
+  For i = 0 To l.PTable.count - 1
+    album = Trim(l.GetValue(l.PTable[i], "Album"))
+    artist = Trim(l.GetValue(l.PTable[i], "Artist"))
+    path = l.GetValue(l.PTable[i], "Full Path")
+    coverfile = CoverManager.Coverfile(artist, album, path)
+    If Not (covers_referenced.exist(coverfile)) Then 
+      If Exist(coverfile, True) Then covers_referenced.Add(coverfile)
+    Endif
+  Next
+  'global.confpath & "/covers/" 
+  For Each f In Dir(coverdir, "*.jpg")
+    If InStr(f, ".jpg_thumbcache") > 0 Then Continue 'skip check on thumbnails
+    If Not covers_referenced.Exist(coverdir & f) Then
+      global.mydebug(f & " seems not referenced, safe to delete")
+      Try Kill (coverdir & f)
+    Endif
+  Next
+End
 

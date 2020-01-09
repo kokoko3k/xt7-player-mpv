@@ -551,13 +551,9 @@ Public Sub AllInit_Post()
     If Exist(global.arg_file, True) Then fmain.ShowBrowseTabTo(global.arg_file)
   Endif
 
-
   Try MakeProfileMenu()
   Try GetLastVersion()
   fsform.Move(Screens[fmain.screen].x, Screens[fmain.screen].y, Screens[fmain.screen].w, Screens[fmain.screen].H)
-  
-  ' timer_runtime_infos = New Timer As "timer_runtime_infos"
-  ' timer_runtime_infos.enabled = False
 
 End
 
