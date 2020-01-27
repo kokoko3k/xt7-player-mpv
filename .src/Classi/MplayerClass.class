@@ -1815,7 +1815,7 @@ Public Function options_info() As Collection
   Next
   commands &= "quit" & "\n"
   File.Save(t, commands)
-  Shell executable() & " --idle --input-ipc-serve=" & t To out
+  Shell executable() & " --idle --input-ipc-server=" & t To out
   
 
   For Each sLine In Split(out, "\n", "", True)
