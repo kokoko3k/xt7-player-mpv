@@ -424,8 +424,12 @@ Private Function only_allowed_options(source_opts As Collection) As Collection
   For Each sData In source_opts
     sKey = Trim(source_opts.key)
     If allowed_options.Find(skey) = -1 Then
-      source_opts.Remove(sKey)
-      Debug "Removing " & skey & " option as it doesn't seem to be supported by the used mpv executable"
+      If skey <> "input-file" Then 
+        source_opts.Remove(sKey)
+        Debug "Removing " & skey & " option as it doesn't seem to be supported by the used mpv executable"
+          Else
+        Debug "Input-file is deprecated but still accepted; keeping it"
+      Endif
     Endif
   Next
   Return source_opts
