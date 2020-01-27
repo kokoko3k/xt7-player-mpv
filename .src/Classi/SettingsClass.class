@@ -61,6 +61,7 @@ Private Sub Reconfigure(theObject As Object, TheSettings As String[], TheForm As
   Dim MyValue As Variant
   Dim Setting As String
   Dim layout As Integer[]
+
   
   For Each Setting In TheSettings
     Try MyProperty = Split(Setting, "=")[0]
@@ -74,9 +75,10 @@ Private Sub Reconfigure(theObject As Object, TheSettings As String[], TheForm As
         ' If theobject Is Spinbar Then
         '   If theobject.name Like "*extras*" Then Stop
         ' Endif
-   
+
+
         If MyValue <> TheObject.value
-          Try TheObject.value = MyValue
+           Try TheObject.value = MyValue
         Endif
         
       'Else If ((MyProperty = ".text") And Not ((theobject Is CheckBox) Or (theobject Is Button) Or (theobject Is Textarea) Or (theobject Is Togglebutton))) Then
@@ -191,7 +193,7 @@ Private Sub SetObject(TheForm As Object, SubSettings As String[])
   
   If Trim(SubSettings[0]) <> "" Then
     If Not (TheForm.controls[SubSettings[0]] = Null) Then
-      Reconfigure(TheForm.controls[SubSettings[0]], subsettings, TheForm)
+      Try Reconfigure(TheForm.controls[SubSettings[0]], subsettings, TheForm)
     Else
       OldStyle_SetObject(TheForm, SubSettings)
     Endif

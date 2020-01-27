@@ -642,7 +642,7 @@ Private Function internal_options() As Collection
   'Returstop
   'out["quiet"] = "yes"
 
-  out["input-file"] = SetUpInputPipe()
+  out["input-ipc-server"] = SetUpInputPipe()
   out["msg-color"] = "no"
   out["msg-level"] = "all=v,cplayer=status,dvdnav=no,disc=no"
   'out["input-default-bindings"] = "no" '<--why this conflicts with some user scripts?
@@ -657,7 +657,7 @@ Private Function internal_options() As Collection
   'which has no clue about those internal_options, we say to do_apply to ignore
   'the following:
   'ignore_opts.Insert(["script", "input-file", "term-status-msg", "msg-color", "msg-level", "input-default-bindings", "start", "force-seekable", volumeproperty])
-  ignore_opts.Insert(["script", "input-file", "term-status-msg", "msg-color", "msg-level", "start", "force-seekable", volumeproperty])
+  ignore_opts.Insert(["script", "input-ipc-server", "term-status-msg", "msg-color", "msg-level", "start", "force-seekable", volumeproperty])
   Return out
 End
 
@@ -999,7 +999,7 @@ Public Function do_IdlePlay(filename As String) As Boolean
   ClearMediaProperties()
   If Not ProcessRunningOvr() Then
     mpvoptions.Clear
-    set_option("input-file", SetUpInputPipe())
+    set_option("input-ipc-server", SetUpInputPipe())
     set_option("msg-color", "no")
     'set_option("term-status-msg", "")    
     set_option("term-status-msg", play_initialized_str)
@@ -1578,7 +1578,7 @@ Public Sub Analyze(videofile As String)
     mystream = Open tmpdir & "/fifo" For Write
     Print #mystream, "no-osd set pause yes"
     'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 0  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -vf scale=64:64:0:3,scale=16:16:0:3,smartblur=5:1:0,scale -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
-    cmd = executable() & " --term-status-msg='${=time-pos}' --config=no --no-sub --osd-level=0 --vd-lavc-skiploopfilter=all --speed 0.01 --input-file=" & tmpdir & "/fifo --vf=scale=16:16  --no-audio --vo=image:format=png:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
+    cmd = executable() & " --term-status-msg='${=time-pos}' --config=no --no-sub --osd-level=0 --vd-lavc-skiploopfilter=all --speed 0.01 --input-ipc-server=" & tmpdir & "/fifo --vf=scale=16:16  --no-audio --vo=image:format=png:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
     'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 3  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
     global.myDebug(cmd)
     mpanalyze = Shell cmd
@@ -1712,7 +1712,7 @@ Public Sub TimerAnalize_timer()
 End
 
 
-Private mystream As Stream
+Private mystream As Socket
 Private Function SetUpInputPipe() As String
   Dim Random1 As Integer = 0
   Randomize
@@ -1722,7 +1722,11 @@ Private Function SetUpInputPipe() As String
   If Exist(inputpipe, True) Then 
     Shell "rm '" & inputpipe & "' &>/dev/null" Wait
   Endif
-  mystream = Pipe inputpipe For Write
+  
+  
+  ' 'mystream = Pipe inputpipe For Write
+  mystream = New Socket
+  mystream.connect(inputpipe, Net.local)
   global.myDebug("inputpipe=", inputpipe)
 
   Return inputpipe
@@ -1811,7 +1815,7 @@ Public Function options_info() As Collection
   Next
   commands &= "quit" & "\n"
   File.Save(t, commands)
-  Shell executable() & " --idle --input-file=" & t To out
+  Shell executable() & " --idle --input-ipc-serve=" & t To out
   
 
   For Each sLine In Split(out, "\n", "", True)
@@ -2012,6 +2016,17 @@ End
 
 
 Public Function send(data As String, Optional osd As Boolean = True)
+  
+  'when we used the deprecated --input-file option, the file had to be created before the play.
+  'with input-ipc-server, it is created by mpv itself; so we've to connect to it later.
+  
+          If mystream = Null Then mystream = New Socket
+          If mystream.status <> Net.connected Then 
+            mystream.connect(inputpipe, Net.local)
+          Endif
+
+  '------------------
+  
   If Not ProcessRunningOvr() Then Return
   If osd Then 
     Try Write #mystream, data & "\n"
@@ -2437,28 +2452,24 @@ Public Function audio_add(filename As String)
   mpv_command(["audio-add", filename])
 End
 
-Public Function get_offline_property(p As String) As String
-  Dim out As String
-  Dim cmd As String
-  cmd = "echo -e print_text '${" & p & "} \n quit' | " & executable(5) & " --idle=yes --input-file=/dev/stdin" 
-  Shell cmd To out
-  Return out
-End
 
 Public Function audio_devices_list(Optional separator As String = " ~ ") As String[]
+  Dim out_devices As New String[]
   Dim devices As New String[]
-  Dim j, name, desc As String 
+  Dim j, name, desc, out, device As String 
   Dim jdecoded As New Collection[]
   Dim i As Integer
-  j = get_offline_property("=audio-device-list")
+  out = executable() & " --audio-device=help" 
+  Shell out To j
   If Trim(j) = "" Then Return Null
-  Try jdecoded = json.Decode(j)
-  If Error Then Return Null
-  If jdecoded.count = 0 Then Return Null
-  For i = 0 To jdecoded.max
-    name = jdecoded[i]["name"]
-    desc = jdecoded[i]["description"]
-    devices.Add(name & separator & desc)
+  out_devices = Split(j, "\n", "", True)
+  For Each device In out_devices
+    device = Trim(device)
+    If device Like "'*' (*)*" Then
+      name = Split((device), "'")[1]
+      desc = Split((device), "'")[2]  
+      devices.Add(name & separator & desc)
+    Endif
   Next
   Return devices
 End
