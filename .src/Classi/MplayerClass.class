@@ -1815,7 +1815,9 @@ Public Function options_info() As Collection
   Next
   commands &= "quit" & "\n"
   File.Save(t, commands)
-  Shell executable() & " --idle --input-ipc-server=" & t To out
+  
+  'FIXME When input-fileis now deprecated; when/if it will be removed, we'll need to change the following:  
+  Shell executable() & " --idle --input-file=" & t To out
   
 
   For Each sLine In Split(out, "\n", "", True)

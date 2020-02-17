@@ -1411,6 +1411,9 @@ Public Sub SyncUserOptions(ValueCombobox As Combobox, Optional overwrite As Bool
   Dim option_info As MpvOptionInfo
   Dim i, imin, imax, istep As Long
   Dim choice As String
+  
+  
+  
   If Not alreadyloaded Then Return
   If Not fmain.fullyloaded Then Return
 
