@@ -791,7 +791,7 @@
             Expand = True
             MaxValue = 90
             Step = 10
-            Value = 150
+            Value = 90
           }
         }
         { boxacompressor5 HBox
@@ -909,7 +909,7 @@
         Padding = 4
         Border = False
         { gpulParseMeHBox6 HBox
-          MoveScaled(0,-1,45,6)
+          MoveScaled(2,1,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox3gl5 CheckBox
@@ -1114,37 +1114,17 @@
             Text = "yes"
           }
         }
-        { gpuopenglParseMeHBox11 HBox
-          MoveScaled(1,74,45,6)
-          AutoResize = True
-          Padding = 8
-          { CheckBox4gl CheckBox
-            MoveScaled(1,0,24,5)
-            #Translate = False
-            Tag = "interpolation"
-            ToolTip = "Reduce stuttering caused by mismatches in the video fps and display refresh rate (also known as judder).\n\nActivating this, will silently set: --video-sync=display-vdrop"
-            AutoResize = True
-            Text = "temporal interpolation"
-          }
-          { ComboBox4 ComboBox
-            MoveScaled(26,0,18,5)
-            #Translate = False
-            ReadOnly = True
-            List = ["yes", "no"]
-            Text = "yes"
-          }
-        }
         { NOPARSESeparator2 Separator
-          MoveScaled(2,82,48,1)
+          MoveScaled(2,75,48,1)
         }
         { Label41 Label
-          MoveScaled(1,84,39,3)
+          MoveScaled(1,76,39,3)
           Font = Font["Bold"]
           AutoResize = True
           Text = ("Vulkan options")
         }
         { gpuopenglParseMeHBox14 HBox
-          MoveScaled(0,88,45,6)
+          MoveScaled(0,80,45,6)
           ToolTip = ("Controls the presentation mode of the vulkan swapchain. This is similar to the --opengl-swapinterval option.\n              auto   Use the preferred swapchain mode for the vulkan context. (Default)\n              fifo   Non-tearing, vsync blocked. Similar to \"VSync on\".\n              fifo-relaxed\n                     Tearing, vsync blocked. Late frames will tear instead of stuttering.\n              mailbox\n                     Non-tearing, not vsync blocked. Similar to \"triple buffering\".\n              immediate\n                     Tearing, not vsync blocked. Similar to \"VSync off\".\n")
           AutoResize = True
           Padding = 8
@@ -1163,7 +1143,7 @@
           }
         }
         { gpuopenglParseMeHBox15 HBox
-          MoveScaled(0,95,45,6)
+          MoveScaled(0,87,45,6)
           ToolTip = ("Controls which compiler  is  used  to  translate  GLSL  to  SPIR-V.  This  is  (currently)  only  relevant  for\n              --gpu-api=vulkan. The possible choices are:\n              auto   Use the first available compiler. (Default)\n              shaderc\n                     Use  libshaderc, which is an API wrapper around glslang. This is generally the most preferred, if avail‐\n                     able.\n              nvidia Use nvidia's built-in compiler. Only works for nvidia GPUs. Can be buggy, but also  supports  some  fea‐\n                     tures glslang does not. Only works with vulkan.\n")
           AutoResize = True
           Padding = 8
@@ -1183,10 +1163,56 @@
           }
         }
         { NOPARSESeparator3 Separator
-          MoveScaled(1,103,48,1)
+          MoveScaled(1,94,48,1)
+        }
+        { Label42 Label
+          MoveScaled(1,96,39,3)
+          Font = Font["Bold"]
+          AutoResize = True
+          Text = ("Gpu options")
+        }
+        { gpuopenglParseMeHBox11 HBox
+          MoveScaled(1,100,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox4gl CheckBox
+            MoveScaled(1,0,24,5)
+            #Translate = False
+            Tag = "interpolation"
+            ToolTip = "Reduce stuttering caused by mismatches in the video fps and display refresh rate (also known as judder).\n\nActivating this, will silently set: --video-sync=display-vdrop"
+            AutoResize = True
+            Text = "temporal interpolation"
+          }
+          { ComboBox4 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["yes", "no"]
+            Text = "yes"
+          }
+        }
+        { gpuopenglParseMeHBox2 HBox
+          MoveScaled(1,107,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox4gl4 CheckBox
+            MoveScaled(1,0,24,5)
+            #Translate = False
+            Tag = "tscale"
+            ToolTip = "Choose a temporal smoothing filter by trade blurrines/smoothnes for sharpness/jerkyness"
+            AutoResize = True
+            Text = "temporal filter"
+          }
+          { ComboBox12 ComboBox
+            MoveScaled(26,0,18,5)
+            #Translate = False
+            ReadOnly = True
+            List = ["oversample - sharp", "mitchell - default", "bicubic - blurry", "linear", "spline16", "spline36", "spline64", "sinc", "lanczos", "ginseng", "bcspline", "catmul_rom", "robidoux", "robidouxsharp", "box", "nearest", "triangle", "gaussian"]
+            Text = "yes"
+          }
         }
         { openglParseMeHBox4 HBox
-          MoveScaled(-6,209,57,6)
+          MoveScaled(1,165,57,6)
           Visible = False
           Enabled = False
           AutoResize = True

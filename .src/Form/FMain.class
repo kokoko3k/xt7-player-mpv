@@ -3202,7 +3202,7 @@ Public Sub mplayer_seeking()
   'If Rand(0, 1) > 0.9 Then UpdateSeekSlider()
   'UpdateSeekSlider()
   If timerqueue.enabled Then
-    While mplayer.get_property_mpv("seeking") = "yes"
+    While mplayer.get_property_mpv("seeking",, 2) = "yes"
       Wait 0.1
     Wend
       'wait a while to allow seeking to complete (it should be not needed, but just in case...)
