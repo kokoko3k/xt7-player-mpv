@@ -2017,17 +2017,28 @@ Public Sub _new()
 End
 
 
+Private send_count As Integer = 0
 Public Function send(data As String, Optional osd As Boolean = True)
-  
-  'when we used the deprecated --input-file option, the file had to be created before the play.
-  'with input-ipc-server, it is created by mpv itself; so we've to connect to it later.
-  
-          If mystream = Null Then mystream = New Socket
-          If mystream.status <> Net.connected Then 
-            mystream.connect(inputpipe, Net.local)
-          Endif
 
-  '------------------
+  'for some reason mpv and gambas get stuck at come point if using socket instead of named pipes.
+  'fortunately, i found that if i close and reopen the stream the problem goes away.
+  'seems that 'resettin' it every 500 calls makes it work well.
+  If send_count >= 500 Then 
+    send_count = 0
+    mystream.close
+  Endif
+  send_count += 1
+
+  'when we used the deprecated --input-file option, the file had to be created before the play.
+  'with input-ipc-server, it is created by mpv itself; so we've to connect to it later
+  
+  If mystream = Null Then mystream = New Socket
+  If mystream.status <> Net.connected Then 
+    mystream.connect(inputpipe, Net.local)
+  Endif
+
+
+
   
   If Not ProcessRunningOvr() Then Return
   If osd Then 
@@ -2035,6 +2046,11 @@ Public Function send(data As String, Optional osd As Boolean = True)
       Else
     Try Write #mystream, "no-osd " & data & "\n"
   Endif
+  
+
+  
+  
+  
 End
 
 
