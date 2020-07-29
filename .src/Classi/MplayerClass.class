@@ -476,20 +476,22 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
   Dim waittime As Float = 0.01
   setP("idle", "no")
   Repeat
+
     If Not ProcessRunningOvr() Then Return False
     Wait waittime
     timeoutcentisecs -= CInt(waittime * 100)
     If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
       global.myDebug("check if idle")
-      get_property_mpv("=idle", False)
+      global.myDebug(get_property_mpv("=idle", False))
     Endif
     play_initialized = (getP("play_initialized") = "yes")
+    
     'play_initialized is set by playerprocess_error through the hack
     'of setting the statusline to a value recognized by playerprocess_error
     'Hopefully, when the statusline is initialized, the playback is initialized too.
     'In case of problems, the core-idle property may come handy (but slower), see:
     'https://github.com/mpv-player/mpv/commit/8d414e2fe7f79f1bbf9158e8aa034e9ac9cf2222#commitcomment-13950548
-    
+
     '...however sometimes the track count is still 0, so use track-list/count too.
     Try tc = get_property_mpv("track-list/count", True, 10, False)
     play_initialized = play_initialized And (tc <> 0)
@@ -1014,11 +1016,24 @@ Public Function do_IdlePlay(filename As String) As Boolean
     set_property_mpv("options/term-status-msg", play_initialized_str)
   Endif
   
+  'wait for mpv to actually accept ipc commands.
+  'to check that, set a property and hammer it until it answers correctly.
+  Repeat
+    set_property_mpv("options/term-status-msg", play_initialized_str)
+    get_property_mpv("options/term-status-msg", False,, False)
+    Wait
+  Until (getp("options/term-status-msg", "nul") = play_initialized_str) Or (ProcessRunningOvr() = False)
+  If ProcessRunningOvr() = False Then
+    Debug "No idle mpv instance found!"
+    Debug "Crashed?"
+  Endif
+  
   mpv_command(["loadfile", SConv(FileName)])
   setP("fullpath", filename)
   do_leave_pause(False)
   If Not quick Then get_mediainfo(False)
   mpv_command(["stop"])
+
 End
 
 
