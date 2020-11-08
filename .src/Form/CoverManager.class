@@ -1299,6 +1299,7 @@ Public Function DefaultLibraryIcon(fullpath As String, Optional rowheight As Int
   'rowheight -= Shadowoffset
   'strictsize mean we don't want shadows/padding and so on...
   Dim localrowpadding As Integer
+  If Not FMain.fullyloaded Then Return
   If strictsize Then 
     localrowpadding = 0
       Else
