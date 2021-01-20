@@ -1364,7 +1364,7 @@
       Index = 9
       Text = ("Language")
       { ScrollView8 ScrollView
-        MoveScaled(2,2,50,48)
+        MoveScaled(2,2,58,48)
         Tag = "language"
         Expand = True
         Arrangement = Arrange.Vertical
@@ -1437,12 +1437,26 @@
             Text = ("en,eng")
           }
         }
+        { NOPARSEHbox13 HBox
+          MoveScaled(1,20,55,5)
+          ToolTip = ("Maximum  amount  of  data  to  probe during the detection phase. In the case of MPEG-TS this value identifies the maximum number of TS packets to scan.\nmpv option: --demuxer-lavf-probesize")
+          Spacing = True
+          Indent = True
+          { forcedsubscheck CheckBox notifyobj
+            Name = "forcedsubscheck"
+            MoveScaled(0,0,53,5)
+            ToolTip = ("Checking this will make mpv display subtitles in selected languages only when they are forced in by the stream.\nmpv option: --sub-forced-only")
+            AutoResize = True
+            Text = ("Display forced subtitles only by default")
+            Value = CheckBox.True
+          }
+        }
         { NoParseLabel1 Label
-          MoveScaled(1,19,25,3)
+          MoveScaled(0,26,25,3)
           Text = ("Preferred video languages:")
         }
         { NoParse18 HBox
-          MoveScaled(0,23,48,4.5714)
+          MoveScaled(0,30,48,4.5714)
           ToolTip = ("Add the selected language to the list of preferred languages.\nmpv Option:\n--slang \"language list\"\n\nThis option also allows you to search for online subtitles at Opensubtitles.org")
           Spacing = True
           Indent = True

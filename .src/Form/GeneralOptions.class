@@ -388,12 +388,13 @@ Public Function Parse(Optional WithDVD As Boolean = False) As MpvOption[]
         pt &= option.tag & ","
       Endif
     Endif
-    
   Next
   If Right(pt) = "," Then pt = Left(pt, -1)
   'If pt <> "" Then myopts.Add(newopt("ad", pt))
   If pt <> "" Then myopts.Add(newopt("audio-spdif", pt))
 
+  'forced subtitles only?
+  If forcedsubscheck.value = CheckBox.True Then myopts.Add(newopt("sub-forced-only", "yes"))
   
   For Each sScript In ListEditorUserScripts.List
     myopts.Add(newopt("script", sScript))
