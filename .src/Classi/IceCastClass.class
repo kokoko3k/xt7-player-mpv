@@ -23,6 +23,7 @@ Public Function FillGenresTree(mytree As Treeview, Optional UseCache As Boolean 
   Dim genres, genresu As New String[]
   Dim title, myurl, audiotype, bitrate, genre As String
   Dim i, count As Integer 
+  Stop
   mytree.Enabled = False
   mytree.parent.mouse = Mouse.wait
     Wait
@@ -48,6 +49,7 @@ Public Function FillGenresTree(mytree As Treeview, Optional UseCache As Boolean 
       mytree.parent.mouse = Mouse.normal
       Return False
     Endif
+    ypdata = Replace(ypdata, "><", ">\n<")
     yplines = Split(YPData, "\n")
   Else
     YPlines = Split(file.Load(Global.YPCacheFile), "\n")
