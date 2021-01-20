@@ -357,6 +357,7 @@ End
 
 Public Function IsAudioFile(filename As String) As Boolean
 'will return true if filename extension is in audio one
+
   Dim fileExt As String = "." & File.Ext(filename)
   Dim FilterList As String = UncommonAudiofilters & ";" & Audiofilter
   If fileext = "." Then Return False

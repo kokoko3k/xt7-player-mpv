@@ -2541,7 +2541,7 @@ Public Sub static_options() As Collection
   Return opts
 End
 
-Public Function user_options(fullpath As String) As Collection
+Public Function user_options(fullpath As String, Optional force_audio_only As Boolean) As Collection
   'user options configured through gui
   Dim opts As New Collection
   Dim opt As Mpvoption
@@ -2605,7 +2605,7 @@ Public Function user_options(fullpath As String) As Collection
   Next
   
 
-  If global.IsAudioFile(fullpath) Then
+  If global.IsAudioFile(fullpath) Or force_audio_only Then
     For Each opt In generaloptions.visualization_opts()
       opts[opt.name] = opt.data
       opts["wid"] = audioform.Picturebox1.Handle
@@ -2871,7 +2871,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
     mplayer.set_option(opts.key, data)
   Next  
 
-  opts = user_options(fullpath)
+  opts = user_options(fullpath, (theradiolabel <> ""))
 
   For Each data In opts
     mplayer.set_option(opts.key, data, False)
@@ -2919,7 +2919,7 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
     timeA = Timer()
     If Not global.IsImgFile(fullpath) Then
-      force_audio_only = (Left(generaloptions.NoParseVisType2.text) <> "0") And global.IsAudioFile(fullpath)
+      force_audio_only = (Left(generaloptions.NoParseVisType2.text) <> "0") And (global.IsAudioFile(fullpath) Or (theradiolabel <> ""))
       mplayer.get_mediainfo(generaloptions.CDDBCheckbox.value, force_audio_only)
       global.myDebug("mplayer.get_mediainfo()", Timer() - timeA)
     Endif
