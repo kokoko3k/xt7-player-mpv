@@ -23,7 +23,7 @@ Public Function FillGenresTree(mytree As Treeview, Optional UseCache As Boolean 
   Dim genres, genresu As New String[]
   Dim title, myurl, audiotype, bitrate, genre As String
   Dim i, count As Integer 
-   mytree.Enabled = False
+  mytree.Enabled = False
   mytree.parent.mouse = Mouse.wait
     Wait
   yplines.clear

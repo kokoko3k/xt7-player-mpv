@@ -157,6 +157,7 @@ Public Function TabSelectedProfiles() As Boolean
 
 End
 
+
 Public closing As Boolean = False
 
 ' with compiz window manager window position is not correctly restored,
@@ -477,6 +478,7 @@ Public Sub AllInit_Post()
   If TabSelectedAlbums() Then 
     Albums_Select()
   Endif  
+    
   Try mypodcast.LoadPods(global.confpath & "/mypods.txt", PodcastTree)
         updaterecentfiles()
   'some gtk component problem here
@@ -523,7 +525,7 @@ Public Sub AllInit_Post()
     Endif
   Endif
    If TabSelectedShoutcast() Then
-     ShoutCast_Select()
+     UpdateGenresTree(False)
   Else If TabSelectedLibrary() Then
     LibraryGrid_Select()
   Else If TabSelectedPlaylist() Then
@@ -8521,19 +8523,18 @@ Private SHOUTCAST_INITIALIZED As Boolean = False
 Private ICECAST_INITIALIZED As Boolean = False
 
 Public Sub UpdateGenresTree(Optional force As Boolean = True)
+  Leftsidepanel.mouse = mouse.wait
   If buttonshoutcast.value Then
       Try MyRadio.GetGenres(GenresTree, ((Not force) And (SHOUTCAST_INITIALIZED)))
       SHOUTCAST_INITIALIZED = True
     Else
       Try ICECAST_INITIALIZED = IceRadio.FillGenresTree(Genrestree, (Not force)) ' And ICECAST_INITIALIZED)
   Endif
+  Leftsidepanel.mouse = mouse.normal
 End
 
 Public Sub ShoutCast_Select()
-'stubbed
-'  Leftsidepanel.mouse = mouse.wait
-'  UpdateGenresTree(False)
-'  Leftsidepanel.mouse = mouse.normal
+
 End
 
 
