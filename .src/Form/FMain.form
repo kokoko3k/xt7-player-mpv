@@ -1488,16 +1488,16 @@
         { NOSAVEVBox3 VBox
           MoveScaled(1,11,36,15)
           Expand = True
-          { GenresTree TreeView
-            MoveScaled(0,1,35,9)
-            Tag = "shoutcast"
-            Expand = True
-          }
           { ButtonGetGenres Button
-            MoveScaled(0,9,36,4.5714)
+            MoveScaled(0,0,36,4.5714)
             ToolTip = ("Get an updated genres list from shoutcast server")
             Text = ("Refresh Genres list")
             Picture = Picture["icon:/16/refresh"]
+          }
+          { GenresTree TreeView
+            MoveScaled(1,5,35,9)
+            Tag = "shoutcast"
+            Expand = True
           }
         }
         { NOSAVEVBox2 VBox

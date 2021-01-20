@@ -36,9 +36,11 @@ Public Function FillGenresTree(mytree As Treeview, Optional UseCache As Boolean 
     Endif
   
     mywget = New Wgetclass
-    If MyQuestion.Ask(("Icecast Yellow Pages are missing or outdated.\ndo you want to download them now?"), "Yes", "No") = 1 Then
+    If MyQuestion.Ask(("Do you want to download Icecast yellow pages now?"), "Yes", "No") = 1 Then
       YPData = mywget.DownloadAsync(YPurl, False)
       ypdata = Replace(ypdata, "><", ">\n<")
+        Else
+      Goto myEnd 
     Endif
     mytree.parent.mouse = Mouse.default
     Wait
@@ -111,6 +113,7 @@ Public Function FillGenresTree(mytree As Treeview, Optional UseCache As Boolean 
         Endif
     End Select
   Next 'ypline
+  myend:
   mytree.Enabled = True
   mytree.parent.mouse = Mouse.default
   Return True

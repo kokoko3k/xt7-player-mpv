@@ -8523,6 +8523,11 @@ Private SHOUTCAST_INITIALIZED As Boolean = False
 Private ICECAST_INITIALIZED As Boolean = False
 
 Public Sub UpdateGenresTree(Optional force As Boolean = True)
+  If (Not force) Then
+    If (SHOUTCAST_INITIALIZED Or ICECAST_INITIALIZED) Then
+      global.myDebug("Already initialized, exiting")
+    Endif
+  Endif
   Leftsidepanel.mouse = mouse.wait
   If buttonshoutcast.value Then
       Try MyRadio.GetGenres(GenresTree, ((Not force) And (SHOUTCAST_INITIALIZED)))
@@ -8534,7 +8539,7 @@ Public Sub UpdateGenresTree(Optional force As Boolean = True)
 End
 
 Public Sub ShoutCast_Select()
-
+  UpdateGenresTree(False)
 End
 
 
