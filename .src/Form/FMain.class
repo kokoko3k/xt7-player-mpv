@@ -535,6 +535,7 @@ Public Sub AllInit_Post()
   VideoAreaGroup_keypress_timer = New Timer As "VideoAreaGroup_keypress_timer"
   updaterecentfiles()
   fmain.fileview1Myreload()
+  fmain.SearchBox1.text = ""
   FullyLoaded = True
    shadeup.visible = True
   ShowGrid(librarygrid)
@@ -7975,7 +7976,7 @@ Public Sub SetACover(Album As String, Artist As String, filepath As String)
     CoverManager.Show()
     Wait 0.1
     If (Not Exist(CoverManager.Coverfile(CoverManager.ArtistText.text, CoverManager.AlbumText.text), True)) And Not JustFileCover Then
-      CoverManager.textbox1_Click() 'start a fetch
+      CoverManager.SearchBox1_Click() 'start a fetch
     Endif
   Endif
   CoverManager.JustFileCover = JustFileCover
@@ -8586,16 +8587,16 @@ End
 Public Sub starticesearch()
   Leftsidepanel.mouse = mouse.wait
   NOSAVEHBox10.mouse = mouse.wait
-  TextBox1.enabled = False
+  SearchBox1.enabled = False
 
-  IceRadio.search(TextBox1.text, ShutResultGrid)
+  IceRadio.search(SearchBox1.text, ShutResultGrid)
 
   NOSAVEVBox2.visible = True
   NOSAVEVBox3.visible = False
   Highlight_shout_results()
   Leftsidepanel.mouse = mouse.normal
   NOSAVEHBox10.mouse = mouse.normal
-  TextBox1.enabled = True
+  SearchBox1.enabled = True
   ShutResultGrid.Rows.h = ShutResultGrid.Font.TextHeight("^_") + global.rowpadding
 End
 
@@ -8604,8 +8605,8 @@ Public Sub startshoutSearch()
   
   Leftsidepanel.mouse = mouse.wait
   NOSAVEHBox10.mouse = mouse.wait
-  TextBox1.enabled = False
-  If MyRadio.GetStationsFromSearch(TextBox1.text, ShutResultGrid) <> False Then
+  SearchBox1.enabled = False
+  If MyRadio.GetStationsFromSearch(SearchBox1.text, ShutResultGrid) <> False Then
     Message.Error(("Error reading from shoutcast server"))
   Endif
   NOSAVEVBox2.visible = True
@@ -8613,7 +8614,7 @@ Public Sub startshoutSearch()
   Highlight_shout_results()
   Leftsidepanel.mouse = mouse.normal
   NOSAVEHBox10.mouse = mouse.normal
-  TextBox1.enabled = True
+  SearchBox1.enabled = True
   ShutResultGrid.Rows.h = ShutResultGrid.Font.TextHeight("^_") + global.rowpadding
 
 End
@@ -8727,8 +8728,8 @@ End
 
 
 
-Public Sub TextBox1_Click()
-  If Trim(TextBox1.text) <> "" Then 
+Public Sub SearchBox1_Click()
+  If Trim(SearchBox1.text) <> "" Then 
     If buttonshoutcast.value Then 
       startshoutSearch()
     Else
@@ -8737,7 +8738,7 @@ Public Sub TextBox1_Click()
   Endif
 End
 
-Public Sub TextBox1_KeyPress()
+Public Sub SearchBox1_KeyPress()
   If (KEY.code = Key.return Or KEY.code = Key.enter) Then
     If buttonshoutcast.value Then 
       startshoutSearch()
