@@ -276,7 +276,7 @@ Public Sub ShowBackground(Optional i As Image = Null, Optional blursize As Integ
   pictureback.background = Color.black
   
   gradient = Image.Load("shadeaudiopanel.png") '.Mirror(False, True)
-  
+
   'take the background from the current cover
   If i = Null Then 
     blurred = CoverBox.Picture.Image

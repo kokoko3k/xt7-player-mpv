@@ -2978,7 +2978,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   VideoEqualizer.FirstLoadIfNeeded()
   'fimempv qui l'equalizzatore video deve vedere cosa fare (overbright dinamico oppure applicare i valori)
 
-
   If (mplayer.getP("audioonly")) Then
     If Lower(audioform.AudioPanel.parent.name) <> Lower(outerbox.name) Then
       If (Not tageditmode) Then
@@ -3444,7 +3443,6 @@ Public Sub CoverRefresh(Optional force As Boolean = False)
   Dim samecover As Boolean
   Dim i, forbackground As Image
   Dim glass As Image 
-
   If mplayer.ProcessRunningOvr() And mplayer.getP("audioonly") Then
     'coverfile = global.confpath& "/covers/" & global.fixfilename(Upper(Trim(mplayer.Media_Artist))) & "^^^" & global.fixfilename(Upper(Trim(mplayer.Media_Album))) & ".jpg"
     If Upper(mplayer.getP("fullpath")) Like "*.FLAC" Then
@@ -9522,9 +9520,10 @@ Public Sub FileView1_Icon(Path As String)
   Dim sep As String = Chr(8)
   Dim r As String
   Dim iconsize As Integer = FileView1.Font.TextHeight("|èJj")
-  If fileview1.visible = False Then Return
-
   
+  If Not fmain.fullyloaded Then Return 
+  
+  If fileview1.visible = False Then Return
   If IsDir(path) Then
     FileView1.icon = stock[CStr(iconsize) & "/directory"]
     Return
