@@ -927,11 +927,30 @@
             Text = "auto"
           }
         }
+        { gpulParseMeHBox1 HBox
+          MoveScaled(2,8,45,6)
+          AutoResize = True
+          Padding = 8
+          { CheckBox3gl7 CheckBox
+            MoveScaled(1,1,17,4.5714)
+            #Translate = False
+            Tag = "gpu-context"
+            Text = "gpu context"
+            Value = CheckBox.True
+          }
+          { ComboBox1gpu2 ComboBox
+            MoveScaled(19,1,24,4.5714)
+            #Translate = False
+            Expand = True
+            List = ["x11egl", "x11vk"]
+            Text = "x11egl"
+          }
+        }
         { Separator2 Separator
-          MoveScaled(0,6,51,1)
+          MoveScaled(-1,15,51,1)
         }
         { NOTParseMeHBox2 HBox
-          MoveScaled(0,8,45,6)
+          MoveScaled(0,16,45,6)
           AutoResize = True
           Padding = 8
           { Button2 Button
@@ -940,7 +959,7 @@
           }
         }
         { gpuParseMeHBox10 HBox
-          MoveScaled(0,14,45,6)
+          MoveScaled(0,22,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox3gl CheckBox
@@ -958,7 +977,7 @@
           }
         }
         { gpuopenglParseMeHBox5 HBox
-          MoveScaled(0,20,45,6)
+          MoveScaled(0,28,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox3gl4 CheckBox
@@ -976,7 +995,7 @@
           }
         }
         { gpuopenglParseMeHBox9 HBox
-          MoveScaled(0,26,45,6)
+          MoveScaled(0,34,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox3gl6 CheckBox
@@ -994,7 +1013,7 @@
           }
         }
         { gpuopenglParseMeHBox1 HBox
-          MoveScaled(0,32,45,6)
+          MoveScaled(0,40,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox3gl2 CheckBox
@@ -1013,7 +1032,7 @@
           }
         }
         { gpuopenglParseMeHBox7 HBox
-          MoveScaled(0,38,45,6)
+          MoveScaled(0,46,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox4gl2 CheckBox
@@ -1032,7 +1051,7 @@
           }
         }
         { gpuopenglParseMeHBox8 HBox
-          MoveScaled(0,43,45,6)
+          MoveScaled(0,51,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox4gl3 CheckBox
@@ -1051,7 +1070,7 @@
           }
         }
         { gpuopenglParseMeHBox12 HBox
-          MoveScaled(0,48,45,6)
+          MoveScaled(0,56,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox6gl2 CheckBox
@@ -1069,16 +1088,16 @@
           }
         }
         { NOPARSESeparator1 Separator
-          MoveScaled(0,55,54,1)
+          MoveScaled(0,63,54,1)
         }
         { Label40 Label
-          MoveScaled(1,56,32,3)
+          MoveScaled(1,64,32,3)
           Font = Font["Bold"]
           AutoResize = True
           Text = ("Opengl Options")
         }
         { gpuopenglParseMeHBox13 HBox
-          MoveScaled(1,61,45,6)
+          MoveScaled(1,69,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox6gl3 CheckBox
@@ -1096,8 +1115,11 @@
             Text = "yes"
           }
         }
+        { NOPARSESeparator2 Separator
+          MoveScaled(2,75,48,1)
+        }
         { gpuopenglParseMeHBox3 HBox
-          MoveScaled(1,68,45,6)
+          MoveScaled(1,76,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox6gl CheckBox
@@ -1114,17 +1136,14 @@
             Text = "yes"
           }
         }
-        { NOPARSESeparator2 Separator
-          MoveScaled(2,75,48,1)
-        }
         { Label41 Label
-          MoveScaled(1,76,39,3)
+          MoveScaled(1,84,39,3)
           Font = Font["Bold"]
           AutoResize = True
           Text = ("Vulkan options")
         }
         { gpuopenglParseMeHBox14 HBox
-          MoveScaled(0,80,45,6)
+          MoveScaled(0,88,45,6)
           ToolTip = ("Controls the presentation mode of the vulkan swapchain. This is similar to the --opengl-swapinterval option.\n              auto   Use the preferred swapchain mode for the vulkan context. (Default)\n              fifo   Non-tearing, vsync blocked. Similar to \"VSync on\".\n              fifo-relaxed\n                     Tearing, vsync blocked. Late frames will tear instead of stuttering.\n              mailbox\n                     Non-tearing, not vsync blocked. Similar to \"triple buffering\".\n              immediate\n                     Tearing, not vsync blocked. Similar to \"VSync off\".\n")
           AutoResize = True
           Padding = 8
@@ -1142,8 +1161,11 @@
             Text = "auto"
           }
         }
+        { NOPARSESeparator3 Separator
+          MoveScaled(1,94,48,1)
+        }
         { gpuopenglParseMeHBox15 HBox
-          MoveScaled(0,87,45,6)
+          MoveScaled(0,95,45,6)
           ToolTip = ("Controls which compiler  is  used  to  translate  GLSL  to  SPIR-V.  This  is  (currently)  only  relevant  for\n              --gpu-api=vulkan. The possible choices are:\n              auto   Use the first available compiler. (Default)\n              shaderc\n                     Use  libshaderc, which is an API wrapper around glslang. This is generally the most preferred, if avail‐\n                     able.\n              nvidia Use nvidia's built-in compiler. Only works for nvidia GPUs. Can be buggy, but also  supports  some  fea‐\n                     tures glslang does not. Only works with vulkan.\n")
           AutoResize = True
           Padding = 8
@@ -1162,17 +1184,14 @@
             Text = "auto"
           }
         }
-        { NOPARSESeparator3 Separator
-          MoveScaled(1,94,48,1)
-        }
         { Label42 Label
-          MoveScaled(1,96,39,3)
+          MoveScaled(1,104,39,3)
           Font = Font["Bold"]
           AutoResize = True
           Text = ("Gpu options")
         }
         { gpuopenglParseMeHBox11 HBox
-          MoveScaled(1,100,45,6)
+          MoveScaled(1,108,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox4gl CheckBox
@@ -1192,7 +1211,7 @@
           }
         }
         { gpuopenglParseMeHBox2 HBox
-          MoveScaled(1,107,45,6)
+          MoveScaled(1,115,45,6)
           AutoResize = True
           Padding = 8
           { CheckBox4gl4 CheckBox
