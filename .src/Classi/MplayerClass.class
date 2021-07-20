@@ -2322,7 +2322,7 @@ Next
       af_new = fix_for_compand(af_new)
       set_property_mpv("af", af_new, True)
       af_current = af_new
-      File.Save("/tmp/out.txt", af_new)
+      'File.Save("/tmp/out.txt", af_new)
     Endif
   
   ReturnLabel:
