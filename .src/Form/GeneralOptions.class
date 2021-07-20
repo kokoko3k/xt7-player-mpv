@@ -1390,7 +1390,14 @@ End
 
 
 
-Public Sub uservalue_mousedown()
+Public Sub uservalue_activate()
+  SyncUserOptions(Last)
+End
+
+Public Sub uservalue_Enter()
+  SyncUserOptions(Last)
+End
+Public Sub uservalue_Mousedown()
   SyncUserOptions(Last)
 End
 
@@ -1402,7 +1409,7 @@ Public Sub ComboOption_gotfocus()
   Endif
 End
 
-
+Private mymplayer As MplayerClass
 Public Sub SyncUserOptions(ValueCombobox As Combobox, Optional overwrite As Boolean = False)
 
   Dim values As New String[]
@@ -1412,6 +1419,8 @@ Public Sub SyncUserOptions(ValueCombobox As Combobox, Optional overwrite As Bool
   Dim option_info As MpvOptionInfo
   Dim i, imin, imax, istep As Long
   Dim choice As String
+
+  
   
   
   
@@ -1421,8 +1430,9 @@ Public Sub SyncUserOptions(ValueCombobox As Combobox, Optional overwrite As Bool
   If Not (ValueCombobox.previous.previous Is Combobox) Then Return
 
   Comboprev = ValueCombobox.previous.previous
-  
-  option_infos = fmain.mplayer.options_info()
+
+  If mymplayer = Null Then mymplayer = New Mplayerclass
+  option_infos = mymplayer.options_info()
   
     If Not option_infos.Exist(Comboprev.text) Then Return
   
@@ -1620,3 +1630,7 @@ Public Sub Button_clean_covers_Click()
     covermanager.covers_remove_unreferenced()
   Endif
 End
+
+
+
+

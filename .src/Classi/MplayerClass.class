@@ -511,49 +511,6 @@ Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
   Return False
 End
 
-
-' Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
-'   Dim cTime As Float = 0
-'   Dim idling As Boolean
-'   setP("idle", "no")
-' 
-'   Repeat
-'     If Not ProcessRunningOvr() Then Return False
-'     get_property_mpv("=time-pos", False)
-'     Wait 0.01
-'     timeoutcentisecs -= 1
-'     Try cTime = getP("=time-pos")
-'     If IsInteger(CStr(timeoutcentisecs / 100)) Then 'check if playback is idle (eg: no file playing) every second
-'       get_property_mpv("=idle", False)
-'     Endif
-'   Until (cTime > 0) Or (timeoutcentisecs <= 0) Or (getP("=idle") = "yes")
-'   If ctime > 0 Then 
-'     setP("=time-pos", Null)
-'     setP("idle", Null)
-'     Return True
-'   Endif
-'   setP("idle", Null)
-'   Return False
-' End
-
-' Public Function waitplayback(timeoutcentisecs As Integer) As Boolean
-'   Dim i As Integer
-'   Dim cTime As Float = 0
-'   For i = 1 To (timeoutcentisecs Div 100)
-'     Try cTime = (get_property_mpv("=time-pos", True, "100"))
-'     While (ctime = 0) And ProcessRunningOvr()
-'       Try cTime = (get_property_mpv("=time-pos", True, "100"))
-'       Wait
-'     Wend
-'     If ctime > 0 Then 
-'       setP("=time-pos", Null)
-'       Return True
-'     Endif
-'   Next
-'   Return False
-' End
-
-
 Private prop As Collection
 Private prop_time As Collection
 
@@ -993,7 +950,7 @@ End
 
 Public idleplaying As Boolean = False
 
-Public Function do_IdlePlay(filename As String) As Boolean
+Public Function do_IdlePlay(Optional filename As String) As Boolean
   'warning: call this function is mutually exclusive to calling do_play()
   'eg: if you started mpv with do_play(), you need another instance Of this class.
   
@@ -1815,28 +1772,86 @@ End
 Private options_infos As New Collection
 
 Public Function options_info() As Collection
-  Dim opt As String
-  Dim commands As String
-  Dim t As String = Temp()
-  Dim out, sLine, choice As String
-  Dim jdec, data As Variant
-  Dim option_info As MpvOptionInfo
+  Dim outfile As String = Temp()
+  'warning: call this function is mutually exclusive to calling do_play()
+  'eg: if you started mpv with do_play(), you need another instance Of this class.
 
-  
   If options_infos.count > 0 Then Return options_infos
   
-  For Each opt In list_options()
-    commands &= ("print-text ${option-info/" & opt & "}") & "\n"
-  Next
-  commands &= "quit" & "\n"
-  File.Save(t, commands)
-  
-  'FIXME When input-fileis now deprecated; when/if it will be removed, we'll need to change the following:  
-  Shell executable() & " --idle --input-file=" & t To out
-  
+  'check if the process is alive || start it
+  If Not ProcessRunningOvr() Then
+    mpvoptions.Clear
+    set_option("input-ipc-server", SetUpInputPipe())
+    set_option("msg-color", "no")
+    'set_option("term-status-msg", "")    
+    set_option("term-status-msg", play_initialized_str)
+    set_option("ao", "null")   
+    set_option("vo", "null")   
+    set_option("idle", "yes")
+    set_option("cache", "no")
+    commandline = executable(10) & set_options() & "> " & outfile 
+    idleplaying = True
+    playerprocess = Shell commandline For Read Write As "playerprocess"
+      Else
+    set_property_mpv("options/term-status-msg", play_initialized_str)
+  Endif
 
-  For Each sLine In Split(out, "\n", "", True)
+  'wait for mpv to actually accept ipc commands.
+  'to check that, set a property and hammer it until it answers correctly.
+
+  
+  'wait for mpv to accept commands:
+    Repeat
+      Wait
+    Until ProcessRunningOvr() = True
+    
+    Dim i As Integer = 0
+    Dim started As Boolean = False
+    Repeat
+      mpv_command(["print_text", "padding-start"])
+      Wait 0.01
+      If Exist(outfile, True) Then
+        If Stat(outfile, True).Size > 0 Then
+          started = True
+        Endif
+      Endif
+    Until started
+
+  'dump options info to file
+    Dim opt As String
+    
+    For Each opt In list_options().Sort()
+      mpv_command(["print-text", "${option-info/" & opt & "}"])
+      'Wait
+    Next
+
+    
+  'wait for mpv to print all
+    Dim mpv_done As Boolean = False
+    mpv_command(["print_text", "padding-end"])
+    Repeat
+      Wait 0.01
+      If Exist(outfile) Then
+        If InStr(File.Load(outfile), "padding-end") > 1 Then
+          mpv_done = True
+        Endif
+      Endif
+    Until mpv_done
+
+    mpv_command(["quit"])
+    Repeat
+      Wait
+    Until ProcessRunningOvr() = False
+    
+  'parse it
+  Dim sLine As String
+  Dim option_info As MpvOptionInfo
+
+  If Not (Exist(outfile, True)) Then Return Null
+  
+  For Each sLine In Split(File.Load(outfile), "\n", "", True)
     If sLine Begins "name=" Then
+      'Print sLine
 
       Try options_infos[option_info.name] = option_info
       option_info = New MpvOptionInfo
@@ -1870,12 +1885,76 @@ Public Function options_info() As Collection
     Endif    
 
   Next
-
   Try options_infos[option_info.name] = option_info
-  
   Return options_infos
   
 End
+
+
+
+
+' Public Function old_options_info() As Collection
+'   Dim opt As String
+'   Dim commands As String
+'   Dim t As String = Temp()
+'   Dim out, sLine, choice As String
+'   Dim jdec, data As Variant
+'   Dim option_info As MpvOptionInfo
+' 
+'   
+'   If options_infos.count > 0 Then Return options_infos
+'   
+'   For Each opt In list_options()
+'     commands &= ("print-text ${option-info/" & opt & "}") & "\n"
+'   Next
+'   commands &= "quit" & "\n"
+'   File.Save(t, commands)
+'   Stop
+'   'FIXME When input-fileis now deprecated; when/if it will be removed, we'll need to change the following:  
+'   Shell executable() & " --idle --input-file=" & t To out
+'   
+' 
+'   For Each sLine In Split(out, "\n", "", True)
+'     If sLine Begins "name=" Then
+' 
+'       Try options_infos[option_info.name] = option_info
+'       option_info = New MpvOptionInfo
+'       option_info.name = Right(sLine, -InStr(sLine, "="))
+'       Continue
+'     Endif
+'     If sLine Begins "type=" Then
+'       option_info.type = Right(sLine, -InStr(sLine, "="))
+'       Continue
+'     Endif    
+' 
+'     If sLine Begins "default-value=" Then
+'       option_info.default_value = Right(sLine, -InStr(sLine, "="))
+'       Continue
+'     Endif        
+'     
+'     If sLine Begins "min=" Then
+'       option_info.min = Right(sLine, -InStr(sLine, "="))
+'       Continue
+'     Endif    
+'     
+'     If sLine Begins "max=" Then
+'       option_info.max = Right(sLine, -InStr(sLine, "="))
+'       Continue
+'     Endif    
+'     
+'     If sLine Begins "choices=" Then
+'       option_info.choices = New String[]
+'       option_info.choices = Split(Right(sLine, -InStr(sLine, "=")), ",", "", True)
+'       Continue
+'     Endif    
+' 
+'   Next
+' 
+'   Try options_infos[option_info.name] = option_info
+'   
+'   Return options_infos
+'   
+' End
 
 
 Public Function get_property_mpv(name As String, Optional wait_answer As Boolean = True, Optional timeout_sec As Integer = 10, try_cached As Boolean = False) As String
