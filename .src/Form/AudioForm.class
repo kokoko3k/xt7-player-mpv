@@ -182,12 +182,8 @@ End
 
 Public Sub AudioAreaGroup_Arrange()
 Dim w As Integer = Last.w
-
-' If Last = hbox1 Then
    picturebox1.h = CInt(audiopanel.h / 3.15)
    panelvisspacer.h = gridupbox.y Div 2
-'   Debug panelvisspacer.h 
-' Endif
 
   If Last = audiopanel Then
     If GridDown[0, 1].text = "" Then 
@@ -206,12 +202,13 @@ Dim w As Integer = Last.w
     Endif
     Return
   Endif
+  Debug Last.name
   
-  If Last = gridup Then 
+  If Last = gridupbox Then 
     MakeGridShadow(audioform.gridupShadow, GridUp)
     Return
   Endif
-  If Last = griddown Then 
+  If Last = panel1 Then 
     MakeGridShadow(audioform.griddownShadow, GridDown)
     Return
   Endif

@@ -23,16 +23,16 @@
       Picture = Picture["icon:/16/save-as"]
     }
   }
+  { drivers_video_order TextBox
+    MoveScaled(40,0,18,4.5714)
+    Visible = False
+  }
   { filters_audio_order TextBox
     MoveScaled(21,0,18,4.5714)
     Visible = False
   }
   { filters_video_order TextBox
     MoveScaled(1,0,18,4.5714)
-    Visible = False
-  }
-  { drivers_video_order TextBox
-    MoveScaled(40,0,18,4.5714)
     Visible = False
   }
   { drivers_audio_order TextBox
@@ -1271,8 +1271,8 @@
           Font = Font["Italic,-1"]
           Foreground = Color.TextForeground
           AutoResize = True
-          Text = ("Override autodetected display refresh rate value")
           Alignment = Align.Left
+          Text = ("Override autodetected display refresh rate value")
         }
         { vdpauParseMeHBox1 HBox
           MoveScaled(0,3,45,5)
@@ -1295,8 +1295,8 @@
           Font = Font["Italic,-1"]
           Foreground = Color.TextForeground
           AutoResize = True
-          Text = ("Detect whether a compositing window manager is active.")
           Alignment = Align.Left
+          Text = ("Detect whether a compositing window manager is active.")
         }
         { vdpauParseMeHBox2 HBox
           MoveScaled(0,11,45,5)
@@ -1320,8 +1320,8 @@
           Font = Font["Italic,-1"]
           Foreground = Color.TextForeground
           AutoResize = True
-          Text = ("Queue video frame changes at most this many milliseconds in advance")
           Alignment = Align.Left
+          Text = ("Queue video frame changes at most this many milliseconds in advance")
         }
         { vdpauParseMeHBox3 HBox
           MoveScaled(0,19,45,5)
@@ -1360,8 +1360,8 @@
           Font = Font["Italic,-1"]
           Foreground = Color.TextForeground
           AutoResize = True
-          Text = ("Allocate this many output surfaces to display video frames")
           Alignment = Align.Left
+          Text = ("Allocate this many output surfaces to display video frames")
         }
         { vdpauParseMeHBox5 HBox
           MoveScaled(1,32,45,5)
@@ -1385,8 +1385,8 @@
           Font = Font["Italic,-1"]
           Foreground = Color.TextForeground
           AutoResize = True
-          Text = ("Never accept RGBA input.")
           Alignment = Align.Left
+          Text = ("Never accept RGBA input.")
         }
         { vdpauParseMeHBox6 HBox
           MoveScaled(0,40,49,5)

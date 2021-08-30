@@ -3386,8 +3386,8 @@ Public Function SetRightCache(fullpath As String) As MpvOption[]
       
     Else If (fullpath Like "dvd*://*") Or (fullpath Like "dvd://*") Then
       If .MaxCacheMB_DVD_Checkbox.value Then 
-	cacheMB = .MaxCacheMB_DVD_SpinBox.value  
-	cacheSEC = 9999
+ cacheMB = .MaxCacheMB_DVD_SpinBox.value  
+ cacheSEC = 9999
       Endif
 
     Else If global.IsCdaudio(fullpath) Then
@@ -10189,7 +10189,6 @@ End
 
 Public Sub HSplit1_Resize()
   Dim prevlayout As Integer[]
-
   bp.ignore = True
   bp.move(0, 0, outerbox.w, outerbox.h)
   bp.show

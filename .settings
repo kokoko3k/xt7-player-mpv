@@ -2,7 +2,9 @@
 Count=0
 
 [DebugWindow]
-Count=0
+Count=2
+DebugWindow[1]="option_infos"
+DebugWindow[2]="Split(File.Load(outfile), \"\\n\", \"\", True)"
 
 [DebugWindow/(Dir(Directory, "*"))]
 Geometry=[1280,0,224,280]
@@ -105,6 +107,9 @@ Geometry=[52,0,235,568]
 
 [DebugWindow/Split(File.Load(filename_v2), "\n", "", True, False)]
 Geometry=[1280,0,224,280]
+
+[DebugWindow/Split(File.Load(outfile), "\n", "", True)]
+Geometry=[1262,316,395,593]
 
 [DebugWindow/Split(gresults, "<", "", True)]
 Geometry=[52,0,224,280]
@@ -395,10 +400,13 @@ Geometry=[1280,0,440,551]
 Geometry=[1280,0,224,280]
 
 [DebugWindow/options_infos]
-Geometry=[747,170,376,686]
+Geometry=[445,179,376,686]
 
 [DebugWindow/options_infos["ab-loop-a"]]
 Geometry=[761,184,376,686]
+
+[DebugWindow/options_infos["ab-loop-count"]]
+Geometry=[459,193,376,686]
 
 [DebugWindow/options_infos["alang"]]
 Geometry=[761,184,376,686]
@@ -533,14 +541,14 @@ LastCommit="Use complete video url when downloading streams.\nAvoids problems wi
 
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:6.65"
-File[2]=".src/Classi/MplayerClass.class:42.1757"
+File[2]=".src/Classi/MplayerClass.class:0.2326"
 Active=2
-File[3]=".src/Form/NewChains.class:2.1737"
+File[3]=".src/Form/NewChains.class:44.1737"
 Count=78
 File[4]=".src/Form/FMain.form"
 File[5]=".src/Form/FMain.class:3.8554"
 File[6]=".src/Form/NewChains.form"
-File[7]=".src/Form/GeneralOptions.class:33.413"
+File[7]=".src/Form/GeneralOptions.class:30.1399"
 File[8]=".src/0_Moduli/Global.module:52.160"
 File[9]=".src/Form/GeneralOptions.form"
 File[10]=".src/Classi/FloatSpinBox.class:12.180"
@@ -552,7 +560,7 @@ File[15]=".src/Classi/PlaylistClass.class:44.1181"
 File[16]=".src/Form/HotKeys.class:3.409"
 File[17]=".src/Form/zzzFake.form"
 File[18]=".src/Classi/StartClass.class:0.24"
-File[19]=".src/Form/zzzFake.class:30.20"
+File[19]=".src/Form/zzzFake.class:0.63"
 File[20]=".src/Classi/mpris.class:217.81"
 File[21]=".src/Classi/DbusProperties.class:12.270"
 File[22]=".src/Form/CoverManager.class:10.1304"
