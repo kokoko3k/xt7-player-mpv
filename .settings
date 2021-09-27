@@ -2,9 +2,7 @@
 Count=0
 
 [DebugWindow]
-Count=2
-DebugWindow[1]="option_infos"
-DebugWindow[2]="Split(File.Load(outfile), \"\\n\", \"\", True)"
+Count=0
 
 [DebugWindow/(Dir(Directory, "*"))]
 Geometry=[1280,0,224,280]
@@ -47,6 +45,18 @@ Geometry=[1280,0,224,280]
 
 [DebugWindow/ImagesURL]
 Geometry=[52,0,1494,607]
+
+[DebugWindow/JSON.Decode(j_main)]
+Geometry=[48,0,1058,654]
+
+[DebugWindow/JSON.Decode(j_main)["items"]]
+Geometry=[62,14,1058,654]
+
+[DebugWindow/JSON.Decode(j_main)["items"][0]]
+Geometry=[76,28,1058,654]
+
+[DebugWindow/JSON.Decode(j_main)["items"][0]["id"]]
+Geometry=[90,42,1058,654]
 
 [DebugWindow/Last]
 Geometry=[719,445,561,513]
@@ -237,6 +247,18 @@ Geometry=[48,0,1872,1052]
 [DebugWindow/data]
 Geometry=[1280,0,224,280]
 
+[DebugWindow/detail_jdecoded]
+Geometry=[1920,0,825,552]
+
+[DebugWindow/detail_jdecoded["items"]]
+Geometry=[1934,14,825,552]
+
+[DebugWindow/detail_jdecoded["items"][0]]
+Geometry=[1948,28,825,552]
+
+[DebugWindow/detail_jdecoded["items"][0]["contentDetails"]]
+Geometry=[1962,42,825,552]
+
 [DebugWindow/devices]
 Geometry=[52,0,730,639]
 
@@ -307,7 +329,31 @@ Geometry=[596,177,265,356]
 Geometry=[1294,14,224,280]
 
 [DebugWindow/jdecoded]
-Geometry=[52,0,224,280]
+Geometry=[643,285,982,708]
+
+[DebugWindow/jdecoded["items"]]
+Geometry=[129,238,982,708]
+
+[DebugWindow/jdecoded["items"][0]]
+Geometry=[1072,225,982,708]
+
+[DebugWindow/jdecoded["items"][0]["id"]]
+Geometry=[938,239,982,708]
+
+[DebugWindow/jdecoded["items"][0]["snippet"]]
+Geometry=[938,239,982,708]
+
+[DebugWindow/jdecoded["items"][1]]
+Geometry=[90,225,982,708]
+
+[DebugWindow/jdecoded["items"][1]["id"]]
+Geometry=[104,239,982,708]
+
+[DebugWindow/jdecoded["items"][1]["snippet"]]
+Geometry=[104,239,982,708]
+
+[DebugWindow/jdecoded["pageInfo"]]
+Geometry=[66,14,982,708]
 
 [DebugWindow/jdecoded[0]]
 Geometry=[66,14,224,280]
@@ -510,6 +556,12 @@ Geometry=[52,312,224,280]
 [DebugWindow/urls]
 Geometry=[523,217,1218,642]
 
+[DebugWindow/video]
+Geometry=[1920,0,615,481]
+
+[DebugWindow/videos]
+Geometry=[1920,0,203,259]
+
 [DebugWindow/youtubetree]
 Geometry=[1504,297,511,661]
 
@@ -541,12 +593,12 @@ LastCommit="Use complete video url when downloading streams.\nAvoids problems wi
 
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:6.65"
-File[2]=".src/Classi/MplayerClass.class:0.2326"
-Active=2
+File[2]=".src/Classi/MplayerClass.class:9.2325"
+Active=79
 File[3]=".src/Form/NewChains.class:44.1737"
-Count=78
+Count=79
 File[4]=".src/Form/FMain.form"
-File[5]=".src/Form/FMain.class:3.8554"
+File[5]=".src/Form/FMain.class:21.9922"
 File[6]=".src/Form/NewChains.form"
 File[7]=".src/Form/GeneralOptions.class:30.1399"
 File[8]=".src/0_Moduli/Global.module:52.160"
@@ -563,18 +615,18 @@ File[18]=".src/Classi/StartClass.class:0.24"
 File[19]=".src/Form/zzzFake.class:0.63"
 File[20]=".src/Classi/mpris.class:217.81"
 File[21]=".src/Classi/DbusProperties.class:12.270"
-File[22]=".src/Form/CoverManager.class:10.1304"
+File[22]=".src/Form/CoverManager.class:10.1370"
 File[23]=".src/Classi/TagLib.class:69.100"
 File[24]=".src/Form/AudioForm.form"
-File[25]=".src/Form/AudioForm.class:0.412"
+File[25]=".src/Form/AudioForm.class:0.409"
 File[26]=".src/Form/MyQuestion.form"
-File[27]=".src/Classi/YoutubeClass.class:57.157"
+File[27]=".src/Classi/YoutubeClass.class:24.370"
 File[28]=".src/Form/SubAndOsd.class:13.276"
 File[29]="_mpvstats.lua:27.427"
 File[30]=".src/Form/SubAndOsd.form"
 File[31]=".src/Form/CoverManager.form"
 File[32]=".src/Classi/OpenSubtitlesAPI.class:31.308"
-File[33]=".src/Classi/WgetClass.class:8.43"
+File[33]=".src/Classi/WgetClass.class:8.23"
 File[34]=".src/Form/HotKeys.form"
 File[35]=".src/Form/FormLyrics.form"
 File[36]=".src/Form/FormLyrics.class:83.14"
@@ -621,6 +673,7 @@ File[75]=".src/Form/AddUriForm.class:37.109"
 File[76]=".src/Classi/DynaGuiClass.class:2.140"
 File[77]=".src/Form/RealtimeForm.form"
 File[78]=".src/Form/DVBTuner.form"
+File[79]=".src/Form/LogWindow.form"
 
 [Watches]
 Count=1

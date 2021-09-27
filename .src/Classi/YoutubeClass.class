@@ -378,8 +378,7 @@ Public Function GetResults(youtubetree As Treeview, under As String, queryopts A
   If relatedto <> "" Then Askurl &= "&relatedToVideoId=" & relatedto
   If pagetoken <> "" Then AskUrl &= "&pageToken=" & pagetoken
   Askurl &= "&key=" & APIKEY()
-
-
+'Stop
   j_main = wget.DownloadAsync("'" & AskUrl & "'")
   Try jdecoded = JSON.Decode(j_main)
   If Error Then Goto ReturnErrorLabel
