@@ -148,6 +148,7 @@ Dim t As Integer
       filter_checkbox.autoresize = False
       filter_checkbox.w = t * 3 'hack may not work well with all of the themes.
       filter_checkbox.value = checked
+      filter_checkbox.Foreground = Color.TextForeground
       Object.unLock(filter_checkbox)
       
     'finally the text label; his name holds the item name information
@@ -299,7 +300,6 @@ End
 Private Sub select_item(item As Object)
   Dim bro As Object
   Dim ovr As String
-    
   If item.parent.parent.enabled Then
     For Each bro In item.parent.parent.Children
       If bro Is HBox Then
