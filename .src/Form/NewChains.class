@@ -1263,13 +1263,7 @@ End
 
 'Save and Load Functions------------------------------------------------------
 
-Public Sub savecurrent()
-  Dim MySettings As New SettingsClass
-  MySettings.Save(Me, global.confpath & "/" & global.CurrentProfile)
-  global.save_cached_options(global.CurrentProfile) 
-End
-
-Public Sub SaveBTN_Click()
+Public Sub store_chains_order()
   'store items order in textboxes, so that the settings class will save them
   Dim item As Hbox
 
@@ -1292,6 +1286,17 @@ Public Sub SaveBTN_Click()
   For Each item In drivers_video_container.Children
     drivers_video_order.text &= item.name & Chr(8)
   Next
+End
+
+
+Public Sub savecurrent()
+  Dim MySettings As New SettingsClass
+  store_chains_order()
+  MySettings.Save(Me, global.confpath & "/" & global.CurrentProfile)
+  global.save_cached_options(global.CurrentProfile) 
+End
+
+Public Sub SaveBTN_Click()
   savecurrent()
 End
 
@@ -1339,6 +1344,7 @@ Public Sub MenuSaveToAll_Click()
   If MyQuestion.Ask(("This will save this window settings\n to all profiles found but the 'Factory_defaults' one"), ("Proceed"), ("Don't")) = 2 Then
     Return
       Else
+     store_chains_order()
      For Each profilename In Dir(global.confpath & "/", "*.profile")
         If Stat(global.confpath & "/" & profilename, True).type = gb.Directory Then
           profilenamesplitted = Split(profilename, ".")[0]

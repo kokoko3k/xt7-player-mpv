@@ -465,8 +465,8 @@ Public Sub SaveCachefiles()
     cachesizeMB = ""
     cachesizeSEC = ""
     If .MaxCacheMB_DVD_Checkbox.value Then 
-	    cachesizeMB = .MaxCacheMB_DVD_SpinBox.value  
-	    cachesizeSEC = 9999
+     cachesizeMB = .MaxCacheMB_DVD_SpinBox.value  
+     cachesizeSEC = 9999
     Endif
     SaveCachefile("dvd", cachesizeMB, cachesizeSec)
     SaveCachefile("dvdnav", cachesizeMB, cachesizeSec)
