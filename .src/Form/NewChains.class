@@ -1717,10 +1717,10 @@ Public Sub dynaobj_mouseup()
   Dim current_value As String
   Try current_value = Last.value
   If current_value <> dynaobj_prev_value Then 
-    Try timer_dynaobj_delayed_change.delay = 200
+    Try timer_dynaobj_delayed_change.delay = 100
     If Error Then
       timer_dynaobj_delayed_change = New Timer As "timer_dynaobj_delayed_change" 'initialize timer if needed
-      timer_dynaobj_delayed_change.delay = 200
+      timer_dynaobj_delayed_change.delay = 100
       timer_dynaobj_delayed_change.trigger
         Else
       timer_dynaobj_delayed_change.trigger
