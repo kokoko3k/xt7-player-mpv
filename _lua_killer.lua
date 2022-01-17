@@ -3,7 +3,7 @@ pid=###
 
 timer = mp.add_periodic_timer(3, function()
    
-   if os.execute( "cd /proc/" .. pid) == nil then
+   if io.open("/proc/" .. pid, "r") == nil then
         mp.command("quit")
     end
 
