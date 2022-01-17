@@ -41,7 +41,7 @@ Public Subfile As String = ""
 Public Quick As Boolean = False                         'Skip mediainfo code
 Public osdlevel As String = ""
 Public lua_scripts As New String[]
-Public af_current As String 'keep track of realtime filters
+'Public af_current As String 'keep track of realtime filters
 Public vf_current As String 'keep track of realtime filters
 Public allowed_options As New String[]
 
@@ -641,8 +641,8 @@ Public Function do_play(filename As String, Optional string_options As String = 
   Dim data As String
   Dim internal_opts As New Collection
   Dim internal_opts_overridable As New Collection
-  af_current = "."
-  vf_current = "."
+  'af_current = "."
+  'vf_current = "."
   ignore_opts.Clear
   return_value = 0
   If string_options Like "*-idle *" Then 
@@ -1462,8 +1462,8 @@ Public Sub playerprocess_kill()
   
   If (Not restarting) Then 
     ClearMediaProperties()
-    af_current = "."
-    vf_current = "."
+    'af_current = "."
+    'vf_current = "."
     Try event_loop.stop
     Raise mykill(return_value, bPlay_success, fullpath, percent)
 
@@ -2179,7 +2179,7 @@ Private Function cFuzzy_exist(sKey As String, c As Collection) As Boolean
 End
 
 
-Private Function what_changes(oldc As Collection, newc As Collection) As Collection
+Private Function what_changes_and_av_filters(oldc As Collection, newc As Collection) As Collection
   Dim out As New Collection
   Dim data, k As String
   
@@ -2187,29 +2187,42 @@ Private Function what_changes(oldc As Collection, newc As Collection) As Collect
 
   'given 2 collections, returns a new collection
   'built from changed key values, removed keys,added keys
+  'always return audio and video filters from the new collection
   
   For Each data In newc
     'k = Trim(newc.key)
     k = newc.key
-    If cFuzzy_exist(k, oldc) Then
-      If deQuote(oldc[k]) <> deQuote(newc[k]) Then 
-        global.myDebug("old option changed", k, oldc[k], newc[k])
-        out[k] = newc[k]
-      Endif  
-        Else      'If Not (oldc.Exist(k)) Then
-     global.myDebug("New option added", k, newc[k])
-     out[k] = newc[k]
+    If (Trim(k) <> "af-add") And (Trim(k) <> "vf-add") Then 'treat audio and video filters differently.
+      If cFuzzy_exist(k, oldc) Then
+        If deQuote(oldc[k]) <> deQuote(newc[k]) Then 
+          global.myDebug("old option changed", k, oldc[k], newc[k])
+          out[k] = newc[k]
+        Endif  
+          Else      'If Not (oldc.Exist(k)) Then
+      global.myDebug("New option added", k, newc[k])
+      out[k] = newc[k]
+      Endif
     Endif
     
   Next
 
   For Each data In oldc
     k = Trim(oldc.key)
-    If Not (cFuzzy_exist(k, newc)) Then
-       global.myDebug("old option removed", k, oldc[k])
-       out[k] = "|(removed)|"
+    If (Trim(k) <> "af-add") And (Trim(k) <> "vf-add") Then 'treat audio and video filters differently.
+      If Not (cFuzzy_exist(k, newc)) Then
+         global.myDebug("old option removed", k, oldc[k])
+         out[k] = "|(removed)|"
+      Endif
     Endif
   Next
+  
+  For Each data In newc
+    k = Trim(newc.key)
+    If (k = "af-add") Or (k = "vf-add") Then '
+      out[newc.key] = newc[newc.key]
+    Endif
+  Next
+  
   Return out
   
 End
@@ -2226,15 +2239,16 @@ Public Sub do_apply(new_opts As Collection)
   Dim af_pre_new As String = ""
   Dim vf_pre_new As String = ""
 
-  
 
   new_opts = fix_options(new_opts)
   
   'see if we need a restart
-  'make a list of changed options
-  changed_opts = what_changes(mpvoptions, new_opts)
+  'make a list of changed options and audio/video filters
+  changed_opts = what_changes_and_av_filters(mpvoptions, new_opts)
+
+  
   mpvoptions = new_opts 'for future checks
-  If changed_opts.count = 0 Then Return '(unlikely to happen)
+
   For Each changed_opts
     name = Trim(changed_opts.Key)
     data = changed_opts[changed_opts.Key]
@@ -2293,6 +2307,7 @@ For Each new_opts
         vf_pre_new = ""
     End Select
   Endif
+  If af_new Like "*removed*" Then Stop
 Next
 
 
@@ -2310,20 +2325,19 @@ Next
   If getP("Audioonly") <> True Then 'we don't want effects to be applied to video visualization:
     'only apply New Filters In realtime If something changed
       get_properties_mpv(["vf", "af"], True, False, 1)
-      If vf_current <> vf_new Then 
+      'If vf_current <> vf_new Then 
         set_property_mpv("vf", vf_new, True)
-        vf_current = vf_new
-      Endif
+        'vf_current = vf_new
+      'Endif
   Endif
 
-    
-    If af_current <> af_new Then 
+    'If af_current <> af_new Then 
       af_new = fix_for_anequalizer(af_new)
       af_new = fix_for_compand(af_new)
       set_property_mpv("af", af_new, True)
-      af_current = af_new
+      'af_current = af_new
       'File.Save("/tmp/out.txt", af_new)
-    Endif
+    'Endif
   
   ReturnLabel:
   Return
