@@ -2238,7 +2238,8 @@ Public Sub do_apply(new_opts As Collection)
   Dim vf_new As String = ""
   Dim af_pre_new As String = ""
   Dim vf_pre_new As String = ""
-
+  Dim vf_old As String = ""
+  Dim af_old As String = ""
 
   new_opts = fix_options(new_opts)
   
@@ -2324,20 +2325,24 @@ Next
 
   If getP("Audioonly") <> True Then 'we don't want effects to be applied to video visualization:
     'only apply New Filters In realtime If something changed
-      get_properties_mpv(["vf", "af"], True, False, 1)
-      'If vf_current <> vf_new Then 
-        set_property_mpv("vf", vf_new, True)
+      get_properties_mpv(["=vf", "=af"], True, False, 1)
+      vf_old = getP("=vf", "**")
+      set_property_mpv("vf", vf_new, False)
         'vf_current = vf_new
       'Endif
   Endif
 
-    'If af_current <> af_new Then 
       af_new = fix_for_anequalizer(af_new)
       af_new = fix_for_compand(af_new)
-      set_property_mpv("af", af_new, True)
-      'af_current = af_new
-      'File.Save("/tmp/out.txt", af_new)
-    'Endif
+      af_old = getP("=af", "**")
+      set_property_mpv("af", af_new, False)
+
+      get_properties_mpv(["=vf", "=af"], True, False, 1)
+      vf_new = getP("=vf", "**")
+      If vf_old <> vf_new Then ShowText(("Video filter chain reconfigured"), 750)
+      af_new = getP("=af", "**")
+      If af_old <> af_new Then ShowText(("Audio filter chain reconfigured"), 750)
+
   
   ReturnLabel:
   Return

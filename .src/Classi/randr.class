@@ -26,7 +26,7 @@ Public Function get_sizes() As String[]
   Dim mode As String
   Dim modes As New String[]
   Dim xid, p_xid As Integer
-  Stop
+
   Shell "xrandr --verbose --current" To xrandr_output
 
   xrandr_output_splitted = Split(xrandr_output, "\n", "", True)
