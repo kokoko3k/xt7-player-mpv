@@ -2123,7 +2123,7 @@ Public Sub update_compand()
 
   If Button_compand_autovalues.value = True Then
     softkneespinbox.value = makeupgainspinbox.value Div 2
-    decayspinbox.value = (makeupgainspinbox.value * 10) Div 2
+    decayspinbox.value = (makeupgainspinbox.value * 1000)
   Endif
 End
 

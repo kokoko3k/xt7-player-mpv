@@ -639,11 +639,23 @@
         Arrangement = Arrange.Vertical
         Spacing = True
         Margin = True
+        { Label43 Label
+          MoveScaled(1,1,41,5)
+          Font = Font["Bold"]
+          Background = Color.TextBackground
+          AutoResize = True
+          Alignment = Align.Center
+          Border = Border.Plain
+          Text = ("A good realtime normalizer (with auto values)")
+        }
+        { Separator1 Separator
+          MoveScaled(1,7,50,1)
+        }
         { Hbox8 HBox
-          MoveScaled(3,2,51,6)
+          MoveScaled(1,9,51,6)
           Padding = 6
           { Label34 Label
-            MoveScaled(1,0,17,5)
+            MoveScaled(1,0,32,5)
             Text = ("Makeup Gain (dB)")
           }
           { makeupgainspinbox SpinBox compand_dynaobj
@@ -652,20 +664,20 @@
             Font = Font["Monospace"]
             Expand = True
             MinValue = 1
-            MaxValue = 1000
+            MaxValue = 500
             Step = 5
-            Value = 15
+            Value = 50
           }
         }
         { Button_compand_autovalues ToggleButton
-          MoveScaled(1,10,51,4)
+          MoveScaled(1,16,51,4)
           Text = ("Auto values")
         }
         { hboxsoftknee HBox
-          MoveScaled(1,15,51,6)
+          MoveScaled(1,21,51,6)
           Padding = 6
           { Label35 Label
-            MoveScaled(2,0,17,5)
+            MoveScaled(1,0,32,5)
             Text = ("Soft knee radius")
           }
           { softkneespinbox SpinBox compand_dynaobj
@@ -675,14 +687,14 @@
             Expand = True
             MaxValue = 900
             Step = 5
-            Value = 7
+            Value = 25
           }
         }
         { hboxdecay HBox
-          MoveScaled(1,22,51,6)
+          MoveScaled(1,28,51,6)
           Padding = 6
           { Label36 Label
-            MoveScaled(1,0,17,5)
+            MoveScaled(1,0,32,5)
             Text = ("Decay (decisecs)")
           }
           { DecaySpinbox SpinBox compand_dynaobj
@@ -692,7 +704,7 @@
             Expand = True
             MaxValue = 999999
             Step = 10
-            Value = 150
+            Value = 50000
           }
         }
       }
