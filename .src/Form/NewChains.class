@@ -2221,3 +2221,12 @@ Private Function parse_acompressor() As String
 End
 
 
+
+Public Sub ApplyBTN_DblClick()
+  If Not FMain.mplayer.ProcessRunningOvr() Then Return
+  If MyQuestion.Ask(("Do you want to restart the player process?"), ("Yes"), ("No")) = 1 Then
+    FMain.Apply(True)
+      Else 
+    FMain.Apply(False)
+  Endif
+End
