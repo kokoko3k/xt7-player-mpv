@@ -63,7 +63,7 @@ Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
   'filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "rubberband", "alimiter", "dynaudnorm", "volume", "crystalizer"]
-  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "rubberband", "volume", "crystalizer"]
+  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "crystalizer", "aexciter", "scaletempo", "rubberband", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -444,7 +444,7 @@ Private Sub draw_filters_audio_cfg()
     
   'earwax
     AllParams.Add(["TITLE", "- earwax -", "earwax0", ""])
-    Global.DrawGui(AllParams, "earwax", aTabstrip, False, "",, "lavfi", Me)
+    Global.DrawGui(AllParams, "earwax", aTabstrip, NotSwitchable, "",, "lavfi", Me)
     AllParams.Clear
     
   'scaletempo[=option1:option2:...]
@@ -480,17 +480,31 @@ Private Sub draw_filters_audio_cfg()
     
   'extrastereo lavfi
   AllParams.Add(["TITLE", ("- Adds live effect to playback"), "ExtraStereo0", ""])
-  AllParams.add(["RANGEFLOAT", ("Amount"), "0", "2.25", "10", "ExtraStereo1", ""])
+  AllParams.add(["RANGEFLOAT", ("Amount"), "-1", "2.25", "10", "ExtraStereo1", ("Sets the intensity of effect. To swap channels use negative value.")])
+  AllParams.add(["CHOOSE", ("Clipping"), "true", "false", "ExtraStereo2", ("Enable or disable clipping.")])
   Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable,,, "lavfi", Me)
   AllParams.Clear
 
   'crystalizer lavfi
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
     AllParams.Add(["TITLE", ("- Simple algorithm for audio noise sharpening.  -"), "crystalizer0", ""])
-    AllParams.add(["RANGEFLOAT", "i=", "-10", "1.5", "10", "crystalizer1", ("Sets the intensity of effect. To inverse filtering use negative value.")])
-    AllParams.add(["CHOOSE", "c=", "true", "false", "crystalizer2", ("Enable or disable clipping.")])
-    Global.DrawGui(AllParams, "crystalizer", aTabstrip, False,,, "lavfi", Me)
+    AllParams.add(["RANGEFLOAT", ("Intensity"), "-10", "1.5", "10", "crystalizer1", ("Sets the intensity of effect. To inverse filtering use negative value.")])
+    AllParams.add(["CHOOSE", ("Clipping"), "true", "false", "crystalizer2", ("Enable or disable clipping.")])
+    Global.DrawGui(AllParams, "crystalizer", aTabstrip, NotSwitchable,,, "lavfi", Me)
     AllParams.Clear
+
+  'crystalizer lavfi
+  'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+    AllParams.Add(["TITLE", ("- Add high pitched harmonics. -"), "aexciter0", ""])
+    AllParams.add(["RANGE", ("amount="), "0", "1", "64", "aexciter1", ("Set the amount of harmonics added to original signal")])
+    AllParams.add(["RANGEFLOAT", ("drive="), "0.1", "8.5", "10", "aexciter2", ("Set the amount of newly created harmonics")])
+    AllParams.add(["RANGE", ("blend="), "-10", "0", "10", "aexciter3", ("Set the octave of newly created harmonics")])
+    AllParams.add(["RANGE", ("freq="), "2000", "7500", "12000", "aexciter4", ("Set the lower frequency limit of producing harmonics in Hz. ")])
+    AllParams.add(["RANGE", ("ceil="), "9999", "9999", "20000", "aexciter5", ("Set the lower frequency limit of producing harmonics in Hz. ")])
+    AllParams.add(["CHOOSE", ("listen="), "false", "true", "aexciter6", ("Only listen to armonics.")])
+    Global.DrawGui(AllParams, "aexciter", aTabstrip, Switchable,,, "lavfi", Me)
+    AllParams.Clear
+
 
 
   ' ' 'alimiter lavfi
