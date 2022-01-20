@@ -63,7 +63,7 @@ Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
   'filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "rubberband", "alimiter", "dynaudnorm", "volume", "crystalizer"]
-  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "stereowiden", "crystalizer", "aexciter", "scaletempo", "rubberband", "volume"]
+  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "stereowiden", "stereotools", "crystalizer", "aexciter", "scaletempo", "rubberband", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -514,6 +514,31 @@ Private Sub draw_filters_audio_cfg()
     AllParams.add(["RANGEFLOAT", ("drymix="), "0.0", "0.8", "1.0", "stereowiden4", ("Set level of input signal of original channel.")])
     Global.DrawGui(AllParams, "stereowiden", aTabstrip, Switchable,,, "lavfi", Me)
     AllParams.Clear
+
+  ' 'stereotools lavfi
+  ' 'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+    AllParams.Add(["TITLE", ("- Handy utilities to manage stereo signals. -"), "stereotools0", ""])
+    AllParams.add(["RANGEFLOAT", ("balance_in="), "-1.0", "0.0", "1.0", "stereotools1", ("Set input balance between both channels.")])
+    AllParams.add(["RANGEFLOAT", ("balance_out="), "-1.0", "0.0", "1.0", "stereotools2", ("Set output balance between both channels.")])
+    AllParams.add(["CHOOSE", ("softclip="), "true", "false", "stereotools3", ("Results in analog distortion instead of harsh digital 0dB clipping.")])
+    AllParams.add(["CHOOSE", ("mutel="), "true", "false", "stereotools4", ("Mute the left channel.")])
+    AllParams.add(["CHOOSE", ("muter="), "true", "false", "stereotools5", ("Mute the right channel.")])
+    AllParams.add(["CHOOSE", ("phasel="), "true", "false", "stereotools6", ("Change the phase of the left channel.")])
+    AllParams.add(["CHOOSE", ("phaser="), "true", "false", "stereotools7", ("Change the phase of the right channel.")])
+    AllParams.add(["RANGE", ("phase="), "0", "180", "360", "stereotools8", ("Set the stereo phase in degrees.")])
+    
+    'AllParams.add(["CHOOSE", ("mode="), "lr>lr  - Left/Right to Left/Right", "lr>ms  - Left/Right to Mid/Side", "ms>lr  - Mid/Side to Left/Right", "lr>ll  - Left/Right to Left/Left", "lr>rr  - Left/Right to Right/Right", "lr>l+r - Left/Right to Left + Right", "lr>rl  - Left/Right to Right/Left", "ms>ll  - Mid/Side to Left/Left", "ms>rr  - Mid/Side to Right/Right", "ms>rl  - Mid/Side to Right/Left", "lr>l-r - Left/Right to Left - Right", "stereotools9", ("Change the phase of the left channel.")])
+    AllParams.add(["CHOOSE", ("mode="), "'lr>lr'  - Left/Right to Left/Right", "'lr>ms'  - Left/Right to Mid/Side", "'ms>lr'  - Mid/Side to Left/Right", "'lr>ll'  - Left/Right to Left/Left", "'lr>rr'  - Left/Right to Right/Right", "'lr>l+r' - Left/Right to Left + Right", "'lr>rl'  - Left/Right to Right/Left", "'ms>ll'  - Mid/Side to Left/Left", "'ms>rr'  - Mid/Side to Right/Right", "'ms>rl'  - Mid/Side to Right/Left", "'lr>l-r' - Left/Right to Left - Right", "stereotools9", ("Change the phase of the left channel.")])
+    AllParams.add(["RANGEFLOAT", ("slev="), "0.015625", "1.0", "64.0", "stereotools10", ("Set level of side signal.")])
+    AllParams.add(["RANGEFLOAT", ("mlev="), "0.015625", "1.0", "64.0", "stereotools11", ("Set level of middle signal.")])
+    AllParams.add(["RANGEFLOAT", ("sbal="), "-1.0", "0.0", "1.0", "stereotools12", ("Set balance of side signal.")])
+    AllParams.add(["RANGEFLOAT", ("mpan="), "-1.0", "0.0", "1.0", "stereotools13", ("Set panning of middle signal.")])
+    AllParams.add(["RANGEFLOAT", ("base="), "-1.0", "0.0", "1.0", "stereotools14", ("Set stereo base between mono and inversed channels.")])
+    AllParams.add(["RANGE", ("delay="), "-20", "0", "20", "stereotools15", ("Time in milliseconds of the delay of left signal into right and vice versa.")])
+    AllParams.add(["RANGE", ("sclevel="), "1", "50", "100", "stereotools16", ("Set S/C level.")])
+    Global.DrawGui(AllParams, "stereotools", aTabstrip, Switchable,,, "lavfi", Me)
+    AllParams.Clear
+
 
   ' ' 'alimiter lavfi
   ' AllParams.Add(["TITLE", ("Keep input signal under a desired threshold"), "alimiter0", ""])
