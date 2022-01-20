@@ -488,7 +488,7 @@ Private Sub draw_filters_audio_cfg()
   'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
     AllParams.Add(["TITLE", ("- Simple algorithm for audio noise sharpening.  -"), "crystalizer0", ""])
     AllParams.add(["RANGEFLOAT", "i=", "-10", "1.5", "10", "crystalizer1", ("Sets the intensity of effect. To inverse filtering use negative value.")])
-    AllParams.add(["CHOOSE", "c=", "1 - enable", "0 - disable", "crystalizer2", ("SEenable or disable clipping.")])
+    AllParams.add(["CHOOSE", "c=", "true", "false", "crystalizer2", ("Enable or disable clipping.")])
     Global.DrawGui(AllParams, "crystalizer", aTabstrip, False,,, "lavfi", Me)
     AllParams.Clear
 
@@ -2215,9 +2215,7 @@ Private Function parse_acompressor() As String
   out &= "link=" & sLink & ":"
   out &= "detection=" & detection
   out &= "]"
-
   Return out
-  
 End
 
 
