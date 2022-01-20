@@ -62,7 +62,8 @@ End
 Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
-  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "rubberband", "alimiter", "dynaudnorm", "volume", "crystalizer"]
+  'filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "rubberband", "alimiter", "dynaudnorm", "volume", "crystalizer"]
+  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "rubberband", "volume", "crystalizer"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -483,28 +484,27 @@ Private Sub draw_filters_audio_cfg()
   Global.DrawGui(AllParams, "extrastereo", aTabstrip, NotSwitchable,,, "lavfi", Me)
   AllParams.Clear
 
-                'crystalizer lavfi
-                'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
-                  AllParams.Add(["TITLE", ("- Simple algorithm for audio noise sharpening.  -"), "crystalizer0", ""])
-                  AllParams.add(["RANGEFLOAT", "i=", "-10", "1.5", "10", "crystalizer1", ("Sets the intensity of effect. To inverse filtering use negative value.")])
-                  AllParams.add(["CHOOSE", "c=", "1 - enable", "0 - disable", "crystalizer2", ("SEenable or disable clipping.")])
-                  'AllParams.add(["CHOOSE", "c=", "1", "0", "crystalizer2", ("")])
-                  Global.DrawGui(AllParams, "crystalizer", aTabstrip, False,,, "lavfi", Me)
-                  AllParams.Clear
-                  'or 50 11 1 5  0 0 0 0 0
+  'crystalizer lavfi
+  'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+    AllParams.Add(["TITLE", ("- Simple algorithm for audio noise sharpening.  -"), "crystalizer0", ""])
+    AllParams.add(["RANGEFLOAT", "i=", "-10", "1.5", "10", "crystalizer1", ("Sets the intensity of effect. To inverse filtering use negative value.")])
+    AllParams.add(["CHOOSE", "c=", "1 - enable", "0 - disable", "crystalizer2", ("SEenable or disable clipping.")])
+    Global.DrawGui(AllParams, "crystalizer", aTabstrip, False,,, "lavfi", Me)
+    AllParams.Clear
 
-  ' 'alimiter lavfi
-  AllParams.Add(["TITLE", ("Keep input signal under a desired threshold"), "alimiter0", ""])
-  AllParams.add(["RANGEFLOAT", "Input gain", "0.1", "5", "64", "alimiter1", ""])
-  AllParams.add(["RANGEFLOAT", "output gain", "0.1", "1", "64", "alimiter2", ""])
-  AllParams.add(["RANGEFLOAT", "limit", "0.1", "1", "1", "alimiter3", ""]) 
-  AllParams.add(["RANGE", "attack", "1", "5", "80", "alimiter4", ""]) 
-  AllParams.add(["RANGE", "release", "1", "2000", "8000", "alimiter5", ""]) 
-  AllParams.add(["RANGE", "asc", "0", "1", "1", "alimiter6", ("Keep asc =1 active to avoid distortions on systems with more than 2 speakers")]) 
-  AllParams.add(["RANGEFLOAT", "asc_level", "0", "1", "1", "alimiter7", ""]) 
-  AllParams.Add(["TIP", ("This filter is a good volume normalizer"), "alimiter6", ""])
-  Global.DrawGui(AllParams, "alimiter", aTabstrip, False,,, "lavfi", Me)
-  AllParams.Clear
+
+  ' ' 'alimiter lavfi
+  ' AllParams.Add(["TITLE", ("Keep input signal under a desired threshold"), "alimiter0", ""])
+  ' AllParams.add(["RANGEFLOAT", "Input gain", "0.1", "5", "64", "alimiter1", ""])
+  ' AllParams.add(["RANGEFLOAT", "output gain", "0.1", "1", "64", "alimiter2", ""])
+  ' AllParams.add(["RANGEFLOAT", "limit", "0.1", "1", "1", "alimiter3", ""]) 
+  ' AllParams.add(["RANGE", "attack", "1", "5", "80", "alimiter4", ""]) 
+  ' AllParams.add(["RANGE", "release", "1", "2000", "8000", "alimiter5", ""]) 
+  ' AllParams.add(["RANGE", "asc", "0", "1", "1", "alimiter6", ("Keep asc =1 active to avoid distortions on systems with more than 2 speakers")]) 
+  ' AllParams.add(["RANGEFLOAT", "asc_level", "0", "1", "1", "alimiter7", ""]) 
+  ' AllParams.Add(["TIP", ("This filter is a good volume normalizer"), "alimiter6", ""])
+  ' Global.DrawGui(AllParams, "alimiter", aTabstrip, False,,, "lavfi", Me)
+  ' AllParams.Clear
 
   ' lavrresample
   AllParams.Add(["TITLE", ("Audio resampler: set the default audio resampler quality"), "lavrresample0", ""])
@@ -515,21 +515,21 @@ Private Sub draw_filters_audio_cfg()
   AllParams.Clear
 
 
-  'Dynaudnorm lavfi
-  'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
-    AllParams.Add(["TITLE", ("- Dynamic Audio Normalizer -"), "dynaudnorm0", ""])
-    AllParams.add(["RANGE", "Frame length in msec", "10", "500", "8000", "dynaudnorm1", ""])
-    AllParams.add(["RANGE", "Filter size (odd numbers only!)", "3", "3", "301", "dynaudnorm2", ""])
-    AllParams.add(["RANGEFLOAT", "Peak value", "0.1", "1", "1", "dynaudnorm3", ""])
-    AllParams.add(["RANGE", "Max amplification factor", "1", "10", "100", "dynaudnorm4", ""])
-    AllParams.add(["RANGEFLOAT", "Target RMS", "0", "0", "1", "dynaudnorm5", ""])
-    AllParams.add(["ROCHOOSE", "Enable channel coupling", "1 - enable", "0 - disable", "dynaudnorm6", ""])
-    AllParams.add(["ROCHOOSE", "Enable DC bias correction", "0 - disable", "1 - enable", "dynaudnorm7", ""])
-    AllParams.add(["ROCHOOSE", "Enable alternative boundary mode", "1 - enable", "0 - disable", "dynaudnorm8", ""])
-    AllParams.add(["RANGEFLOAT", "Compress factor", "0", "0", "30", "dynaudnorm9", ""])    
-    Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, False,,, "lavfi", Me)
-    AllParams.Clear
-    'or 50 11 1 5  0 0 0 0 0
+  ' 'Dynaudnorm lavfi
+  ' 'Syntax for TheParameters is:["SUBLABEL", caption(SubFilterName), TextLabel name ,comment]
+  '   AllParams.Add(["TITLE", ("- Dynamic Audio Normalizer -"), "dynaudnorm0", ""])
+  '   AllParams.add(["RANGE", "Frame length in msec", "10", "500", "8000", "dynaudnorm1", ""])
+  '   AllParams.add(["RANGE", "Filter size (odd numbers only!)", "3", "3", "301", "dynaudnorm2", ""])
+  '   AllParams.add(["RANGEFLOAT", "Peak value", "0.1", "1", "1", "dynaudnorm3", ""])
+  '   AllParams.add(["RANGE", "Max amplification factor", "1", "10", "100", "dynaudnorm4", ""])
+  '   AllParams.add(["RANGEFLOAT", "Target RMS", "0", "0", "1", "dynaudnorm5", ""])
+  '   AllParams.add(["ROCHOOSE", "Enable channel coupling", "1 - enable", "0 - disable", "dynaudnorm6", ""])
+  '   AllParams.add(["ROCHOOSE", "Enable DC bias correction", "0 - disable", "1 - enable", "dynaudnorm7", ""])
+  '   AllParams.add(["ROCHOOSE", "Enable alternative boundary mode", "1 - enable", "0 - disable", "dynaudnorm8", ""])
+  '   AllParams.add(["RANGEFLOAT", "Compress factor", "0", "0", "30", "dynaudnorm9", ""])    
+  '   Global.DrawGui(AllParams, "dynaudnorm", aTabstrip, False,,, "lavfi", Me)
+  '   AllParams.Clear
+
 
     AllParams.Add(["TITLE", ("- Custom audio filters - "), "ACustom000", ""])
     AllParams.Add(["FREE", ("Custom audio filter(s):"), "", "ACustom11", ("E.g.:resample=44100:1:2,hrtf=s")])
