@@ -50,7 +50,7 @@ Private tabs As String[] = ["filters_video", "filters_audio", "drivers_video", "
 Private Function is_handmade_filter(filter_name As String) As Boolean
   Dim f As String
   Dim filters_hand_made As New String[]
-  filters_hand_made = ["anequalizer", "acompressor", "compand", "scale"]
+  filters_hand_made = ["anequalizer", "acompressor", "compand", "scale", "superequalizer"]
   filter_name = Lower(filter_name)
   For Each f In filters_hand_made
     If f = filter_name Then Return True
@@ -63,7 +63,7 @@ Private Sub Init_filters_audio()
   Dim filters_audio_list As New String[]
   Dim filter As String
   'filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "scaletempo", "rubberband", "alimiter", "dynaudnorm", "volume", "crystalizer"]
-  filters_audio_list = ["anequalizer", "compand", "acompressor", "earwax", "extrastereo", "stereowiden", "stereotools", "crystalizer", "aexciter", "scaletempo", "rubberband", "volume"]
+  filters_audio_list = ["anequalizer", "compand", "acompressor", "superequalizer", "earwax", "extrastereo", "stereowiden", "stereotools", "crystalizer", "aexciter", "scaletempo", "rubberband", "volume"]
   filters_audio_list.insert(["CustomAudio1", "CustomAudio2", "CustomAudio3", "lavcac3enc", "lavrresample"])
   For Each filter In filters_audio_list
     If filter = "scaletempo" Then 
@@ -350,9 +350,11 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
   If item_tab >= 0 Then 
     aTabstrip.index = item_tab
     If atabstrip.caption <> "anequalizer" Then 
-      If atabstrip.caption <> "compand" Then 
-        If atabstrip.caption <> "acompressor" Then 
-          HelpBox.reparent(aTabstrip)
+      If atabstrip.caption <> "superequalizer" Then 
+        If atabstrip.caption <> "compand" Then 
+          If atabstrip.caption <> "acompressor" Then 
+            HelpBox.reparent(aTabstrip)
+          Endif
         Endif
       Endif
     Endif
@@ -360,10 +362,12 @@ Private Sub Select_tabstrip_item(item_name As String, aTabstrip As Tabstrip)
     For i = 0 To aTabstrip.count - 1
       aTabstrip.index = i
       If Lower(aTabstrip.caption) = item_name Then 
-        If atabstrip.caption <> "anequalizer" Then 
-          If atabstrip.caption <> "compand" Then 
-            If atabstrip.caption <> "acompressor" Then 
-              HelpBox.reparent(aTabstrip)
+        If atabstrip.caption <> "anequalizer" Then
+          If atabstrip.caption <> "superequalizer" Then 
+            If atabstrip.caption <> "compand" Then 
+              If atabstrip.caption <> "acompressor" Then 
+                HelpBox.reparent(aTabstrip)
+              Endif
             Endif
           Endif
         Endif
@@ -1034,17 +1038,17 @@ Private Function Parse_audio_filter(Filtername As String) As String[]
   Dim out As New String[]
   Dim is_lavfi As Boolean = False
   Dim subtext As String
-  Dim anequalizer_string As String
+  Dim anequalizer_string, superequalizer_string As String
   Dim out_anequalizer As String = ""
   Dim atabstrip_index As Integer
-  Dim autogaindB As Integer
+  Dim autogaindB As Float
 
   'Find the ParsedFilter Tab and activate it:
   atabstrip_index = aTabstrip.Tag.Find(ParsedFilter)
   If Parsedfilter = "anequalizer" Then
     anequalizer_string = eqstring(False, ByRef autogaindB)
     If autogaindB > 0 Then
-      out.Add("lavfi=[volume=-" & autogaindB & "dB]")
+      out.Add("lavfi=[volume=-" & Replace(Str(autogaindB), ",", ".") & "dB]")
     Endif   
     out.Add("\"lavfi=[anequalizer=" & anequalizer_string & "]\"") 'this way it works at start time only" 
     Return out
@@ -1053,8 +1057,13 @@ Private Function Parse_audio_filter(Filtername As String) As String[]
     Return [parse_compand()]
   Else If Parsedfilter = "acompressor" Then
     Return [parse_acompressor()]
-    
-
+  Else If Parsedfilter = "superequalizer" Then
+    superequalizer_string = parsed_superequalizer(ByRef autogaindB)
+    If autogaindB > 0 Then
+      out.Add("lavfi=[volume=-" & Replace(Str(autogaindB), ",", ".") & "dB]")
+    Endif   
+    out.Add(superequalizer_string)
+    Return out
   Else If Parsedfilter Begins "customaudio" Then
     out.Insert(parse_audio_filter_custom(atabstrip_index))
     'out.add(parse_audio_filter_custom(atabstrip_index))
@@ -1290,13 +1299,7 @@ Public Function parse_filters(audio As Boolean) As String[]
     item_name = item_box.name
     cBox = Me.Controls[item_name & "_checkbox_" & filters_container.name]
     If cBox.value = True Then
-    '   If audio Then 
-    '     filter = Parse_audio_filter(item_name)
-    '       Else
-    '     filter = Parse_video_filter(item_name)
-    '   Endif
-    '   If filter <> "" Then aFilters.Add(filter)
-    ' Endif
+
       If audio Then 
         For Each filter In Parse_audio_filter(item_name)
           If filter <> "" Then aFilters.Add(filter)
@@ -1309,10 +1312,7 @@ Public Function parse_filters(audio As Boolean) As String[]
     Endif
 
   Next
-  ' While Right(filters) = ","
-  '   filters = Left(filters, -1)
-  ' Wend
-  ' Return filters
+
   Return aFilters
 End
 
@@ -2024,7 +2024,7 @@ End
 
 Private graph_w As Integer = 840 'this values allow mark lines to stay in "sync" with ffmpeg graph values
 
-Public Function eqstring(Optional complex As Boolean = True, Optional ByRef autogaindB As Integer) As String
+Public Function eqstring(Optional complex As Boolean = True, Optional ByRef autogaindB As Float) As String
   Dim band_containers As New Object[]
   Dim band_container, subobj As Object
   Dim f, g, w, out_band, outstring As String
@@ -2065,9 +2065,9 @@ Public Function eqstring(Optional complex As Boolean = True, Optional ByRef auto
   'If complex Then outstring &= ":\"curves=true:colors='transparent|white':fscale=1:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
   'If complex Then outstring &= ":\"curves=true:fscale=1:size=" & picturebox1.w & "x" & picturebox1.h & ":mgain=30\"[v1][vo]"
   If complex Then outstring &= ":\"curves=true:fscale=1:size=" & graph_w & "x" & picturebox1.h & ":mgain=30\"[ao][vo]"
+  If CheckBox_autogain_anequalizer.Value = CheckBox.false Then autogaindB = 0
   Return outstring
 End
-
 
 Public Sub DrawGraph()
   Dim eq_string As String
@@ -2110,6 +2110,13 @@ Public Sub EqControls_Change()
   If Not TabStrip_filters_audio.caption = "anequalizer" Then Return
   dynaobj_change()
   start_delay_graph_timer()
+End
+
+Public Sub CheckBox_autogain_anequalizer_Click()
+  If Not FMain.FullyLoaded Then Return
+  If Not Me.visible Then Return
+  If Not TabStrip_filters_audio.caption = "anequalizer" Then Return
+  dynaobj_change()
 End
 
 Private Sub start_delay_graph_timer(Optional force As Boolean = False)
@@ -2275,3 +2282,89 @@ Public Sub ApplyBTN_DblClick()
     FMain.Apply(False)
   Endif
 End
+
+
+' START SUPEREQUALIZER **********************************************************************************************************************
+Private Function parsed_superequalizer(ByRef max_gain As Float) As String
+  Dim slidercontainer As Panel
+  Dim myslider As Slider
+  Dim gain As Float
+  Dim outstr As String
+  max_gain = 0
+  For Each slidercontainer In seqcontainer.Children
+    myslider = slidercontainer.Children[1]
+    gain = myslider.Value / 10
+    If gain > max_gain Then max_gain = gain
+    outstr &= slidercontainer.Tag & "=" & Replace(Str(gain), ",", ".") & "dB:"
+  Next
+  outstr = Left(outstr, Len(outstr) - 1)
+  If CheckBox_autogain_superequalizer.value = CheckBox.false Then max_gain = 0
+  outstr = "superequalizer=" & outstr
+  Return outstr
+End
+
+
+Public Sub seqslider_Change()
+  Dim mycombo As ComboBox
+  Dim myslider As Slider
+  Dim myvalue As String
+  mycombo = Last.next
+  myslider = Last
+  Object.Lock(mycombo)
+  myvalue = myslider.value / 10
+  If InStr(myvalue, ".") = "0" Then myvalue &= ".0"
+  mycombo.Index = mycombo.Find(myvalue)
+  Object.unlock(mycombo)
+  
+  If Not FMain.FullyLoaded Then Return
+  If Not Me.visible Then Return
+  If Not TabStrip_filters_audio.caption = "superequalizer" Then Return
+  dynaobj_change()  
+End
+
+Public Sub seqcombo_Change()
+  Dim mycombo As ComboBox
+  Dim myslider As Slider
+  Dim myvalue As String
+  mycombo = Last
+  myslider = Last.previous
+  Object.Lock(myslider)
+  Try myslider.Value = mycombo.text * 10
+  Object.unlock(myslider)
+  
+  If Not FMain.FullyLoaded Then Return
+  If Not Me.visible Then Return
+  If Not TabStrip_filters_audio.caption = "superequalizer" Then Return
+  dynaobj_change()  
+End
+
+Private seq_already_setup As Boolean = False
+Public Sub seqcontainer_Arrange()
+  If Not seq_already_setup Then 
+    setup()
+    seq_already_setup = True
+  Endif
+End
+
+Private Sub setup()
+  Dim slidercontainer As Panel
+  Dim sliderlabel As Label
+  Dim i As Integer = 0
+  Dim bands As Array = ["65", "92", "131", "185", "262", "370", "523", "740", "1040", "1480", "2093", "2960", "4186", "5920", "8372", "11840", "16744", "20000"]
+  For Each slidercontainer In seqcontainer.children
+    slidercontainer.Tag = Str(i + 1) & "b" '1b,2b,3b....18b
+    sliderlabel = slidercontainer.Children[0]
+    sliderlabel.Text = bands[i]
+    i += 1
+  Next
+End
+'END SUPEREQUALIZER **********************************************************************************************************************
+
+Public Sub CheckBox_autogain_superequalizer_Click()
+  If Not FMain.FullyLoaded Then Return
+  If Not Me.visible Then Return
+  If Not TabStrip_filters_audio.caption = "superequalizer" Then Return
+  dynaobj_change()  
+End
+
+
