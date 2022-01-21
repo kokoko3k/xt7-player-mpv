@@ -2322,6 +2322,39 @@ Public Sub seqslider_Change()
   dynaobj_change()  
 End
 
+Public Sub PresetCombobox_click()
+  Dim slidercontainer As Panel
+  Dim myslider As Slider
+  Dim mycombo As Combobox
+  Dim preset As New Integer[]
+  Dim myvalue As String
+  Dim i As Integer
+
+  If Not FMain.FullyLoaded Then Return
+  If Not Me.visible Then Return
+  If Not TabStrip_filters_audio.caption = "superequalizer" Then Return
+  
+  i = 0
+  Try preset = presets[Last.text]
+  If Error Then Return
+  
+  For Each slidercontainer In seqcontainer.children
+    myslider = slidercontainer.Children[1]
+    mycombo = slidercontainer.Children[2]
+    Object.Lock(myslider)
+    Object.Lock(mycombo)
+    myslider.Value = preset[i]
+    myvalue = myslider.value / 10
+    If InStr(myvalue, ".") = "0" Then myvalue &= ".0"
+    mycombo.Index = mycombo.Find(myvalue)
+    i += 1
+    Object.unLock(myslider)
+    Object.unLock(mycombo)
+  Next
+  dynaobj_change()  
+
+End
+
 Public Sub seqcombo_Change()
   Dim mycombo As ComboBox
   Dim myslider As Slider
@@ -2346,11 +2379,41 @@ Public Sub seqcontainer_Arrange()
   Endif
 End
 
+Private presets As Collection
+
 Private Sub setup()
   Dim slidercontainer As Panel
   Dim sliderlabel As Label
   Dim i As Integer = 0
   Dim bands As Array = ["65", "92", "131", "185", "262", "370", "523", "740", "1040", "1480", "2093", "2960", "4186", "5920", "8372", "11840", "16744", "20000"]
+Dim tmp As String
+Dim tmp2 As String
+  presets = New Collection
+
+  Object.Lock(PresetCombobox)
+
+  PresetCombobox.Add("Flat")
+  presets["Flat"] = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"]
+ 
+  PresetCombobox.Add("Loudness")
+  presets["Loudness"] = ["37", "22", "8", "-8", "-20", "-28", "-34", "-38", "-40", "-26", "-48", "-49", "-48", "-26", "-4", "5", "1", "-10"]
+
+  PresetCombobox.Add("Loudness2")
+  presets["Loudness2"] = ["18", "11", "4", "-4", "-10", "-14", "-17", "-19", "-20", "-13", "-24", "-24", "-24", "-13", "-2", "2", "0", "-5"]
+  
+
+  
+  
+                                      For i = 0 To 17
+                                        tmp = tmp & "\"" & CStr((CInt(presets["Loudness"][i]) Div 2)) & "\","
+                                        tmp2 = tmp2 & "\"" & CStr((CInt(presets["Loudness"][i]) Div 4)) & "\","
+                                      Next
+                                      Print tmp
+                                      Print tmp2
+                                      'Stop
+                                    i = 0
+  Object.Unlock(PresetCombobox)
+  
   For Each slidercontainer In seqcontainer.children
     slidercontainer.Tag = Str(i + 1) & "b" '1b,2b,3b....18b
     sliderlabel = slidercontainer.Children[0]
@@ -2358,6 +2421,8 @@ Private Sub setup()
     i += 1
   Next
 End
+
+
 'END SUPEREQUALIZER **********************************************************************************************************************
 
 Public Sub CheckBox_autogain_superequalizer_Click()
@@ -2366,5 +2431,4 @@ Public Sub CheckBox_autogain_superequalizer_Click()
   If Not TabStrip_filters_audio.caption = "superequalizer" Then Return
   dynaobj_change()  
 End
-
 
