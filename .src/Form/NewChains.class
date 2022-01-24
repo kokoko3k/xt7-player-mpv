@@ -2300,6 +2300,7 @@ Private Function parsed_superequalizer(ByRef max_gain As Float) As String
   outstr = Left(outstr, Len(outstr) - 1)
   If CheckBox_autogain_superequalizer.value = CheckBox.false Then max_gain = 0
   outstr = "superequalizer=" & outstr
+  Debug outstr
   Return outstr
 End
 
@@ -2337,6 +2338,7 @@ Public Sub PresetCombobox_click()
   i = 0
   Try preset = presets[Last.text]
   If Error Then Return
+  If Preset = Null Then Return
   
   For Each slidercontainer In seqcontainer.children
     myslider = slidercontainer.Children[1]
@@ -2394,24 +2396,25 @@ Dim tmp2 As String
 
   PresetCombobox.Add("Flat")
   presets["Flat"] = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"]
- 
-  PresetCombobox.Add("Loudness")
-  presets["Loudness"] = ["37", "22", "8", "-8", "-20", "-28", "-34", "-38", "-40", "-26", "-48", "-49", "-48", "-26", "-4", "5", "1", "-10"]
 
-  PresetCombobox.Add("Loudness2")
-  presets["Loudness2"] = ["18", "11", "4", "-4", "-10", "-14", "-17", "-19", "-20", "-13", "-24", "-24", "-24", "-13", "-2", "2", "0", "-5"]
-  
+  PresetCombobox.Add("Loudness 3.4dB")
+  presets["Loudness 3.4dB"] = ["34", "23", "13", "5", "-1", "-7", "-13", "-16", "-20", "-20", "-26", "-29", "-35", "-31", "-20", "-13", "-6", "-3"]
+   
+  PresetCombobox.Add("Loudness 5.1dB")
+  presets["Loudness 5.1dB"] = ["51", "35", "19", "7", "-2", "-11", "-19", "-24", "-30", "-30", "-39", "-44", "-52", "-47", "-30", "-19", "-9", "-4"]
 
+  PresetCombobox.Add("Loudness 6.8dB")
+  presets["Loudness 6.8dB"] = ["68", "47", "26", "10", "-03", "-15", "-26", "-32", "-41", "-41", "-52", "-59", "-70", "-63", "-40", "-26", "-13", "-06"]
+
+  '   For i = 0 To 17
+  '     tmp = tmp & "\"" & CStr((CInt((presets["Loudness more"][i]) * 1) Div 2)) & "\","
+  '     tmp2 = tmp2 & "\"" & CStr((CInt(presets["Loudness"][i]) Div 4)) & "\","
+  '   Next
+  ' 
+  '   Print tmp
+  '   'Stop
+  ' i = 0
   
-  
-                                      For i = 0 To 17
-                                        tmp = tmp & "\"" & CStr((CInt(presets["Loudness"][i]) Div 2)) & "\","
-                                        tmp2 = tmp2 & "\"" & CStr((CInt(presets["Loudness"][i]) Div 4)) & "\","
-                                      Next
-                                      Print tmp
-                                      Print tmp2
-                                      'Stop
-                                    i = 0
   Object.Unlock(PresetCombobox)
   
   For Each slidercontainer In seqcontainer.children
