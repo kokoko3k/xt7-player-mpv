@@ -241,7 +241,7 @@ Public Sub TestBTN_Click()
 
     mplayer.set_option("osd-scale", pScale)
     mplayer.set_option("sub-scale", pScale)
-
+    mplayer.set_option("config", "no")
     'mplayer.set_option("zoom", "true") 'fixmempv, come si fa?
 
     For Each opt In ParseSubGui()

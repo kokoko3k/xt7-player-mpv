@@ -2405,6 +2405,10 @@ Dim tmp2 As String
 
   PresetCombobox.Add("Loudness 6.8dB")
   presets["Loudness 6.8dB"] = ["68", "47", "26", "10", "-03", "-15", "-26", "-32", "-41", "-41", "-52", "-59", "-70", "-63", "-40", "-26", "-13", "-06"]
+  
+  PresetCombobox.Add("Clear voice")
+  presets["Clear voice"] = ["00", "00", "00", "-05", "-24", "-35", "-25", "-09", "02", "18", "31", "35", "35", "31", "18", "00", "00", "00"]
+  
 
   '   For i = 0 To 17
   '     tmp = tmp & "\"" & CStr((CInt((presets["Loudness more"][i]) * 1) Div 2)) & "\","
