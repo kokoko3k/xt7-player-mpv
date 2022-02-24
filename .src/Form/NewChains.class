@@ -2290,11 +2290,15 @@ Private Function parsed_superequalizer(ByRef max_gain As Float) As String
   Dim myslider As Slider
   Dim gain As Float
   Dim outstr As String
+  
+  If Not seq_already_setup Then superequalizer_setup()
+  
   max_gain = 0
   For Each slidercontainer In seqcontainer.Children
     myslider = slidercontainer.Children[1]
     gain = myslider.Value / 10
     If gain > max_gain Then max_gain = gain
+    Stop
     outstr &= slidercontainer.Tag & "=" & Replace(Str(gain), ",", ".") & "dB:"
   Next
   outstr = Left(outstr, Len(outstr) - 1)
@@ -2376,20 +2380,19 @@ End
 Private seq_already_setup As Boolean = False
 Public Sub seqcontainer_Arrange()
   If Not seq_already_setup Then 
-    setup()
-    seq_already_setup = True
+    superequalizer_setup()
   Endif
 End
 
 Private presets As Collection
 
-Private Sub setup()
+Private Sub superequalizer_setup()
   Dim slidercontainer As Panel
   Dim sliderlabel As Label
   Dim i As Integer = 0
   Dim bands As Array = ["65", "92", "131", "185", "262", "370", "523", "740", "1040", "1480", "2093", "2960", "4186", "5920", "8372", "11840", "16744", "20000"]
-Dim tmp As String
-Dim tmp2 As String
+  Dim tmp As String
+  Dim tmp2 As String
   presets = New Collection
 
   Object.Lock(PresetCombobox)
@@ -2427,6 +2430,8 @@ Dim tmp2 As String
     sliderlabel.Text = bands[i]
     i += 1
   Next
+  
+  seq_already_setup = True
 End
 
 
