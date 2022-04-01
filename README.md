@@ -66,7 +66,8 @@ After you installed gambas 3, just checkout and compile xt7 that way:
 
 # git clone https://github.com/kokoko3k/xt7-player-mpv.git
 # cd xt7-player-mpv/
-# /path/to/gambas/binaries/gbc3 -e -a -g -t -p -m
+# /path/to/gambas/binaries/gbc3 -e -a -g -t -p -m #<-- for older gambas versions
+# /path/to/gambas/binaries/gbc3 -e -a -g -t -f public-module -f public-control  #<-- for newer gambas versions
 # /path/to/gambas/binaries/gba3
 # ./xt7-player-mpv.gambas
 ```
