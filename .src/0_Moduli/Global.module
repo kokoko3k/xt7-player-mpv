@@ -60,6 +60,7 @@ Public DelayLoadStates As Timer
 Public MaxHistory As Integer 'how many played files to remember
 Public Max_menu_History As Integer 'how many to show in the menu
 Public YPCacheFile As String 
+Public wayland_warning_no_show_file As String 'The user don't want to read the warning on wayland
 
 Public UserPlaylistsDir As String
 
@@ -119,6 +120,7 @@ Public Sub init()
   StartFolder = User.home  'fixme: allow to choose
   ScreenshotFolder = settings.defaultdir & "/" & Appname & "/" & ".xt7-screenshots/"
   YPCacheFile = settings.defaultdir & "/" & Appname & "/" & ".ypcachefile"
+  wayland_warning_no_show_file = settings.defaultdir & "/" & Appname & "/" & ".waylandwarningfile"
   HistoryFile = settings.defaultdir & "/" & Appname & "/" & ".history.txt"
   BookmarksFile = settings.defaultdir & "/" & Appname & "/" & ".bookmarks.txt"
   ViewMenuFile = settings.defaultdir & "/" & Appname & "/" & ".viewmenu.txt"

@@ -264,7 +264,8 @@ Public Sub InitTrayIcon()
 End
 
 Public Sub Form_Open()
-
+  Dim wmessage As String
+  Dim wanswer As String
   SetFlexSpaceVisibility(False)
   'init dynagui toolbar objects
   DynaGuiTools.AllowedContainers = ["MainToolbar"] ', "SliderBox"]
@@ -274,6 +275,21 @@ Public Sub Form_Open()
   If global.TranslationNeeded Then
     If Not (Exist(TranslationNeeded.Notranslatefile)) Then TranslationNeeded.show
   Endif
+  Debug Desktop.platform
+  If Desktop.Platform = "wayland" Then
+    If Not (Exist(global.wayland_warning_no_show_file)) Then
+      If Env["GB_GUI_PLATFORM"] <> "x11] then"
+        wmessage = "You seem to be running Wayland, but GB_GUI_PLATFORM is not x11.\n"
+        wmessage &= "Since xt7 only supports Xorg/XWayland, you have to set:\n"
+        wmessage &= "GB_GUI_PLATFORM=x11 prior to start it."
+        wanswer = Message.Warning(wmessage, "Quit", "Continue", "Do not show this anymore")
+        If wanswer = 1 Then FMain.Close()
+        If wanswer = 3 Then Shell "touch " & global.wayland_warning_no_show_file Wait
+      Endif
+    Endif
+  Endif
+  
+  
 End
 
 Public Sub SetFlexSpaceVisibility(Visibility As Boolean)
