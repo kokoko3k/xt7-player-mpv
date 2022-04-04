@@ -571,7 +571,7 @@ Public Function LookForJpgB64(filename As String, Optional saveto As String = ""
   Dim tmpfile As String = Temp & ".jpg"
   Dim tmppic As Picture
   Dim m1pos As Long
-  Dim jpgendmarker1 As String = Chr(01) & Chr(05)
+  Dim jpgendmarker1 As String = Chr(1) & Chr(5)
   Dim jpgendmarker2 As String = "00"
 
   If IsUncovered(filename) Then Return False
@@ -1394,9 +1394,9 @@ Public Sub covers_remove_unreferenced()
   Dim coverdir As String = global.confpath & "/covers/"
   Dim l As Playlistclass = Fmain.mylibrary
   'per ogni oggetto nella libreria
-	'se ha cover - > metti nell 'elenco delle cover protette
+ 'se ha cover - > metti nell 'elenco delle cover protette
   'Per ogni file di cover
-	'  se non c 'è nell'elenco dei protetti, cancellalo.
+ '  se non c 'è nell'elenco dei protetti, cancellalo.
   
   For i = 0 To l.PTable.count - 1
     album = Trim(l.GetValue(l.PTable[i], "Album"))

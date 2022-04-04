@@ -1,5 +1,6 @@
-[Breakpoints]
-Count=0
+[Debug]
+Arguments=[["-v"]]
+Environment=["GB_GUI_PLATFORM=x11","GB_GUI="]
 
 [DebugWindow]
 Count=0
@@ -547,6 +548,9 @@ Geometry=[1280,312,224,280]
 [DebugWindow/seqcontainer.Children]
 Geometry=[1920,0,203,259]
 
+[DebugWindow/slidercontainer]
+Geometry=[2000,11,583,900]
+
 [DebugWindow/source_opts]
 Geometry=[1258,110,301,812]
 
@@ -611,7 +615,7 @@ Geometry=[1920,0,1716,373]
 Geometry=[52,0,224,336]
 
 [Executable]
-Path="/home/koko/tmp/xt7-player-mpv.gambas"
+Path="/tmp/xt7-player-mpv.gambas"
 DoNotIncrementVersion=False
 NoTestModule=False
 
@@ -621,11 +625,11 @@ LastCommit="Use complete video url when downloading streams.\nAvoids problems wi
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:6.65"
 File[2]=".src/Classi/MplayerClass.class:32.2336"
-Active=3
-File[3]=".src/Form/NewChains.class:10.499"
+Active=13
+File[3]=".src/Form/NewChains.class:0.2309"
 Count=80
 File[4]=".src/Form/FMain.form"
-File[5]=".src/Form/FMain.class:49.2592"
+File[5]=".src/Form/FMain.class:10.2595"
 File[6]=".src/Form/NewChains.form"
 File[7]=".src/Form/GeneralOptions.class:30.1399"
 File[8]=".src/0_Moduli/Global.module:26.1057"
@@ -633,7 +637,7 @@ File[9]=".src/Form/GeneralOptions.form"
 File[10]=".src/Classi/FloatSpinBox.class:12.180"
 File[11]="AA_ToDo:0.684"
 File[12]=".src/Classi/randr.class:0.61"
-File[13]=".src/Classi/SettingsClass.class:0.485"
+File[13]=".src/Classi/SettingsClass.class:10.408"
 File[14]=".src/Form/ChooseAspect.class:17.21"
 File[15]=".src/Classi/PlaylistClass.class:44.1181"
 File[16]=".src/Form/HotKeys.class:3.409"

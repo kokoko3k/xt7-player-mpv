@@ -399,7 +399,7 @@ Public Sub LoadLeftSideTabsVisibility(ProfilePath As String)
   Dim myfilename As String = ProfilePath & ".TabsVisibility.new"
   Dim i As Integer
   Dim tmp As String
-  
+
   If Exist(myfilename, True) Then
     myfile = Open myfilename For Read
     For i = 0 To FMain.LeftSideTabs.count - 1

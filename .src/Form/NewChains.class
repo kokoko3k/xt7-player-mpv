@@ -1919,7 +1919,7 @@ Public Sub DrawGraph_part2()
     paint_db_line(-24, img, line_color)
     paint_db_line(-12, img, line_color)
     paint_db_line(-6, img, line_color)
-    paint_db_line(-0, img, line_color)
+    paint_db_line(0, img, line_color)
     paint_db_line(6, img, line_color)
     paint_db_line(12, img, line_color)
     paint_db_line(24, img, line_color)
@@ -2298,7 +2298,7 @@ Private Function parsed_superequalizer(ByRef max_gain As Float) As String
     myslider = slidercontainer.Children[1]
     gain = myslider.Value / 10
     If gain > max_gain Then max_gain = gain
-    Stop
+    
     outstr &= slidercontainer.Tag & "=" & Replace(Str(gain), ",", ".") & "dB:"
   Next
   outstr = Left(outstr, Len(outstr) - 1)
