@@ -20,7 +20,7 @@ http://gambas.sourceforge.net/en/main.html
 Mandatory requirements:
 ======
   * Gambas 3 (usually the very latest version)
-  * Qt5 (it is still possible to use Qt4 with little effort)
+  * Qt5
   * mpv
 
 
@@ -38,25 +38,6 @@ Optional requirements:
 
   * youtube-dl to watch and download youtube videos
   http://rg3.github.com/youtube-dl/
-
-
-Qt4 or Qt5?
-======
-xt7-player works with qt4 and qt5,
-but will defaults to qt5 for any release past 0.20.384,
-but build it for Qt4 toolkit is still possible:
-Just open .project file and change the following lines:
-```
- Component=gb.qt5
- Component=gb.qt5.ext
-```
-to:
-```
- Component=gb.qt4
- Component=gb.qt4.ext
-```
- 
-Then build as follows:
 
 
 Compiling it:
