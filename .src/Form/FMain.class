@@ -5967,9 +5967,11 @@ Public Sub BrowseSelectPrev(Optional nowait As Boolean = False)
       Else 
         ToSelectIndex = currentindex - 1
   Endif
+
   Try Media_Next_path = fileview1.dir & "/" & filelist[ToSelectIndex]
-  Try Media_Next_path = Replace(mplayer.getP("FullPath"), "//", "/")
+  Try Media_Next_path = Replace(Media_Next_path, "//", "/")
   fileview1.current = filelist[ToSelectIndex]
+
 End
 
 
