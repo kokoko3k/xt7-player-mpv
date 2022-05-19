@@ -856,8 +856,8 @@
           Visible = False
           Background = Color.TextBackground
           Expand = True
-          Alignment = Align.Center
           Border = Border.Raised
+          Alignment = Align.Center
         }
         { Panel2 Panel GridPanels
           Name = "Panel2"
@@ -983,8 +983,8 @@
           Visible = False
           Background = Color.TextBackground
           Expand = True
-          Alignment = Align.Center
           Border = Border.Raised
+          Alignment = Align.Center
         }
         { PlayListSelInfoBox HBox
           MoveScaled(0,54,37,4.5714)
@@ -1085,7 +1085,7 @@
             MoveScaled(0,2,31,2)
             Visible = False
             Ignore = True
-            Picture = Picture["shadeup.png"]
+            Picture = Picture.Load("shadeup.png")
             Stretch = True
           }
         }
@@ -1128,8 +1128,8 @@
           Visible = False
           Background = Color.TextBackground
           Expand = True
-          Alignment = Align.Center
           Border = Border.Raised
+          Alignment = Align.Center
         }
         { HBox19 HBox
           MoveScaled(1,10,35,4.5714)
@@ -1394,7 +1394,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-68.2857,18,4.5714)
+              MoveScaled(9.4286,-69.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1515,8 +1515,8 @@
               MoveScaled(0,0,23,3)
               Font = Font["Bold"]
               AutoResize = True
-              Text = ("Search results:")
               Alignment = Align.Left
+              Text = ("Search results:")
             }
             { VBox4 VBox
               MoveScaled(22,1,6,3)
@@ -1752,14 +1752,14 @@
     }
     { RightSidePanel Panel VideoAreaGroup
       Name = "RightSidePanel"
-      MoveScaled(43,8,60,65)
+      MoveScaled(42,7,60,65)
       Tracking = True
       Arrangement = Arrange.Vertical
       { ToolbarBackground PictureBox
         MoveScaled(1,3,19,0.8571)
         #Translate = False
         NoTabFocus = True
-        Picture = Picture["toolbarshade.png"]
+        Picture = Picture.Load("toolbarshade.png")
         Stretch = True
         Alignment = Align.Left
       }
@@ -1784,8 +1784,8 @@
             MoveScaled(-1,-3,15,3)
             Font = Font["Bold"]
             Foreground = Color.TextForeground
-            Text = ("Tag Editor")
             Alignment = Align.Left
+            Text = ("Tag Editor")
           }
           { VBox1 VBox
             MoveScaled(17,0,6,3)
@@ -2004,14 +2004,14 @@
         MoveScaled(0,48,71,14)
         Background = Color.Background
         { ControlFrame Panel
-          MoveScaled(-13,1,72,10)
+          MoveScaled(-11,2,72,10)
           Font = Font["6"]
           { PictureBox1 PictureBox
             MoveScaled(2,0,60,7)
             Tracking = True
             Drop = True
             Expand = True
-            Picture = Picture["backpanel.png"]
+            Picture = Picture.Load("backpanel.png")
             Stretch = True
           }
           { ControlPanel Panel
@@ -2073,7 +2073,7 @@
                 Border = Border.Plain
                 { Progress PictureBox
                   MoveScaled(6,1,6,4.5714)
-                  Picture = Picture["barglow.png"]
+                  Picture = Picture.Load("barglow.png")
                   Stretch = True
                 }
                 { seekbar ProgressBar
@@ -2086,7 +2086,7 @@
                 }
                 { progressshadow PictureBox
                   MoveScaled(12,0,12,2)
-                  Picture = Picture["shadeup.png"]
+                  Picture = Picture.Load("shadeup.png")
                   Stretch = True
                 }
               }
@@ -2159,8 +2159,8 @@
             Foreground = &HFFFFFF&
             Expand = True
             AutoResize = True
-            Text = ("LeftText")
             Alignment = Align.Left
+            Text = ("LeftText")
           }
           { StatusLabelRight Label statusbar
             Name = "StatusLabelRight"
@@ -2168,8 +2168,8 @@
             Font = Font["Bold,-1"]
             Foreground = &HFFFFFF&
             AutoResize = True
-            Text = ("Right Text")
             Alignment = Align.Right
+            Text = ("Right Text")
           }
         }
       }
@@ -2178,7 +2178,7 @@
         Visible = False
         Background = Color.Background
         Ignore = True
-        Picture = Picture["cachebar.png"]
+        Picture = Picture.Load("cachebar.png")
         Stretch = True
       }
       { ABLoopTimer #Timer
