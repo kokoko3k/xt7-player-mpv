@@ -613,7 +613,7 @@ Public Sub LoadHotKeys(ProfileName As String)
   Dim sRow, t As String
   Dim aRow As String[]
   Dim need_defaults As Boolean = True
- 
+ Stop
   Dim c, r, w1, w2 As Integer
 
   If Exist(filename_fs, True) Then
@@ -632,7 +632,7 @@ Public Sub LoadHotKeys(ProfileName As String)
   For c = 1 To HotKeysGrid.Columns.Count - 1
      HotKeysGrid.Columns[c].w = -1
   Next
-
+Stop
   HotKeysGrid.Columns[0].Width = HotKeysGrid.Font.TextWidth("______________________________")
   
 
@@ -675,6 +675,7 @@ Public Sub LoadHotKeys(ProfileName As String)
   Endif
   
   'load xt7 to mpv translation hotkeys
+  If Exist(filename_translation, True) Then
     For Each sRow In Split(File.Load(filename_translation), "\n", "", True, False)
       Try aRow = Split(sRow, "," & Chr(8), "", False)
       If aRow.count > 2 Then 
@@ -684,7 +685,7 @@ Public Sub LoadHotKeys(ProfileName As String)
         gridtranslate[r, c].text = t
       Endif
     Next
-  
+  Endif
   
   If need_defaults Then DefaultFill()
   
