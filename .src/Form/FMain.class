@@ -4434,7 +4434,7 @@ End
 Public Sub VideoAreaGroup_MouseDrag()
   Dim threshold As Integer = videobox.w Div 20
   Dim isimgfile As Boolean = global.IsImgFile(mplayer.getP("fullpath")) 
-  global.myDebug(" ")
+
   If (Not fsform.FullScreen) And (Not isimgfile) Then
     If SwitchingFullScreen Then Return
     If mouse.left Then
