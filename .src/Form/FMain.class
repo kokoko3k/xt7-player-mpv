@@ -1876,7 +1876,7 @@ Public Sub ButtonPlay_Click()
   Else
     Play(Media_Next_path)
   Endif
-  VideoBox.setfocus
+  fmain.videoboxproxy.SetFocus
   If TabSelectedYoutube() Then Try customtitle = youtubetree.Current.text
 End
 
@@ -2347,7 +2347,7 @@ Public Sub TreeView1_Activate()
     If Not Error Then mplayer.do_seek_to(stime, True)
       Else
     Play(k)
-    fmain.VideoBox.setfocus
+    fmain.videoboxproxy.SetFocus
     SetActivePlayQueue("dvd")
   Endif
 End
@@ -5648,7 +5648,7 @@ Private WasPausedOnMouseDown As Boolean = False
 Public Sub VideoAreaGroup_MouseDown()
   If mplayer.ProcessRunningOvr() Then WasPausedOnMouseDown = mplayer.paused(True)
   mouseleft = mouse.left
-  If FMain.mplayer.ProcessRunningOvr() Then fmain.VideoBox.setfocus 'needed to get keypress events
+  If FMain.mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus 'needed to get keypress events
   IgnoreMouse = False
   HotKeysHelper.MouseDown()
 End
@@ -7646,7 +7646,7 @@ End
 Public VolumeFocused As Boolean = False
 
 Public Sub VideoAreaGroup_Enter()
-  If mplayer.ProcessRunningOvr() Then fmain.VideoBox.setfocus
+  If mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus
 End
 
 
@@ -11270,7 +11270,7 @@ End
 
 
 Public Sub VideoAreaGroup_MouseMove()
-  If mplayer.ProcessRunningOvr() Then videobox.SetFocus()  
+  If mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus()  
   If Mouse.state = 0 Then HotKeysHelper.init()
   outerbox.mouse = Mouse.default
   videobox.mouse = Mouse.default
@@ -12453,3 +12453,9 @@ End
 
 
 
+
+Public Sub VideoAreaGroup_GotFocus()
+
+  Last.Move(-100, -100, 1, 1)
+
+End

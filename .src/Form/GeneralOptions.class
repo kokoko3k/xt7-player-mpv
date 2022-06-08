@@ -467,9 +467,8 @@ End
 Public Sub OkBTN_Click()
   Me.Hide
   Wait 0.1
-  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.SetFocus()
+  If FMain.mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus()
 End
-
 
 
 Public Sub LoadWatchDir(ProfileName As String)
@@ -721,11 +720,11 @@ Public Sub AddBtn2_Click()
 End
 
 Public Sub Form_Close()
-  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+  If FMain.mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus()
 End
 
 Public Sub Form_Hide()
-  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+  If FMain.mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus()
 End
 
 Public Sub DvdDeviceOpen2_Click()

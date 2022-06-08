@@ -17,12 +17,12 @@ End
 
 Public Sub Form_Close()
 
-  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+  If FMain.mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus()
 
 End
 
 Public Sub Form_Hide()
 
-  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+  If FMain.mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus()
 
 End

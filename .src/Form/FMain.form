@@ -1394,7 +1394,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-69.2857,18,4.5714)
+              MoveScaled(9.4286,-71.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1752,7 +1752,7 @@
     }
     { RightSidePanel Panel VideoAreaGroup
       Name = "RightSidePanel"
-      MoveScaled(42,7,60,65)
+      MoveScaled(51,8,60,65)
       Tracking = True
       Arrangement = Arrange.Vertical
       { ToolbarBackground PictureBox
@@ -1976,7 +1976,7 @@
         Expand = True
         { VideoBox DrawingArea VideoAreaGroup
           Name = "VideoBox"
-          MoveScaled(0,7,24,14)
+          MoveScaled(-2,5,24,14)
           Background = &H000000&
           Tracking = True
           Drop = True
@@ -1984,9 +1984,15 @@
             #MoveScaled(4,1)
             Delay = 10
           }
+          { videoboxproxy Panel VideoAreaGroup
+            Name = "videoboxproxy"
+            MoveScaled(16,7,6,5)
+            Background = &H000000&
+            Ignore = True
+          }
         }
         { ThumbleBox Panel
-          MoveScaled(4,21,17,17)
+          MoveScaled(0,20,17,17)
           Visible = False
           Background = &H000000&
           Arrangement = Arrange.Fill

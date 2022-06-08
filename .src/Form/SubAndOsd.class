@@ -264,13 +264,13 @@ End
 
 Public Sub Form_Hide()
   mplayer.do_stop()
-  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+  If FMain.mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus()
 End
 
 Public Sub OkBTN_Click()
   Me.hide
   Wait 0.1
-  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.SetFocus()
+  If FMain.mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus()
 End
 
 Public Sub ApplyBTN_Click()
@@ -391,7 +391,7 @@ Public Sub Form_Close()
   Try Kill global.confpath & "/SubBackImage03.png"
   Try Kill global.confpath & "/SubBackImage04.png"
   Try Kill global.confpath & "/SubBackImage05.png"
-  If FMain.mplayer.ProcessRunningOvr() Then FMain.VideoBox.setfocus()
+  If FMain.mplayer.ProcessRunningOvr() Then fmain.videoboxproxy.SetFocus()
 End
 
 
