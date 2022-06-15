@@ -12242,15 +12242,15 @@ Public Sub speed_compensate(Optional HZ_ERROR_MAX As Float = 100)
 
   'try to get the mode and refresh from xrandr
   mode = randr.Xmode_from_obj(fmain)  
-  r1 = mode.r
-  
+  Try r1 = mode.r
+  If Error Then r1 = 0
   'try to get the refresh from mpv
   sr2 = mplayer.get_property_mpv("display-fps", True)
   r2 = 0
   Try r2 = CFloat(sr2)
   
-  'see if they are consistent:
-  If Abs(r1 - r2) < 0.1 Then
+  'see if they are consistent or we failed on xrandr:
+  If ((Abs(r1 - r2) < 0.1) Or (r1 = 0)) Then
     'if they are, prefer mpv
     r = r2
       Else
