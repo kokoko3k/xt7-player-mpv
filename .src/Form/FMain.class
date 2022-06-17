@@ -4434,7 +4434,7 @@ End
 Public Sub VideoAreaGroup_MouseDrag()
   Dim threshold As Integer = videobox.w Div 20
   Dim isimgfile As Boolean = global.IsImgFile(mplayer.getP("fullpath")) 
-
+  
   If (Not fsform.FullScreen) And (Not isimgfile) Then
     If SwitchingFullScreen Then Return
     If mouse.left Then
@@ -5738,6 +5738,7 @@ Private last_name As String = ""
 Public Sub VideoAreaGroup_MouseWheel()
   Dim HotKey As String
   Dim tNow As Float
+  videoboxproxy.SetFocus()
   If global.MouseInside(fmain.BottomVbox) Then Return 'don't process events from there
   'Hacky workaround for a bug in gambas that sends multiple mousewheel events
   'when there are multiple objects in a group.
