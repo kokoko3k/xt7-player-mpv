@@ -109,7 +109,11 @@ Private Sub Init_drivers_video()
   Dim driver As String
   drivers_video_list = ["gpu", "xv", "vdpau", "vaapi", "x11", "null"]
   For Each driver In drivers_video_list
-    draw_list_item(drivers_video_container, driver)
+    If driver = "gpu" Then
+      draw_list_item(drivers_video_container, driver, True)
+        Else
+      draw_list_item(drivers_video_container, driver)
+    Endif
   Next
   tabstrip1.index = tabs.Find("drivers_video")
   drivers_video_container.tag = ConfigureTabs_video
