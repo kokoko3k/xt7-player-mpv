@@ -666,16 +666,32 @@ Private Sub draw_filters_video_cfg()
   ' Global.DrawGui(AllParams, "vdpaurb", aTabstrip, NotSwitchable,,,, Me)
   ' AllParams.Clear
   
+  ' ' unsharp[=l|cWxH:amount[:l|cWxH:amount]]
+  ' AllParams.Add(["TITLE", ("- Sharpen or blur the input video -"), "Sharp0", ""])
+  ' AllParams.add(["CHOOSE", ("Luminance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp1", ("The higher, the slower")])
+  ' AllParams.add(["RANGEFLOAT", ("Luma amount"), "-2", "0", "5", "Sharp2", ("Negative means blur")])
+  ' AllParams.add(["CHOOSE", ("Chrominance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp3", ("The higher, the slower")])
+  ' AllParams.add(["RANGEFLOAT", ("Chroma amount"), "-2", "0", "5", "Sharp4", ("Negative means blur")])
+  ' AllParams.add(["ROCHOOSE", "Enable opencl", "0 - disable", "1 - enable", "Sharp5", ("Needs ffmpeg compiled with opencl support")])
+  ' Global.DrawGui(AllParams, "unsharp", aTabstrip, NotSwitchable, "",, "lavfi", Me)
+  ' AllParams.Clear
+  
   ' unsharp[=l|cWxH:amount[:l|cWxH:amount]]
   AllParams.Add(["TITLE", ("- Sharpen or blur the input video -"), "Sharp0", ""])
-  AllParams.add(["CHOOSE", ("Luminance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp1", ("The higher, the slower")])
-  AllParams.add(["RANGEFLOAT", ("Luma amount"), "-2", "0", "5", "Sharp2", ("Negative means blur")])
-  AllParams.add(["CHOOSE", ("Chrominance Matrix"), "3:3", "5:5", "7:7", "9:9", "11:11", "13:13", "15:15", "Sharp3", ("The higher, the slower")])
-  AllParams.add(["RANGEFLOAT", ("Chroma amount"), "-2", "0", "5", "Sharp4", ("Negative means blur")])
-  AllParams.add(["ROCHOOSE", "Enable opencl", "0 - disable", "1 - enable", "Sharp5", ("Needs ffmpeg compiled with opencl support")])
-  Global.DrawGui(AllParams, "unsharp", aTabstrip, NotSwitchable, "",, "lavfi", Me)
-  AllParams.Clear
   
+  AllParams.add(["CHOOSE", ("luma_msize_x="), "5", "3", "5", "7", "9", "11", "13", "15", "17", "29", "21", "23", "sharp001", ("luma matrix x")])
+  AllParams.add(["CHOOSE", ("luma_msize_y="), "5", "3", "5", "7", "9", "11", "13", "15", "17", "29", "21", "23", "sharp002", ("luma matrix y")])
+  AllParams.add(["CHOOSE", ("chroma_msize_x="), "5", "3", "5", "7", "9", "11", "13", "15", "17", "29", "21", "23", "sharp003", ("chroma matrix y")])
+  AllParams.add(["CHOOSE", ("chroma_msize_y="), "5", "3", "5", "7", "9", "11", "13", "15", "17", "29", "21", "23", "sharp004", ("chroma matrix y")])
+  AllParams.add(["CHOOSE", ("alpha_msize_x="), "5", "3", "5", "7", "9", "11", "13", "15", "17", "29", "21", "23", "sharp005", ("alpha matrix y")])
+  AllParams.add(["CHOOSE", ("alpha_msize_y="), "5", "3", "5", "7", "9", "11", "13", "15", "17", "29", "21", "23", "sharp006", ("alpha matrix y")])
+    
+  AllParams.add(["RANGEFLOAT", ("luma_amount="), "-3.0", "1", "3.0", "sharp007", ("luma effect strength, negative will blur")])
+  AllParams.add(["RANGEFLOAT", ("chroma_amount="), "-3.0", "0", "3.0", "sharp008", ("chroma effect strength, negative will blur")])
+  AllParams.add(["RANGEFLOAT", ("alpha_amount="), "-3.0", "0", "3.0", "sharp009", ("alpha effect strength, negative will blur")])
+  
+  Global.DrawGui(AllParams, "unsharp", aTabstrip, Switchable, "",, "lavfi", Me)
+  AllParams.Clear
 
   AllParams.Add(["TITLE", ("- Add paddings to the input image -"), "pad0", ""])
   AllParams.add(["RANGE", ("width="), "0", "0", "8192", "pad1", ("0 to Disable; Width of the output image with the paddings added.")])
