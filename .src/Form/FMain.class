@@ -308,7 +308,7 @@ Public Sub DynaGuiToolbar_Click()
   Dim ButtonName As String
   If MenuToolBarLocked.checked Then
     Try ButtonName = Last.name
-    If (Not Error ) Then
+    If (Not Error) Then
       Select Case ButtonName
         ' Case "ConfigureChainsBTN"
         '   If (Not global.initearlyformsdone) Then InitEarlyForms()
@@ -6158,7 +6158,7 @@ Public Sub PlayListGrid_DblClick()
   Try customtitle = PlayListGrid[PlayListGrid.row, myplaylist.ColumnIndex["Filename"]].text
   Last.mouse = mouse.wait
   Try SelectedPath = PlaylistGrid[Playlistgrid.row, MyPlaylist.Columnindex["Full Path"]].text
-  If (Not Error ) Then
+  If (Not Error) Then
     MyLibrary.AlreadyPlayedString.Push(SelectedPath)
   Endif
   If MouseInsideGrid(PlayListGrid) Then
@@ -6178,7 +6178,7 @@ Public Sub LibraryGrid_DblClick()
   Try customtitle = librarygrid[librarygrid.row, myplaylist.ColumnIndex["Filename"]].text
   Last.mouse = mouse.wait
   Try SelectedPath = LibraryGrid[LibraryGrid.row, MyLibrary.Columnindex["Full Path"]].text
-  If (Not Error ) Then
+  If (Not Error) Then
     MyLibrary.AlreadyPlayedString.Push(SelectedPath)
   Endif
   If MouseInsideGrid(Librarygrid) Then
@@ -10652,7 +10652,7 @@ Public Sub ShowGridTooltip_timer()
 
   
   Try crow = global.MyRowAt(mygrid, mouse.screeny - mygrid.screeny)
-  If ( Error Or (crow = -1)) Then 
+  If (Error Or (crow = -1)) Then 
     Application.ShowTooltips = False
     Goto returnlabel
   Endif

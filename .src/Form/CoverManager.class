@@ -512,7 +512,7 @@ Public Sub UnMarkUncovered(fullpath As String)
   Dim i As Integer
   If Not UncoveredInitialized Then UncoveredInit()
   Try i = uncovered.Find(fullpath)
-  If (Not Error ) And (i >= 0) Then uncovered.Remove(i, 1)
+  If (Not Error) And (i >= 0) Then uncovered.Remove(i, 1)
 End
 
 
