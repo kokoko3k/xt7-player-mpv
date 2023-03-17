@@ -20,6 +20,7 @@ Object.Lock(FMain.SearchFieldPLS)
   For i = 0 To TempList.count - 1
     If (item <> TempList[i]) And (i < MaxItems) Then TheComboBox.Add(TempList[i])
   Next 'i
+TheComboBox.text = item
 Object.unLock(FMain.SearchField)
 Object.unLock(FMain.SearchFieldAlbums)
 Object.unLock(FMain.SearchFieldDVB)

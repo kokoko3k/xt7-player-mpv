@@ -124,7 +124,7 @@ Private Sub Reconfigure(theObject As Object, TheSettings As String[], TheForm As
         
       Else If MyProperty = ".index" Then
         If (TheObject.index <> MyValue) Then
-          Try TheObject.index = MyValue
+          Try TheObject.index = MyValue 
         Endif
         
       Else If MyProperty = ".font.name" Then
