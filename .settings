@@ -11,9 +11,11 @@ CurrentArgument=1
 Breakpoints={}
 
 [DebugWindow]
-Count=2
-DebugWindow[1]="CurrentParams"
-DebugWindow[2]="yousearchfield"
+Count=4
+DebugWindow[1]="brother"
+DebugWindow[2]="brother.Children"
+DebugWindow[3]="brother.Children[0]"
+DebugWindow[4]="Panel(brother.Children[0]).Children"
 
 [DebugWindow/(Dir(Directory, "*"))]
 Geometry=[1280,0,224,280]
@@ -113,6 +115,9 @@ Geometry=[52,0,549,714]
 
 [DebugWindow/NewChains.parse_drivers(False)]
 Geometry=[1280,0,224,280]
+
+[DebugWindow/Panel(brother.Children[0]).Children]
+Geometry=[1221,246,518,742]
 
 [DebugWindow/Picture.Load(picfile)]
 Geometry=[52,0,224,280]
@@ -242,6 +247,15 @@ Geometry=[52,0,224,280]
 
 [DebugWindow/broken_opts]
 Geometry=[1920,0,224,280]
+
+[DebugWindow/brother]
+Geometry=[1179,204,518,742]
+
+[DebugWindow/brother.Children]
+Geometry=[1193,218,518,742]
+
+[DebugWindow/brother.Children[0]]
+Geometry=[1207,232,518,742]
 
 [DebugWindow/c]
 Geometry=[988,191,696,744]
@@ -641,11 +655,11 @@ LastCommit="Use complete video url when downloading streams.\nAvoids problems wi
 [OpenFile]
 File[1]=".src/Classi/IceCastClass.class:6.65"
 File[2]=".src/Classi/MplayerClass.class:32.538"
-Active=70
+Active=5
 File[3]=".src/Form/NewChains.class:17.672"
 Count=83
 File[4]=".src/Form/FMain.form"
-File[5]=".src/Form/FMain.class:26.9940"
+File[5]=".src/Form/FMain.class:2.10306"
 File[6]=".src/Form/NewChains.form"
 File[7]=".src/Form/GeneralOptions.class:0.471"
 File[8]=".src/0_Moduli/Global.module:40.1065"
@@ -696,7 +710,7 @@ File[52]=".src/Form/OpenSubtitesForm.form"
 File[53]=".src/Form/OpenSubtitesForm.class:26.49"
 File[54]=".src/Form/BugReport.class:0.30"
 File[55]=".src/Classi/MyResetButton.class:32.18"
-File[56]=".src/Form/EpgForm.class:23.15"
+File[56]=".src/Form/EpgForm.class:16.704"
 File[57]=".src/Classi/PodCast.class:21.211"
 File[58]=".src/Form/CountDown.form"
 File[59]=".src/Form/MyAskName.form"

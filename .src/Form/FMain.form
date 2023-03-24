@@ -883,7 +883,7 @@
         { LibrarySelInfo Label
           MoveScaled(1,47,36,4.5714)
           Visible = False
-          Background = &HFFFF9B&
+          Background = &HFFFF9B
           Alignment = Align.Center
           Border = Border.Etched
         }
@@ -1001,7 +1001,7 @@
           }
           { PlayListSelInfo Label
             MoveScaled(10,0,19,4.5714)
-            Background = &HFFFF9B&
+            Background = &HFFFF9B
             ToolTip = ("Selection play time")
             Expand = True
             AutoResize = True
@@ -1068,21 +1068,21 @@
         }
         { Panel16 Panel gridpanels
           Name = "Panel16"
-          MoveScaled(1,12,36,33)
+          MoveScaled(0,15,36,33)
           Expand = True
           Arrangement = Arrange.Fill
           { FileView1 FileView
-            MoveScaled(1,7,32,25)
+            MoveScaled(2,9,32,25)
             Background = Color.TextBackground
             Expand = True
+            View = FileView.Detailed
             Mode = Select.Multiple
             Dir = "/"
-            ShowDetailed = True
             ShowDirectory = True
           }
           { shadeup PictureBox shadeuplow
             Name = "shadeup"
-            MoveScaled(0,2,31,2)
+            MoveScaled(3,3,31,2)
             Visible = False
             Ignore = True
             Picture = Picture.Load("shadeup.png")
@@ -1317,15 +1317,15 @@
           { scrollviewyt ScrollView
             MoveScaled(0,15,35,13)
             Visible = False
-            Background = &H000000&
-            Foreground = &HFFFFFF&
+            Background = &H000000
+            Foreground = &HFFFFFF
             ToolTip = ("Click to open video page")
             Expand = True
             { YouVideoInfo TextLabel
               MoveScaled(1,2,30,10)
               Visible = False
-              Background = &H000000&
-              Foreground = &HFFFFFF&
+              Background = &H000000
+              Foreground = &HFFFFFF
               ToolTip = ("Click to open video page")
               Expand = True
               Padding = 6
@@ -1394,7 +1394,7 @@
               Text = ("Order by")
             }
             { ComboBoxOrderBy ComboBox
-              MoveScaled(9.4286,-72.2857,18,4.5714)
+              MoveScaled(9.4286,-73.2857,18,4.5714)
               #Translate = False
               Expand = True
               ReadOnly = True
@@ -1970,14 +1970,14 @@
       { OuterBox Panel VideoAreaGroup
         Name = "OuterBox"
         MoveScaled(1,14,24,28)
-        Background = &H000000&
+        Background = &H000000
         Tracking = True
         Drop = True
         Expand = True
         { VideoBox DrawingArea VideoAreaGroup
           Name = "VideoBox"
           MoveScaled(-2,5,24,14)
-          Background = &H000000&
+          Background = &H000000
           Tracking = True
           Drop = True
           { TimerHideShowVideo #Timer
@@ -1987,14 +1987,14 @@
           { videoboxproxy Panel VideoAreaGroup
             Name = "videoboxproxy"
             MoveScaled(15,7,6,5)
-            Background = &H000000&
+            Background = &H000000
             Ignore = True
           }
         }
         { ThumbleBox Panel
           MoveScaled(0,20,17,17)
           Visible = False
-          Background = &H000000&
+          Background = &H000000
           Arrangement = Arrange.Fill
           Padding = 1
           { thumblevideo Panel
@@ -2003,7 +2003,7 @@
         }
         { bp Panel
           MoveScaled(0,-1,13,10)
-          Background = &H000000&
+          Background = &H000000
         }
       }
       { BottomVbox VBox
@@ -2156,13 +2156,13 @@
         { Statusbar1 Panel statusbar
           Name = "Statusbar1"
           MoveScaled(1,10,56,2)
-          Background = &H000000&
+          Background = &H000000
           Arrangement = Arrange.Horizontal
           { StatusLabelLeft Label statusbar
             Name = "StatusLabelLeft"
             MoveScaled(0,0,12,2)
             Font = Font["Bold,-1"]
-            Foreground = &HFFFFFF&
+            Foreground = &HFFFFFF
             Expand = True
             AutoResize = True
             Alignment = Align.Left
@@ -2172,7 +2172,7 @@
             Name = "StatusLabelRight"
             MoveScaled(45,0,10,2)
             Font = Font["Bold,-1"]
-            Foreground = &HFFFFFF&
+            Foreground = &HFFFFFF
             AutoResize = True
             Alignment = Align.Right
             Text = ("Right Text")

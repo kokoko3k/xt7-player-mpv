@@ -10301,30 +10301,36 @@ Public Sub GridPanels_Arrange()
 
   Dim brother As Object
   Dim newsize As Integer = 9
-  Dim achild As Object
+  Dim achild_up, achild As Object
 
   '  If Not (fmain.fullyloaded) Then Return
   
   For Each brother In shadeup.Parent.Children 
     If (brother Is Gridview) Or (brother Is Fileview) Then Break
   Next
+  
   If brother Is Gridview Then 
     Try newsize = CInt(brother.Rows[1].h / 4) 
       If newsize > 9 Then newsize = 9
       Try shadeup.h = newsize
       shadelist(brother)
       Else If brother Is Fileview Then
-        For Each achild In brother.Children
-          If achild Is Columnview Then
-            If achild.proxy Is Gridview Then
-              newsize = CInt(brother.Font.TextHeight("|") / 2.5) 
-              If newsize > 9 Then newsize = 9
-              Try shadeup.h = newsize
-              shadelist(achild.proxy, Object.GetProperty(brother.Parent, "padding") + achild.proxy.clientx - 1, brother.y - 1)
-              If fmain.fullyloaded Then shadeup.visible = True
-            Endif
+        For Each achild_up In brother.Children
+          If achild_up Is Panel Then
+            For Each achild In achild_up.children        
+              If achild Is Columnview Then
+                If achild.proxy Is Gridview Then
+                  newsize = CInt(brother.Font.TextHeight("|") / 2.5) 
+                  If newsize > 9 Then newsize = 9
+                  Try shadeup.h = newsize
+                  shadelist(achild.proxy, Object.GetProperty(brother.Parent, "padding") + achild.proxy.clientx - 1, brother.y - 1)
+                  If fmain.fullyloaded Then shadeup.visible = True
+                Endif
+              Endif
+            Next 'achild
           Endif
-        Next
+          
+        Next'achild_up
   Endif
 
 
