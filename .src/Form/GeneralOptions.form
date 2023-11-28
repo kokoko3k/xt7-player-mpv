@@ -31,8 +31,8 @@
       MoveScaled(1,1,22,67)
       { Label1 Label
         MoveScaled(2,1,11,4.5714)
-        Text = ("General Options")
         Alignment = Align.Justify
+        Text = ("General Options")
       }
       { OptionsList ListView
         MoveScaled(1,5,20,61)
@@ -91,8 +91,8 @@
           MoveScaled(2,13,19,2)
           Font = Font["Bold"]
           AutoResize = True
-          Text = ("Gpu decoding")
           Alignment = Align.TopLeft
+          Text = ("Gpu decoding")
         }
         { NoParseBox123 Panel
           MoveScaled(2,16,47,4.5714)
@@ -102,8 +102,8 @@
           Indent = True
           { PictureBox3 PictureBox
             MoveScaled(1,1,4.5714,4.5714)
+            Picture = Picture.Load("icon:/large/hardware")
             AutoResize = True
-            Picture = Picture["icon:/large/hardware"]
           }
           { NOPARSE_HwdecCombobox ComboBox
             MoveScaled(20,0,27,4.5714)
@@ -421,8 +421,8 @@
             MoveScaled(1,1,50,3)
             Font = Font["Bold,+1"]
             Expand = True
-            Text = ("The following are experimental features, use at your risk.")
             Alignment = Align.Center
+            Text = ("The following are experimental features, use at your risk.")
           }
         }
         { NOPARSESSeparator1 Separator
@@ -540,8 +540,8 @@
             MoveScaled(0,1,20,3)
             Font = Font["Bold"]
             AutoResize = True
-            Text = ("Watched Directories")
             Alignment = Align.Left
+            Text = ("Watched Directories")
           }
           { NoParseWatchedListbox ListBox
             MoveScaled(2,4,38,12)
@@ -584,8 +584,8 @@
             MoveScaled(0,1,20,3)
             Font = Font["Bold"]
             AutoResize = True
-            Text = ("Excluded Directories")
             Alignment = Align.Left
+            Text = ("Excluded Directories")
           }
           { NoParseExcludedListbox ListBox
             MoveScaled(2,4,38,9)
@@ -1097,8 +1097,8 @@
           }
           { PictureBox2 PictureBox
             MoveScaled(47,1,5,4.5714)
+            Picture = Picture.Load("youtubeicon.png")
             AutoResize = True
-            Picture = Picture["youtubeicon.png"]
             Alignment = Align.Right
           }
         }
@@ -1117,8 +1117,8 @@
           }
           { PictureBox4 PictureBox
             MoveScaled(47,1,5,4.5714)
+            Picture = Picture.Load("youtubeicon.png")
             AutoResize = True
-            Picture = Picture["youtubeicon.png"]
             Alignment = Align.Right
           }
         }
@@ -1144,8 +1144,8 @@
           }
           { PictureBox5 PictureBox
             MoveScaled(47,1,5,4.5714)
+            Picture = Picture.Load("youtubeicon.png")
             AutoResize = True
-            Picture = Picture["youtubeicon.png"]
             Alignment = Align.Right
           }
         }
@@ -1442,13 +1442,12 @@
           ToolTip = ("Maximum  amount  of  data  to  probe during the detection phase. In the case of MPEG-TS this value identifies the maximum number of TS packets to scan.\nmpv option: --demuxer-lavf-probesize")
           Spacing = True
           Indent = True
-          { forcedsubscheck CheckBox notifyobj
-            Name = "forcedsubscheck"
+          { forcedsubscheck2 CheckBox notifyobj
+            Name = "forcedsubscheck2"
             MoveScaled(0,0,53,5)
             ToolTip = ("Checking this will make mpv display subtitles in selected languages only when they are forced in by the stream.\nmpv option: --sub-forced-only")
             AutoResize = True
-            Text = ("Display forced subtitles only by default")
-            Value = CheckBox.True
+            Text = ("Display forced subtitles only")
           }
         }
         { NoParseLabel1 Label
@@ -1643,8 +1642,8 @@
             MoveScaled(19,0,19,3)
             Font = Font["Italic"]
             AutoResize = True
-            Text = ("   (MPRIS 2.1 - Incomplete)")
             Alignment = Align.Right
+            Text = ("   (MPRIS 2.1 - Incomplete)")
           }
         }
         { NOPARSESEP1 Separator
@@ -1684,8 +1683,8 @@
           MoveScaled(1,0,38,3)
           Font = Font["Bold"]
           AutoResize = True
-          Text = ("Load the following mpv user scripts")
           Alignment = Align.Left
+          Text = ("Load the following mpv user scripts")
         }
         { ListEditorUserScripts ListEditor
           MoveScaled(2,10,47,26)
@@ -2512,7 +2511,7 @@
           { ColorChooseBTN4 Button ColorChoose
             Name = "ColorChooseBTN4"
             MoveScaled(46,0,4,4.5714)
-            Background = &HFFFFFF&
+            Background = &HFFFFFF
             Picture = Picture["icon:/16/color"]
           }
         }
@@ -2536,7 +2535,7 @@
           { BackColorChooseBTN3 Button ColorChoose
             Name = "BackColorChooseBTN3"
             MoveScaled(46,0,4,4.5714)
-            Background = &H2A2D3C&
+            Background = &H2A2D3C
             Picture = Picture["icon:/16/color"]
           }
         }
@@ -2570,7 +2569,7 @@
           { ColorChooseBTN2 Button ColorChoose
             Name = "ColorChooseBTN2"
             MoveScaled(46,0,4,4.5714)
-            Background = &HFFFFFF&
+            Background = &HFFFFFF
             Picture = Picture["icon:/16/color"]
           }
         }
