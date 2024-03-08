@@ -1558,7 +1558,7 @@ Public Sub Analyze(videofile As String)
       If stopob Then Goto lEnd
       Sleep 0.05
       Try t = File.Load(tmpdir & "/mpout")
-    Until (Not Error )
+    Until (Not Error)
     Repeat
       Try outfile = Split(File.Load(tmpdir & "/mpout"), "\n")
       Sleep 0.05
@@ -1698,7 +1698,11 @@ Private Function SetUpInputPipe() As String
   
   ' 'mystream = Pipe inputpipe For Write
   mystream = New Socket
-  mystream.connect(inputpipe, Net.local)
+  If global.NeedNetLocal() Then
+    mystream.connect(inputpipe, Net.local)
+      Else
+    mystream.connect(inputpipe)
+  Endif
   global.myDebug("inputpipe=", inputpipe)
 
   Return inputpipe
@@ -2128,7 +2132,11 @@ Public Function send(data As String, Optional osd As Boolean = True)
   
   If mystream = Null Then mystream = New Socket
   If mystream.status <> Net.connected Then 
-    mystream.connect(inputpipe, Net.local)
+    If global.NeedNetLocal() Then
+      mystream.connect(inputpipe, Net.local)
+        Else
+      mystream.connect(inputpipe)
+    Endif
   Endif
 
 

@@ -226,6 +226,24 @@ Public Function NeedTreeViewWorkaround() As Boolean
   If cfruser >= cfrrequired Then Return True
 End
 
+Public Function NeedNetLocal() As Boolean
+  Dim UserVersion, UserMajor, UserMinor, RequiredMajor, RequiredMinor, Userminiminor, requiredminiminor As String
+  Dim Required As String = "3.19.0" 'starting from 3.19.0 sock connect method for local connections 
+                                    'requires just an argument
+  Dim cfruser, cfrrequired As Long
+  UserVersion = System.fullversion
+  RequiredMajor = makeN(Split(Required, ".")[0], 5)
+  RequiredMinor = makeN(Split(Required, ".")[1], 5)
+  RequiredMiniminor = makeN(Split(Required, ".")[2], 5)
+  UserMajor = makeN(Split(UserVersion, ".")[0], 5)
+  UserMinor = makeN(Split(UserVersion, ".")[1], 5)
+  Userminiminor = makeN(Trim(Split(UserVersion, ".")[2]), 5)
+  Try cfruser = UserMajor & UserMinor & Userminiminor
+  If Error Then Return
+  Try cfrrequired = RequiredMajor & RequiredMinor & RequiredMiniminor
+  If Error Then Return
+  If cfruser < cfrrequired Then Return True
+End
 
 Public Function Center(F1 As Form, F2 As Form)
   'Center F2 in F1
