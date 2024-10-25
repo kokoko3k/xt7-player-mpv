@@ -5755,7 +5755,7 @@ Public Sub VideoAreaGroup_MouseWheel()
   HotKeysHelper.MouseWheel()
   Hotkey = HotKeysHelper.GetLastHotKey()
   IgnoreMouse = True
-  'HotKeyToMplayer(HotKey)
+  HotKeyToMplayer(HotKey)
 End
 
 '/HotKeys Handling *******************************************
