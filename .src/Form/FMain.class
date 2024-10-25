@@ -5739,6 +5739,7 @@ Public Sub VideoAreaGroup_MouseWheel()
   Dim HotKey As String
   Dim tNow As Float
   videoboxproxy.SetFocus()
+
   If global.MouseInside(fmain.BottomVbox) Then Return 'don't process events from there
   'Hacky workaround for a bug in gambas that sends multiple mousewheel events
   'when there are multiple objects in a group.
@@ -5754,7 +5755,7 @@ Public Sub VideoAreaGroup_MouseWheel()
   HotKeysHelper.MouseWheel()
   Hotkey = HotKeysHelper.GetLastHotKey()
   IgnoreMouse = True
-  HotKeyToMplayer(HotKey)
+  'HotKeyToMplayer(HotKey)
 End
 
 '/HotKeys Handling *******************************************

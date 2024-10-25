@@ -242,12 +242,24 @@ Private Function MidC(s As String, a As String, Optional b As String) As String
   Endif
 End
 
+Public Sub react_to_player_initialized()
+    'catch statusline with the message player initialized
+    'this hopefully means the play is initialized
+    set_property_mpv("options/term-status-msg", "")
+    setP("play_initialized", "yes")
+End
+
 Public Sub playerprocess_read(Optional injected As String = "")
   Dim sBufs, sBuf As String
   Dim question, answer As String
   Try Read #playerprocess, sBufs, -4096
 
   For Each sBuf In Split(sbufs, "\n", "", True)
+    
+    If sBuf Like "*" & play_initialized_str & "*" Then
+      react_to_player_initialized()
+    Endif  
+    
     'Debug sBuf
     If sBuf Like "*ANS_*|*" Then
       question = MidC(sBuf, "_", "|")
@@ -292,14 +304,12 @@ Public Sub playerprocess_read(Optional injected As String = "")
   Next 'sbuf
 End
 
+
 Public Sub playerprocess_error(err As String)
   'global.mydebug(err)
   stderr &= err & "\n"
   If err Like "*" & play_initialized_str & "*" Then 
-    'catch statusline with the message player initialized
-    'this hopefully means the play is initialized
-    set_property_mpv("options/term-status-msg", "")
-    setP("play_initialized", "yes")
+    react_to_player_initialized()
   Endif
 End
 
