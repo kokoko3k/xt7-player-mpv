@@ -5738,7 +5738,14 @@ Private last_name As String = ""
 Public Sub VideoAreaGroup_MouseWheel()
   Dim HotKey As String
   Dim tNow As Float
+  
   videoboxproxy.SetFocus()
+  
+  ' oct, 25, 2024: system updated.
+  ' For reasons I ignore, fast wheel movements
+  ' can cause the flooding of events which repeats for no apparent
+  ' reason. Stop Event seems to take care of that.
+  Stop Event
 
   If global.MouseInside(fmain.BottomVbox) Then Return 'don't process events from there
   'Hacky workaround for a bug in gambas that sends multiple mousewheel events
