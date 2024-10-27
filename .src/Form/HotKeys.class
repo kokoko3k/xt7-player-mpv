@@ -717,8 +717,10 @@ Public Sub RestartXbindKeys(xbindkeysfilename As String)
     If FMain.closing Then Return
     global.myDebug("Hotkeys: RestartXbindKeys()")
     Try xbindkeys.Kill
-    If Stat(xbindkeysfilename).Size > 0 Then
-      xbindkeys = Shell Global.XbindkeysBIN & " -n -f " & xbindkeysfilename For Read As "xbindkeys"
+    If Exist(xbindkeysfilename, True)
+      If Stat(xbindkeysfilename).Size > 0 Then
+        xbindkeys = Shell Global.XbindkeysBIN & " -n -f " & xbindkeysfilename For Read As "xbindkeys"
+      Endif
     Endif
   Endif
 End
