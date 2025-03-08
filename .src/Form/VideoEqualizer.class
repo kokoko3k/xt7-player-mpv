@@ -175,38 +175,10 @@ Public Sub SpinBox6_Change()
   Slider6.value = Spinbox6.value
 End
 
-Public Sub Slider7_Change()
-  spinbox7.value = Slider7.value
-End
-
-Public Sub spinbox7_Change()
-  Object.Lock(Slider7)
-  Slider7.value = spinbox7.value
-  Object.unLock(Slider7)
-End
-
 Public Sub Form_Show()
   'EnableDisableControls()
 End
 
-Public Sub EnableDisableControls()
-  Slider7.enabled = CheckDynamicOverbright.value 
-  spinbox7.enabled = CheckDynamicOverbright.value 
-  hbox6.Enabled = Not CheckDynamicOverbright.value 
-End
-
-Public Sub CheckDynamicOverbright_Click()
-  'EnableDisableControls()
-  If Not FMain.FullyLoaded Then Return
-  Button1_Click() 'zero all values
-  If Not FMain.mplayer.ProcessRunningOvr() Then Return
-  If FMain.mplayer.getP("audioonly") Then Return
-  If CheckDynamicOverbright.value Then 
-    FMain.mplayer.StartOverbrightAnalyze()
-      Else
-    FMain.mplayer.StopOverbrightAnalyze()
-  Endif
-End
 
 Public Sub Button2_Click()
   Dim i As Integer

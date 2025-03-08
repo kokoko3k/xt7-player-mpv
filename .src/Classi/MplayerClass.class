@@ -1082,7 +1082,6 @@ Public Function do_stop() As Boolean
   Dim maxtimeout As Integer = 100
   Dim timeout As Integer 
   Try event_loop.Stop
-  Try mpAnalyze.kill
   AudioSwitched = False
   stopping = True
 
@@ -1094,7 +1093,6 @@ Public Function do_stop() As Boolean
     Endif
     ClearMediaProperties()
     properties_changed_runtime.clear
-    StopOverBrightAnalyze()
   Endif
   timeout = maxtimeout
   Repeat 'be kind
@@ -1511,28 +1509,8 @@ Public Sub ExtractAudioTo(src As String, dest As String)
 End
 
 
-Public Sub StartOverbrightAnalyze()
-  If Not ProcessRunningOvr() Then Return
-  stopob = False
-  TimerAnalyzePRE = New Timer As "TimerAnalizePRE"
-  TimerAnalyzePRE.Delay = 10
-  TimerAnalyzePRE.start
-End
-
-Private StopOB As Boolean = False
-Public Sub StopOverBrightAnalyze()
-  Try mpanalyze.kill
-  Try TimerAnalyzePRE.stop
-  Try TimerAnalyze.stop
-  Try mpanalyze.kill
-  StopOB = True
-End
-
-
-
 
 Private barray As String[]
-Public mpAnalyze As Process
 Private PrevCtime As Integer = -1
 
 Public Sub Analyze(videofile As String)
@@ -1549,7 +1527,6 @@ Public Sub Analyze(videofile As String)
   Dim timeout As Integer
   lStart:
   While ProcessRunningOvr()
-    If stopob Then Goto lEnd
     barray = New String[80000] 
     barray.Fill(-1, 0, 80000)
     Shell "rm -Rf " & tmpdir Wait
@@ -1559,13 +1536,8 @@ Public Sub Analyze(videofile As String)
     Try mystream.close
     mystream = Open tmpdir & "/fifo" For Write
     Print #mystream, "no-osd set pause yes"
-    'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 0  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -vf scale=64:64:0:3,scale=16:16:0:3,smartblur=5:1:0,scale -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
-    cmd = executable() & " --term-status-msg='${=time-pos}' --config=no --no-sub --osd-level=0 --vd-lavc-skiploopfilter=all --speed 0.01 --input-ipc-server=" & tmpdir & "/fifo --vf=scale=16:16  --no-audio --vo=image:format=png:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
-    'cmd = "mplayer  -noconfig all -noautosub -nosub -osdlevel 3  -lavdopts fast:skiploopfilter=all -speed 0.01 -slave -input file=" & tmpdir & "/fifo  -nosound -vo jpeg:quality=100:outdir=" & tmpdir & " " & videofile & " </dev/null &> " & tmpdir & "/mpout"
-    global.myDebug(cmd)
-    mpanalyze = Shell cmd
+
     Repeat
-      If stopob Then Goto lEnd
       Sleep 0.05
       Try t = File.Load(tmpdir & "/mpout")
     Until (Not Error)
@@ -1573,74 +1545,8 @@ Public Sub Analyze(videofile As String)
       Try outfile = Split(File.Load(tmpdir & "/mpout"), "\n")
       Sleep 0.05
     Until (outfile.max > 1)
-
-    While mpanalyze.state = Process.Running
-      'Debug
-      If stopob Then Goto lEnd
-      For Each sFile In Dir(tmpdir, "*.png*")
-        Kill tmpdir & "/" & sFile
-      Next
-      
-      'step ahead
-       newpos = CInt(currenttime()) + 4
-      If Not Error Then 
-        'Print #mystream, "pausing_keep seek " & CStr(newpos) & " 2"
-        Print #mystream, "no-osd seek " & CStr(newpos) & " absolute keyframes"
-        'Debug "Analize newseek", newpos
-      Endif
-      Repeat
-        'If paused Or pausing Then TimerAnalyze.stop
-        If paused() Then TimerAnalyze.stop
-        Wait 1
-        If stopob Then Goto lEnd
-      Until Not paused()
-      'Until Not (paused Or pausing)
-      TimerAnalyze.start
-      'Print #mystream, "pausing_keep seek +1"
-      
-      'wait for pic
-      timeout = 100
-      If Not Exist(tmpdir, True) Then Goto lStart
-      While Dir(tmpdir, "*.png").count = 0 And (timeout > 0) And mpanalyze.state = Process.Running
-        Wait 0.01
-        timeout -= 1
-      Wend
-      If timeout = 0 Then 
-        global.myDebug("No Pics, restarting analyzer")
-        Try mpanalyze.Kill
-        Goto lStart
-      Endif
-      
-      '''''''''If (timeout <= 0) Or (mpanalyze.state <> Process.Running) Then Goto lEnd
-      outfile = Split(File.Load(tmpdir & "/mpout"), "\n\r", "", True) '<- this is sloooow over time, watchout!
-
-      
-      pLine = outfile[outfile.max - 1]
-      'Try cTime = Val(Trim(Mid(pLine, 3, InStr(pLine, ".") - 3)))
-      'Try ctime = CFloat(Trim(Mid(pLine, 3, InStr(pLine, ".") - 1))) 'get the current float time
-      Try ctime = CFloat(Trim(pLine)) 'get the current float time
-      
-      Try cTimei = Split(cTime, ".")[0]
-      Try cTimef = Split(cTime, ".")[1]
-      Try t = tmpdir & Dir(tmpdir, "*.png")[0]
-      If Exist(t, True) Then
-        Try i = i.Load(tmpdir & Dir(tmpdir, "*.png")[0])
-        'Shell "mv  " & (tmpdir & Dir(tmpdir, "*.jpg")[0]) & " /tmp/tmp/" & ctime & ".jpg" Wait
-        If Not Error Then 
-          bavg = c_mean(i)
-          'bavg = Color[i.Pixels[0]].value 
-          'global.myDebug("time", ctime, "AVG:", bavg)
-          'barray index represents the integer part of the time, so we store the float part with the average picture brightness value in the array cell
-          'and set a delay afterwards for near pefect timing
-          Try barray[cTimei] = bAvg & ":" & ctimef
-          
-        Endif
-      Endif
-    Wend
   Wend
   lEnd:
-  stopob = False
-  mpanalyze.kill
   Shell "rm -Rf " & tmpdir
 End
 
@@ -1687,9 +1593,6 @@ Public Sub TimerAnalize_timer()
 
     Try Raise AnalyzerNewValue(bAvg, delay, cTime)
     global.myDebug("NewValue")
-    If Not stopob Then TimerAnalyze.start
-      'Else
-    'Debug "missing value in barray"
   Endif
 End
 

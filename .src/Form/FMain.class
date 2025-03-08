@@ -2988,8 +2988,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
   afterError:
   If start_time <> "0" Then mplayer.do_seek_to(start_time, True, True)
 
-  'mplayer.StartOverbrightAnalyze() 'fixmempv
-
   HotKeys.FirstLoadIfNeeded()
   VideoEqualizer.FirstLoadIfNeeded()
   'fimempv qui l'equalizzatore video deve vedere cosa fare (overbright dinamico oppure applicare i valori)
@@ -3092,7 +3090,6 @@ Public Function Play(fullpath As String, Optional OtherOptions As Collection, Op
 
   If Not (mplayer.getP("audioonly"))
     If Not (global.IsNetworkURI(fullpath)) Then 
-      If (VideoEqualizer.CheckDynamicOverbright.value) Then StartOverbrightAnalyze()
       If (VideoEqualizer.ApplyEqCheckbox.value = True) Then VideoEqualizer.ApplyEqSettings()
     Endif
   Endif
@@ -3116,13 +3113,6 @@ Public Sub check_speed_compensate()
     change_speed(1)
   Endif
 End
-
-
-Private Sub StartOverbrightAnalyze()
-  VideoEqualizer.ZeroControls()
-  mplayer.StartOverbrightAnalyze()
-End
-
 
 
 Public Sub addhistory(fullpath As String, Optional Savetime As String = "0", Optional leftoff As Boolean = False, Optional percent As String = "0")
