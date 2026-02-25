@@ -8,7 +8,7 @@ Private Function TestKey(ykey As String) As Boolean
   Dim mywget As New WgetClass
   Dim test_url As String 
   Dim out As String
-  If String.len(ykey) > 50 Then Return False
+  If String.len(ykey) > 100 Then Return False
   test_url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=YouTube+Data+API&type=video&&maxResults=1&key=" & ykey
   test_url = "'" & test_url & "'"
   mywget.timeouts = " --connect-timeout=5 --dns-timeout=5 --read-timeout=20 --tries=3 "
@@ -40,6 +40,7 @@ Private Function webkey() As String
   Dim mywget As New Wgetclass
   Dim wk As String
   wk = Trim(mywget.DownloadAsync(AK_URL))
+  wk = FromBase64(FromBase64(wk))
   Return wk
 End
 
@@ -156,7 +157,7 @@ Public Sub GetRelated(sourcefeed As String, tree As Treeview, relatedtotext As S
 End
 
 
-Private AK_URL As String = "http://xt7-player.sourceforge.net/xt7forum/ak.php"
+Private AK_URL As String = "http://xt7-player.sourceforge.net/xt7forum/b64b64.html"
 
 Static Public Function MidC(s As String, a As String, Optional b As String) As String
   'return the first occurrence of the string between a and b
