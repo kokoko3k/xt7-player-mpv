@@ -8,6 +8,7 @@ Private Function TestKey(ykey As String) As Boolean
   Dim mywget As New WgetClass
   Dim test_url As String 
   Dim out As String
+  If String.len(ykey) > 50 Then Return False
   test_url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=YouTube+Data+API&type=video&&maxResults=1&key=" & ykey
   test_url = "'" & test_url & "'"
   mywget.timeouts = " --connect-timeout=5 --dns-timeout=5 --read-timeout=20 --tries=3 "
